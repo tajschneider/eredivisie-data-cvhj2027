@@ -1,19 +1,19 @@
-ronde,datum,club,tegenstander,thuis_uit,voor,tegen,resultaat,ploegpunten,clean_sheet,formatie,opgehaald
-1,"zaterdag 8 augustus 2026, 21:00",AZ,ADO Den Haag,thuis,2,0,W,3,1,4-2-3-1,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",ADO Den Haag,AZ,uit,0,2,V,0,0,4-4-2,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",FC Groningen,FC Utrecht,thuis,2,1,W,3,0,4-2-3-1,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",FC Utrecht,FC Groningen,uit,1,2,V,0,0,4-3-3,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Go Ahead Eagles,Willem II,thuis,4,1,W,3,0,4-2-3-1,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Willem II,Go Ahead Eagles,uit,1,4,V,0,0,4-4-2,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",NEC,Telstar,thuis,1,2,V,0,0,3-4-2-1,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Telstar,NEC,uit,2,1,W,3,0,4-2-3-1,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",PEC Zwolle,Ajax,thuis,0,2,V,0,0,4-4-2,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ajax,PEC Zwolle,uit,2,0,W,3,1,4-2-3-1,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",PSV,Fortuna Sittard,thuis,2,2,G,1,0,4-2-3-1,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Fortuna Sittard,PSV,uit,2,2,G,1,0,5-3-2,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",SC Cambuur,Excelsior,thuis,0,4,V,0,0,3-4-1-2,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Excelsior,SC Cambuur,uit,4,0,W,3,1,4-2-3-1,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",sc Heerenveen,FC Twente,thuis,1,0,W,3,1,4-1-4-1,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",FC Twente,sc Heerenveen,uit,0,1,V,0,0,4-2-3-1,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Sparta Rotterdam,Feyenoord,thuis,0,1,V,0,0,4-2-3-1,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Feyenoord,Sparta Rotterdam,uit,1,0,W,3,1,4-2-3-1,2026-08-14
+ronde,datum,club,tegenstander,thuis_uit,voor,tegen,resultaat,ploegpunten,clean_sheet,formatie,kans_winst,kans_gelijk,kans_verlies,verwacht_voor,verwacht_tegen,opgehaald
+1,"zaterdag 8 augustus 2026, 21:00",AZ,ADO Den Haag,thuis,2,0,W,3,1,4-2-3-1,,68,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 21:00",ADO Den Haag,AZ,uit,0,2,V,0,0,4-4-2,,68,,,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",FC Groningen,FC Utrecht,thuis,2,1,W,3,0,4-2-3-1,,42,,,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",FC Utrecht,FC Groningen,uit,1,2,V,0,0,4-3-3,,42,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 18:45",Go Ahead Eagles,Willem II,thuis,4,1,W,3,0,4-2-3-1,,61,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 18:45",Willem II,Go Ahead Eagles,uit,1,4,V,0,0,4-4-2,,61,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 16:30",NEC,Telstar,thuis,1,2,V,0,0,3-4-2-1,,64,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 16:30",Telstar,NEC,uit,2,1,W,3,0,4-2-3-1,,64,,,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",PEC Zwolle,Ajax,thuis,0,2,V,0,0,4-4-2,,17,,,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",Ajax,PEC Zwolle,uit,2,0,W,3,1,4-2-3-1,,17,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 20:00",PSV,Fortuna Sittard,thuis,2,2,G,1,0,4-2-3-1,,81,,,,2026-08-14
+1,"zaterdag 8 augustus 2026, 20:00",Fortuna Sittard,PSV,uit,2,2,G,1,0,5-3-2,,81,,,,2026-08-14
+1,"vrijdag 7 augustus 2026, 20:00",SC Cambuur,Excelsior,thuis,0,4,V,0,0,3-4-1-2,,38,,,,2026-08-14
+1,"vrijdag 7 augustus 2026, 20:00",Excelsior,SC Cambuur,uit,4,0,W,3,1,4-2-3-1,,38,,,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",sc Heerenveen,FC Twente,thuis,1,0,W,3,1,4-1-4-1,,32,,,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",FC Twente,sc Heerenveen,uit,0,1,V,0,0,4-2-3-1,,32,,,,2026-08-14
+1,"zondag 9 augustus 2026, 12:15",Sparta Rotterdam,Feyenoord,thuis,0,1,V,0,0,4-2-3-1,,21,,,,2026-08-14
+1,"zondag 9 augustus 2026, 12:15",Feyenoord,Sparta Rotterdam,uit,1,0,W,3,1,4-2-3-1,,21,,,,2026-08-14
