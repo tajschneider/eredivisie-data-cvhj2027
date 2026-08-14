@@ -101,12 +101,14 @@ def parse_match(url, ronde):
 
         # wissels: "62' ↑ X voor Y"  -> Y eruit op 62, X erin op 62
         eruit, erin = {}, {}
-        for line in tekst.split("\n"):
-            w = re.match(r"(\d{1,3})'\s*↑?\s*(.+?)\s+voor\s+(.+)$", line.strip())
-            if w:
-                mi, inn, out = int(w.group(1)), w.group(2).strip(), w.group(3).strip()
-                eruit[out] = mi
-                erin[inn] = mi
+        vlak = re.sub(r"\s+", " ", tekst)
+        for w in re.finditer(
+                r"(\d{1,3})\s*'\s*[↑↓\-–]*\s*([A-ZÀ-Ý][\w'’.\-]*(?:\s+[\w'’.\-]+){0,3}?)"
+                r"\s+voor\s+([A-ZÀ-Ý][\w'’.\-]*(?:\s+[\w'’.\-]+){0,3})", vlak):
+            mi, inn, out = int(w.group(1)), w.group(2).strip(), w.group(3).strip()
+            eruit[out] = mi
+            erin[inn] = mi
+        print(f"    {club}: {len(erin)} wissels gevonden")
 
         for naam in basisnamen:
             speler_rows.append({
