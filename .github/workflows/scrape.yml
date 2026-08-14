@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install requests beautifulsoup4
-      - run: python scrape_eredivisie.py --ronde 1
+      - run: python scrape_eredivisie.py --alles-tot 34
       - run: |
           git config user.name  "eredivisie-bot"
           git config user.email "bot@users.noreply.github.com"
