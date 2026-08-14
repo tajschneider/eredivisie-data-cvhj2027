@@ -38,16 +38,30 @@ SPELER_COLS = ["ronde", "datum", "speler", "speler_id", "club", "tegenstander",
                "ploegpunten", "afwezig_reden", "opgehaald"]
 CLUB_COLS = ["ronde", "datum", "club", "tegenstander", "thuis_uit", "voor",
              "tegen", "resultaat", "ploegpunten", "clean_sheet", "formatie",
-             "opgehaald"]
+             "kans_winst", "kans_gelijk", "kans_verlies", "verwacht_voor",
+             "verwacht_tegen", "opgehaald"]
 
 WISSEL_RE = re.compile(r"(\d{1,3})\s*[’']\s*[↑↓\u2191\u2193]?\s*(.+?)\s+voor\s+(.+?)\s*$")
 SPELER_HREF = re.compile(r"/eredivisie/speler/([a-z0-9\-]+)/", re.I)
 
 
 # ---------------------------------------------------------------- hulpjes
+TRANS = str.maketrans({
+    "\u00f8": "o", "\u00d8": "O", "\u00e6": "ae", "\u00c6": "Ae",
+    "\u00e5": "a", "\u00c5": "A", "\u00f0": "d", "\u00d0": "D",
+    "\u00fe": "th", "\u00de": "Th", "\u0142": "l", "\u0141": "L",
+    "\u0111": "d", "\u0110": "D", "\u00df": "ss", "\u0131": "i",
+})
+
+
 def norm(s):
-    """'Brynjólfur Willumsson' -> 'brynjolfur-willumsson' (zelfde vorm als de slug)."""
-    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
+    """'S\u00f8ren Tengstedt' -> 'soren-tengstedt' (zelfde vorm als de link-slug).
+
+    Let op: ASCII-normalisatie alleen is niet genoeg. \u00f8 en \u00e5 hebben geen
+    ontbinding in NFKD en zouden zonder deze tabel wegvallen.
+    """
+    s = (s or "").translate(TRANS)
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
@@ -147,6 +161,36 @@ def parse_basis(plat, club):
     return m.group(1), [n.strip() for n in blok.split(",") if n.strip()]
 
 
+def parse_odds(soup, plat, thuis, uitc):
+    """Winstkansen en verwachte score uit de bookmakersnoteringen.
+
+    Pouletips verzamelt meerdere keren per dag odds en zet die om naar
+    winkansen. Wij lezen het resultaat, niet de ruwe quotering.
+    """
+    kans = {"thuis": "", "gelijk": "", "uit": ""}
+    for el in soup.find_all(["td", "div", "span", "li", "p", "strong"]):
+        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
+        if "%" not in t or len(t) > 90:
+            continue
+        m = re.search(r"(\d{1,3}(?:[.,]\d)?)\s*%", t)
+        if not m:
+            continue
+        w = m.group(1).replace(",", ".")
+        laag = t.lower()
+        if "gelijk" in laag or "remise" in laag:
+            kans["gelijk"] = kans["gelijk"] or w
+        elif thuis.lower() in laag:
+            kans["thuis"] = kans["thuis"] or w
+        elif uitc.lower() in laag:
+            kans["uit"] = kans["uit"] or w
+    if not any(kans.values()):        # terugval: drie percentages op een rij
+        m = re.search(r"(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%", plat)
+        if m:
+            kans = {"thuis": m.group(1), "gelijk": m.group(2), "uit": m.group(3)}
+    vs = re.search(r"[Vv]erwachte?\s+(?:uitslag|score)\D{0,25}(\d)\s*-\s*(\d)", plat)
+    return kans, (vs.group(1) if vs else ""), (vs.group(2) if vs else "")
+
+
 def parse_afwezig(blok):
     """[(naam, reden)] uit 'Afwezig: X (blessure), Y (schorsing)'."""
     tekst = BeautifulSoup(blok, "html.parser").get_text(" ", strip=True)
@@ -188,6 +232,7 @@ def parse_match(url, ronde):
             slug = sm.group(1).lower()
             goals[slug] = goals.get(slug, 0) + 1
 
+    kans, vw_thuis, vw_uit = parse_odds(soup, plat, thuis, uitc)
     blokken = club_blokken(ruw, {thuis, uitc})
     club_rows, speler_rows = [], []
 
@@ -211,6 +256,11 @@ def parse_match(url, ronde):
             "ronde": ronde, "datum": datum, "club": club, "tegenstander": tegen,
             "thuis_uit": tu, "voor": gf, "tegen": gc, "resultaat": res,
             "ploegpunten": ppt, "clean_sheet": cs, "formatie": formatie,
+            "kans_winst": kans["thuis"] if tu == "thuis" else kans["uit"],
+            "kans_gelijk": kans["gelijk"],
+            "kans_verlies": kans["uit"] if tu == "thuis" else kans["thuis"],
+            "verwacht_voor": vw_thuis if tu == "thuis" else vw_uit,
+            "verwacht_tegen": vw_uit if tu == "thuis" else vw_thuis,
             "opgehaald": VANDAAG})
 
         for naam in basis:
@@ -271,6 +321,18 @@ def debug(url):
         print("  GEEN gevonden — plak hieronder wat er rond 'Wissels' staat:")
         i = ruw.find("Wissels")
         print(ruw[max(0, i - 200): i + 1500] if i > 0 else "  'Wissels' niet gevonden")
+    print("\nELEMENTEN MET EEN PERCENTAGE:")
+    n = 0
+    for el in soup.find_all(["td", "div", "span", "li", "p", "strong"]):
+        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
+        if "%" in t and len(t) < 90:
+            print(f"  <{el.name}> {t}")
+            n += 1
+            if n >= 15:
+                break
+    if not n:
+        print("  GEEN percentages gevonden op deze pagina")
+
     print("\nBLOK 'Bank' (eerste 900 tekens ruwe HTML):")
     i = ruw.find("Bank")
     print(ruw[i:i + 900] if i > 0 else "  'Bank' niet gevonden")
