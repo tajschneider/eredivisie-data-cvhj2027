@@ -172,17 +172,30 @@ def parse_odds(soup, plat, thuis, uitc):
         t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
         if "%" not in t or len(t) > 90:
             continue
-        m = re.search(r"(\d{1,3}(?:[.,]\d)?)\s*%", t)
-        if not m:
+        treffers = list(re.finditer(r"(\d{1,3}(?:[.,]\d)?)\s*%", t))
+        if not treffers:
             continue
-        w = m.group(1).replace(",", ".")
-        laag = t.lower()
-        if "gelijk" in laag or "remise" in laag:
-            kans["gelijk"] = kans["gelijk"] or w
-        elif thuis.lower() in laag:
-            kans["thuis"] = kans["thuis"] or w
-        elif uitc.lower() in laag:
-            kans["uit"] = kans["uit"] or w
+        pos = 0
+        for k, mt in enumerate(treffers):
+            stuk = t[pos:mt.start()].lower()
+            pos = mt.end()
+            w = mt.group(1).replace(",", ".")
+            labels = []
+            for sleutel, naam in ((thuis.lower(), "thuis"), (uitc.lower(), "uit")):
+                i = stuk.rfind(sleutel)
+                if i >= 0:
+                    labels.append((i, naam))
+            for woord in ("gelijk", "remise"):
+                i = stuk.rfind(woord)
+                if i >= 0:
+                    labels.append((i, "gelijk"))
+            if labels:
+                naam = max(labels)[1]
+            elif len(treffers) == 3:
+                naam = ("thuis", "gelijk", "uit")[k]
+            else:
+                continue
+            kans[naam] = kans[naam] or w
     if not any(kans.values()):        # terugval: drie percentages op een rij
         m = re.search(r"(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%", plat)
         if m:
