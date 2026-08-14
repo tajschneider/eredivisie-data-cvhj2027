@@ -212,10 +212,16 @@ def main():
     if not rondes:
         sys.exit("Geef --ronde N of --alles-tot N")
 
+    leeg = 0
     for ronde in rondes:
         print(f"Speelronde {ronde}")
+        try:
+            urls = match_urls(ronde)
+        except Exception as e:
+            print(f"  ! ronde overgeslagen: {e}")
+            continue
         cr, sr = [], []
-        for url in match_urls(ronde):
+        for url in urls:
             print(f"  {url.rsplit('/', 2)[-2]}")
             try:
                 c, s = parse_match(url, ronde)
@@ -223,8 +229,15 @@ def main():
             except Exception as e:
                 print(f"    ! mislukt: {e}")
         if cr or sr:
+            leeg = 0
             schrijf(OUT / "clubs.csv", CLUB_COLS, cr, ["ronde", "club"])
             schrijf(OUT / "spelers.csv", SPELER_COLS, sr, ["ronde", "speler_id", "club"])
+        else:
+            leeg += 1
+            print("  (nog niet gespeeld)")
+            if leeg >= 2:
+                print("Twee lege rondes achter elkaar — klaar.")
+                break
 
 
 if __name__ == "__main__":
