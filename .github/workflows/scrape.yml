@@ -1,1 +1,25 @@
-
+name: Eredivisie data
+on:
+  schedule:
+    - cron: '0 6 * * 1'      # elke maandag 08:00 NL-tijd
+  workflow_dispatch:
+    inputs:
+      ronde:
+        description: 'Speelronde (leeg = alles tot nu)'
+        required: false
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install requests beautifulsoup4
+      - run: python scrape_eredivisie.py --alles-tot 34
+      - run: |
+          git config user.name  "eredivisie-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add clubs.csv spelers.csv
+          git diff --staged --quiet || git commit -m "data bijgewerkt $(date +%F)"
+          git push
+ 
