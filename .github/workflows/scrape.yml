@@ -7,6 +7,10 @@ on:
       ronde:
         description: 'Speelronde (leeg = alles tot nu)'
         required: false
+
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
