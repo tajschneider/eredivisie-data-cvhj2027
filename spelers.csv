@@ -1,345 +1,670 @@
 ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,goals,clean_sheet,ploegpunten,afwezig_reden,opgehaald
-1,"zaterdag 8 augustus 2026, 21:00",Jari De Busser,jari-de-busser,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
+1,"zaterdag 8 augustus 2026, 21:00",Jari De Busser,jari-de-busser,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
 1,"zaterdag 8 augustus 2026, 21:00",Mateo Chávez,mateo-chávez,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Lewis Schouten,lewis-schouten,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Wouter Goes,wouter-goes,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Elijah Dijkstra,elijah-dijkstra,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Peer Koopmeiners,peer-koopmeiners,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Dave Kwakman,dave-kwakman,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Ro-Zangelo Daal,ro-zangelo-daal,AZ,ADO Den Haag,thuis,basis,1,81,1,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Kees Smit,kees-smit,AZ,ADO Den Haag,thuis,basis,1,72,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Weslley Patati,weslley-patati,AZ,ADO Den Haag,thuis,basis,1,57,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Mexx Meerdink,mexx-meerdink,AZ,ADO Den Haag,thuis,basis,1,57,0,1,3,,2026-08-14
+1,"zaterdag 8 augustus 2026, 21:00",Lewis Schouten,lewis-schouten,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Wouter Goes,wouter-goes,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Elijah Dijkstra,elijah-dijkstra,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Peer Koopmeiners,peer-koopmeiners,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Dave Kwakman,dave-kwakman,AZ,ADO Den Haag,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Ro-Zangelo Daal,ro-zangelo-daal,AZ,ADO Den Haag,thuis,basis,1,81,1,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Kees Smit,kees-smit,AZ,ADO Den Haag,thuis,basis,1,72,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Weslley Patati,weslley-patati,AZ,ADO Den Haag,thuis,basis,1,57,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Mexx Meerdink,mexx-meerdink,AZ,ADO Den Haag,thuis,basis,1,57,0,1,3,,2026-08-17
 1,"zaterdag 8 augustus 2026, 21:00",Kilian Nikièma,kilian-nikièma,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Sekou Sylla,sekou-sylla,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Matteo Waem,matteo-waem,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Pascal Mulder,pascal-mulder,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Milan Hokke,milan-hokke,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Jalen Hawkins,jalen-hawkins,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Juho Kilo,juho-kilo,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Finn de Bruin,finn-de-bruin,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Daryl van Mieghem,daryl-van-mieghem,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Yannick Eduardo,yannick-eduardo,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Evan Rottier,evan-rottier,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Etienne Vaessen,etienne-vaessen,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Wouter Prins,wouter-prins,FC Groningen,FC Utrecht,thuis,basis,1,71,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Marco Rente,marco-rente,FC Groningen,FC Utrecht,thuis,basis,1,30,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Thijmen Blokzijl,thijmen-blokzijl,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Jorg Schreuders,jorg-schreuders,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tygo Land,tygo-land,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tika de Jonge,tika-de-jonge,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Pelle Clement,pelle-clement,FC Groningen,FC Utrecht,thuis,basis,1,81,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Thom van Bergen,thom-van-bergen,FC Groningen,FC Utrecht,thuis,basis,1,90,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",David van der Werff,david-van-der-werff,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
+1,"zaterdag 8 augustus 2026, 21:00",Sekou Sylla,sekou-sylla,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Matteo Waem,matteo-waem,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Pascal Mulder,pascal-mulder,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Milan Hokke,milan-hokke,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Jalen Hawkins,jalen-hawkins,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Juho Kilo,juho-kilo,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Finn de Bruin,finn-de-bruin,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Daryl van Mieghem,daryl-van-mieghem,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Yannick Eduardo,yannick-eduardo,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Evan Rottier,evan-rottier,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Etienne Vaessen,etienne-vaessen,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Wouter Prins,wouter-prins,FC Groningen,FC Utrecht,thuis,basis,1,71,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Marco Rente,marco-rente,FC Groningen,FC Utrecht,thuis,basis,1,30,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Thijmen Blokzijl,thijmen-blokzijl,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Jorg Schreuders,jorg-schreuders,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tygo Land,tygo-land,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tika de Jonge,tika-de-jonge,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Pelle Clement,pelle-clement,FC Groningen,FC Utrecht,thuis,basis,1,81,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Thom van Bergen,thom-van-bergen,FC Groningen,FC Utrecht,thuis,basis,1,90,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",David van der Werff,david-van-der-werff,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-17
 1,"zondag 9 augustus 2026, 14:30",Brynjólfur Willumsson,brynjólfur-willumsson,FC Groningen,FC Utrecht,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Michael Brouwer,michael-brouwer,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",Michael Brouwer,michael-brouwer,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 14:30",Arthur Zagré,arthur-zagré,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Mike Eerdhuijzen,mike-eerdhuijzen,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Siebe Horemans,siebe-horemans,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Niklas Vesterlund,niklas-vesterlund,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ferdinand Pohl,ferdinand-pohl,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Joris van Overeem,joris-van-overeem,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Dani de Wit,dani-de-wit,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Yoann Cathline,yoann-cathline,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",David Min,david-min,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",Mike Eerdhuijzen,mike-eerdhuijzen,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Siebe Horemans,siebe-horemans,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Niklas Vesterlund,niklas-vesterlund,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Ferdinand Pohl,ferdinand-pohl,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Joris van Overeem,joris-van-overeem,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Dani de Wit,dani-de-wit,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Yoann Cathline,yoann-cathline,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",David Min,david-min,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 14:30",Ángel Alarcón,ángel-alarcón,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Kjetil Haug,kjetil-haug,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Dean James,dean-james,Go Ahead Eagles,Willem II,thuis,basis,1,75,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Joris Kramer,joris-kramer,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Julius Dirksen,julius-dirksen,Go Ahead Eagles,Willem II,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Alfons Sampsted,alfons-sampsted,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Melle Meulensteen,melle-meulensteen,Go Ahead Eagles,Willem II,thuis,basis,1,75,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Evert Linthorst,evert-linthorst,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Mathis Suray,mathis-suray,Go Ahead Eagles,Willem II,thuis,basis,1,83,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Victor Edvardsen,victor-edvardsen,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
+1,"zaterdag 8 augustus 2026, 18:45",Kjetil Haug,kjetil-haug,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Dean James,dean-james,Go Ahead Eagles,Willem II,thuis,basis,1,75,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Joris Kramer,joris-kramer,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Julius Dirksen,julius-dirksen,Go Ahead Eagles,Willem II,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Alfons Sampsted,alfons-sampsted,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Melle Meulensteen,melle-meulensteen,Go Ahead Eagles,Willem II,thuis,basis,1,75,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Evert Linthorst,evert-linthorst,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Mathis Suray,mathis-suray,Go Ahead Eagles,Willem II,thuis,basis,1,83,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Victor Edvardsen,victor-edvardsen,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
 1,"zaterdag 8 augustus 2026, 18:45",Søren Tengstedt,søren-tengstedt,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
 1,"zaterdag 8 augustus 2026, 18:45",Stefán Ingi Sigurdarson,stefán-ingi-sigurdarson,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
 1,"zaterdag 8 augustus 2026, 18:45",Thomas Didillon-Hödl,thomas-didillon-hödl,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Nathan Tjoe-A-On,nathan-tjoe-a-on,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Justin Hoogma,justin-hoogma,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Finn Stam,finn-stam,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Per van Loon,per-van-loon,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Jaden Slory,jaden-slory,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Kasper Boogaard,kasper-boogaard,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Alessandro Ciranni,alessandro-ciranni,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 18:45",Nathan Tjoe-A-On,nathan-tjoe-a-on,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Justin Hoogma,justin-hoogma,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Finn Stam,finn-stam,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Per van Loon,per-van-loon,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Jaden Slory,jaden-slory,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Kasper Boogaard,kasper-boogaard,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Alessandro Ciranni,alessandro-ciranni,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zaterdag 8 augustus 2026, 18:45",Eser Gürbüz,eser-gürbüz,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
 1,"zaterdag 8 augustus 2026, 18:45",Uriël van Aalst,uriël-van-aalst,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Devin Haen,devin-haen,Willem II,Go Ahead Eagles,uit,basis,1,90,1,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Gonzalo Crettaz,gonzalo-crettaz,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Deveron Fonville,deveron-fonville,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Darko Nejasmic,darko-nejasmic,NEC,Telstar,thuis,basis,1,46,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Brayann Pereira,brayann-pereira,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Clement Bischoff,clement-bischoff,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 18:45",Devin Haen,devin-haen,Willem II,Go Ahead Eagles,uit,basis,1,90,1,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Gonzalo Crettaz,gonzalo-crettaz,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Deveron Fonville,deveron-fonville,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Darko Nejasmic,darko-nejasmic,NEC,Telstar,thuis,basis,1,46,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Brayann Pereira,brayann-pereira,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Clement Bischoff,clement-bischoff,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
 1,"zaterdag 8 augustus 2026, 16:30",Isak Hansen-Aarøen,isak-hansen-aarøen,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Jamiro Monteiro,jamiro-monteiro,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Sami Ouaissa,sami-ouaissa,NEC,Telstar,thuis,basis,1,79,0,0,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 16:30",Jamiro Monteiro,jamiro-monteiro,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Sami Ouaissa,sami-ouaissa,NEC,Telstar,thuis,basis,1,79,0,0,0,,2026-08-17
 1,"zaterdag 8 augustus 2026, 16:30",Noé Lebreton,noé-lebreton,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Tjaronn Chery,tjaronn-chery,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Dusan Tadic,dusan-tadic,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Ronald Koeman Jr.,ronald-koeman-jr,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Jeff Hardeveld,jeff-hardeveld,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Marvin Peersman,marvin-peersman,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Abdelnour Soualhia,abdelnour-soualhia,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Gerald Alders,gerald-alders,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Tyrone Owusu,tyrone-owusu,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Nils Rossen,nils-rossen,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Soufiane Hetli,soufiane-hetli,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Patrick Brouwer,patrick-brouwer,Telstar,NEC,uit,basis,1,90,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Rui Mendes,rui-mendes,Telstar,NEC,uit,basis,1,90,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Jelani Seedorf,jelani-seedorf,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Jasper Schendelaar,jasper-schendelaar,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Sherel Floranus,sherel-floranus,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Nick Viergever,nick-viergever,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Simon Graves,simon-graves,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Olivier Aertssen,olivier-aertssen,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ibrahim Cissoko,ibrahim-cissoko,PEC Zwolle,Ajax,thuis,basis,1,60,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tobias Sommer,tobias-sommer,PEC Zwolle,Ajax,thuis,basis,1,85,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ryan Thomas,ryan-thomas,PEC Zwolle,Ajax,thuis,basis,1,85,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Dylan Mbayo,dylan-mbayo,PEC Zwolle,Ajax,thuis,basis,1,61,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Thijs Oosting,thijs-oosting,PEC Zwolle,Ajax,thuis,basis,1,74,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Koen Kostons,koen-kostons,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 16:30",Tjaronn Chery,tjaronn-chery,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Dusan Tadic,dusan-tadic,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Ronald Koeman Jr.,ronald-koeman-jr,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Jeff Hardeveld,jeff-hardeveld,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Marvin Peersman,marvin-peersman,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Abdelnour Soualhia,abdelnour-soualhia,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Gerald Alders,gerald-alders,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Tyrone Owusu,tyrone-owusu,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Nils Rossen,nils-rossen,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Soufiane Hetli,soufiane-hetli,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Patrick Brouwer,patrick-brouwer,Telstar,NEC,uit,basis,1,90,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Rui Mendes,rui-mendes,Telstar,NEC,uit,basis,1,90,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Jelani Seedorf,jelani-seedorf,Telstar,NEC,uit,basis,1,90,0,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Jasper Schendelaar,jasper-schendelaar,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Sherel Floranus,sherel-floranus,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Nick Viergever,nick-viergever,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Simon Graves,simon-graves,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Olivier Aertssen,olivier-aertssen,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Ibrahim Cissoko,ibrahim-cissoko,PEC Zwolle,Ajax,thuis,basis,1,60,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tobias Sommer,tobias-sommer,PEC Zwolle,Ajax,thuis,basis,1,85,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Ryan Thomas,ryan-thomas,PEC Zwolle,Ajax,thuis,basis,1,85,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Dylan Mbayo,dylan-mbayo,PEC Zwolle,Ajax,thuis,basis,1,61,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Thijs Oosting,thijs-oosting,PEC Zwolle,Ajax,thuis,basis,1,74,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Koen Kostons,koen-kostons,PEC Zwolle,Ajax,thuis,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 14:30",Marc-André ter Stegen,marc-andré-ter-stegen,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Caio Henrique,caio-henrique,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Youri Baas,youri-baas,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Aaron Bouwman,aaron-bouwman,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Lucas Rosa,lucas-rosa,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Youri Regeer,youri-regeer,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Davy Klaassen,davy-klaassen,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Abdellah Ouazane,abdellah-ouazane,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Oscar Gloukh,oscar-gloukh,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Steven Berghuis,steven-berghuis,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Kasper Dolberg,kasper-dolberg,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Matej Kovar,matej-kovar,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",Caio Henrique,caio-henrique,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Youri Baas,youri-baas,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Aaron Bouwman,aaron-bouwman,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Lucas Rosa,lucas-rosa,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Youri Regeer,youri-regeer,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Davy Klaassen,davy-klaassen,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Abdellah Ouazane,abdellah-ouazane,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Oscar Gloukh,oscar-gloukh,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Steven Berghuis,steven-berghuis,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Kasper Dolberg,kasper-dolberg,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Matej Kovar,matej-kovar,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-17
 1,"zaterdag 8 augustus 2026, 20:00",Mauro Júnior,mauro-júnior,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Armando Obispo,armando-obispo,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ryan Flamingo,ryan-flamingo,PSV,Fortuna Sittard,thuis,basis,1,90,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ivan Perisic,ivan-perisic,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Noah Fernandez,noah-fernandez,PSV,Fortuna Sittard,thuis,basis,1,90,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Paul Wanner,paul-wanner,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ruben van Bommel,ruben-van-bommel,PSV,Fortuna Sittard,thuis,basis,1,46,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Sven Mijnans,sven-mijnans,PSV,Fortuna Sittard,thuis,basis,1,69,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Guus Til,guus-til,PSV,Fortuna Sittard,thuis,basis,1,68,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ricardo Pepi,ricardo-pepi,PSV,Fortuna Sittard,thuis,basis,1,80,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Mattijs Branderhorst,mattijs-branderhorst,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Jasper Dahlhaus,jasper-dahlhaus,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Justin Hubner,justin-hubner,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Syb van Ottele,syb-van-ottele,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ivo Pinto,ivo-pinto,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Siebe Wylin,siebe-wylin,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Yassin Oukili,yassin-oukili,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Philip Brittijn,philip-brittijn,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Mohamed Ihattaren,mohamed-ihattaren,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Ole Romeny,ole-romeny,Fortuna Sittard,PSV,uit,basis,1,90,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Lequincio Zeefuik,lequincio-zeefuik,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Thijs Jansen,thijs-jansen,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Jamal Amofa,jamal-amofa,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 20:00",Armando Obispo,armando-obispo,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ryan Flamingo,ryan-flamingo,PSV,Fortuna Sittard,thuis,basis,1,90,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ivan Perisic,ivan-perisic,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Noah Fernandez,noah-fernandez,PSV,Fortuna Sittard,thuis,basis,1,90,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Paul Wanner,paul-wanner,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ruben van Bommel,ruben-van-bommel,PSV,Fortuna Sittard,thuis,basis,1,46,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Sven Mijnans,sven-mijnans,PSV,Fortuna Sittard,thuis,basis,1,69,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Guus Til,guus-til,PSV,Fortuna Sittard,thuis,basis,1,68,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ricardo Pepi,ricardo-pepi,PSV,Fortuna Sittard,thuis,basis,1,80,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Mattijs Branderhorst,mattijs-branderhorst,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Jasper Dahlhaus,jasper-dahlhaus,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Justin Hubner,justin-hubner,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Syb van Ottele,syb-van-ottele,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ivo Pinto,ivo-pinto,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Siebe Wylin,siebe-wylin,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Yassin Oukili,yassin-oukili,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Philip Brittijn,philip-brittijn,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Mohamed Ihattaren,mohamed-ihattaren,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Ole Romeny,ole-romeny,Fortuna Sittard,PSV,uit,basis,1,90,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Lequincio Zeefuik,lequincio-zeefuik,Fortuna Sittard,PSV,uit,basis,1,90,0,0,1,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Thijs Jansen,thijs-jansen,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Jamal Amofa,jamal-amofa,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
 1,"vrijdag 7 augustus 2026, 20:00",Ismaël Baouf,ismaël-baouf,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Rik Mulders,rik-mulders,SC Cambuur,Excelsior,thuis,basis,1,46,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Lucas Jetten,lucas-jetten,SC Cambuur,Excelsior,thuis,basis,1,65,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Nicky Souren,nicky-souren,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Ryan van de Pavert,ryan-van-de-pavert,SC Cambuur,Excelsior,thuis,basis,1,46,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Iwan Henstra,iwan-henstra,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Rafik El Arguioui,rafik-el-arguioui,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Ilyes Hamache,ilyes-hamache,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Skye Vink,skye-vink,SC Cambuur,Excelsior,thuis,basis,1,81,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Stijn van Gassel,stijn-van-gassel,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Simon Janssen,simon-janssen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Jan Plug,jan-plug,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Rick Meissen,rick-meissen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Nolan Martens,nolan-martens,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Daniel van Vianen,daniel-van-vianen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Lennard Hartjes,lennard-hartjes,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Gyan de Regt,gyan-de-regt,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Noah Naujoks,noah-naujoks,Excelsior,SC Cambuur,uit,basis,1,90,2,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Irakli Yegoian,irakli-yegoian,Excelsior,SC Cambuur,uit,basis,1,90,1,1,3,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",David Garden,david-garden,Excelsior,SC Cambuur,uit,basis,1,90,1,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Bernt Klaverboer,bernt-klaverboer,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Vasilios Zagaritis,vasilios-zagaritis,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Maas Willemsen,maas-willemsen,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Sam Kersten,sam-kersten,sc Heerenveen,FC Twente,thuis,basis,1,83,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Mats Egbring,mats-egbring,sc Heerenveen,FC Twente,thuis,basis,1,68,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Dirk Proper,dirk-proper,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Lanroy Machine,lanroy-machine,sc Heerenveen,FC Twente,thuis,basis,1,46,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Ringo Meerveld,ringo-meerveld,sc Heerenveen,FC Twente,thuis,basis,1,55,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Marcus Linday,marcus-linday,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Jacob Trenskow,jacob-trenskow,sc Heerenveen,FC Twente,thuis,basis,1,83,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Dylan Vente,dylan-vente,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Lars Unnerstall,lars-unnerstall,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Aske Adelgaard,aske-adelgaard,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"vrijdag 7 augustus 2026, 20:00",Rik Mulders,rik-mulders,SC Cambuur,Excelsior,thuis,basis,1,46,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Lucas Jetten,lucas-jetten,SC Cambuur,Excelsior,thuis,basis,1,65,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Nicky Souren,nicky-souren,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Ryan van de Pavert,ryan-van-de-pavert,SC Cambuur,Excelsior,thuis,basis,1,46,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Iwan Henstra,iwan-henstra,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Rafik El Arguioui,rafik-el-arguioui,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Ilyes Hamache,ilyes-hamache,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Skye Vink,skye-vink,SC Cambuur,Excelsior,thuis,basis,1,81,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Stijn van Gassel,stijn-van-gassel,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Simon Janssen,simon-janssen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Jan Plug,jan-plug,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Rick Meissen,rick-meissen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Nolan Martens,nolan-martens,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Daniel van Vianen,daniel-van-vianen,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Lennard Hartjes,lennard-hartjes,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Gyan de Regt,gyan-de-regt,Excelsior,SC Cambuur,uit,basis,1,90,0,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Noah Naujoks,noah-naujoks,Excelsior,SC Cambuur,uit,basis,1,90,2,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Irakli Yegoian,irakli-yegoian,Excelsior,SC Cambuur,uit,basis,1,90,1,1,3,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",David Garden,david-garden,Excelsior,SC Cambuur,uit,basis,1,90,1,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Bernt Klaverboer,bernt-klaverboer,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Vasilios Zagaritis,vasilios-zagaritis,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Maas Willemsen,maas-willemsen,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Sam Kersten,sam-kersten,sc Heerenveen,FC Twente,thuis,basis,1,83,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Mats Egbring,mats-egbring,sc Heerenveen,FC Twente,thuis,basis,1,68,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Dirk Proper,dirk-proper,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Lanroy Machine,lanroy-machine,sc Heerenveen,FC Twente,thuis,basis,1,46,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Ringo Meerveld,ringo-meerveld,sc Heerenveen,FC Twente,thuis,basis,1,55,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Marcus Linday,marcus-linday,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Jacob Trenskow,jacob-trenskow,sc Heerenveen,FC Twente,thuis,basis,1,83,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Dylan Vente,dylan-vente,sc Heerenveen,FC Twente,thuis,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Lars Unnerstall,lars-unnerstall,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Aske Adelgaard,aske-adelgaard,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 16:45",Robin Pröpper,robin-pröpper,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Max Bruns,max-bruns,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Bart van Rooij,bart-van-rooij,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Thomas van den Belt,thomas-van-den-belt,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Ramiz Zerrouki,ramiz-zerrouki,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",Max Bruns,max-bruns,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Bart van Rooij,bart-van-rooij,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Thomas van den Belt,thomas-van-den-belt,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Ramiz Zerrouki,ramiz-zerrouki,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 16:45",Sondre Ørjasæter,sondre-ørjasæter,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Daan Rots,daan-rots,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Marko Pjaca,marko-pjaca,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Wout Weghorst,wout-weghorst,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Filip Bednarek,filip-bednarek,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Bas Kuipers,bas-kuipers,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Bruno Martins Indi,bruno-martins-indi,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Nick Verschuren,nick-verschuren,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Lushendry Martes,lushendry-martes,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Jens Toornstra,jens-toornstra,Sparta Rotterdam,Feyenoord,thuis,basis,1,62,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Marvin Young,marvin-young,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Ayoni Santos,ayoni-santos,Sparta Rotterdam,Feyenoord,thuis,basis,1,77,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Shunsuke Mito,shunsuke-mito,Sparta Rotterdam,Feyenoord,thuis,basis,1,77,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Casper Terho,casper-terho,Sparta Rotterdam,Feyenoord,thuis,basis,1,57,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",Daan Rots,daan-rots,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Marko Pjaca,marko-pjaca,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Wout Weghorst,wout-weghorst,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Filip Bednarek,filip-bednarek,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Bas Kuipers,bas-kuipers,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Bruno Martins Indi,bruno-martins-indi,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Nick Verschuren,nick-verschuren,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Lushendry Martes,lushendry-martes,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Jens Toornstra,jens-toornstra,Sparta Rotterdam,Feyenoord,thuis,basis,1,62,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Marvin Young,marvin-young,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Ayoni Santos,ayoni-santos,Sparta Rotterdam,Feyenoord,thuis,basis,1,77,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Shunsuke Mito,shunsuke-mito,Sparta Rotterdam,Feyenoord,thuis,basis,1,77,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Casper Terho,casper-terho,Sparta Rotterdam,Feyenoord,thuis,basis,1,57,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 12:15",Nökkvi Thórisson,nökkvi-thórisson,Sparta Rotterdam,Feyenoord,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Tjark Ernst,tjark-ernst,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
+1,"zondag 9 augustus 2026, 12:15",Tjark Ernst,tjark-ernst,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
 1,"zondag 9 augustus 2026, 12:15",Mika Mármol,mika-mármol,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Thijs Kraaijeveld,thijs-kraaijeveld,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Jeremiah St. Juste,jeremiah-st-juste,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Givairo Read,givairo-read,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Charles Vanhoutte,charles-vanhoutte,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
+1,"zondag 9 augustus 2026, 12:15",Thijs Kraaijeveld,thijs-kraaijeveld,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Jeremiah St. Juste,jeremiah-st-juste,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Givairo Read,givairo-read,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Charles Vanhoutte,charles-vanhoutte,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
 1,"zondag 9 augustus 2026, 12:15",Gjivai Zechiël,gjivai-zechiël,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Gaoussou Diarra,gaoussou-diarra,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Luciano Valente,luciano-valente,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Anis Hadj Moussa,anis-hadj-moussa,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Ayase Ueda,ayase-ueda,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Mateo Chávez,mateo-chavez,AZ,ADO Den Haag,thuis,basis,1,73,0,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Rome Jayden Owusu Oduro,rome-jayden-owusu-oduro,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Seiya Maikuma,seiya-maikuma,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Rion Ichihara,rion-ichihara,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Billy van Duijl,billy-van-duijl,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Mees de Wit,mees-de-wit,AZ,ADO Den Haag,thuis,invaller,0,17,1,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Calvin Stengs,calvin-stengs,AZ,ADO Den Haag,thuis,invaller,0,33,2,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Troy Parrott,troy-parrott,AZ,ADO Den Haag,thuis,invaller,0,33,1,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Isak Jensen,isak-jensen,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Ayoub Oufkir,ayoub-oufkir,AZ,ADO Den Haag,thuis,invaller,0,9,1,1,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Bendeguz Kovacs,bendeguz-kovacs,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-14
+1,"zondag 9 augustus 2026, 12:15",Gaoussou Diarra,gaoussou-diarra,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Luciano Valente,luciano-valente,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Anis Hadj Moussa,anis-hadj-moussa,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Ayase Ueda,ayase-ueda,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Mateo Chávez,mateo-chavez,AZ,ADO Den Haag,thuis,basis,1,73,0,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Rome Jayden Owusu Oduro,rome-jayden-owusu-oduro,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Seiya Maikuma,seiya-maikuma,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Rion Ichihara,rion-ichihara,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Billy van Duijl,billy-van-duijl,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Mees de Wit,mees-de-wit,AZ,ADO Den Haag,thuis,invaller,0,17,1,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Calvin Stengs,calvin-stengs,AZ,ADO Den Haag,thuis,invaller,0,33,2,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Troy Parrott,troy-parrott,AZ,ADO Den Haag,thuis,invaller,0,33,1,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Isak Jensen,isak-jensen,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Ayoub Oufkir,ayoub-oufkir,AZ,ADO Den Haag,thuis,invaller,0,9,1,1,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Bendeguz Kovacs,bendeguz-kovacs,AZ,ADO Den Haag,thuis,bank,0,0,0,,0,,2026-08-17
 1,"zaterdag 8 augustus 2026, 21:00",Matěj Šín,matej-sin,AZ,ADO Den Haag,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Denso Kasius,denso-kasius,AZ,ADO Den Haag,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Jordy Clasie,jordy-clasie,AZ,ADO Den Haag,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Kilian Nikièma,kilian-nikiema,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Jan Zamburek,jan-zamburek,ADO Den Haag,AZ,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 21:00",Donat Barany,donat-barany,ADO Den Haag,AZ,uit,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Brynjólfur Willumsson,brynjolfur-willumsson,FC Groningen,FC Utrecht,thuis,basis,1,81,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Lovro Stubljar,lovro-stubljar,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Rijk Janse,rijk-janse,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Nikolas Brandis,nikolas-brandis,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Elvis van der Laan,elvis-van-der-laan,FC Groningen,FC Utrecht,thuis,invaller,0,60,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tyrique Mercera,tyrique-mercera,FC Groningen,FC Utrecht,thuis,invaller,0,19,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Travis Hernes,travis-hernes,FC Groningen,FC Utrecht,thuis,invaller,0,9,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Alvin Nordin,alvin-nordin,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Nils Eggens,nils-eggens,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ryan Metu,ryan-metu,FC Groningen,FC Utrecht,thuis,invaller,0,9,1,0,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Oskar Zawada,oskar-zawada,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Arthur Zagré,arthur-zagre,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Ángel Alarcón,angel-alarcon,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Guus Offerhaus,guus-offerhaus,FC Utrecht,FC Groningen,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Sren Tengstedt,sren-tengstedt,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Stefán Ingi Sigurdarson,stefan-ingi-sigurdarson,Go Ahead Eagles,Willem II,thuis,basis,1,62,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Sasha Panah,sasha-panah,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Nando Verdoni,nando-verdoni,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Eus Waayers,eus-waayers,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Giovanni van Zwam,giovanni-van-zwam,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Calvin Twigt,calvin-twigt,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Yassir Salah Rahmouni,yassir-salah-rahmouni,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Oskar Sivertsen,oskar-sivertsen,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Richonell Margaret,richonell-margaret,Go Ahead Eagles,Willem II,thuis,invaller,0,7,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Thibo Baeten,thibo-baeten,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Erik Flataker,erik-flataker,Go Ahead Eagles,Willem II,thuis,invaller,0,28,2,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Ofosu Boakye,ofosu-boakye,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Tomas Galvez,tomas-galvez,Go Ahead Eagles,Willem II,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Thomas Didillon-Hödl,thomas-didillon-hodl,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Eser Gürbüz,eser-gurbuz,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Uriël van Aalst,uriel-van-aalst,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Thomas Verheydt,thomas-verheydt,Willem II,Go Ahead Eagles,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Armin Culum,armin-culum,Willem II,Go Ahead Eagles,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Isak Hansen Aaren,isak-hansen-aaren,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Noé Lebreton,noe-lebreton,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Freek Entius,freek-entius,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Joep Geneste,joep-geneste,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Philippe Sandler,philippe-sandler,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Thomas Ouwejan,thomas-ouwejan,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",T Storm,t-storm,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Willum Thor Willumsson,willum-thor-willumsson,NEC,Telstar,thuis,invaller,0,26,1,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Merijn van de Wiel,merijn-van-de-wiel,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Emre Mor,emre-mor,NEC,Telstar,thuis,invaller,0,11,1,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Kaj Sierhuis,kaj-sierhuis,NEC,Telstar,thuis,invaller,0,44,2,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Adam Tahaui,adam-tahaui,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Bryan Linssen,bryan-linssen,NEC,Telstar,thuis,invaller,0,26,1,0,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Kevin Kers,kevin-kers,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Koki Ogawa,koki-ogawa,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Yassin Moslih,yassin-moslih,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",T Sommer,t-sommer,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tom de Graaff,tom-de-graaff,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Duke Verduin,duke-verduin,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Tijs Velthuis,tijs-velthuis,PEC Zwolle,Ajax,thuis,invaller,0,16,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Damian van der Haar,damian-van-der-haar,PEC Zwolle,Ajax,thuis,invaller,0,30,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Odysseus Velanas,odysseus-velanas,PEC Zwolle,Ajax,thuis,invaller,0,5,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Gabriel Reiziger,gabriel-reiziger,PEC Zwolle,Ajax,thuis,invaller,0,29,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Jadiel Pereira Da Gama,jadiel-pereira-da-gama,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Nick Fichtinger,nick-fichtinger,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Givaro Rahajaan,givaro-rahajaan,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Elias Srensen,elias-srensen,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 21:00",Denso Kasius,denso-kasius,AZ,ADO Den Haag,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Jordy Clasie,jordy-clasie,AZ,ADO Den Haag,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Kilian Nikièma,kilian-nikiema,ADO Den Haag,AZ,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Jan Zamburek,jan-zamburek,ADO Den Haag,AZ,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 21:00",Donat Barany,donat-barany,ADO Den Haag,AZ,uit,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Brynjólfur Willumsson,brynjolfur-willumsson,FC Groningen,FC Utrecht,thuis,basis,1,81,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Lovro Stubljar,lovro-stubljar,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Rijk Janse,rijk-janse,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Nikolas Brandis,nikolas-brandis,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Elvis van der Laan,elvis-van-der-laan,FC Groningen,FC Utrecht,thuis,invaller,0,60,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tyrique Mercera,tyrique-mercera,FC Groningen,FC Utrecht,thuis,invaller,0,19,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Travis Hernes,travis-hernes,FC Groningen,FC Utrecht,thuis,invaller,0,9,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Alvin Nordin,alvin-nordin,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Nils Eggens,nils-eggens,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Ryan Metu,ryan-metu,FC Groningen,FC Utrecht,thuis,invaller,0,9,1,0,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Oskar Zawada,oskar-zawada,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Arthur Zagré,arthur-zagre,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Ángel Alarcón,angel-alarcon,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Guus Offerhaus,guus-offerhaus,FC Utrecht,FC Groningen,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Sren Tengstedt,sren-tengstedt,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Stefán Ingi Sigurdarson,stefan-ingi-sigurdarson,Go Ahead Eagles,Willem II,thuis,basis,1,62,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Sasha Panah,sasha-panah,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Nando Verdoni,nando-verdoni,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Eus Waayers,eus-waayers,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Giovanni van Zwam,giovanni-van-zwam,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Calvin Twigt,calvin-twigt,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Yassir Salah Rahmouni,yassir-salah-rahmouni,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Oskar Sivertsen,oskar-sivertsen,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Richonell Margaret,richonell-margaret,Go Ahead Eagles,Willem II,thuis,invaller,0,7,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Thibo Baeten,thibo-baeten,Go Ahead Eagles,Willem II,thuis,invaller,0,15,1,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Erik Flataker,erik-flataker,Go Ahead Eagles,Willem II,thuis,invaller,0,28,2,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Ofosu Boakye,ofosu-boakye,Go Ahead Eagles,Willem II,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Tomas Galvez,tomas-galvez,Go Ahead Eagles,Willem II,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Thomas Didillon-Hödl,thomas-didillon-hodl,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Eser Gürbüz,eser-gurbuz,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Uriël van Aalst,uriel-van-aalst,Willem II,Go Ahead Eagles,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Thomas Verheydt,thomas-verheydt,Willem II,Go Ahead Eagles,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Armin Culum,armin-culum,Willem II,Go Ahead Eagles,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Isak Hansen Aaren,isak-hansen-aaren,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Noé Lebreton,noe-lebreton,NEC,Telstar,thuis,basis,1,64,0,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Freek Entius,freek-entius,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Joep Geneste,joep-geneste,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Philippe Sandler,philippe-sandler,NEC,Telstar,thuis,invaller,0,26,1,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Thomas Ouwejan,thomas-ouwejan,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",T Storm,t-storm,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Willum Thor Willumsson,willum-thor-willumsson,NEC,Telstar,thuis,invaller,0,26,1,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Merijn van de Wiel,merijn-van-de-wiel,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Emre Mor,emre-mor,NEC,Telstar,thuis,invaller,0,11,1,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Kaj Sierhuis,kaj-sierhuis,NEC,Telstar,thuis,invaller,0,44,2,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Adam Tahaui,adam-tahaui,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Bryan Linssen,bryan-linssen,NEC,Telstar,thuis,invaller,0,26,1,0,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Kevin Kers,kevin-kers,NEC,Telstar,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Koki Ogawa,koki-ogawa,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Yassin Moslih,yassin-moslih,NEC,Telstar,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",T Sommer,t-sommer,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tom de Graaff,tom-de-graaff,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Duke Verduin,duke-verduin,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Tijs Velthuis,tijs-velthuis,PEC Zwolle,Ajax,thuis,invaller,0,16,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Damian van der Haar,damian-van-der-haar,PEC Zwolle,Ajax,thuis,invaller,0,30,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Odysseus Velanas,odysseus-velanas,PEC Zwolle,Ajax,thuis,invaller,0,5,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Gabriel Reiziger,gabriel-reiziger,PEC Zwolle,Ajax,thuis,invaller,0,29,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Jadiel Pereira Da Gama,jadiel-pereira-da-gama,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Nick Fichtinger,nick-fichtinger,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Givaro Rahajaan,givaro-rahajaan,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Elias Srensen,elias-srensen,PEC Zwolle,Ajax,thuis,bank,0,0,0,,0,,2026-08-17
 1,"zondag 9 augustus 2026, 14:30",Jan Faberski,jan-faberski,PEC Zwolle,Ajax,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Marc-André ter Stegen,marc-andre-ter-stegen,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 14:30",Mika Godts,mika-godts,Ajax,PEC Zwolle,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Mauro Júnior,mauro-junior,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Nick Olij,nick-olij,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Tijn Smolenaars,tijn-smolenaars,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Yarek Gasiorowski,yarek-gasiorowski,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Kiliann Sildillia,kiliann-sildillia,PSV,Fortuna Sittard,thuis,invaller,0,10,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Fabian Merien,fabian-merien,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Joel van den Berg,joel-van-den-berg,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Alassane Plea,alassane-plea,PSV,Fortuna Sittard,thuis,invaller,0,22,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Esmir Bajraktarevic,esmir-bajraktarevic,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Dennis Man,dennis-man,PSV,Fortuna Sittard,thuis,invaller,0,21,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Amir Bouhamdi,amir-bouhamdi,PSV,Fortuna Sittard,thuis,invaller,0,44,1,0,1,,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Jerdy Schouten,jerdy-schouten,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Couhaib Driouech,couhaib-driouech,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
+1,"zondag 9 augustus 2026, 14:30",Marc-André ter Stegen,marc-andre-ter-stegen,Ajax,PEC Zwolle,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Mika Godts,mika-godts,Ajax,PEC Zwolle,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Mauro Júnior,mauro-junior,PSV,Fortuna Sittard,thuis,basis,1,90,0,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Nick Olij,nick-olij,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Tijn Smolenaars,tijn-smolenaars,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Yarek Gasiorowski,yarek-gasiorowski,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Kiliann Sildillia,kiliann-sildillia,PSV,Fortuna Sittard,thuis,invaller,0,10,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Fabian Merien,fabian-merien,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Joel van den Berg,joel-van-den-berg,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Alassane Plea,alassane-plea,PSV,Fortuna Sittard,thuis,invaller,0,22,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Esmir Bajraktarevic,esmir-bajraktarevic,PSV,Fortuna Sittard,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Dennis Man,dennis-man,PSV,Fortuna Sittard,thuis,invaller,0,21,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Amir Bouhamdi,amir-bouhamdi,PSV,Fortuna Sittard,thuis,invaller,0,44,1,0,1,,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Jerdy Schouten,jerdy-schouten,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Couhaib Driouech,couhaib-driouech,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
 1,"zaterdag 8 augustus 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Joey Veerman,joey-veerman,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,schorsing,2026-08-14
-1,"zaterdag 8 augustus 2026, 20:00",Kristoffer Peterson,kristoffer-peterson,Fortuna Sittard,PSV,uit,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Ismaël Baouf,ismael-baouf,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",R van de Pavert,r-van-de-pavert,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",S Vink,s-vink,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Jasper Meijster,jasper-meijster,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Matthijs Kalisvaart,matthijs-kalisvaart,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Jorn Berkhout,jorn-berkhout,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Morgan Costarelli,morgan-costarelli,SC Cambuur,Excelsior,thuis,invaller,0,44,1,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Ethan Apkakou,ethan-apkakou,SC Cambuur,Excelsior,thuis,invaller,0,25,1,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Wiebe van der Heide,wiebe-van-der-heide,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Sami Bouhoudane,sami-bouhoudane,SC Cambuur,Excelsior,thuis,invaller,0,44,1,0,0,,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Nicolas Binder,nicolas-binder,SC Cambuur,Excelsior,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",F Kvam,f-kvam,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-14
+1,"zaterdag 8 augustus 2026, 20:00",Joey Veerman,joey-veerman,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,schorsing,2026-08-17
+1,"zaterdag 8 augustus 2026, 20:00",Kristoffer Peterson,kristoffer-peterson,Fortuna Sittard,PSV,uit,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Ismaël Baouf,ismael-baouf,SC Cambuur,Excelsior,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",R van de Pavert,r-van-de-pavert,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",S Vink,s-vink,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Jasper Meijster,jasper-meijster,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Matthijs Kalisvaart,matthijs-kalisvaart,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Jorn Berkhout,jorn-berkhout,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Morgan Costarelli,morgan-costarelli,SC Cambuur,Excelsior,thuis,invaller,0,44,1,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Ethan Apkakou,ethan-apkakou,SC Cambuur,Excelsior,thuis,invaller,0,25,1,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Wiebe van der Heide,wiebe-van-der-heide,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Sami Bouhoudane,sami-bouhoudane,SC Cambuur,Excelsior,thuis,invaller,0,44,1,0,0,,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",Nicolas Binder,nicolas-binder,SC Cambuur,Excelsior,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"vrijdag 7 augustus 2026, 20:00",F Kvam,f-kvam,SC Cambuur,Excelsior,thuis,bank,0,0,0,,0,,2026-08-17
 1,"vrijdag 7 augustus 2026, 20:00",Wiebe Kooistra,wiebe-kooistra,SC Cambuur,Excelsior,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"vrijdag 7 augustus 2026, 20:00",Casper Widell,casper-widell,Excelsior,SC Cambuur,uit,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",T Schreuder,t-schreuder,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Andries Noppert,andries-noppert,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Nikolai Hopland,nikolai-hopland,sc Heerenveen,FC Twente,thuis,invaller,0,7,1,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Darling Bladi,darling-bladi,sc Heerenveen,FC Twente,thuis,invaller,0,7,1,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Hristiyan Petrov,hristiyan-petrov,sc Heerenveen,FC Twente,thuis,invaller,0,22,1,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Maxence Rivera,maxence-rivera,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Luuk Brouwers,luuk-brouwers,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Levi Smans,levi-smans,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Nolhan Courtens,nolhan-courtens,sc Heerenveen,FC Twente,thuis,invaller,0,35,1,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Luca Oyen,luca-oyen,sc Heerenveen,FC Twente,thuis,invaller,0,44,2,1,3,,2026-08-14
+1,"vrijdag 7 augustus 2026, 20:00",Casper Widell,casper-widell,Excelsior,SC Cambuur,uit,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",T Schreuder,t-schreuder,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Andries Noppert,andries-noppert,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Nikolai Hopland,nikolai-hopland,sc Heerenveen,FC Twente,thuis,invaller,0,7,1,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Darling Bladi,darling-bladi,sc Heerenveen,FC Twente,thuis,invaller,0,7,1,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Hristiyan Petrov,hristiyan-petrov,sc Heerenveen,FC Twente,thuis,invaller,0,22,1,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Maxence Rivera,maxence-rivera,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Luuk Brouwers,luuk-brouwers,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Levi Smans,levi-smans,sc Heerenveen,FC Twente,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Nolhan Courtens,nolhan-courtens,sc Heerenveen,FC Twente,thuis,invaller,0,35,1,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Luca Oyen,luca-oyen,sc Heerenveen,FC Twente,thuis,invaller,0,44,2,1,3,,2026-08-17
 1,"zondag 9 augustus 2026, 16:45",Oliver Johansen Braude,oliver-johansen-braude,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
 1,"zondag 9 augustus 2026, 16:45",Nikolai Søyset Hopland,nikolai-syset-hopland,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Robin Pröpper,robin-propper,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",Robin Pröpper,robin-propper,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
 1,"zondag 9 augustus 2026, 16:45",Sondre Ørjasæter,sondre-rjaster,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Kristian Hlynsson,kristian-hlynsson,FC Twente,sc Heerenveen,uit,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Younes Taha,younes-taha,FC Twente,sc Heerenveen,uit,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Nökkvi Thórisson,nokkvi-thorisson,Sparta Rotterdam,Feyenoord,thuis,basis,1,62,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Lushendry Edward Martes,lushendry-edward-martes,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Rik Suur,rik-suur,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Boyd Reith,boyd-reith,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Teo Quintero,teo-quintero,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Giannino Vianello,giannino-vianello,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",A Roaldsy,a-roaldsy,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Robin van Cruijsen,robin-van-cruijsen,Sparta Rotterdam,Feyenoord,thuis,invaller,0,33,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Younes Jaber El Maftahi,younes-jaber-el-maftahi,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Mitchell van Bergen,mitchell-van-bergen,Sparta Rotterdam,Feyenoord,thuis,invaller,0,13,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Milan Zonneveld,milan-zonneveld,Sparta Rotterdam,Feyenoord,thuis,invaller,0,28,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Joel Ideho,joel-ideho,Sparta Rotterdam,Feyenoord,thuis,invaller,0,13,1,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Mika Mármol,mika-marmol,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Gjivai Zechiël,gjivai-zechiel,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-14
-1,"zondag 9 augustus 2026, 12:15",Jordan Bos,jordan-bos,Feyenoord,Sparta Rotterdam,uit,bank,0,0,0,,0,,2026-08-14
-1,"zaterdag 8 augustus 2026, 18:45",Søren Tengstedt,soren-tengstedt,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-14
-1,"zaterdag 8 augustus 2026, 16:30",Isak Hansen-Aarøen,isak-hansen-aaroen,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Nikolai Søyset Hopland,nikolai-soyset-hopland,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-14
-1,"zondag 9 augustus 2026, 16:45",Sondre Ørjasæter,sondre-orjasaeter,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-14
+1,"zondag 9 augustus 2026, 16:45",Kristian Hlynsson,kristian-hlynsson,FC Twente,sc Heerenveen,uit,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Younes Taha,younes-taha,FC Twente,sc Heerenveen,uit,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Nökkvi Thórisson,nokkvi-thorisson,Sparta Rotterdam,Feyenoord,thuis,basis,1,62,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Lushendry Edward Martes,lushendry-edward-martes,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Rik Suur,rik-suur,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Boyd Reith,boyd-reith,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Teo Quintero,teo-quintero,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Giannino Vianello,giannino-vianello,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",A Roaldsy,a-roaldsy,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Robin van Cruijsen,robin-van-cruijsen,Sparta Rotterdam,Feyenoord,thuis,invaller,0,33,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Younes Jaber El Maftahi,younes-jaber-el-maftahi,Sparta Rotterdam,Feyenoord,thuis,bank,0,0,0,,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Mitchell van Bergen,mitchell-van-bergen,Sparta Rotterdam,Feyenoord,thuis,invaller,0,13,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Milan Zonneveld,milan-zonneveld,Sparta Rotterdam,Feyenoord,thuis,invaller,0,28,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Joel Ideho,joel-ideho,Sparta Rotterdam,Feyenoord,thuis,invaller,0,13,1,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Mika Mármol,mika-marmol,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Gjivai Zechiël,gjivai-zechiel,Feyenoord,Sparta Rotterdam,uit,basis,1,90,0,1,3,,2026-08-17
+1,"zondag 9 augustus 2026, 12:15",Jordan Bos,jordan-bos,Feyenoord,Sparta Rotterdam,uit,bank,0,0,0,,0,,2026-08-17
+1,"zaterdag 8 augustus 2026, 18:45",Søren Tengstedt,soren-tengstedt,Go Ahead Eagles,Willem II,thuis,basis,1,90,0,0,3,,2026-08-17
+1,"zaterdag 8 augustus 2026, 16:30",Isak Hansen-Aarøen,isak-hansen-aaroen,NEC,Telstar,thuis,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Nikolai Søyset Hopland,nikolai-soyset-hopland,sc Heerenveen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+1,"zondag 9 augustus 2026, 16:45",Sondre Ørjasæter,sondre-orjasaeter,FC Twente,sc Heerenveen,uit,basis,1,90,0,0,0,,2026-08-17
+1,"zondag 9 augustus 2026, 14:30",Jan Bürger,jan-burger,PEC Zwolle,Ajax,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Kilian Nikièma,kilian-nikiema,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Sekou Sylla,sekou-sylla,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Matteo Waem,matteo-waem,ADO Den Haag,FC Groningen,thuis,basis,1,46,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Pascal Mulder,pascal-mulder,ADO Den Haag,FC Groningen,thuis,basis,1,78,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Milan Hokke,milan-hokke,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Illaijh de Ruijter,illaijh-de-ruijter,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Juho Kilo,juho-kilo,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Jan Zamburek,jan-zamburek,ADO Den Haag,FC Groningen,thuis,basis,1,46,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Daryl van Mieghem,daryl-van-mieghem,ADO Den Haag,FC Groningen,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Yannick Eduardo,yannick-eduardo,ADO Den Haag,FC Groningen,thuis,basis,1,59,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Jesse Bal,jesse-bal,ADO Den Haag,FC Groningen,thuis,basis,1,69,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Sem Eekhout,sem-eekhout,ADO Den Haag,FC Groningen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Niclas Thiede,niclas-thiede,ADO Den Haag,FC Groningen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Othniel Raterink,othniel-raterink,ADO Den Haag,FC Groningen,thuis,invaller,0,44,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Lasse Wilhelm,lasse-wilhelm,ADO Den Haag,FC Groningen,thuis,invaller,0,12,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Mylian Jimenez,mylian-jimenez,ADO Den Haag,FC Groningen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Finn de Bruin,finn-de-bruin,ADO Den Haag,FC Groningen,thuis,invaller,0,44,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Dani van Loenen,dani-van-loenen,ADO Den Haag,FC Groningen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Evan Rottier,evan-rottier,ADO Den Haag,FC Groningen,thuis,invaller,0,21,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Luka Reischl,luka-reischl,ADO Den Haag,FC Groningen,thuis,invaller,0,31,1,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Nigel Thomas,nigel-thomas,ADO Den Haag,FC Groningen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Jalen Hawkins,jalen-hawkins,ADO Den Haag,FC Groningen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Cameron Peupion,cameron-peupion,ADO Den Haag,FC Groningen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Etienne Vaessen,etienne-vaessen,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Wouter Prins,wouter-prins,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Elvis van der Laan,elvis-van-der-laan,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Thijmen Blokzijl,thijmen-blokzijl,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Jorg Schreuders,jorg-schreuders,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Tygo Land,tygo-land,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Tika de Jonge,tika-de-jonge,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Pelle Clement,pelle-clement,FC Groningen,ADO Den Haag,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Thom van Bergen,thom-van-bergen,FC Groningen,ADO Den Haag,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",David van der Werff,david-van-der-werff,FC Groningen,ADO Den Haag,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Brynjólfur Willumsson,brynjolfur-willumsson,FC Groningen,ADO Den Haag,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Stije Resink,stije-resink,FC Groningen,ADO Den Haag,uit,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 12:15",Marco Rente,marco-rente,FC Groningen,ADO Den Haag,uit,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Marc ter Stegen,marc-ter-stegen,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Caio Henrique,caio-henrique,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Youri Baas,youri-baas,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Aaron Bouwman,aaron-bouwman,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Lucas Rosa,lucas-rosa,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Youri Regeer,youri-regeer,Ajax,sc Heerenveen,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Davy Klaassen,davy-klaassen,Ajax,sc Heerenveen,thuis,basis,1,73,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Abdellah Ouazane,abdellah-ouazane,Ajax,sc Heerenveen,thuis,basis,1,87,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Oscar Gloukh,oscar-gloukh,Ajax,sc Heerenveen,thuis,basis,1,65,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Steven Berghuis,steven-berghuis,Ajax,sc Heerenveen,thuis,afwezig,0,0,0,,0,schorsing,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Kasper Dolberg,kasper-dolberg,Ajax,sc Heerenveen,thuis,basis,1,65,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Joeri Heerkens,joeri-heerkens,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Maarten Paes,maarten-paes,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Anton Gaaei,anton-gaaei,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Ko Itakura,ko-itakura,Ajax,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Owen Wijndal,owen-wijndal,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Dies Janse,dies-janse,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Julian Brandt,julian-brandt,Ajax,sc Heerenveen,thuis,invaller,0,25,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Jorthy Mokio,jorthy-mokio,Ajax,sc Heerenveen,thuis,invaller,0,17,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Maher Carrizo,maher-carrizo,Ajax,sc Heerenveen,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Oliver Edvardsen,oliver-edvardsen,Ajax,sc Heerenveen,thuis,invaller,0,4,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Marcos Leonardo,marcos-leonardo,Ajax,sc Heerenveen,thuis,invaller,0,25,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Tolu Arokodare,tolu-arokodare,Ajax,sc Heerenveen,thuis,invaller,0,3,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Josip Šutalo,josip-sutalo,Ajax,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Ahmetcan Kaplan,ahmetcan-kaplan,Ajax,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Daley Blind,daley-blind,Ajax,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Bernt Klaverboer,bernt-klaverboer,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Vasilios Zagaritis,vasilios-zagaritis,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Maas Willemsen,maas-willemsen,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Sam Kersten,sam-kersten,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Oliver Braude,oliver-braude,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Dirk Proper,dirk-proper,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Marcus Linday,marcus-linday,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Luca Oyen,luca-oyen,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Ringo Meerveld,ringo-meerveld,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Jacob Trenskow,jacob-trenskow,sc Heerenveen,Ajax,uit,basis,1,90,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Dylan Vente,dylan-vente,sc Heerenveen,Ajax,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 16:45",Luuk Brouwers,luuk-brouwers,sc Heerenveen,Ajax,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Stijn van Gassel,stijn-van-gassel,Excelsior,PSV,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Simon Janssen,simon-janssen,Excelsior,PSV,thuis,basis,1,80,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Jan Plug,jan-plug,Excelsior,PSV,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Casper Widell,casper-widell,Excelsior,PSV,thuis,basis,1,90,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Rick Meissen,rick-meissen,Excelsior,PSV,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Daniel van Vianen,daniel-van-vianen,Excelsior,PSV,thuis,basis,1,80,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Lennard Hartjes,lennard-hartjes,Excelsior,PSV,thuis,basis,1,74,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Irakli Yegoian,irakli-yegoian,Excelsior,PSV,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Ilano Silva Timas,ilano-silva-timas,Excelsior,PSV,thuis,basis,1,46,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",David Garden,david-garden,Excelsior,PSV,thuis,basis,1,68,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Aymen Sliti,aymen-sliti,Excelsior,PSV,thuis,basis,1,46,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Celton Biai,celton-biai,Excelsior,PSV,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Stan Henderikx,stan-henderikx,Excelsior,PSV,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Nolan Martens,nolan-martens,Excelsior,PSV,thuis,invaller,0,44,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Osman Turay,osman-turay,Excelsior,PSV,thuis,invaller,0,44,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Valentin Sulzbacher,valentin-sulzbacher,Excelsior,PSV,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Y Finey,y-finey,Excelsior,PSV,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Giulliano Cairo,giulliano-cairo,Excelsior,PSV,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Mario Dominguez,mario-dominguez,Excelsior,PSV,thuis,invaller,0,10,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Nesto Groen,nesto-groen,Excelsior,PSV,thuis,invaller,0,22,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Alireza Jahanbakhsh,alireza-jahanbakhsh,Excelsior,PSV,thuis,invaller,0,16,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Noah Naujoks,noah-naujoks,Excelsior,PSV,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Matej Kovar,matej-kovar,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Mauro Júnior,mauro-junior,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Armando Obispo,armando-obispo,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Ryan Flamingo,ryan-flamingo,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Sergiño Dest,sergino-dest,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Paul Wanner,paul-wanner,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Joey Veerman,joey-veerman,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Guus Til,guus-til,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Ruben van Bommel,ruben-van-bommel,PSV,Excelsior,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Ricardo Pepi,ricardo-pepi,PSV,Excelsior,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Ivan Perisic,ivan-perisic,PSV,Excelsior,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 20:00",Sven Mijnans,sven-mijnans,PSV,Excelsior,uit,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Lars Unnerstall,lars-unnerstall,FC Twente,PEC Zwolle,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Aske Adelgaard,aske-adelgaard,FC Twente,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Ruud Nijstad,ruud-nijstad,FC Twente,PEC Zwolle,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Robin Pröpper,robin-propper,FC Twente,PEC Zwolle,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Bart van Rooij,bart-van-rooij,FC Twente,PEC Zwolle,thuis,basis,1,69,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Daouda Weidmann,daouda-weidmann,FC Twente,PEC Zwolle,thuis,basis,1,80,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Ramiz Zerrouki,ramiz-zerrouki,FC Twente,PEC Zwolle,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Sondre Ørjasæter,sondre-orjasaeter,FC Twente,PEC Zwolle,thuis,basis,1,80,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Daan Rots,daan-rots,FC Twente,PEC Zwolle,thuis,basis,1,90,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Marko Pjaca,marko-pjaca,FC Twente,PEC Zwolle,thuis,basis,1,69,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Wout Weghorst,wout-weghorst,FC Twente,PEC Zwolle,thuis,basis,1,82,0,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Sondre Rjaster,sondre-rjaster,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Joel Drommel,joel-drommel,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Remko Pasveer,remko-pasveer,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Guilherme Peixoto,guilherme-peixoto,FC Twente,PEC Zwolle,thuis,invaller,0,21,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Krzysztof Kurowski,krzysztof-kurowski,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Mathias Kjl,mathias-kjl,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Kristian Hlynsson,kristian-hlynsson,FC Twente,PEC Zwolle,thuis,invaller,0,21,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Thomas van den Belt,thomas-van-den-belt,FC Twente,PEC Zwolle,thuis,invaller,0,10,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Sam Lammers,sam-lammers,FC Twente,PEC Zwolle,thuis,invaller,0,8,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Filip Thorvaldsen,filip-thorvaldsen,FC Twente,PEC Zwolle,thuis,invaller,0,10,1,0,3,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Younes Taha,younes-taha,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Lucas Vennegoor Of Hesselink,lucas-vennegoor-of-hesselink,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Naci Unuvar,naci-unuvar,FC Twente,PEC Zwolle,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Stav Lemkin,stav-lemkin,FC Twente,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Ramiz Larbi Zerrouki,ramiz-larbi-zerrouki,FC Twente,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Younes Taha El Idrissi,younes-taha-el-idrissi,FC Twente,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Jasper Schendelaar,jasper-schendelaar,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Damian van der Haar,damian-van-der-haar,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Nick Viergever,nick-viergever,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Simon Graves,simon-graves,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Olivier Aertssen,olivier-aertssen,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Tobias Sommer,tobias-sommer,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Ryan Thomas,ryan-thomas,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Elias Sørensen,elias-sorensen,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Thijs Oosting,thijs-oosting,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Dylan Mbayo,dylan-mbayo,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Koen Kostons,koen-kostons,PEC Zwolle,FC Twente,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Sherel Floranus,sherel-floranus,PEC Zwolle,FC Twente,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Vasilios Barkas,vasilios-barkas,FC Utrecht,AZ,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Arthur Zagré,arthur-zagre,FC Utrecht,AZ,thuis,basis,1,80,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Mike Eerdhuijzen,mike-eerdhuijzen,FC Utrecht,AZ,thuis,basis,1,46,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Siebe Horemans,siebe-horemans,FC Utrecht,AZ,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Niklas Vesterlund,niklas-vesterlund,FC Utrecht,AZ,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Guus Offerhaus,guus-offerhaus,FC Utrecht,AZ,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Ferdinand Pohl,ferdinand-pohl,FC Utrecht,AZ,thuis,basis,1,62,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Yoann Cathline,yoann-cathline,FC Utrecht,AZ,thuis,basis,1,62,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Dani de Wit,dani-de-wit,FC Utrecht,AZ,thuis,basis,1,55,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Ángel Alarcón,angel-alarcon,FC Utrecht,AZ,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Artem Stepanov,artem-stepanov,FC Utrecht,AZ,thuis,basis,1,90,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Michael Brouwer,michael-brouwer,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Kevin Gadellaa,kevin-gadellaa,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Matisse Didden,matisse-didden,FC Utrecht,AZ,thuis,invaller,0,44,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Neville Ogidi Nwankwo,neville-ogidi-nwankwo,FC Utrecht,AZ,thuis,invaller,0,10,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Joris van Overeem,joris-van-overeem,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Zidane Iqbal,zidane-iqbal,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Kevin Paredes,kevin-paredes,FC Utrecht,AZ,thuis,invaller,0,35,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Davy van den Berg,davy-van-den-berg,FC Utrecht,AZ,thuis,invaller,0,28,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",David Min,david-min,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Adrian Blake,adrian-blake,FC Utrecht,AZ,thuis,invaller,0,28,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Emmanuel Chigozie Owen,emmanuel-chigozie-owen,FC Utrecht,AZ,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Jari De Busser,jari-de-busser,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Mateo Chávez,mateo-chavez,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Lewis Schouten,lewis-schouten,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Wouter Goes,wouter-goes,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Elijah Dijkstra,elijah-dijkstra,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Peer Koopmeiners,peer-koopmeiners,AZ,FC Utrecht,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Dave Kwakman,dave-kwakman,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Ro-Zangelo Daal,ro-zangelo-daal,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Kees Smit,kees-smit,AZ,FC Utrecht,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Weslley Patati,weslley-patati,AZ,FC Utrecht,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Mexx Meerdink,mexx-meerdink,AZ,FC Utrecht,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Troy Parrott,troy-parrott,AZ,FC Utrecht,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Mees de Wit,mees-de-wit,AZ,FC Utrecht,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 18:45",Alexandre Penetra,alexandre-penetra,AZ,FC Utrecht,uit,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Tjark Ernst,tjark-ernst,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Mika Mármol,mika-marmol,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Jeremiah St. Juste,jeremiah-st-juste,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Tsuyoshi Watanabe,tsuyoshi-watanabe,Feyenoord,Go Ahead Eagles,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Givairo Read,givairo-read,Feyenoord,Go Ahead Eagles,thuis,basis,1,65,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Luciano Valente,luciano-valente,Feyenoord,Go Ahead Eagles,thuis,basis,1,87,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Charles Vanhoutte,charles-vanhoutte,Feyenoord,Go Ahead Eagles,thuis,basis,1,72,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Gjivai Zechiël,gjivai-zechiel,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Gaoussou Diarra,gaoussou-diarra,Feyenoord,Go Ahead Eagles,thuis,basis,1,64,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Ayase Ueda,ayase-ueda,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Anis Hadj Moussa,anis-hadj-moussa,Feyenoord,Go Ahead Eagles,thuis,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Liam Bossin,liam-bossin,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Mats Deijl,mats-deijl,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Jordan Lotomba,jordan-lotomba,Feyenoord,Go Ahead Eagles,thuis,invaller,0,25,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Tijme Wessels,tijme-wessels,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Sem Steijn,sem-steijn,Feyenoord,Go Ahead Eagles,thuis,invaller,0,18,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Tobias van den Elshout,tobias-van-den-elshout,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Thijs Kraaijeveld,thijs-kraaijeveld,Feyenoord,Go Ahead Eagles,thuis,invaller,0,26,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Oussama Targhalline,oussama-targhalline,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Goncalo Borges,goncalo-borges,Feyenoord,Go Ahead Eagles,thuis,invaller,0,26,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Nacho Ferri,nacho-ferri,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Jivayno Zinhagel,jivayno-zinhagel,Feyenoord,Go Ahead Eagles,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Shaqueel van Persie,shaqueel-van-persie,Feyenoord,Go Ahead Eagles,thuis,invaller,0,3,1,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Anel Ahmedhodzic,anel-ahmedhodzic,Feyenoord,Go Ahead Eagles,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Gijs Smal,gijs-smal,Feyenoord,Go Ahead Eagles,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Jordan Bos,jordan-bos,Feyenoord,Go Ahead Eagles,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Kjetil Haug,kjetil-haug,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Dean James,dean-james,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Joris Kramer,joris-kramer,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Giovanni van Zwam,giovanni-van-zwam,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Alfons Sampsted,alfons-sampsted,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Yassir Salah Rahmouni,yassir-salah-rahmouni,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Evert Linthorst,evert-linthorst,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Mathis Suray,mathis-suray,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Victor Edvardsen,victor-edvardsen,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Søren Tengstedt,soren-tengstedt,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Erik Flataker,erik-flataker,Go Ahead Eagles,Feyenoord,uit,basis,1,90,0,0,1,,2026-08-17
+2,"zondag 16 augustus 2026, 14:30",Melle Meulensteen,melle-meulensteen,Go Ahead Eagles,Feyenoord,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Mattijs Branderhorst,mattijs-branderhorst,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Justin Hubner,justin-hubner,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Syb van Ottele,syb-van-ottele,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Ivo Pinto,ivo-pinto,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Jasper Dahlhaus,jasper-dahlhaus,Fortuna Sittard,SC Cambuur,thuis,basis,1,72,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Yassin Oukili,yassin-oukili,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Philip Brittijn,philip-brittijn,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Siebe Wylin,siebe-wylin,Fortuna Sittard,SC Cambuur,thuis,basis,1,46,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Ole Romeny,ole-romeny,Fortuna Sittard,SC Cambuur,thuis,basis,1,72,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Mohamed Ihattaren,mohamed-ihattaren,Fortuna Sittard,SC Cambuur,thuis,basis,1,72,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Lequincio Zeefuik,lequincio-zeefuik,Fortuna Sittard,SC Cambuur,thuis,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Luuk Koopmans,luuk-koopmans,Fortuna Sittard,SC Cambuur,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Kaylen,kaylen,Fortuna Sittard,SC Cambuur,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Nick de Groot,nick-de-groot,Fortuna Sittard,SC Cambuur,thuis,invaller,0,18,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Edouard Michut,edouard-michut,Fortuna Sittard,SC Cambuur,thuis,invaller,0,44,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Shiloh T Zand,shiloh-t-zand,Fortuna Sittard,SC Cambuur,thuis,invaller,0,18,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Moussa Gbemou,moussa-gbemou,Fortuna Sittard,SC Cambuur,thuis,invaller,0,0,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Anthony Descotte,anthony-descotte,Fortuna Sittard,SC Cambuur,thuis,invaller,0,18,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Kristoffer Peterson,kristoffer-peterson,Fortuna Sittard,SC Cambuur,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Iván Márquez Álvarez,ivan-marquez-alvarez,Fortuna Sittard,SC Cambuur,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Jevon Simons,jevon-simons,Fortuna Sittard,SC Cambuur,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Thijs Jansen,thijs-jansen,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Lucas Jetten,lucas-jetten,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Jamal Amofa,jamal-amofa,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Ismaël Baouf,ismael-baouf,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Morgan Costarelli,morgan-costarelli,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Nicky Souren,nicky-souren,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Skye Vink,skye-vink,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Rafik El Arguioui,rafik-el-arguioui,SC Cambuur,Fortuna Sittard,uit,basis,1,90,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Ilyes Hamache,ilyes-hamache,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Sami Bouhoudane,sami-bouhoudane,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Iwan Henstra,iwan-henstra,SC Cambuur,Fortuna Sittard,uit,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",Nicolas Binder,nicolas-binder,SC Cambuur,Fortuna Sittard,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",F Kvam,f-kvam,SC Cambuur,Fortuna Sittard,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 21:00",S Vink,s-vink,SC Cambuur,Fortuna Sittard,uit,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Ronald Koeman Jr.,ronald-koeman-jr,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Jeff Hardeveld,jeff-hardeveld,Telstar,Sparta Rotterdam,thuis,basis,1,64,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Marvin Peersman,marvin-peersman,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Abdelnour Soualhia,abdelnour-soualhia,Telstar,Sparta Rotterdam,thuis,basis,1,90,1,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Gabi Caschili,gabi-caschili,Telstar,Sparta Rotterdam,thuis,basis,1,57,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Tyrone Owusu,tyrone-owusu,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Nils Rossen,nils-rossen,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Soufiane Hetli,soufiane-hetli,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Patrick Brouwer,patrick-brouwer,Telstar,Sparta Rotterdam,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Rui Mendes,rui-mendes,Telstar,Sparta Rotterdam,thuis,basis,1,57,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Jelani Seedorf,jelani-seedorf,Telstar,Sparta Rotterdam,thuis,basis,1,64,0,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Finn Mulder,finn-mulder,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Daan Reiziger,daan-reiziger,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Nigel Ogidi Nwankwo,nigel-ogidi-nwankwo,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Rojendro Oudsten,rojendro-oudsten,Telstar,Sparta Rotterdam,thuis,invaller,0,33,1,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Prince Aning,prince-aning,Telstar,Sparta Rotterdam,thuis,invaller,0,26,1,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Isaiah Ahmed,isaiah-ahmed,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Harrie Kuster,harrie-kuster,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Noach Shenkman,noach-shenkman,Telstar,Sparta Rotterdam,thuis,invaller,0,26,1,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Emirhan Demircan,emirhan-demircan,Telstar,Sparta Rotterdam,thuis,invaller,0,33,1,0,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Fabiano Rust,fabiano-rust,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Fofin Turay,fofin-turay,Telstar,Sparta Rotterdam,thuis,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Gerald Alders,gerald-alders,Telstar,Sparta Rotterdam,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Filip Bednarek,filip-bednarek,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Bas Kuipers,bas-kuipers,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Nick Verschuren,nick-verschuren,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Marvin Young,marvin-young,Sparta Rotterdam,Telstar,uit,basis,1,90,1,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Lushendry Martes,lushendry-martes,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Jens Toornstra,jens-toornstra,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Julian Baas,julian-baas,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Ayoni Santos,ayoni-santos,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Shunsuke Mito,shunsuke-mito,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Casper Terho,casper-terho,Sparta Rotterdam,Telstar,uit,basis,1,90,0,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Nökkvi Thórisson,nokkvi-thorisson,Sparta Rotterdam,Telstar,uit,basis,1,90,1,0,3,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Teo Quintero,teo-quintero,Sparta Rotterdam,Telstar,uit,bank,0,0,0,,0,,2026-08-17
+2,"vrijdag 14 augustus 2026, 20:00",Bruno Martins Indi,bruno-martins-indi,Sparta Rotterdam,Telstar,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Karst de Leeuw,karst-de-leeuw,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Nathan Tjoe-A-On,nathan-tjoe-a-on,Willem II,NEC,thuis,basis,1,69,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Justin Hoogma,justin-hoogma,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Finn Stam,finn-stam,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Per van Loon,per-van-loon,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Jaden Slory,jaden-slory,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Kasper Boogaard,kasper-boogaard,Willem II,NEC,thuis,basis,1,89,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Alessandro Ciranni,alessandro-ciranni,Willem II,NEC,thuis,basis,1,69,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Eser Gürbüz,eser-gurbuz,Willem II,NEC,thuis,basis,1,69,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Uriël van Aalst,uriel-van-aalst,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Devin Haen,devin-haen,Willem II,NEC,thuis,basis,1,90,0,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Wouter van der Steen,wouter-van-der-steen,Willem II,NEC,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Hidde ter Avest,hidde-ter-avest,Willem II,NEC,thuis,invaller,0,21,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Jens Mathijsen,jens-mathijsen,Willem II,NEC,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Amine Et Taibi,amine-et-taibi,Willem II,NEC,thuis,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Mats Lemmens,mats-lemmens,Willem II,NEC,thuis,invaller,0,21,1,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Thomas Verheydt,thomas-verheydt,Willem II,NEC,thuis,invaller,0,21,2,0,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Armin Culum,armin-culum,Willem II,NEC,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Thomas Didillon,thomas-didillon,Willem II,NEC,thuis,afwezig,0,0,0,,0,blessure,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Gonzalo Crettaz,gonzalo-crettaz,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Deveron Fonville,deveron-fonville,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Tobias Storm,tobias-storm,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Brayann Pereira,brayann-pereira,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Clement Bischoff,clement-bischoff,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Jamiro Monteiro,jamiro-monteiro,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Darko Nejasmic,darko-nejasmic,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Adam Tahaui,adam-tahaui,NEC,Willem II,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Dusan Tadic,dusan-tadic,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Tjaronn Chery,tjaronn-chery,NEC,Willem II,uit,basis,1,90,0,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Bryan Linssen,bryan-linssen,NEC,Willem II,uit,basis,1,90,1,0,3,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Kaj Sierhuis,kaj-sierhuis,NEC,Willem II,uit,bank,0,0,0,,0,,2026-08-17
+2,"zaterdag 15 augustus 2026, 16:30",Sami Ouaissa,sami-ouaissa,NEC,Willem II,uit,bank,0,0,0,,0,,2026-08-17
