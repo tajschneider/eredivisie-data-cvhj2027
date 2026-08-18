@@ -250,6 +250,7 @@ def parse_match(url, ronde):
             slug = norm(sm.group(1))
             goals[slug] = goals.get(slug, 0) + 1
 
+    kans, vw_thuis, vw_uit = parse_odds(soup, plat, thuis, uitc)
     blokken = club_blokken(ruw, {thuis, uitc})
     club_rows, speler_rows = [], []
 
