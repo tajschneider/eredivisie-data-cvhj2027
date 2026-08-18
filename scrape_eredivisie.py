@@ -420,7 +420,7 @@ def main():
             leeg = 0
             schrijf(OUT / "clubs.csv", CLUB_COLS, cr, ["ronde", "club"])
             schrijf(OUT / "spelers.csv", SPELER_COLS, sr,
-                    ["ronde", "speler_id", "club"])
+                    ["ronde", "speler_id", "club", "status"])
         else:
             leeg += 1
             print("  (nog niet gespeeld)")
