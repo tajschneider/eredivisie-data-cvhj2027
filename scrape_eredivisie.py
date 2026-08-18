@@ -222,7 +222,8 @@ def parse_match(url, ronde):
         ouder = a.find_parent(["li", "p", "div"])
         omg = ouder.get_text(" ", strip=True) if ouder else ""
         sm = SPELER_HREF.search(a.get("href", ""))
-        if sm and len(omg) < 160 and re.search(r"\d{1,3}\s*[’']", omg):
+        if sm and len(omg) < 160 and re.search(r"\d{1,3}\s*[’']", omg) \
+                and "↑" not in omg and "↓" not in omg:
             slug = sm.group(1).lower()
             goals[slug] = goals.get(slug, 0) + 1
 
