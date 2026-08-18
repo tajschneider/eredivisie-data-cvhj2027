@@ -71,11 +71,21 @@ def slug_naar_naam(slug):
     return " ".join(w if w in kleine and i else w.capitalize() for i, w in enumerate(delen))
 
 
-def get(url, pauze=1.2):
-    r = requests.get(url, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-    time.sleep(pauze)
-    return BeautifulSoup(r.text, "html.parser")
+def get(url, pauze=1.2, pogingen=4):
+    """Haal een pagina op, met geduld. Bij een 429 of 5xx wachten we steeds
+    langer; anders knijpt de bron ons af halverwege een grote run."""
+    wacht = 5
+    for poging in range(1, pogingen + 1):
+        r = requests.get(url, headers=HEADERS, timeout=30)
+        if r.status_code in (429, 500, 502, 503, 504) and poging < pogingen:
+            print(f"      ({r.status_code}, {wacht}s wachten)")
+            time.sleep(wacht)
+            wacht *= 2
+            continue
+        r.raise_for_status()
+        time.sleep(pauze)
+        return BeautifulSoup(r.text, "html.parser")
+    raise RuntimeError(f"niet op te halen: {url}")
 
 
 def match_urls(ronde):
