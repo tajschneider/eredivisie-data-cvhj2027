@@ -42,7 +42,7 @@ CLUB_COLS = ["ronde", "datum", "club", "tegenstander", "thuis_uit", "voor",
              "verwacht_tegen", "opgehaald"]
 
 WISSEL_RE = re.compile(r"(\d{1,3})\s*[’']\s*[↑↓\u2191\u2193]?\s*(.+?)\s+voor\s+(.+?)\s*$")
-SPELER_HREF = re.compile(r"/eredivisie/speler/([a-z0-9\-]+)/", re.I)
+SPELER_HREF = re.compile(r"/eredivisie/speler/([^/\"'>\s]+)/")  # ook accenten in de slug
 
 
 # ---------------------------------------------------------------- hulpjes
@@ -86,29 +86,29 @@ def match_urls(ronde):
 
 # ------------------------------------------------------------ pagina delen
 def club_blokken(ruwe_html, clubs):
-    """Knip de ruwe HTML in een blok per club, van clubkop tot volgende kop.
+    """Knip de ruwe HTML in een blok per club.
 
-    Werkt op de HTML zelf, niet op de uitgeklede tekst: alleen daar staan de
-    spelerslinks en de lijstitems met wissels nog in.
+    Twee valkuilen. De clubnaam staat twee keer als kop op de pagina: bij de
+    opstelling en bij "Spelers om op te letten". En een blok moet eindigen bij
+    de EERSTVOLGENDE kop van welk niveau dan ook — niet pas bij de volgende
+    clubkop, want dan slokt de uitploeg de rest van de pagina op.
     """
-    posities = []
-    for m in re.finditer(r"<h[1-6][^>]*>(.*?)</h[1-6]>", ruwe_html, re.S | re.I):
-        naam = htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(1))).strip()
-        if naam in clubs:
-            posities.append((m.start(), naam))
-    posities.sort()
+    koppen = []
+    for m in re.finditer(r"<h([1-6])[^>]*>(.*?)</h\1>", ruwe_html, re.S | re.I):
+        naam = htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(2))).strip()
+        koppen.append((m.start(), naam))
+
+    kandidaten = {}
+    for k, (pos, naam) in enumerate(koppen):
+        if naam not in clubs:
+            continue
+        eind = koppen[k + 1][0] if k + 1 < len(koppen) else len(ruwe_html)
+        kandidaten.setdefault(naam, []).append(ruwe_html[pos:eind])
 
     blokken = {}
-    for k, (start, naam) in enumerate(posities):
-        eind = posities[k + 1][0] if k + 1 < len(posities) else len(ruwe_html)
-        blok = ruwe_html[start:eind]
-        # alles na "Vermoedelijke opstelling" hoort bij de volgende ronde
-        snij = blok.find("Vermoedelijke opstelling")
-        if snij > 0:
-            blok = blok[:snij]
-        # eerste voorkomen wint, want dat is de opstellingssectie
-        if naam not in blokken or len(blok) > len(blokken[naam]):
-            blokken[naam] = blok
+    for naam, opties in kandidaten.items():
+        met_bank = [b for b in opties if "Bank" in b or "voor" in b]
+        blokken[naam] = (met_bank or opties)[0]
     return blokken
 
 
@@ -162,46 +162,27 @@ def parse_basis(plat, club):
 
 
 def parse_odds(soup, plat, thuis, uitc):
-    """Winstkansen en verwachte score uit de bookmakersnoteringen.
+    """Winstkansen en meest waarschijnlijke uitslag.
 
-    Pouletips verzamelt meerdere keren per dag odds en zet die om naar
-    winkansen. Wij lezen het resultaat, niet de ruwe quotering.
+    Opmaak op de pagina: "Kansen vooraf 64% 19% 17% Ajax wint Gelijkspel
+    sc Heerenveen wint" — de percentages staan dus VOOR hun label, in de
+    vaste volgorde thuis, gelijkspel, uit.
     """
     kans = {"thuis": "", "gelijk": "", "uit": ""}
-    for el in soup.find_all(["td", "div", "span", "li", "p", "strong"]):
-        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
-        if "%" not in t or len(t) > 90:
-            continue
-        treffers = list(re.finditer(r"(\d{1,3}(?:[.,]\d)?)\s*%", t))
-        if not treffers:
-            continue
-        pos = 0
-        for k, mt in enumerate(treffers):
-            stuk = t[pos:mt.start()].lower()
-            pos = mt.end()
-            w = mt.group(1).replace(",", ".")
-            labels = []
-            for sleutel, naam in ((thuis.lower(), "thuis"), (uitc.lower(), "uit")):
-                i = stuk.rfind(sleutel)
-                if i >= 0:
-                    labels.append((i, naam))
-            for woord in ("gelijk", "remise"):
-                i = stuk.rfind(woord)
-                if i >= 0:
-                    labels.append((i, "gelijk"))
-            if labels:
-                naam = max(labels)[1]
-            elif len(treffers) == 3:
-                naam = ("thuis", "gelijk", "uit")[k]
-            else:
-                continue
-            kans[naam] = kans[naam] or w
-    if not any(kans.values()):        # terugval: drie percentages op een rij
-        m = re.search(r"(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%\D{0,60}?(\d{1,3})\s*%", plat)
-        if m:
-            kans = {"thuis": m.group(1), "gelijk": m.group(2), "uit": m.group(3)}
-    vs = re.search(r"[Vv]erwachte?\s+(?:uitslag|score)\D{0,25}(\d)\s*-\s*(\d)", plat)
-    return kans, (vs.group(1) if vs else ""), (vs.group(2) if vs else "")
+    m = re.search(r"Kansen vooraf\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%",
+                  plat, re.S)
+    if not m:
+        m = re.search(r"(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%", plat, re.S)
+    if m:
+        kans = {"thuis": m.group(1), "gelijk": m.group(2), "uit": m.group(3)}
+
+    vw_t = vw_u = ""
+    ms = re.search(r"Meest waarschijnlijke uitslagen(.{0,400})", plat, re.S)
+    if ms:
+        sc = re.search(r"(\d)\s*-\s*(\d)\s*\n?\s*\d+[.,]\d+\s*%", ms.group(1), re.S)
+        if sc:
+            vw_t, vw_u = sc.group(1), sc.group(2)
+    return kans, vw_t, vw_u
 
 
 def parse_afwezig(blok):
