@@ -140,7 +140,7 @@ def parse_selectie(blok):
     """[(slug, naam)] van alle spelerslinks in het clubblok, in paginavolgorde."""
     namen, gezien = [], set()
     for m in SPELER_HREF.finditer(blok):
-        slug = m.group(1).lower()
+        slug = norm(m.group(1))
         if slug not in gezien:
             gezien.add(slug)
             namen.append((slug, slug_naar_naam(slug)))
