@@ -1,0 +1,62 @@
+name: FBref ophalen
+
+# Handmatige knop, BEWUST los van wekelijks.yml en data.yml: FBref's live
+# structuur is in dit project niet geverifieerd (een testfetch gaf een 403 --
+# zie de docstring van scrape_fbref.py). Draai dit hier eerst een paar keer
+# met de hand en controleer de samenvatting/de clubwaarschuwingen hieronder,
+# voordat je overweegt om 'm ooit in de wekelijkse keten mee te laten lopen.
+# Geen enkele secret nodig.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  fbref:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4
+
+      - name: FBref ophalen
+        run: python scrape_fbref.py
+
+      - name: Samenvatting
+        run: |
+          echo "### FBref opgehaald" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$(($(wc -l < fbref.csv) - 1)) spelers" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -5 fbref.csv >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Controleer hierboven in de job-log of er een LET OP staat over " \
+               "onbekende clubnamen -- vul die dan aan in CLUB_ALIAS_FBREF " \
+               "(scrape_fbref.py) zodat de koppeling met prijzen.csv niet misloopt." \
+               >> $GITHUB_STEP_SUMMARY
+
+      - name: Vastleggen
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add fbref.csv
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "fbref bijgewerkt $(date +%F)"
+          git pull --rebase origin main
+          git push
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fbref
+          path: fbref.csv
