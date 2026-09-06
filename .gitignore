@@ -1,0 +1,10 @@
+# clubs.csv en spelers.csv NIET negeren: die horen in deze repo thuis en worden
+# door scrape.yml bijgehouden.
+
+# Werkbestanden van een draai; de workflow bewaart ze onder historie/.
+besluit.json
+advies.txt
+
+__pycache__/
+*.pyc
+.venv/
