@@ -49,7 +49,7 @@ wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
                                        v
                                   notify.py  -> e-mail
                                        v
-                          deadline.py -> inleggen.py  (nog niet ingevuld)
+                          deadline.py -> inleggen.py  (uit tenzij INLEGGEN=ja)
                                        v
                               historie/ronde-N.json
 
@@ -78,7 +78,7 @@ Alle workflows die naar `main` pushen (`wekelijks.yml`, `data.yml`,
 | `PROGRAMMA` | hardgecodeerd | `scrape_programma.py` |
 | `INHAAL` | hardgecodeerd | `scrape_programma.py` (detectie) |
 | `SELECTIE` | hardgecodeerd | `selectie.csv` |
-| inleggen | handmatig | **nog open — vereist de CVHJ-request** |
+| inleggen | handmatig | `inleggen.py` (uit, met `INLEGGEN`/`DRY_RUN`) |
 
 ## Gebruik
 
@@ -414,6 +414,76 @@ Staat `fbref.csv` eenmaal in de repo, dan pikken `cvhj_model.py` en
 `multi_periode.py` het automatisch op (standaardpad `fbref.csv`, net als
 `clubs.csv`/`spelers.csv`).
 
+## Inleggen op coachvanhetjaar.nl
+
+`inleggen.py` voert de transfer(s) uit `besluit.json` daadwerkelijk door op
+coachvanhetjaar.nl. coachvanhetjaar.nl heeft geen publieke API-documentatie --
+het is een React/Vite-app op een Django-backend die intern met een eigen,
+ongedocumenteerde JSON-API praat. Die API is hier ontdekt via een HAR-export
+(Network-tab van de browser) van een echte, bewust door Thomas uitgevoerde
+transfer, dus GEVERIFIEERD gedrag, geen giswerk over hoe de site werkt.
+
+**Wat de API doet** (basis `https://www.coachvanhetjaar.nl`):
+
+- `GET /api/team/preparation/?round_seq=N` — je huidige 15, budget, aantal
+  transfers dat nog mag, en of je team geldig is (allemaal door de site zelf
+  berekend, dus de bron van waarheid — niet `perioden.csv` of `prijzen.csv`,
+  die kunnen achterlopen).
+- `GET /api/players/search_all/N/?page=..` — de hele markt, gepagineerd.
+- `GET /api/teams/all/` — clublijst (dezelfde schrijfwijze als in dit
+  project, inclusief `N.E.C.` dat `norm_club()` al naar `NEC` omzet).
+- `POST /api/transfer/N/sell/<uit>/buy/<in>/?auto_change_formation=true` —
+  voert één transfer door. Vereist Django's csrf-cookie terug als
+  `X-CSRFToken`-header; verder een gewone sessie-cookie na inloggen.
+
+**Wat NIET geverifieerd is** (er was geen voorbeeld van in de HAR-export,
+zie de docstring van `inleggen.py` voor het volledige verhaal):
+
+- Het inlogformulier zelf (de HAR begon met een al ingelogde sessie).
+  `inleggen.py` ontleedt het daarom LIVE — het veld met `type=password` is
+  het wachtwoord, ongeacht hoe het heet — in plaats van geraden veldnamen te
+  gebruiken.
+- Live draaien vanuit GitHub Actions.
+- Het los wisselen van basis/bank binnen je eigen 15 (`sub=true` in de
+  transfer-URL) — nooit geobserveerd, dus niet gebouwd. `auto_change_formation=true`
+  laat de site na elke transfer zelf de beste opstelling kiezen, wat een
+  andere bankspeler kan opleveren dan `cvhj_model.py`'s eigen keuze; dat
+  raakt niet WELKE 15 spelers je hebt, alleen wie er zit.
+
+**Veiligheidsontwerp, in aflopende volgorde:**
+
+1. `DRY_RUN` staat standaard op `ja` (GitHub variable): alles wordt
+   opgezocht, gematcht en gecontroleerd, maar er gaat geen enkele POST naar
+   de site.
+2. De site zelf is de bron van waarheid voor het aantal transfers dat nog
+   mag en het resterende budget — vraagt `besluit.json` om meer of duurdere
+   transfers dan de site nu toestaat, dan stopt het script VOOR er iets
+   wordt aangeraakt.
+3. Spelers uit `besluit.json` worden op naam + club gematcht tegen de
+   site's eigen spelerslijst (accent-/spelling-ongevoelig, zelfde `norm()`
+   als de rest van het project). Lukt dat niet eenduidig voor een speler,
+   dan wordt er NIETS ingelegd — nooit een gok wagen over welke speler-ID
+   bedoeld is.
+4. Elke transfer wordt individueel door de site bevestigd; bij een
+   afwijzing stopt het script direct, met de melding van de site erbij, en
+   worden latere transfers uit dezelfde ronde niet meer geprobeerd.
+
+Getest (met de echte JSON-vormen uit de HAR-export, maar gemockte
+netwerkoproepen): het matchen van spelers inclusief accentverschillen, de
+budget- en transfers-check (zowel de doorlaat- als de stopconditie), het
+dry-run-pad, het live-transferpad bij succes, en het afbreken bij een
+mislukte transfer of een niet-gevonden speler. Niet getest: een echte
+netwerkoproep naar coachvanhetjaar.nl, want dat zou een echte transfer
+kosten (Thomas had er deze ronde nog maar één, en die is al gebruikt).
+
+**Voor je dit aanzet:** draai `python inleggen.py besluit.json` een paar keer
+handmatig met `DRY_RUN=ja` (de standaard) zodra er weer een transfer gepland
+staat, en controleer dat de UIT/IN-namen en de budgetcontrole kloppen. Zet
+pas daarna `INLEGGEN=ja` (GitHub variable, standaard uit) om de job in
+`wekelijks.yml` mee te laten draaien, en zet `DRY_RUN=nee` pas als je dat
+vertrouwt. Geen nieuwe secrets nodig: `CVHJ_GEBRUIKER`/`CVHJ_WACHTWOORD`
+stonden al klaar in de workflow.
+
 ## Bekende beperkingen
 
 Onveranderd uit het model: maximaliseert de verwachting en niet de
@@ -445,4 +515,6 @@ Nieuw:
   fout in de horizon-fixtures zelf (bijvoorbeeld een club-slug die verkeerd
   wordt gesplitst) zou wel een verkeerde E per ronde kunnen opleveren zonder
   dat de regressietest dat vangt, want die test alleen de horizon-1-situatie.
-- `inleggen.py` bestaat nog niet.
+- `inleggen.py` bestaat, maar het inlogformulier en een live run vanuit
+  GitHub Actions zijn niet geverifieerd (zie "Inleggen op coachvanhetjaar.nl").
+  Staat uit totdat `INLEGGEN=ja` én `DRY_RUN=nee` bewust zijn gezet.
