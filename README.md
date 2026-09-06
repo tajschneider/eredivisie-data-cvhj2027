@@ -49,6 +49,11 @@ wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
                           deadline.py -> inleggen.py  (nog niet ingevuld)
                                        v
                               historie/ronde-N.json
+
+kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
+  auto_kalibreer.py  -> (evt.) KRIMP_SPELER/KRIMP_CLUB in cvhj_model.py
+                      -> kalibratie/status.json (altijd)
+                      -> e-mail (alleen bij een daadwerkelijke aanpassing)
 ```
 
 Beide workflows pushen naar `main`. `wekelijks.yml` draait een uur na
@@ -92,7 +97,12 @@ Secrets: `SMTP_HOST`, `SMTP_POORT`, `SMTP_USER`, `SMTP_WACHTWOORD`, `MAIL_NAAR`.
 Voor Gmail een app-wachtwoord, niet je gewone wachtwoord.
 
 Variables: `INLEGGEN` (`ja` zet de inlegjob aan, standaard uit), `DRY_RUN`
-(standaard `ja`), `DEADLINE_UREN` (standaard 6).
+(standaard `ja`), `DEADLINE_UREN` (standaard 6), en voor de automatische
+kalibratie `KALIBREER_ELKE` (standaard 4), `MIN_RONDES_KALIBRATIE` (standaard
+8), `MIN_VERBETERING_KALIBRATIE` (standaard 0.03) en `MAX_STAP_KALIBRATIE`
+(standaard 2.0) -- zie "Backtest en kalibratie" voor wat elke waarde
+tegenhoudt. De standaardwaarden zijn bewust conservatief; er is geen reden om
+ze aan te passen totdat er meer dan een paar rondes aan data staan.
 
 De workflow draait maandag 07:00 UTC (een uur na `scrape.yml`) en
 donderdag 09:00 UTC. Inleggen zit in een aparte job die pas binnen
@@ -164,6 +174,83 @@ worden door het model genegeerd.
 **Welke ronde is "de volgende"?** De eerste ronde waarvan de *deadline* nog niet
 verstreken is — niet de eerste met een onspeelde wedstrijd. Op zondagmiddag loopt
 de huidige ronde nog, maar daar viel vrijdag bij de aftrap het doek over.
+
+## Backtest en kalibratie
+
+`backtest.py` voorspelt ronde *r* met uitsluitend data uit ronden < *r* en
+vergelijkt met wat er werkelijk gebeurde. Zonder dit is geen enkele wijziging
+aan het model beoordeelbaar -- je weet dat de uitvoer anders is, niet of hij
+beter is.
+
+```bash
+python backtest.py                        # RMSE, MAE, rangcorrelatie per ronde
+python backtest.py --per-speler ruw.csv   # voorspelling vs. werkelijkheid, per speler
+python calibrate.py                       # doorzoekt KRIMP_SPELER x KRIMP_CLUB
+```
+
+Belangrijke beperking: de "werkelijke punten" in de backtest zijn een
+reconstructie uit `ploegpunten + clean_sheet-bonus + goals x doelpuntwaarde` --
+dezelfde termen die het model kent. Assists, kaarten en keeper-reddingen
+ontbreken aan beide kanten. Dit meet dus niet je echte CVHJ-score, maar wel
+eerlijk of een wijziging het voorspelbare deel beter voorspelt.
+
+Op ronde 2-4 (de enige nu evalueerbare rondes) is `calibrate.py` gedraaid over
+een raster van KRIMP_SPELER (1-30) en KRIMP_CLUB (0,25-8). Resultaat: de
+huidige waarden (8 en 1,0) presteren al dicht bij het beste punt in het raster
+(RMSE 3,27 tegen een raster-minimum van 3,25) -- het verschil ligt binnen de
+ruis van drie rondes en is per ronde niet overal in dezelfde richting (ronde 2
+werd er licht slechter van, ronde 3-4 licht beter). Wel eenduidig: nauwelijks
+krimp (KRIMP_SPELER=1) is op alle drie de rondes merkbaar slechter (RMSE
+2,87/3,70/3,76 tegen 2,75/3,56/3,44). De krimpconstanten zijn dus niet
+aangepast -- er is onvoldoende bewijs om van de huidige waarden af te wijken,
+wel bewijs dat ze niet te laag staan.
+
+### Automatische herkalibratie
+
+Dit handmatig herhalen is precies het risico dat het hierboven al bijna fout
+liet gaan: het is verleidelijk om de rastere winnaar over te nemen omdat de
+totaal-RMSE net iets beter is, terwijl dat verschil op drie rondes ruis bleek
+te zijn. `auto_kalibreer.py` (workflow `kalibratie.yml`, dinsdag 08:00 UTC)
+stelt elke week dezelfde vraag die hierboven met de hand is beantwoord, maar
+dan met vier waarborgen die harde stopcondities zijn, geen aanbevelingen:
+
+1. **Minimaal aantal rondes** (`MIN_RONDES_KALIBRATIE`, standaard 8) -- met
+   minder rondes wordt er sowieso niets aangepast.
+2. **Minimumverbetering** (`MIN_VERBETERING_KALIBRATIE`, standaard 3%
+   relatief) -- een winnaar die de RMSE met 0,6% verslaat, zoals hierboven,
+   haalt deze drempel niet.
+3. **Consistentie per ronde** -- de kandidaat moet de huidige instelling
+   verslaan in een meerderheid van de individuele backtestrondes, niet alleen
+   in het gewogen gemiddelde. Dit is de check die hierboven aan het licht
+   bracht dat ronde 2 juist slechter werd.
+4. **Maximale stapgrootte** (`MAX_STAP_KALIBRATIE`, standaard factor 2) --
+   zelfs als de eerste drie waarborgen een aanpassing toestaan, mag
+   KRIMP_SPELER of KRIMP_CLUB niet in één keer meer dan een factor 2
+   veranderen.
+
+Getest tegen de echte data (ronde 2-4, dus met slechts 3 evalueerbare rondes):
+het script wijst een aanpassing correct af op waarborg 1 (te weinig rondes) --
+dezelfde conclusie als de handmatige kalibratie hierboven, nu automatisch
+afgedwongen in plaats van op gevoel beoordeeld.
+
+Elke controle -- ook een afwijzing -- wordt gelogd in `kalibratie/status.json`
+(gecommit, dus de geschiedenis van beslissingen en de reden erachter is
+achteraf te controleren). Alleen als er daadwerkelijk iets is aangepast, gaat
+er een aparte e-mail uit: dit verandert het model zelf, niet het
+rondeadvies, en verdient dus een eigen melding los van de wekelijkse mail.
+
+```bash
+python auto_kalibreer.py                          # met de standaardwaarborgen
+python auto_kalibreer.py --forceer --droog         # negeer de "elke N ronden"-gate,
+                                                    # reken wel door, schrijf niets
+```
+
+`--elke` (standaard 4 ronden, ongeveer een periode) bepaalt hoe vaak de
+kalibratie een nieuwe poging waard vindt; de workflow draait wekelijks maar
+het script beslist zelf of dat te vroeg is. Herhaal deze kalibratie zodra er
+meer rondes zijn; drie rondes is genoeg om een grove misser te detecteren
+(KRIMP_SPELER=1), niet genoeg om een fijnere waarde te kiezen -- vandaar
+waarborg 1.
 
 ## Bekende beperkingen
 
