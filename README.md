@@ -75,6 +75,7 @@ Alles draait vanuit de hoofdmap van de repo; de standaardpaden kloppen al.
 
 ```bash
 pip install requests beautifulsoup4 numpy
+pip install scipy                # alleen nodig voor multi_periode.py
 
 python scrape_prijzen.py        # -> prijzen.csv
 python scrape_programma.py      # -> programma.csv
@@ -252,11 +253,79 @@ meer rondes zijn; drie rondes is genoeg om een grove misser te detecteren
 (KRIMP_SPELER=1), niet genoeg om een fijnere waarde te kiezen -- vandaar
 waarborg 1.
 
+## Meerdere ronden vooruit kijken
+
+`cvhj_model.py` optimaliseert altijd precies de eerstvolgende ronde. Dat is
+een bekende tekortkoming: een speler met een zware tegenstander deze week
+maar een makkelijke serie daarna wordt te laag gewaardeerd, en andersom.
+`multi_periode.py` telt in plaats daarvan de verwachte punten van de komende
+`--horizon` ronden mee, met een aftakelende weging per ronde verder weg
+(`--decay`, standaard 0,84 -- dezelfde waarde die in de FPL-literatuur
+gebruikelijk is voor dit soort meerperiode-optimalisatie).
+
+Twee dingen maken dit haalbaar zonder de rest van het model te raken:
+
+- **Geen marktkansen nodig voor toekomstige ronden.** `bouw_pool` gebruikt per
+  wedstrijd alleen de twee clubs (via de al gefitte clubratings), niet de
+  kans_thuis/kans_gelijk/kans_uit van die specifieke wedstrijd -- die kansen
+  worden alleen gebruikt om de clubratings zelf te *trainen* op AFGELOPEN
+  wedstrijden. Een ronde ver vooruit, waarvoor de bookmaker nog geen kansen
+  heeft gepubliceerd, is dus even bruikbaar als de eerstvolgende: er hoeft
+  alleen bekend te zijn wie tegen wie speelt.
+- **Een echte oplosser in plaats van brute force.** De bestaande zoeker
+  (`beste_transfers`) somt combinaties op -- prima voor 1 ronde, maar dat
+  schaalt niet naar een horizon van meerdere ronden. `multi_periode.py`
+  formuleert dezelfde keuze (welke 15 spelers, met welke bankplek per linie,
+  binnen budget/club/formatie/transferregels) als een lineair 0/1-probleem en
+  lost het op met `scipy.optimize.milp` (HiGHS als solver) -- geen nieuwe
+  dependency, scipy is al gangbaar.
+
+**Validatie:** met `--horizon 1` (dus zonder dat de decay ertoe doet) moet de
+MILP exact dezelfde spelersgroep en score vinden als de bestaande brute-force
+zoeker, voor zowel 1 als 3 transfers -- het zijn twee algoritmes voor precies
+dezelfde vraag. `test_multi_periode.py` controleert dit automatisch en is op
+de echte data gedraaid: score en spelersgroep kwamen in beide gevallen exact
+overeen (54,12 bij 1 transfer, 59,42 bij 3). Draai deze test opnieuw na elke
+wijziging aan `multi_periode.py`.
+
+Met een (voor de test verzonnen) programma over 4 ronden koos de 3-transfer-
+zoeker een ANDER drietal dan de eenronde-zoeker -- die verving Oscar Gloukh,
+de eenronde-zoeker koos daar niet voor zodra de rest van de horizon meetelde.
+Dat is precies het punt van dit script: het laat zien WANNEER de twee
+adviezen uiteenlopen, niet alleen dat ze dat theoretisch zouden kunnen.
+Gebruik `--vergelijk` om dat verschil (of de afwezigheid ervan) elke ronde te
+zien.
+
+**Vereenvoudiging, met opzet:** de bankplek-korting (zwakste per linie telt
+50%) wordt toegepast op de opgetelde, gedecayde punten per speler over de hele
+horizon, niet per ronde apart opnieuw bepaald. Wie er in ronde 3 van de
+horizon op de bank zou moeten staan simuleren zou het aantal variabelen met
+een factor `horizon` vermenigvuldigen voor weinig extra scherpte, en de
+daadwerkelijke opstelling blijft toch elke week een losse beslissing --
+cvhj_model.py's advies VOOR DIE RONDE gebruikt gewoon zijn eigen E,
+ongewijzigd. Inhaalduels tellen om dezelfde reden alleen mee voor de
+eerstvolgende ronde.
+
+```bash
+python scrape_programma.py --horizon 4              # programma.csv t/m 3 ronden verder
+python multi_periode.py --ronde 6 --transfers 1 --horizon 4 --vergelijk
+python test_multi_periode.py                        # regressietest tegen de brute-force zoeker
+```
+
+Dit is nog een los te draaien script, geen onderdeel van `wekelijks.yml` --
+bewust, om dezelfde reden als bij de kalibratie: eerst een paar keer met de
+hand bekijken of de adviezen kloppen en zinnig aanvoelen, dan pas automatiseren.
+Zodra dat vertrouwen er is, is het een kleine stap om `scrape_programma.py
+--horizon` en `multi_periode.py` aan `wekelijks.yml` toe te voegen naast (niet
+in plaats van) de bestaande eenronde-zoeker.
+
 ## Bekende beperkingen
 
-Onveranderd uit het model: geen assists, geen kaarten, één ronde vooruit,
-maximaliseert de verwachting en niet de klassering, en geen blessurenieuws van
-vandaag. De mail herhaalt dat laatste elke week als expliciete controlestap.
+Onveranderd uit het model: geen assists, geen kaarten, maximaliseert de
+verwachting en niet de klassering, en geen blessurenieuws van vandaag. De mail
+herhaalt dat laatste elke week als expliciete controlestap. De eenronde-
+beperking is met `multi_periode.py` te omzeilen (zie hierboven), maar dat
+script draait nog los van de wekelijkse mail.
 
 Nieuw:
 
@@ -266,4 +335,11 @@ Nieuw:
 - De live HTML-structuur van pouletips is niet geverifieerd tegen de parsers
   (de bouwomgeving kon die host niet bereiken). Draai beide scrapers één keer
   handmatig voordat je de workflow aanzet.
+- `multi_periode.py`'s horizon-fixtures (ronde 2+) zijn in deze omgeving
+  getest met een VERZONNEN programma (de bouwomgeving kon pouletips niet
+  bereiken) -- de wedstrijdlogica zelf (budget/club/formatie/transfers, en de
+  exacte match met de brute-force zoeker bij horizon 1) is dus geverifieerd,
+  de scraper voor echte verre ronden nog niet. Draai `scrape_programma.py
+  --horizon` handmatig en controleer de uitvoer voordat je op het advies
+  vertrouwt.
 - `inleggen.py` bestaat nog niet.

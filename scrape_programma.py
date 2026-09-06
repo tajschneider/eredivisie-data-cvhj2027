@@ -18,15 +18,23 @@ Gebruik:
     python scrape_programma.py --ronde 6
     python scrape_programma.py --clubs ../data/clubs.csv --uit data/
     python scrape_programma.py --snippet            # PROGRAMMA/INHAAL als Python
+    python scrape_programma.py --horizon 4           # + programma van de 3 ronden erna
 
 Uitvoer: programma.csv met
     ronde, datum, thuis, uit, kans_thuis, kans_gelijk, kans_uit,
     verwacht_thuis, verwacht_uit, soort
 
-soort:  regulier      wedstrijd van de komende ronde
+soort:  regulier      wedstrijd van de komende ronde (of, met --horizon, van een
+                      van de ronden erna -- te onderscheiden via de kolom 'ronde')
         inhaal        uitgesteld duel dat VOOR de volgende deadline wordt
                       gespeeld -- telt mee, want je zet er nu je elftal voor
         inhaal_later  uitgesteld duel daarna -- staat er wel in, telt niet mee
+
+--horizon haalt ronde+1 t/m ronde+N-1 ERBIJ, zonder de inhaalzoektocht (die is
+alleen zinvol relatief aan de eerstvolgende deadline). Verre ronden hebben
+meestal nog geen kansen vooraf -- multi_periode.py heeft die toch niet nodig,
+zie de toelichting daar: alleen de indeling (wie tegen wie) telt voor een
+ronde die nog niet dichtbij is.
 
 Afhankelijkheden: pip install requests beautifulsoup4
 """
@@ -266,6 +274,9 @@ def main():
                    help="dagen tot de volgende deadline (standaard 7)")
     p.add_argument("--snippet", action="store_true",
                    help="druk PROGRAMMA/INHAAL af als Python-blokken")
+    p.add_argument("--horizon", type=int, default=1,
+                   help="aantal ronden vooruit (standaard 1 = alleen de eerstvolgende); "
+                        "voor multi_periode.py minstens de resterende ronden in de periode")
     args = p.parse_args()
 
     namen, gespeeld, max_ronde = lees_clubs(args.clubs)
@@ -318,6 +329,23 @@ def main():
         if not (deadline <= dt < volgende):
             r["soort"] = "inhaal_later"
 
+    verder = []
+    if args.horizon > 1:
+        print(f"\nprogramma horizon (ronde {ronde + 1} t/m {ronde + args.horizon - 1}):")
+        for latere_ronde in range(ronde + 1, ronde + args.horizon):
+            print(f"  ronde {latere_ronde}:")
+            gevonden = 0
+            for url in match_urls(latere_ronde):
+                rij = parse_wedstrijd(url, latere_ronde, namen)
+                if rij:
+                    verder.append(rij)
+                    gevonden += 1
+            if gevonden == 0:
+                print(f"    geen wedstrijden gevonden voor ronde {latere_ronde} -- "
+                      f"programma stopt hier (seizoen op, of pagina bestaat nog niet)")
+                break
+        rijen.extend(verder)
+
     uit = Path(args.uit)
     uit.mkdir(parents=True, exist_ok=True)
     pad = uit / "programma.csv"
@@ -333,9 +361,13 @@ def main():
     later = [r for r in rijen if r["soort"] == "inhaal_later"]
     zonder = [r for r in regulier if not r["kans_thuis"]]
     print(f"\n{len(regulier)} wedstrijden + {len(meegeteld)} inhaal -> {pad}")
+    if verder:
+        rondes_gehaald = sorted({r["ronde"] for r in verder})
+        print(f"  waarvan {len(verder)} uit de horizon (ronde {rondes_gehaald[0]} t/m {rondes_gehaald[-1]})")
     if zonder:
         print(f"  LET OP: {len(zonder)} wedstrijd(en) zonder kansen vooraf; "
-              f"het model valt daar terug op clubratings zonder marktcorrectie.")
+              f"het model valt daar sowieso op terug voor de puntenschatting -- "
+              f"die gebruikt alleen wie tegen wie speelt, geen marktkansen per duel.")
     if later:
         print(f"  {len(later)} inhaalduel(s) worden NA deze ronde gespeeld en "
               f"tellen dus niet mee voor deze beslissing:")
