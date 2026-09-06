@@ -1,0 +1,45 @@
+Clubratings uit 33 wedstrijden met marktnotering (thuisvoordeel x1.24)
+199 spelers met voldoende speeltijd in de pool
+Zonder recente speeltijd (E=0): Kjetil Haug, Stijn van Gassel, Jeff Hardeveld, Deveron Fonville, Sekou Sylla, Gjivai Zechiël, David Min, Brynjólfur Willumsson, Jacob Trenskow
+
+OPSTELLING  4-3-3   verwacht 27.5 punten   kosten EUR 30.30
+  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  0.00
+  Verdediging  Ryan Flamingo             PSV              EUR 3.00  E  6.58
+  Verdediging  Aske Adelgaard            FC Twente        EUR 1.50  E  4.63
+  Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  0.00
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  0.00
+  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  7.68
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  1.72
+  Middenveld   Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.97
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.90
+  Aanval       David Min                 FC Utrecht       EUR 1.75  E  0.00
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.75  E  0.00
+  ---- bank (50%) ----
+  K            Stijn van Gassel          Excelsior        EUR 1.75  E  0.00
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  0.00
+  M            Gjivai Zechiël            Feyenoord        EUR 2.00  E  0.00
+  A            Jacob Trenskow            sc Heerenveen    EUR 2.25  E  0.00
+
+BESTE 1 TRANSFER(S)
+
+  verwacht 32.2  (4-3-3)   winst +4.7
+    UIT  David Min                 FC Utrecht       EUR 1.75  E  0.00
+    IN   Artem Stepanov            FC Utrecht       EUR 2.20  E  4.72
+
+  verwacht 31.3  (5-3-2)   winst +3.8
+    UIT  Jacob Trenskow            sc Heerenveen    EUR 2.25  E  0.00
+    IN   Oliver Braude             sc Heerenveen    EUR 1.80  E  3.82
+
+  verwacht 31.1  (3-4-3)   winst +3.7
+    UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
+    IN   Isak Hansen-Aarøen        NEC              EUR 1.50  E  3.66
+
+  verwacht 31.1  (4-4-2)   winst +3.6
+    UIT  Brynjólfur Willumsson     FC Groningen     EUR 1.75  E  0.00
+    IN   David van der Werff       FC Groningen     EUR 1.80  E  3.57
+
+  verwacht 30.6  (4-3-3)   winst +3.1
+    UIT  Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  0.00
+    IN   Thomas Didillon-Hödl      Willem II        EUR 1.50  E  3.08
+
+besluit -> besluit.json
