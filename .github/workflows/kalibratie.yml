@@ -1,0 +1,135 @@
+name: CVHJ kalibratie
+
+# Draait elke week; het script zelf beslist of er genoeg nieuwe ronden zijn
+# om iets aan te passen (--elke, standaard elke 4 ronden -- ongeveer een
+# periode). Vaker draaien dan dat is dus goedkoop: meestal is de conclusie
+# "nog te vroeg" en verandert er niets.
+#
+# Alleen bij een daadwerkelijke aanpassing wordt cvhj_model.py gecommit en
+# gaat er een aparte mail uit -- dit verandert het model zelf, dus dat is
+# geen ronde-advies en verdient een eigen melding.
+on:
+  schedule:
+    - cron: '0 8 * * 2'   # dinsdag, na de wekelijkse ronde van maandag
+  workflow_dispatch:
+    inputs:
+      forceer:
+        description: "Negeer de 'elke N ronden'-gate (de overige waarborgen blijven gelden)"
+        type: boolean
+        default: false
+      droog:
+        description: 'Alleen doorrekenen, cvhj_model.py niet echt aanpassen'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  kalibratie:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4 numpy
+
+      - name: Controleren of de data er is
+        run: |
+          for f in clubs.csv spelers.csv prijzen.csv; do
+            [ -f "$f" ] || { echo "::error::$f ontbreekt -- draai eerst de data- of wekelijks-workflow"; exit 1; }
+          done
+
+      - name: Kalibratie draaien
+        id: kalibratie
+        run: |
+          python auto_kalibreer.py \
+            --elke "${{ vars.KALIBREER_ELKE || 4 }}" \
+            --min-rondes "${{ vars.MIN_RONDES_KALIBRATIE || 8 }}" \
+            --min-verbetering "${{ vars.MIN_VERBETERING_KALIBRATIE || 0.03 }}" \
+            --max-stap "${{ vars.MAX_STAP_KALIBRATIE || 2.0 }}" \
+            ${{ github.event.inputs.forceer == 'true' && '--forceer' || '' }} \
+            ${{ github.event.inputs.droog == 'true' && '--droog' || '' }} \
+            | tee kalibratie_log.txt
+
+      - name: Samenvatting
+        run: |
+          echo "### Kalibratie" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat kalibratie_log.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Melden per e-mail
+        if: steps.kalibratie.outputs.aangepast == 'ja'
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_POORT: ${{ secrets.SMTP_POORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_WACHTWOORD: ${{ secrets.SMTP_WACHTWOORD }}
+          MAIL_NAAR: ${{ secrets.MAIL_NAAR }}
+          REDEN: ${{ steps.kalibratie.outputs.reden }}
+          KS_OUD: ${{ steps.kalibratie.outputs.krimp_speler_oud }}
+          KS_NIEUW: ${{ steps.kalibratie.outputs.krimp_speler_nieuw }}
+          KC_OUD: ${{ steps.kalibratie.outputs.krimp_club_oud }}
+          KC_NIEUW: ${{ steps.kalibratie.outputs.krimp_club_nieuw }}
+        run: |
+          python - <<'PY'
+          import os, smtplib
+          from email.mime.text import MIMEText
+
+          onderwerp = "CVHJ: kalibratie aangepast (KRIMP_SPELER/KRIMP_CLUB)"
+          tekst = f"""Het model is automatisch herkalibreerd.
+
+          {os.environ.get("REDEN", "")}
+
+          KRIMP_SPELER: {os.environ.get("KS_OUD")} -> {os.environ.get("KS_NIEUW")}
+          KRIMP_CLUB:   {os.environ.get("KC_OUD")} -> {os.environ.get("KC_NIEUW")}
+
+          Dit is doorgevoerd omdat de kandidaat op de backtest een consistente
+          verbetering liet zien over meerdere waarborgen (minimum aantal rondes,
+          minimumverbetering, per-ronde consistentie, maximale stapgrootte) --
+          zie kalibratie/status.json in de repo voor de volledige onderbouwing.
+          """
+          host, poort = os.environ.get("SMTP_HOST"), int(os.environ.get("SMTP_POORT", 587))
+          if not host:
+              print("Geen SMTP_HOST ingesteld -- mail overgeslagen.")
+          else:
+              msg = MIMEText(tekst)
+              msg["Subject"] = onderwerp
+              msg["From"] = os.environ.get("SMTP_USER")
+              msg["To"] = os.environ.get("MAIL_NAAR")
+              with smtplib.SMTP(host, poort) as s:
+                  s.starttls()
+                  s.login(os.environ.get("SMTP_USER"), os.environ.get("SMTP_WACHTWOORD"))
+                  s.send_message(msg)
+              print("Mail verstuurd.")
+          PY
+
+      - name: Vastleggen
+        if: steps.kalibratie.outputs.aangepast == 'ja'
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add cvhj_model.py kalibratie/status.json
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "kalibratie: KRIMP_SPELER=${{ steps.kalibratie.outputs.krimp_speler_nieuw }} KRIMP_CLUB=${{ steps.kalibratie.outputs.krimp_club_nieuw }}"
+          git pull --rebase origin main
+          git push
+
+      - name: Status vastleggen (ook zonder aanpassing)
+        if: steps.kalibratie.outputs.aangepast != 'ja'
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add kalibratie/status.json
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "kalibratie: geen aanpassing ($(date +%F))"
+          git pull --rebase origin main
+          git push
