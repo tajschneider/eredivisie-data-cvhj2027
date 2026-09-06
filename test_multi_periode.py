@@ -17,7 +17,7 @@ huidige map (dezelfde bestanden als voor cvhj_model.py).
 """
 import sys
 
-from multi_periode import bereken_multi_E, bouw_horizon_pools, laad_model, lees_programma_per_ronde, los_op
+from multi_periode import bereken_multi_E, bouw_horizon_pools, koppel_selectie, laad_model, lees_programma_per_ronde, los_op
 
 
 def test_horizon_1_matcht_brute_force(ronde, transfers):
@@ -39,17 +39,7 @@ def test_horizon_1_matcht_brute_force(ronde, transfers):
         per_ronde, ronde, 1, venster=6, min_minuten=60)
     e_multi = bereken_multi_E(reeksen, decay=0.84)  # decay is irrelevant bij horizon=1
     kandidaten = list(metadata.values())
-    op_speler_id = {p["speler_id"]: p for p in kandidaten}
-    selectie_ids = set()
-    for naam, (club, pos, prijs) in selectie_in.items():
-        match = next((p for p in kandidaten if m.norm(p["speler"]) == m.norm(naam) and p["club"] == club), None)
-        if match:
-            selectie_ids.add(match["speler_id"])
-        else:
-            dood_id = f"__huidig__{m.norm(naam)}"
-            kandidaten.append({"speler": naam, "speler_id": dood_id, "club": club, "pos": pos, "prijs": prijs})
-            e_multi[dood_id] = 0.0
-            selectie_ids.add(dood_id)
+    selectie_ids = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
     nieuw, score_milp = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, transfers, m.FORMATIES)
 
     # --- cvhj_model.py, brute force ---

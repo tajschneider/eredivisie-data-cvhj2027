@@ -61,6 +61,14 @@ def bouw_tekst(d):
             r += ["", "  LET OP: winst < 1,0 punt. Dat is binnen de ruis van het "
                       "model; niets doen is hier even verdedigbaar."]
 
+    # multi_periode.py schrijft dezelfde besluit.json-vorm, met een paar extra
+    # velden. "verwacht"/"winst" hierboven blijven altijd de eerstvolgende
+    # ronde -- dit meldt er alleen bij hoeveel verder vooruit is gekeken.
+    if d.get("multi_ronde") and d.get("horizon", 1) > 1:
+        r += ["", f"  (gekozen met een horizon van {d['horizon']} ronden "
+                  f"{d.get('horizon_rondes', '')}, decay {d.get('decay')}; "
+                  f"gedecayde som over die ronden: {d.get('verwacht_horizon')})"]
+
     r += ["", "OPSTELLING (basis)"]
     for x in sorted(h["basis"], key=lambda x: (-x["E"])):
         r.append(f"  {x['pos']}  {x['speler']:26s} {x['club']:18s} E {x['E']:.2f}")

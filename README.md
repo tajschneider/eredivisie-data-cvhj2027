@@ -37,12 +37,15 @@ scrape.yml (bestaand, ma 06:00 UTC)
   scrape_eredivisie.py -> clubs.csv, spelers.csv
                                |
 wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
-  scrape_prijzen.py    -> prijzen.csv          |
-  scrape_programma.py  -> programma.csv        |
+  scrape_prijzen.py             -> prijzen.csv           |
+  scrape_programma.py --horizon -> programma.csv (N rondes)
                                |               |
                                +-------+-------+
                                        v
-                              cvhj_model.py  -> besluit.json
+                        test_multi_periode.py  (regressie-waarborg)
+                                       v
+                    multi_periode.py --horizon auto  -> besluit.json
+              (bij falen: cvhj_model.py, één ronde, zelfde besluit.json-vorm)
                                        v
                                   notify.py  -> e-mail
                                        v
@@ -56,9 +59,10 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
                       -> e-mail (alleen bij een daadwerkelijke aanpassing)
 ```
 
-Beide workflows pushen naar `main`. `wekelijks.yml` draait een uur na
-`scrape.yml`, staat in dezelfde concurrency-groep en doet `git pull --rebase`
-voor de push, zodat ze elkaar niet omverduwen.
+Alle workflows die naar `main` pushen (`wekelijks.yml`, `data.yml`,
+`kalibratie.yml`) staan in dezelfde concurrency-groep en doen `git pull
+--rebase` voor de push, zodat ze elkaar niet omverduwen. `wekelijks.yml` draait
+een uur na `scrape.yml`.
 
 | Nodig | Stond er | Nu |
 |---|---|---|
@@ -98,12 +102,14 @@ Secrets: `SMTP_HOST`, `SMTP_POORT`, `SMTP_USER`, `SMTP_WACHTWOORD`, `MAIL_NAAR`.
 Voor Gmail een app-wachtwoord, niet je gewone wachtwoord.
 
 Variables: `INLEGGEN` (`ja` zet de inlegjob aan, standaard uit), `DRY_RUN`
-(standaard `ja`), `DEADLINE_UREN` (standaard 6), en voor de automatische
+(standaard `ja`), `DEADLINE_UREN` (standaard 6); voor de automatische
 kalibratie `KALIBREER_ELKE` (standaard 4), `MIN_RONDES_KALIBRATIE` (standaard
 8), `MIN_VERBETERING_KALIBRATIE` (standaard 0.03) en `MAX_STAP_KALIBRATIE`
-(standaard 2.0) -- zie "Backtest en kalibratie" voor wat elke waarde
-tegenhoudt. De standaardwaarden zijn bewust conservatief; er is geen reden om
-ze aan te passen totdat er meer dan een paar rondes aan data staan.
+(standaard 2.0) -- zie "Backtest en kalibratie"; en voor de multi-ronde-zoeker
+`HORIZON_SCRAPE` (standaard 6) en `DECAY` (standaard 0.84) -- zie "Meerdere
+ronden vooruit kijken". Alle standaardwaarden zijn bewust conservatief; er is
+geen reden om ze aan te passen totdat er meer dan een paar rondes aan data
+staan.
 
 De workflow draait maandag 07:00 UTC (een uur na `scrape.yml`) en
 donderdag 09:00 UTC. Inleggen zit in een aparte job die pas binnen
@@ -312,20 +318,45 @@ python multi_periode.py --ronde 6 --transfers 1 --horizon 4 --vergelijk
 python test_multi_periode.py                        # regressietest tegen de brute-force zoeker
 ```
 
-Dit is nog een los te draaien script, geen onderdeel van `wekelijks.yml` --
-bewust, om dezelfde reden als bij de kalibratie: eerst een paar keer met de
-hand bekijken of de adviezen kloppen en zinnig aanvoelen, dan pas automatiseren.
-Zodra dat vertrouwen er is, is het een kleine stap om `scrape_programma.py
---horizon` en `multi_periode.py` aan `wekelijks.yml` toe te voegen naast (niet
-in plaats van) de bestaande eenronde-zoeker.
+### Automatisering in wekelijks.yml
+
+`multi_periode.py` is nu de standaardzoeker in `wekelijks.yml` -- `cvhj_model.py`
+blijft bestaan (en blijft de referentie waartegen `test_multi_periode.py`
+toetst), maar de wekelijkse mail komt uit de multi-ronde-zoeker.
+
+**Horizon en transfers volgen de periode, automatisch.** `--horizon auto` en
+`--transfers auto` gebruiken hetzelfde `perioden.csv` als cvhj_model.py: de
+horizon loopt tot de volgende periodestart (daarna is de keuze toch weer vrij
+met 3 transfers, dus verder vooruitkijken heeft geen zin), met een vaste
+bovengrens van 6 ronden zonder periode-informatie. `scrape_programma.py` haalt
+in de workflow steeds `HORIZON_SCRAPE` ronden op (standaard 6, ruim boven de
+langste periode van 5) -- ronden die de auto-horizon niet nodig heeft, worden
+door `multi_periode.py` gewoon genegeerd.
+
+**Waarborg vóór vertrouwen, niet erna.** Elke run voert eerst
+`test_multi_periode.py` uit -- dezelfde regressietest die hierboven liet zien
+dat de MILP bij horizon 1 exact overeenkomt met de brute-force zoeker. Faalt
+die test (een toekomstige wijziging heeft iets gebroken), dan valt de workflow
+terug op `cvhj_model.py` voor die week en verschijnt er een `::error::`-melding
+in de run -- de mail blijft dus komen, maar het is zichtbaar dat er iets te
+repareren is. Faalt `multi_periode.py` zelf (bijvoorbeeld een MILP die
+onverwacht geen oplossing vindt), dan geldt dezelfde terugval, maar dan als
+`::warning::` in plaats van `::error::` -- de zoeker zelf werkt, alleen deze
+ene ronde niet.
+
+**Nieuwe GitHub-variabelen** (naast de bestaande, zie "Instellen in GitHub"):
+`HORIZON_SCRAPE` (standaard 6) en `DECAY` (standaard 0,84). Geen nieuwe
+secrets -- multi_periode.py mailt via dezelfde `notify.py` en dezelfde
+besluit.json-vorm als cvhj_model.py (met een paar extra velden die notify.py
+gebruikt om de gekozen horizon en decay in de mail te vermelden zodra die
+horizon groter is dan 1).
 
 ## Bekende beperkingen
 
 Onveranderd uit het model: geen assists, geen kaarten, maximaliseert de
-verwachting en niet de klassering, en geen blessurenieuws van vandaag. De mail
-herhaalt dat laatste elke week als expliciete controlestap. De eenronde-
-beperking is met `multi_periode.py` te omzeilen (zie hierboven), maar dat
-script draait nog los van de wekelijkse mail.
+verwachting en niet de klassering (per ronde; over de horizon wordt nu wel
+meerdere ronden vooruitgekeken, zie hierboven), en geen blessurenieuws van
+vandaag. De mail herhaalt dat laatste elke week als expliciete controlestap.
 
 Nieuw:
 
@@ -339,7 +370,14 @@ Nieuw:
   getest met een VERZONNEN programma (de bouwomgeving kon pouletips niet
   bereiken) -- de wedstrijdlogica zelf (budget/club/formatie/transfers, en de
   exacte match met de brute-force zoeker bij horizon 1) is dus geverifieerd,
-  de scraper voor echte verre ronden nog niet. Draai `scrape_programma.py
-  --horizon` handmatig en controleer de uitvoer voordat je op het advies
-  vertrouwt.
+  het ophalen van echte verre ronden nog niet. `wekelijks.yml` draait dit nu
+  wel automatisch; controleer daarom vóór de eerste live run zelf even of
+  `scrape_programma.py --horizon 6` een programma oplevert dat klopt (via
+  `data.yml`, met `horizon: 6` als input -- die workflow commit't
+  `programma.csv` zodat je het kunt inzien zonder dat er iets gemaild wordt).
+  Mocht er toch iets misgaan, valt de workflow terug op `cvhj_model.py` (zie
+  "Meerdere ronden vooruit kijken"), dus een mail blijft komen -- maar een
+  fout in de horizon-fixtures zelf (bijvoorbeeld een club-slug die verkeerd
+  wordt gesplitst) zou wel een verkeerde E per ronde kunnen opleveren zonder
+  dat de regressietest dat vangt, want die test alleen de horizon-1-situatie.
 - `inleggen.py` bestaat nog niet.

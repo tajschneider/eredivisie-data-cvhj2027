@@ -126,6 +126,40 @@ def bereken_multi_E(reeksen, decay):
             for sid, waarden in reeksen.items()}
 
 
+def som_horizon(reeksen, decay, spelers):
+    """Gedecayde som over de horizon voor een gegeven groep spelers (dood slot
+    of niet in de horizon-pool telt als 0, net als bereken_multi_E)."""
+    return sum(sum((decay ** k) * e for k, e in enumerate(reeksen.get(s["speler_id"], [])))
+              for s in spelers)
+
+
+def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
+    """Matcht selectie_in (uit lees_selectie) tegen de kandidatenlijst op naam+club.
+
+    Voor een speler die niet in `kandidaten` zit (te weinig speeltijd,
+    geblesseerd, of niet gevonden -- net als in cvhj_model.py's main()) wordt
+    een dood slot toegevoegd aan `kandidaten` (in-place), met E=0. Als
+    `extra_waarde` is meegegeven (bv. e_multi), krijgt dat dode slot daar ook
+    een waarde 0.0, in-place.
+
+    Retourneert de speler_id's van de huidige 15.
+    """
+    selectie_ids = set()
+    for naam, (club, pos, prijs) in selectie_in.items():
+        sid = m.norm(naam)
+        match = next((p for p in kandidaten if m.norm(p["speler"]) == sid and p["club"] == club), None)
+        if match:
+            selectie_ids.add(match["speler_id"])
+        else:
+            dood_id = f"__huidig__{sid}"
+            kandidaten.append({"speler": naam, "speler_id": dood_id, "club": club,
+                               "pos": pos, "prijs": prijs, "E": 0.0})
+            if extra_waarde is not None:
+                extra_waarde[dood_id] = 0.0
+            selectie_ids.add(dood_id)
+    return selectie_ids
+
+
 def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, formaties_dict):
     """De MILP: kies 15 spelers (met bankplek-korting), binnen budget/club/
     formatie/transferregels, die de som van e_multi maximaliseren.
@@ -249,6 +283,8 @@ def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, form
 
 
 def main():
+    import math
+
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--clubs", default="clubs.csv")
@@ -256,12 +292,18 @@ def main():
     p.add_argument("--prijzen", default="prijzen.csv")
     p.add_argument("--programma", default="programma.csv")
     p.add_argument("--selectie", default="selectie.csv")
+    p.add_argument("--perioden", default="perioden.csv")
     p.add_argument("--ronde", type=int, required=True)
-    p.add_argument("--transfers", type=int, default=1)
-    p.add_argument("--horizon", type=int, default=4, help="aantal ronden vooruit (incl. de eerstvolgende)")
+    p.add_argument("--transfers", default="1",
+                   help="aantal transfers, of 'auto' (3 bij een periodestart, anders 1)")
+    p.add_argument("--horizon", default="auto",
+                   help="aantal ronden vooruit (incl. de eerstvolgende), of 'auto' "
+                        "(tot de volgende periodestart, of 6 zonder perioden.csv)")
     p.add_argument("--decay", type=float, default=0.84, help="gewicht per ronde verder weg")
     p.add_argument("--venster", type=int, default=6)
     p.add_argument("--min-minuten", type=int, default=60)
+    p.add_argument("--json", metavar="BESTAND", help="besluit machineleesbaar wegschrijven, "
+                                                      "zelfde vorm als cvhj_model.py --json")
     p.add_argument("--vergelijk", action="store_true",
                    help="ook cvhj_model.py's brute-force zoeker op ronde 0 draaien, ter vergelijking")
     a = p.parse_args()
@@ -273,8 +315,38 @@ def main():
     prijsrijen = m.lees(a.prijzen)
     selectie_in = m.lees_selectie(a.selectie) or m.SELECTIE
 
+    perioden = m.lees_perioden(a.perioden)
+    periode, is_start, tot_volgende = m.periodestand(a.ronde, perioden)
+
+    if str(a.transfers).lower() == "auto":
+        if not perioden:
+            sys.exit(f"--transfers auto vraagt om {a.perioden}, maar die is er niet.")
+        a.transfers = 3 if is_start else 1
+        print(f"--transfers auto -> {a.transfers}")
+    else:
+        a.transfers = int(a.transfers)
+
+    if str(a.horizon).lower() == "auto":
+        # Tot de volgende periodestart: daarna is de keuze toch weer helemaal
+        # vrij (3 transfers), dus verder vooruitkijken heeft geen zin. Zonder
+        # perioden.csv (of in de laatste periode, die geen opvolger heeft) een
+        # vaste bovengrens van 6 ronden -- ruim boven de langste periode (5).
+        a.horizon = tot_volgende if tot_volgende else 6
+        print(f"--horizon auto -> {a.horizon}")
+    else:
+        a.horizon = int(a.horizon)
+
+    if periode:
+        if is_start:
+            print(f"\n*** RONDE {a.ronde} START PERIODE {periode}: 3 TRANSFERS TOEGESTAAN ***")
+        elif tot_volgende == 1:
+            print(f"\nLET OP: volgende ronde start een nieuwe periode met 3 transfers. "
+                  f"Een transfer nu bewaren kan lonen.")
+        elif tot_volgende:
+            print(f"Periode {periode}; volgende periodestart over {tot_volgende} ronden.")
+
     aanval, verdediging, thuisvoordeel, n_obs = m.schat_clubratings(clubrijen)
-    print(f"Clubratings uit {n_obs} wedstrijden (thuisvoordeel x{__import__('math').exp(thuisvoordeel):.2f})")
+    print(f"Clubratings uit {n_obs} wedstrijden (thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
@@ -293,46 +365,63 @@ def main():
     e_multi = bereken_multi_E(reeksen, a.decay)
     kandidaten = list(metadata.values())
 
-    # De huidige selectie moet ALTIJD als kandidaat meedoen, ook als een
-    # speler (nog) niet in de horizon-pool zit (te weinig speeltijd, geblesseerd
-    # -- dan krijgt hij net als in cvhj_model.py een dood slot met E=0).
+    # De huidige selectie moet ALTIJD als kandidaat meedoen, ook als een speler
+    # (nog) niet in de horizon-pool zit (te weinig speeltijd, geblesseerd --
+    # dan krijgt hij net als in cvhj_model.py een dood slot met E=0).
+    selectie_ids = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
     op_speler_id = {p["speler_id"]: p for p in kandidaten}
-    selectie_ids = set()
-    for naam, (club, pos, prijs) in selectie_in.items():
-        sid = m.norm(naam)
-        match = next((p for p in kandidaten if m.norm(p["speler"]) == sid and p["club"] == club), None)
-        if match:
-            selectie_ids.add(match["speler_id"])
-        else:
-            dood_id = f"__huidig__{sid}"
-            kandidaten.append({"speler": naam, "speler_id": dood_id, "club": club,
-                               "pos": pos, "prijs": prijs})
-            e_multi[dood_id] = 0.0
-            selectie_ids.add(dood_id)
 
-    nieuw, score = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, a.transfers, m.FORMATIES)
+    # Huidig team (VOOR een eventuele transfer), met ronde-0-E -- exact wat
+    # cvhj_model.py's "huidig" in besluit.json ook laat zien.
+    selectie_huidig = [op_speler_id[sid] for sid in selectie_ids]
+    basis_h, bank_h, totaal_h = m.opstelling(selectie_huidig)
+    m.toon_selectie(basis_h, bank_h, totaal_h, sum(s["prijs"] for s in selectie_huidig))
+
+    geblesseerd = {m.norm(r["speler"]): r.get("blessure", "") for r in prijsrijen if r.get("blessure")}
+    eigen_bless = [(n, geblesseerd[m.norm(n)]) for n in selectie_in if m.norm(n) in geblesseerd]
+    if eigen_bless:
+        print("\nGEBLESSEERD IN JE SELECTIE:")
+        for naam, duur in eigen_bless:
+            print(f"    {naam} ({duur})")
+    ontbreekt = [naam for naam in selectie_in
+                if f"__huidig__{m.norm(naam)}" in selectie_ids]
+    if ontbreekt:
+        print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
+
+    nieuw, score_horizon = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, a.transfers, m.FORMATIES)
     if nieuw is None:
         sys.exit("Geen toelaatbare oplossing gevonden (budget/formatie/transferregels "
                  "sluiten alles uit) -- controleer selectie.csv en --transfers.")
 
     nieuw_ids = {p["speler_id"] for p in nieuw}
-    uit = [op_speler_id.get(sid) or next(k for k in kandidaten if k["speler_id"] == sid)
-          for sid in selectie_ids - nieuw_ids]
+    uit = [op_speler_id[sid] for sid in selectie_ids - nieuw_ids]
     inn = [p for p in nieuw if p["speler_id"] not in selectie_ids]
+
+    # Voor het ADVIES gebruiken we, net als cvhj_model.py, de ronde-0-E van de
+    # NIEUWE 15 -- niet de gedecayde horizon-som. Die som bepaalt WELKE
+    # transfer wint, maar "verwacht"/"winst" in de mail betekenen overal
+    # "punten voor de eerstvolgende ronde"; die betekenis blijft zo intact.
+    basis_n, bank_n, totaal_n = m.opstelling(nieuw)
+    winst = totaal_n - totaal_h
+    t = collections.Counter(x["pos"] for x in nieuw)
+    formatie = m.FORMATIES.get((t["V"], t["M"], t["A"]), "?")
 
     print(f"\nMULTI-RONDE ADVIES (horizon {len(rondes_gebruikt)}, decay {a.decay}, "
           f"{a.transfers} transfer(s))")
-    print(f"  gedecayde som van de gekozen 15: {score:.2f}")
+    score_horizon_huidig = som_horizon(reeksen, a.decay, selectie_huidig)
+    print(f"  ronde {a.ronde}: verwacht {totaal_n:.1f} punten  ({formatie})  winst {winst:+.1f}")
+    print(f"  gedecayde som over de horizon: {score_horizon:.2f}  (huidig team: {score_horizon_huidig:.2f})")
     if not uit:
         print("  geen transfer nodig -- de huidige selectie is al optimaal binnen de horizon.")
     for x in uit:
-        e0 = reeksen.get(x["speler_id"], [0.0])[0] if x["speler_id"] in reeksen else 0.0
-        print(f"    UIT  {x['speler']:26s}{x['club']:17s}EUR {x.get('prijs', 0):.2f}  E(ronde {a.ronde}) {e0:5.2f}")
+        print(f"    UIT  {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  E {x['E']:5.2f}")
     for x in inn:
-        e0 = reeksen.get(x["speler_id"], [0.0])[0] if x["speler_id"] in reeksen else 0.0
         e_m = e_multi.get(x["speler_id"], 0.0)
         print(f"    IN   {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  "
-              f"E(ronde {a.ronde}) {e0:5.2f}  E(horizon) {e_m:5.2f}")
+              f"E {x['E']:5.2f}  E(horizon) {e_m:5.2f}")
+    if winst < 1.0 and uit:
+        print("  LET OP: winst < 1,0 punt -- dat is binnen de ruis van het model; "
+              "niets doen is hier even verdedigbaar.")
 
     if a.vergelijk:
         print(f"\nTER VERGELIJKING: cvhj_model.py's brute-force zoeker (ronde {a.ronde} alleen)")
@@ -355,6 +444,46 @@ def main():
             if not zelfde:
                 print("  Dat is het hele punt van dit script: het eenronde-advies kijkt niet "
                       "verder dan komend weekend, het multi-ronde-advies wel.")
+
+    if a.json:
+        besluit = {
+            "ronde": a.ronde,
+            "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
+            "transfers_toegestaan": a.transfers,
+            "periode": periode,
+            "periodestart": is_start,
+            "ronden_tot_volgende_periode": tot_volgende,
+            "huidig": {
+                "verwacht": round(totaal_h, 2),
+                "kosten": round(sum(x["prijs"] for x in selectie_huidig), 2),
+                "basis": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
+                           "E": round(x["E"], 3)} for x in basis_h],
+                "bank": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
+                          "E": round(x["E"], 3)} for x in bank_h]},
+            "zonder_speeltijd": ontbreekt,
+            "geblesseerd_in_selectie": [{"speler": n, "duur": d} for n, d in eigen_bless],
+            "programma": [{"thuis": h, "uit": u} for h, u in per_ronde[a.ronde][0]],
+            "inhaal": sorted(per_ronde[a.ronde][1]),
+            "pool_grootte": len(metadata),
+            "advies": {
+                "verwacht": round(totaal_n, 2),
+                "winst": round(winst, 2),
+                "formatie": formatie,
+                "uit": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
+                         "prijs": x["prijs"], "E": round(x["E"], 3)} for x in uit],
+                "in": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
+                        "prijs": x["prijs"], "E": round(x["E"], 3)} for x in inn],
+            } if uit or inn else None,
+            # Extra t.o.v. cvhj_model.py's besluit.json -- notify.py negeert
+            # onbekende velden, dus dit is achterwaarts compatibel.
+            "multi_ronde": True,
+            "horizon": len(rondes_gebruikt),
+            "horizon_rondes": rondes_gebruikt,
+            "decay": a.decay,
+            "verwacht_horizon": round(score_horizon, 2)}
+        Path(a.json).write_text(
+            __import__("json").dumps(besluit, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"\nbesluit -> {a.json}")
 
 
 if __name__ == "__main__":
