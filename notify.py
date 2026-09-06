@@ -31,6 +31,16 @@ def regel(x):
 
 def bouw_tekst(d):
     r = [f"CVHJ ronde {d['ronde']} - gegenereerd {d['gegenereerd']}", ""]
+
+    # Een periodestart is de enige week waarin je drie transfers hebt. Die
+    # bovenaan zetten, niet onderin bij de voetnoten.
+    if d.get("periodestart"):
+        r += [f"### PERIODE {d['periode']} BEGINT - JE MAG 3 TRANSFERS DOEN ###",
+              "Deze ronde is de enige in deze periode met drie wissels.", ""]
+    elif d.get("ronden_tot_volgende_periode") == 1:
+        r += ["### VOLGENDE RONDE BEGINT EEN NIEUWE PERIODE (3 transfers) ###",
+              "Een transfer deze week bewaren kan lonen: volgende week heb je er drie.", ""]
+
     h = d["huidig"]
     r.append(f"Huidig team: {h['verwacht']:.1f} verwachte punten, kosten EUR {h['kosten']:.2f}")
 
@@ -67,6 +77,10 @@ def bouw_tekst(d):
         aandacht.append(f"Programma bevat {len(d.get('programma', []))} wedstrijden, verwacht 9")
     aandacht.append("Blessurenieuws van vandaag zit NIET in het model - "
                     "loop de basisopstelling na voor de deadline.")
+    if d.get("periode") and not d.get("periodestart"):
+        n = d.get("ronden_tot_volgende_periode")
+        if n:
+            aandacht.append(f"Periode {d['periode']}; volgende periodestart over {n} ronden.")
     r += ["", "AANDACHT"] + [f"  - {x}" for x in aandacht]
     r += ["", f"Pool: {d['pool_grootte']} spelers met voldoende speeltijd."]
     return "\n".join(r)
@@ -92,8 +106,13 @@ def main():
         sys.exit(f"\nFOUT: ontbrekende secrets: {', '.join(ontbreekt)}")
 
     a = d.get("advies")
-    kop = (f"CVHJ ronde {d['ronde']}: "
-           + (f"{len(a['uit'])} transfer(s), {a['winst']:+.1f} punt" if a else "alleen opstelling"))
+    kern = f"{len(a['uit'])} transfer(s), {a['winst']:+.1f} punt" if a else "alleen opstelling"
+    if d.get("periodestart"):
+        kop = f"CVHJ ronde {d['ronde']} - PERIODE {d['periode']} START, 3 transfers: {kern}"
+    elif d.get("ronden_tot_volgende_periode") == 1:
+        kop = f"CVHJ ronde {d['ronde']} (volgende week 3 transfers): {kern}"
+    else:
+        kop = f"CVHJ ronde {d['ronde']}: {kern}"
 
     msg = EmailMessage()
     msg["Subject"] = kop

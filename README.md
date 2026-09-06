@@ -118,6 +118,31 @@ helften een bekende club zijn; getest op alle 306 thuis-uitcombinaties.
 spelers. Een half gevuld `prijzen.csv` laat het model doorrekenen op een
 onvolledige markt, en dat merk je pas aan de uitslag.
 
+## Perioden en drie transfers
+
+CVHJ deelt het seizoen in acht perioden van 4 of 5 ronden. Voorafgaand aan elke
+periode mag je drie transfers doen in plaats van één. Die grenzen staan vast in
+de spelregels en dus in `perioden.csv`:
+
+| Periode | Startronde | | Periode | Startronde |
+|---|---|---|---|---|
+| 1 | 1 | | 5 | 18 |
+| 2 | 5 | | 6 | 22 |
+| 3 | 9 | | 7 | 26 |
+| 4 | 13 | | 8 | 30 |
+
+`--transfers auto` (de stand in de workflow) leest dat bestand en kiest zelf: 3
+bij een periodestart, anders 1. De mail meldt het op drie manieren, zodat je het
+niet mist:
+
+- **onderwerpregel** — `PERIODE 3 START, 3 transfers`
+- **bovenaan de mail** — een blok boven het advies, niet onderin bij de voetnoten
+- **de week ervoor** — "volgende ronde begint een nieuwe periode; een transfer
+  deze week bewaren kan lonen"
+
+Die laatste is het punt van de hele exercitie: als je weet dat er volgende week
+drie wissels aankomen, is een marginale transfer deze week zonde.
+
 ## Uitgestelde duels
 
 Twee dingen gaan hier makkelijk mis, dus ze zitten expliciet in de code.

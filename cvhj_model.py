@@ -48,6 +48,7 @@ import collections
 import csv
 import itertools
 import math
+import sys
 import unicodedata
 from pathlib import Path
 
@@ -311,6 +312,35 @@ def lees_programma(pad):
     return programma, inhaal
 
 
+def lees_perioden(pad):
+    """perioden.csv -> [(periode, start_ronde)], oplopend.
+
+    CVHJ deelt het seizoen in 8 perioden van 4 of 5 ronden. Voorafgaand aan
+    elke periode mag je 3 transfers doen in plaats van 1. Die grenzen staan
+    vast in de spelregels, dus ze horen in een bestand en niet in een schatting.
+    """
+    if not Path(pad).exists():
+        return []
+    uit = []
+    for r in lees(pad):
+        uit.append((int(r["periode"]), int(r["start_ronde"])))
+    return sorted(uit, key=lambda x: x[1])
+
+
+def periodestand(ronde, perioden):
+    """(periode_nr, is_start, ronden_tot_volgende_start) voor deze ronde."""
+    if not perioden:
+        return None, False, None
+    huidig = None
+    for nr, start in perioden:
+        if start <= ronde:
+            huidig = nr
+    is_start = any(start == ronde for _, start in perioden)
+    volgende = [start for _, start in perioden if start > ronde]
+    tot = (min(volgende) - ronde) if volgende else None
+    return huidig, is_start, tot
+
+
 def lees_selectie(pad):
     """selectie.csv (speler, club, positie, prijs) -> {naam: (club, pos, prijs)}.
 
@@ -351,7 +381,10 @@ def main():
     p.add_argument("--spelers", default="spelers.csv")
     p.add_argument("--prijzen", default="prijzen.csv")
     p.add_argument("--ronde", type=int, required=True, help="komende speelronde")
-    p.add_argument("--transfers", type=int, default=3, help="0 = alleen opstelling")
+    p.add_argument("--transfers", default="3",
+                   help="aantal transfers, of 'auto' (3 bij een periodestart, anders 1)")
+    p.add_argument("--perioden", default="perioden.csv",
+                   help="periodegrenzen; leeg bestand = geen periodelogica")
     p.add_argument("--toon-pool", type=int, default=0, help="top N van de hele markt")
     p.add_argument("--venster", type=int, default=6, help="hoeveel ronden vorm meetellen")
     p.add_argument("--min-minuten", type=int, default=60, help="drempel om in de pool te komen")
@@ -375,6 +408,27 @@ def main():
               f"SELECTIE onderin wordt gebruikt.")
     if len(programma) != 9:
         print(f"LET OP: {len(programma)} wedstrijden in het programma, verwacht 9.")
+
+    perioden = lees_perioden(a.perioden)
+    periode, is_start, tot_volgende = periodestand(a.ronde, perioden)
+    if str(a.transfers).lower() == "auto":
+        if not perioden:
+            sys.exit(f"--transfers auto vraagt om {a.perioden}, maar die is er niet.")
+        a.transfers = 3 if is_start else 1
+        print(f"--transfers auto -> {a.transfers}")
+    else:
+        a.transfers = int(a.transfers)
+
+    if periode:
+        if is_start:
+            print(f"\n*** RONDE {a.ronde} START PERIODE {periode}: 3 TRANSFERS TOEGESTAAN ***")
+            if a.transfers != 3:
+                print(f"    (je draait nu met {a.transfers}; met --transfers 3 benut je ze)")
+        elif tot_volgende == 1:
+            print(f"\nLET OP: volgende ronde start een nieuwe periode met 3 transfers. "
+                  f"Een transfer nu bewaren kan lonen.")
+        elif tot_volgende:
+            print(f"Periode {periode}; volgende periodestart over {tot_volgende} ronden.")
 
     clubrijen, spelerrijen, prijsrijen = lees(a.clubs), lees(a.spelers), lees(a.prijzen)
     aanval, verdediging, thuisvoordeel, n_obs = schat_clubratings(clubrijen)
@@ -435,6 +489,9 @@ def main():
             "ronde": a.ronde,
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
+            "periode": periode,
+            "periodestart": is_start,
+            "ronden_tot_volgende_periode": tot_volgende,
             "huidig": {
                 "verwacht": round(totaal, 2),
                 "kosten": round(sum(x["prijs"] for x in selectie), 2),
