@@ -57,12 +57,19 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
   auto_kalibreer.py  -> (evt.) KRIMP_SPELER/KRIMP_CLUB in cvhj_model.py
                       -> kalibratie/status.json (altijd)
                       -> e-mail (alleen bij een daadwerkelijke aanpassing)
+
+fbref.yml (nieuw, ALLEEN handmatig -- bewust niet op een schema, zie
+           "FBref: xG, assists en kaarten")
+  scrape_fbref.py -> fbref.csv
+                     (pikt wekelijks.yml automatisch op als het bestand
+                      al in de repo staat; ontbreekt het, dan verandert
+                      er niets aan het bestaande advies)
 ```
 
 Alle workflows die naar `main` pushen (`wekelijks.yml`, `data.yml`,
-`kalibratie.yml`) staan in dezelfde concurrency-groep en doen `git pull
---rebase` voor de push, zodat ze elkaar niet omverduwen. `wekelijks.yml` draait
-een uur na `scrape.yml`.
+`kalibratie.yml`, `fbref.yml`) staan in dezelfde concurrency-groep en doen
+`git pull --rebase` voor de push, zodat ze elkaar niet omverduwen.
+`wekelijks.yml` draait een uur na `scrape.yml`.
 
 | Nodig | Stond er | Nu |
 |---|---|---|
@@ -83,6 +90,7 @@ pip install scipy                # alleen nodig voor multi_periode.py
 
 python scrape_prijzen.py        # -> prijzen.csv
 python scrape_programma.py      # -> programma.csv
+python scrape_fbref.py          # -> fbref.csv (optioneel, zie "FBref" hieronder)
 
 python cvhj_model.py --ronde 6 --transfers 1 --json besluit.json
 python notify.py besluit.json --toon      # advies afdrukken zonder te mailen
@@ -351,12 +359,69 @@ besluit.json-vorm als cvhj_model.py (met een paar extra velden die notify.py
 gebruikt om de gekozen horizon en decay in de mail te vermelden zodra die
 horizon groter is dan 1).
 
+## FBref: xG, assists en kaarten
+
+Stap 5 uit het optimalisatieplan. Pouletips (de bron van `clubs.csv` en
+`spelers.csv`) levert geen assists en geen kaarten, en de doelpuntenschatting
+draaide tot nu toe op RUWE doelpunten uit een venster van een paar recente
+duels -- ruizig, vooral vroeg in het seizoen. `scrape_fbref.py` haalt xG, xAG
+(verwachte assists), en gele/rode kaarten per speler op uit FBref's
+standaardstatistiekentabel voor de Eredivisie, in `fbref.csv`.
+
+**Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `fbref.csv`,
+dan draaien `cvhj_model.py` en `multi_periode.py` WISKUNDIG IDENTIEK aan vóór
+deze stap -- getest door de output met en zonder dit bestand te diffen op
+dezelfde data (enige verschil: een `LET OP`-regel dat het bestand ontbreekt).
+Staat een speler niet in `fbref.csv` (transfer, te weinig FBref-minuten, naam/
+club niet gematcht), dan geldt voor hem hetzelfde: 0-bijdrage, alsof het
+bestand er voor hem niet is.
+
+**De schatting is een gewogen menging, geen vervanging.** Doelpunten worden nu
+een drieweg-menging van het lokale venster, FBref's xG-per-90 over het hele
+seizoen, en de bestaande positieprior -- elk gewogen naar hoeveel data erachter
+zit (`XG_GEWICHT` dempt hoeveel een FBref-90-tal weegt t.o.v. een lokaal
+90-tal, want xG is niet gecorrigeerd voor de specifieke tegenstanders die het
+model elders al verrekent). Assists en kaarten hebben geen lokale bron, dus
+daar is het een tweeweg-menging van FBref en een positieprior
+(`KRIMP_ASSIST`/`KRIMP_KAART`, `PRIOR_ASSIST_RATE`/`PRIOR_GEEL_RATE`/
+`PRIOR_ROOD_RATE` in `cvhj_model.py`).
+
+**Twee dingen die nog niet geverifieerd zijn, en dat moeten worden voordat je
+dit vertrouwt:**
+
+- *De scraper zelf.* FBref draait achter Cloudflare; een enkele testfetch
+  vanuit deze bouwomgeving kreeg al een 403, zonder dat er iets geprobeerd was
+  om te blokkeren. Of `scrape_fbref.py` vanuit GitHub Actions wél werkt is dus
+  niet bevestigd -- draai `fbref.yml` een paar keer met de hand en controleer
+  de samenvatting (aantal spelers, onbekende clubnamen) voordat je overweegt
+  om het aan de wekelijkse keten te koppelen. Zolang je dat niet doet, telt
+  stap 5 gewoon niet mee (zie hierboven) en verandert er niets aan de
+  bestaande mail.
+- *De prior-constanten.* `PRIOR_ASSIST_RATE`, `PRIOR_GEEL_RATE` en
+  `PRIOR_ROOD_RATE` zijn schattingen op basis van algemene kennis van
+  posities, niet gekalibreerd op jouw data -- `spelers.csv` houdt geen
+  assists of kaarten bij, dus `backtest.py` kan dat deel van de schatting
+  niet toetsen (het RMSE-getal daar blijft, zoals altijd al vermeld stond,
+  een ondergrens die alleen doelpunten/ploegpunten/clean sheets meet). Zie de
+  scoretest hierboven met een verzonnen `fbref.csv`: de richting klopt (een
+  speler met hoge xG/xAG stijgt, een speler met veel kaarten daalt), de
+  precieze grootte is niet gevalideerd.
+
+**Geen nieuwe secrets of variabelen.** `fbref.yml` is een losse, handmatige
+workflow (`workflow_dispatch`, geen schema) die alleen `fbref.csv` commit --
+bewust NIET gekoppeld aan `wekelijks.yml`, gezien de twee punten hierboven.
+Staat `fbref.csv` eenmaal in de repo, dan pikken `cvhj_model.py` en
+`multi_periode.py` het automatisch op (standaardpad `fbref.csv`, net als
+`clubs.csv`/`spelers.csv`).
+
 ## Bekende beperkingen
 
-Onveranderd uit het model: geen assists, geen kaarten, maximaliseert de
-verwachting en niet de klassering (per ronde; over de horizon wordt nu wel
-meerdere ronden vooruitgekeken, zie hierboven), en geen blessurenieuws van
-vandaag. De mail herhaalt dat laatste elke week als expliciete controlestap.
+Onveranderd uit het model: maximaliseert de verwachting en niet de
+klassering (per ronde; over de horizon wordt nu wel meerdere ronden
+vooruitgekeken, zie hierboven), en geen blessurenieuws van vandaag. De mail
+herhaalt dat laatste elke week als expliciete controlestap. Assists en
+kaarten kunnen worden meegewogen via `fbref.csv`, zie "FBref: xG, assists en
+kaarten" hierboven voor wat daar nog niet geverifieerd is.
 
 Nieuw:
 

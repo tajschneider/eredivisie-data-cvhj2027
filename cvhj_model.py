@@ -35,10 +35,15 @@ Methode in het kort
 
 Beperkingen die je moet kennen
 ------------------------------
-- Assists ontbreken: de bron levert ze niet. Aangevende spelers worden
-  daardoor structureel onderschat.
-- Kaarten worden niet meegewogen (geel is -3 in CVHJ).
-- Het model optimaliseert één ronde vooruit, niet de hele periode.
+- Assists en kaarten kunnen worden meegewogen via fbref.csv (scrape_fbref.py,
+  stap 5) -- optioneel: zonder dat bestand draait dit script exact als
+  voorheen. FBref's live paginastructuur is niet in dit project geverifieerd
+  (een testfetch gaf een 403); controleer scrape_fbref.py's uitvoer handmatig
+  voor je erop vertrouwt. Er is ook geen backtestbron voor assists/kaarten
+  (spelers.csv houdt ze niet bij), dus de nauwkeurigheid van dat deel is
+  niet gemeten, alleen wiskundig gecontroleerd op het terugvalgedrag.
+- Het model optimaliseert één ronde vooruit, niet de hele periode (zie
+  multi_periode.py voor een meerdere-ronden-vooruit variant).
 - Het maximaliseert de verwachting, niet de kans op een hoge klassering.
 """
 from __future__ import annotations
@@ -84,6 +89,27 @@ PRIOR_TEGEN = {
     "Sparta Rotterdam": 1.45, "Go Ahead Eagles": 1.55, "Fortuna Sittard": 1.60,
     "PEC Zwolle": 1.65, "Excelsior": 1.75, "Telstar": 1.75, "Willem II": 1.85,
     "ADO Den Haag": 1.85, "SC Cambuur": 1.95}
+
+# --------------------------------------------------- stap 5: FBref (xG/xA/kaarten)
+# Assists en kaarten ontbreken in de pouletips-bron; xG is een minder ruizige
+# schatter van doelpuntenproductie dan de ruwe telling uit een venster van een
+# paar duels. Alle drie komen uit fbref.csv (scrape_fbref.py). Ontbreekt dat
+# bestand, of staat een speler er niet in, dan telt dit blok voor 0 mee -- zie
+# de commentaren in bouw_pool() voor de precieze terugvalgarantie.
+ASSISTWAARDE = {"Goalkeeper": 5, "Defender": 4, "Midfielder": 3, "Forward": 2}
+KAART_GEEL_PUNTEN = -3.0
+KAART_ROOD_PUNTEN = -8.0
+XG_GEWICHT = 0.5        # hoeveel een fbref-90-tal weegt t.o.v. een lokaal 90-tal
+KRIMP_ASSIST = 8.0      # prior-gewicht (in 90-tallen) bij de assistschatting
+KRIMP_KAART = 20.0      # kaarten zijn zeldzaam; sterker krimpen dan assists
+
+# Impliciete doelpunten-per-90-prior achter PRIOR_P90 (dat staat al in punten).
+PRIOR_GOAL_RATE = {pos: PRIOR_P90[pos] / GOALWAARDE[pos] for pos in PRIOR_P90}
+PRIOR_ASSIST_RATE = {"Goalkeeper": 0.01, "Defender": 0.08, "Midfielder": 0.20, "Forward": 0.15}
+# kaartpriors op de korte positiecode (K/V/M/A): verdedigers en middenvelders
+# maken de meeste overtredingen, keepers vrijwel nooit.
+PRIOR_GEEL_RATE = {"K": 0.05, "V": 0.22, "M": 0.20, "A": 0.12}
+PRIOR_ROOD_RATE = {"K": 0.005, "V": 0.015, "M": 0.012, "A": 0.008}
 
 
 def norm_club(c: str) -> str:
@@ -161,14 +187,29 @@ def schat_clubratings(clubrijen):
 
 # ------------------------------------------------------------------ spelerspool
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-              programma, inhaal, laatste_ronde, venster=6, min_minuten=60):
-    """Verwachte CVHJ-punten per speler voor de komende ronde."""
+              programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None):
+    """Verwachte CVHJ-punten per speler voor de komende ronde.
+
+    `fbref` is het resultaat van lees_fbref(), of None. Achterwaartse
+    compatibiliteit is hier bewust getoetst, niet aangenomen:
+    - fbref=None (bestand ontbreekt): de doelpuntenschatting is WISKUNDIG
+      IDENTIEK aan de oude formule (de fbref-term krijgt gewicht 0, dus valt
+      volledig weg uit de breuk), en assists/kaarten dragen exact 0.0 bij.
+      Dit is precies het gedrag van vóór stap 5.
+    - fbref is geladen maar een speler staat er niet in (transfer, te weinig
+      minuten bij FBref, naam/club niet gematcht): dezelfde 0-bijdrage voor
+      die ene speler, alsof fbref voor hem afwezig was.
+    - fbref is geladen EN de speler is gematcht: de doelpuntenschatting wordt
+      een gewogen drieweg-menging (lokaal venster, FBref-seizoen, prior) in
+      plaats van de oude tweeweg-menging (lokaal, prior); assists en kaarten
+      krijgen een eigen tweeweg-menging (FBref, prior).
+    """
     recent = {str(r) for r in range(max(1, laatste_ronde - venster + 1), laatste_ronde + 1)}
     vorm = collections.defaultdict(lambda: {"min": 0, "goals": 0, "basis": 0, "duels": 0})
     for r in spelerrijen:
         if r["ronde"] not in recent or r["status"] == "afwezig":
             continue
-        v = vorm[(norm(r["speler"]), norm_club(r["club"]))]
+        v = vorm[r.get("speler_id") or norm(r["speler"])]
         v["min"] += int(r["minuten"] or 0)
         v["goals"] += int(r["goals"] or 0)
         v["basis"] += 1 if r["status"] == "basis" else 0
@@ -191,13 +232,53 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         club, positie = norm_club(r["team"]), r["positie"]
         if club not in aanval or positie not in GOALWAARDE:
             continue
-        v = vorm.get((norm(r["speler"]), club))
+        # Joinen op de slug, niet op de naam: die is stabiel over accenten
+        # ('Soren Tengstedt') en immuun voor spelling die per pagina verschilt.
+        v = vorm.get(r.get("speler_id") or norm(r["speler"]))
+        if r.get("blessure"):
+            # Pouletips markeert de speler als geblesseerd. Hem in de pool laten
+            # betekent dat de zoeker hem kan KOPEN; dat wil je nooit.
+            continue
         if not v or v["min"] < min_minuten:   # uitgestelde duels drukken de teller
             continue
         n90 = v["min"] / 90
-        ind90 = (v["goals"] * GOALWAARDE[positie] + PRIOR_P90[positie] * KRIMP_SPELER) / (n90 + KRIMP_SPELER)
+
+        # fbref-entry opzoeken (of niets: telt dan overal voor 0 mee, zie de
+        # docstring hierboven). sleutel exact zoals lees_fbref() hem opbouwt.
+        fb = fbref.get(f"{norm(r['speler'])}|{norm(club)}") if fbref is not None else None
+        fb_n90 = fb["minuten_90s"] if fb else 0.0
+
+        # 1. doelpunten: drieweg-menging lokaal venster / fbref-xG / prior.
+        #    fb_n90=0 (fbref ontbreekt of speler niet gematcht) elimineert de
+        #    fbref-term volledig uit teller EN noemer -- wat overblijft is
+        #    bit-voor-bit de oude tweeweg-formule.
+        fb_gewicht = fb_n90 * XG_GEWICHT
+        fb_doel_punten = (fb["xg_per90"] * GOALWAARDE[positie]) if fb else 0.0
+        ind90 = (v["goals"] * GOALWAARDE[positie]
+                 + fb_gewicht * fb_doel_punten
+                 + PRIOR_P90[positie] * KRIMP_SPELER) / (n90 + fb_gewicht + KRIMP_SPELER)
+
         p_basis = min(0.97, 0.15 + 0.85 * v["basis"] / max(v["duels"], 1))
         pos = KORT[positie]
+
+        # 2. assists: fbref (gemiddelde van assists/90 en xAG/90, ter demping
+        #    van ruis) gekrompen naar een positieprior. Zonder fbref-bestand
+        #    (fbref is None) is dit exact 0.0 -- de "poort" uit de docstring.
+        e_assist90 = 0.0
+        if fbref is not None:
+            assist_obs = ((fb["assists_per90"] + fb["xag_per90"]) / 2) if fb else 0.0
+            e_assist90 = ((fb_n90 * assist_obs + KRIMP_ASSIST * PRIOR_ASSIST_RATE[positie])
+                          * ASSISTWAARDE[positie] / (fb_n90 + KRIMP_ASSIST))
+
+        # 3. kaarten: fbref-totalen omgerekend naar per-90, gekrompen naar een
+        #    positieprior (korte code). Ook hier: geen fbref-bestand -> 0.0.
+        e_kaart90 = 0.0
+        if fbref is not None:
+            geel_obs = (fb["gele_kaarten"] / fb_n90) if fb and fb_n90 > 0 else 0.0
+            rood_obs = (fb["rode_kaarten"] / fb_n90) if fb and fb_n90 > 0 else 0.0
+            geel90 = (fb_n90 * geel_obs + KRIMP_KAART * PRIOR_GEEL_RATE[pos]) / (fb_n90 + KRIMP_KAART)
+            rood90 = (fb_n90 * rood_obs + KRIMP_KAART * PRIOR_ROOD_RATE[pos]) / (fb_n90 + KRIMP_KAART)
+            e_kaart90 = geel90 * KAART_GEEL_PUNTEN + rood90 * KAART_ROOD_PUNTEN
 
         def punten(fixtures, weging=1.0):
             paar = lam(club, fixtures)
@@ -208,6 +289,8 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             e = p_basis * (3 * winst + gelijk)
             e += p_basis * cs * CLEANSHEET[pos]
             e += p_basis * ind90 * (lv / gem_lambda)
+            e += p_basis * e_assist90 * (lv / gem_lambda)   # assists volgen de aanval, net als doelpunten
+            e += p_basis * e_kaart90                        # kaarten hangen niet af van de tegenstander
             if pos == "K":
                 e += p_basis * 1.6 * lt / 5      # ruwe schatting reddingspunten
             return weging * e
@@ -217,7 +300,8 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             tegen, is_thuis = inhaal[club]
             E += punten([(club, tegen)] if is_thuis else [(tegen, club)], INHAAL_FACTOR)
 
-        pool.append({"speler": r["speler"], "club": club, "pos": pos,
+        pool.append({"speler": r["speler"], "speler_id": r.get("speler_id") or norm(r["speler"]),
+                     "club": club, "pos": pos,
                      "prijs": float(r["prijs"]), "E": E,
                      "min": v["min"], "goals": v["goals"], "basis": v["basis"],
                      "duels": v["duels"]})
@@ -362,6 +446,34 @@ def lees_selectie(pad):
     return selectie
 
 
+def lees_fbref(pad):
+    """fbref.csv (scrape_fbref.py) -> {norm(speler)|norm(club): {...}}, of None.
+
+    None betekent "bestand ontbreekt" en is het signaal voor bouw_pool() om de
+    hele stap-5-bijdrage over te slaan (0.0), niet alleen de prior te gebruiken
+    -- zie de docstring van bouw_pool(). De sleutel wordt hier met cvhj_model.py's
+    EIGEN norm() opgebouwd uit de losse speler/club-kolommen, niet met fbref's
+    interne speler_key: die twee normaliseren verschillend (spaties vs. streepjes)
+    en zouden nooit matchen.
+    """
+    if not Path(pad).exists():
+        return None
+    uit = {}
+    for r in lees(pad):
+        club = norm_club(r["club"])
+        sleutel = f"{norm(r['speler'])}|{norm(club)}"
+        uit[sleutel] = {
+            "minuten_90s": float(r["minuten_90s"] or 0),
+            "goals_per90": float(r["goals_per90"] or 0),
+            "xg_per90": float(r["xg_per90"] or 0),
+            "assists_per90": float(r["assists_per90"] or 0),
+            "xag_per90": float(r["xag_per90"] or 0),
+            "gele_kaarten": float(r["gele_kaarten"] or 0),
+            "rode_kaarten": float(r["rode_kaarten"] or 0),
+        }
+    return uit
+
+
 def toon_selectie(basis, bank, totaal, kosten):
     t = collections.Counter(s["pos"] for s in basis + bank)
     formatie = FORMATIES.get((t["V"], t["M"], t["A"]), "?")
@@ -392,6 +504,9 @@ def main():
                    help="programma van de komende ronde (scrape_programma.py)")
     p.add_argument("--selectie", default="selectie.csv",
                    help="huidige vijftien; valt terug op het blok onderin")
+    p.add_argument("--fbref", default="fbref.csv",
+                   help="xG/xA/kaarten van scrape_fbref.py; ontbreekt het, dan "
+                        "draait dit script zoals vóór stap 5")
     p.add_argument("--json", metavar="BESTAND",
                    help="besluit machineleesbaar wegschrijven")
     a = p.parse_args()
@@ -435,11 +550,23 @@ def main():
     print(f"Clubratings uit {n_obs} wedstrijden met marktnotering "
           f"(thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
+    fbref = lees_fbref(a.fbref)
+    if fbref is None:
+        print(f"LET OP: {a.fbref} niet gevonden - doelpunten/assists/kaarten "
+              f"draaien zonder FBref (zoals vóór stap 5).")
+
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
-                     venster=a.venster, min_minuten=a.min_minuten)
+                     venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
     print(f"{len(pool)} spelers met voldoende speeltijd in de pool")
+    if fbref is not None:
+        pool_sleutels = {f"{norm(x['speler'])}|{norm(x['club'])}" for x in pool}
+        n_match = len(pool_sleutels & fbref.keys())
+        print(f"  FBref gekoppeld: {n_match}/{len(pool)} spelers uit de pool "
+              f"(fbref.csv bevat {len(fbref)} spelers)")
 
+    geblesseerd = {norm(r["speler"]): r.get("blessure", "")
+                   for r in prijsrijen if r.get("blessure")}
     op_naam = {norm(x["speler"]): x for x in pool}
     selectie, ontbreekt = [], []
     for naam, (club, pos, prijs) in selectie_in.items():
@@ -452,6 +579,11 @@ def main():
             ontbreekt.append(naam)
     if ontbreekt:
         print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
+    eigen_bless = [(n, geblesseerd[norm(n)]) for n in selectie_in if norm(n) in geblesseerd]
+    if eigen_bless:
+        print("\nGEBLESSEERD IN JE SELECTIE:")
+        for naam, duur in eigen_bless:
+            print(f"    {naam} ({duur})")
 
     basis, bank, totaal = opstelling(selectie)
     toon_selectie(basis, bank, totaal, sum(s["prijs"] for s in selectie))
@@ -500,6 +632,7 @@ def main():
                 "bank": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
                           "E": round(x["E"], 3)} for x in bank]},
             "zonder_speeltijd": ontbreekt,
+            "geblesseerd_in_selectie": [{"speler": n, "duur": d} for n, d in eigen_bless],
             "programma": [{"thuis": h, "uit": u} for h, u in programma],
             "inhaal": sorted(inhaal),
             "pool_grootte": len(pool),

@@ -94,10 +94,14 @@ def lees_programma_per_ronde(pad, m):
 
 
 def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-                       per_ronde, start_ronde, horizon, venster, min_minuten):
+                       per_ronde, start_ronde, horizon, venster, min_minuten, fbref=None):
     """Eén bouw_pool-aanroep per ronde in de horizon; retourneert
     {speler_id: [E_0, E_1, ...]} en de metadata-pool (van ronde 0, voor
-    prijs/club/pos -- die veranderen niet binnen de horizon)."""
+    prijs/club/pos -- die veranderen niet binnen de horizon).
+
+    `fbref` (m.lees_fbref()'s resultaat, of None) wordt ONGEWIJZIGD per ronde
+    doorgegeven aan bouw_pool -- dezelfde xG/assist/kaart-schatting geldt voor
+    elke ronde in de horizon, er is geen ronde-specifieke fbref-data."""
     reeksen = collections.defaultdict(list)
     metadata = None
     rondes_gebruikt = []
@@ -111,7 +115,7 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
         inhaal_k = inhaal if k == 0 else {}  # zie module-docstring
         pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                            programma, inhaal_k, laatste_ronde=start_ronde - 1,
-                           venster=venster, min_minuten=min_minuten)
+                           venster=venster, min_minuten=min_minuten, fbref=fbref)
         if metadata is None:
             metadata = {p["speler_id"]: p for p in pool}
         for p in pool:
@@ -293,6 +297,9 @@ def main():
     p.add_argument("--programma", default="programma.csv")
     p.add_argument("--selectie", default="selectie.csv")
     p.add_argument("--perioden", default="perioden.csv")
+    p.add_argument("--fbref", default="fbref.csv",
+                   help="xG/xA/kaarten van scrape_fbref.py; ontbreekt het, dan "
+                        "draait dit script zoals vóór stap 5")
     p.add_argument("--ronde", type=int, required=True)
     p.add_argument("--transfers", default="1",
                    help="aantal transfers, of 'auto' (3 bij een periodestart, anders 1)")
@@ -348,6 +355,11 @@ def main():
     aanval, verdediging, thuisvoordeel, n_obs = m.schat_clubratings(clubrijen)
     print(f"Clubratings uit {n_obs} wedstrijden (thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
+    fbref = m.lees_fbref(a.fbref)
+    if fbref is None:
+        print(f"LET OP: {a.fbref} niet gevonden - doelpunten/assists/kaarten "
+              f"draaien zonder FBref (zoals vóór stap 5).")
+
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
         sys.exit(f"Geen programma voor ronde {a.ronde} in {a.programma}. "
@@ -355,7 +367,7 @@ def main():
 
     reeksen, metadata, rondes_gebruikt = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-        per_ronde, a.ronde, a.horizon, a.venster, a.min_minuten)
+        per_ronde, a.ronde, a.horizon, a.venster, a.min_minuten, fbref=fbref)
     if len(rondes_gebruikt) < a.horizon:
         print(f"LET OP: programma dekt maar {len(rondes_gebruikt)}/{a.horizon} gevraagde ronden "
               f"({rondes_gebruikt}) -- horizon wordt daartoe beperkt. "
@@ -428,7 +440,7 @@ def main():
         programma_0, inhaal_0 = per_ronde[a.ronde]
         pool_0 = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                              programma_0, inhaal_0, laatste_ronde=a.ronde - 1,
-                             venster=a.venster, min_minuten=a.min_minuten)
+                             venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
         selectie_0 = []
         for naam, (club, pos, prijs) in selectie_in.items():
             x = next((p for p in pool_0 if m.norm(p["speler"]) == m.norm(naam) and p["club"] == club), None)
