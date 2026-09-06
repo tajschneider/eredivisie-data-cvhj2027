@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
 
-      - run: pip install requests beautifulsoup4 numpy
+      - run: pip install requests beautifulsoup4 numpy scipy
 
       - name: Controleren of de scraperdata er is
         run: |
@@ -51,8 +51,13 @@ jobs:
       - name: Prijzen en posities ophalen
         run: python scrape_prijzen.py
 
-      - name: Programma komende ronde ophalen
-        run: python scrape_programma.py
+      # HORIZON_SCRAPE (standaard 6) haalt in één keer ruim genoeg ronden op
+      # voor de langste periode (5 ronden) plus marge. multi_periode.py's
+      # eigen --horizon auto bepaalt daarna hoeveel daarvan echt meetellen
+      # voor DEZE beslissing (tot de volgende periodestart) -- extra
+      # opgehaalde ronden die niet nodig zijn, worden gewoon genegeerd.
+      - name: Programma komende ronden ophalen
+        run: python scrape_programma.py --horizon "${{ vars.HORIZON_SCRAPE || 6 }}"
 
       - name: Ronde bepalen
         id: ronde
@@ -63,12 +68,40 @@ jobs:
             echo "nr=$(python -c "import csv;print(next(csv.DictReader(open('programma.csv')))['ronde'])")" >> $GITHUB_OUTPUT
           fi
 
+      # Waarborg voor de MILP: met --horizon 1 moet multi_periode.py exact
+      # hetzelfde vinden als cvhj_model.py's brute-force zoeker (zie
+      # test_multi_periode.py). Faalt dit, dan is er iets stuk aan de nieuwe
+      # zoeker -- val dan terug op de beproefde eenronde-zoeker, maar laat
+      # wel zien dat het is misgegaan (continue-on-error zodat de mail
+      # hieronder nog steeds verstuurd wordt).
+      - name: Regressietest multi-ronde model
+        id: regressie
+        continue-on-error: true
+        run: python test_multi_periode.py
+
       - name: Model draaien
         run: |
-          python cvhj_model.py \
-            --ronde ${{ steps.ronde.outputs.nr }} \
-            --transfers ${{ github.event.inputs.transfers || 'auto' }} \
-            --json besluit.json | tee advies.txt
+          set -o pipefail
+          if [ "${{ steps.regressie.outcome }}" = "success" ]; then
+            python multi_periode.py \
+              --ronde ${{ steps.ronde.outputs.nr }} \
+              --transfers ${{ github.event.inputs.transfers || 'auto' }} \
+              --horizon auto \
+              --decay "${{ vars.DECAY || 0.84 }}" \
+              --json besluit.json | tee advies.txt || {
+                echo "::warning::multi_periode.py mislukt op ronde ${{ steps.ronde.outputs.nr }} -- terugvallen op cvhj_model.py (één ronde vooruit)"
+                python cvhj_model.py \
+                  --ronde ${{ steps.ronde.outputs.nr }} \
+                  --transfers ${{ github.event.inputs.transfers || 'auto' }} \
+                  --json besluit.json | tee advies.txt
+              }
+          else
+            echo "::error::regressietest multi_periode.py is mislukt -- terugvallen op cvhj_model.py (één ronde vooruit); dit verdient een blik voor volgende week."
+            python cvhj_model.py \
+              --ronde ${{ steps.ronde.outputs.nr }} \
+              --transfers ${{ github.event.inputs.transfers || 'auto' }} \
+              --json besluit.json | tee advies.txt
+          fi
 
       - name: Advies mailen
         env:

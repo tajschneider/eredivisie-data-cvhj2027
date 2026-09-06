@@ -10,6 +10,9 @@ on:
       ronde:
         description: 'Speelronde voor het programma (leeg = eerstvolgende)'
         required: false
+      horizon:
+        description: 'Aantal ronden vooruit ophalen (voor multi_periode.py testen)'
+        default: '1'
 
 permissions:
   contents: write
@@ -35,9 +38,9 @@ jobs:
       - name: Programma ophalen
         run: |
           if [ -n "${{ github.event.inputs.ronde }}" ]; then
-            python scrape_programma.py --ronde ${{ github.event.inputs.ronde }}
+            python scrape_programma.py --ronde ${{ github.event.inputs.ronde }} --horizon "${{ github.event.inputs.horizon || 1 }}"
           else
-            python scrape_programma.py
+            python scrape_programma.py --horizon "${{ github.event.inputs.horizon || 1 }}"
           fi
 
       - name: Samenvatting
