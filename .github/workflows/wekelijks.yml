@@ -139,8 +139,13 @@ jobs:
   # Inleggen op coachvanhetjaar.nl. Aparte job, zodat het advies blijft draaien
   # als het inleggen stukloopt en je dit kunt uitzetten zonder de rest te raken.
   #
-  # NOG NIET INGEVULD: inleggen.py bestaat nog niet. Zolang de variable INLEGGEN
-  # niet op 'ja' staat, wordt deze job overgeslagen.
+  # inleggen.py is gebouwd door de site's eigen (interne, ongedocumenteerde)
+  # API terug te lezen uit een HAR-export van een echte, handmatige transfer --
+  # zie de docstring van dat bestand voor precies wat daarin wel en niet
+  # geverifieerd is. Zet INLEGGEN pas op 'ja' NADAT je dit met DRY_RUN op 'ja'
+  # (de standaard) een paar keer handmatig hebt gedraaid en de voorgestelde
+  # transfer(s) in de uitvoer kloppen. Zet DRY_RUN pas op 'nee' als je dat
+  # vertrouwt -- dat legt daadwerkelijk iets in op de site.
   # ---------------------------------------------------------------------------
   inleggen:
     needs: advies
@@ -150,7 +155,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - run: pip install requests
+      - run: pip install requests beautifulsoup4
 
       - uses: actions/download-artifact@v4
         with: { pattern: besluit-ronde-*, merge-multiple: true }
