@@ -1,0 +1,74 @@
+name: Data ophalen
+
+# Handmatige knop: haalt prijzen.csv en programma.csv op en legt ze vast.
+# Bewust los van 'CVHJ wekelijks advies', want die faalt op de mailstap zolang
+# de SMTP-secrets nog niet staan -- en dan wordt er niets gecommit.
+# Deze workflow heeft geen enkele secret nodig.
+on:
+  workflow_dispatch:
+    inputs:
+      ronde:
+        description: 'Speelronde voor het programma (leeg = eerstvolgende)'
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4
+
+      - name: Prijzen en posities ophalen
+        run: python scrape_prijzen.py
+
+      - name: Programma ophalen
+        run: |
+          if [ -n "${{ github.event.inputs.ronde }}" ]; then
+            python scrape_programma.py --ronde ${{ github.event.inputs.ronde }}
+          else
+            python scrape_programma.py
+          fi
+
+      - name: Samenvatting
+        run: |
+          echo "### Opgehaald" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| bestand | regels |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          for f in prijzen.csv programma.csv; do
+            echo "| $f | $(($(wc -l < $f) - 1)) |" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -3 prijzen.csv >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Vastleggen
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add prijzen.csv programma.csv
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "data bijgewerkt $(date +%F)"
+          git pull --rebase origin main
+          git push
+
+      # Ook als bijlage, zodat je ze kunt downloaden zonder de repo te klonen.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data
+          path: |
+            prijzen.csv
+            programma.csv
