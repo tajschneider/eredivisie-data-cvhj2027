@@ -17,8 +17,8 @@ on:
         description: 'Speelronde (leeg = automatisch de eerstvolgende)'
         required: false
       transfers:
-        description: 'Aantal transfers (0 = alleen opstelling)'
-        default: '1'
+        description: "Aantal transfers: 'auto' volgt de perioden, of 0/1/3"
+        default: 'auto'
 
 permissions:
   contents: write
@@ -42,7 +42,7 @@ jobs:
 
       - name: Controleren of de scraperdata er is
         run: |
-          for f in clubs.csv spelers.csv selectie.csv; do
+          for f in clubs.csv spelers.csv selectie.csv perioden.csv; do
             [ -f "$f" ] || { echo "::error::$f ontbreekt in de repo"; exit 1; }
           done
           echo "clubs.csv:   $(($(wc -l < clubs.csv) - 1)) regels"
@@ -67,7 +67,7 @@ jobs:
         run: |
           python cvhj_model.py \
             --ronde ${{ steps.ronde.outputs.nr }} \
-            --transfers ${{ github.event.inputs.transfers || 1 }} \
+            --transfers ${{ github.event.inputs.transfers || 'auto' }} \
             --json besluit.json | tee advies.txt
 
       - name: Advies mailen
