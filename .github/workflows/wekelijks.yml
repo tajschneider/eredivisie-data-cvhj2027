@@ -1,0 +1,135 @@
+name: CVHJ wekelijks advies
+
+# Draait in dezelfde repo als de scraper. clubs.csv en spelers.csv staan hier al
+# in de hoofdmap, dus er hoeft niets opgehaald te worden -- de scripts vinden ze
+# op hun standaardpaden.
+#
+# Maandag 07:00 UTC, een uur na scrape.yml (06:00), zodat de data van die dag er
+# staat. Donderdag 09:00 UTC nog een keer: opstellingen en blessures veranderen
+# na het weekend, en dan is de deadline dichtbij genoeg om betekenisvol te zijn.
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+    - cron: '0 9 * * 4'
+  workflow_dispatch:
+    inputs:
+      ronde:
+        description: 'Speelronde (leeg = automatisch de eerstvolgende)'
+        required: false
+      transfers:
+        description: 'Aantal transfers (0 = alleen opstelling)'
+        default: '1'
+
+permissions:
+  contents: write
+
+# scrape.yml pusht ook naar main. Twee gelijktijdige pushes geven een
+# afgewezen push; deze groep zet ze achter elkaar.
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  advies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4 numpy
+
+      - name: Controleren of de scraperdata er is
+        run: |
+          for f in clubs.csv spelers.csv selectie.csv; do
+            [ -f "$f" ] || { echo "::error::$f ontbreekt in de repo"; exit 1; }
+          done
+          echo "clubs.csv:   $(($(wc -l < clubs.csv) - 1)) regels"
+          echo "spelers.csv: $(($(wc -l < spelers.csv) - 1)) regels"
+
+      - name: Prijzen en posities ophalen
+        run: python scrape_prijzen.py
+
+      - name: Programma komende ronde ophalen
+        run: python scrape_programma.py
+
+      - name: Ronde bepalen
+        id: ronde
+        run: |
+          if [ -n "${{ github.event.inputs.ronde }}" ]; then
+            echo "nr=${{ github.event.inputs.ronde }}" >> $GITHUB_OUTPUT
+          else
+            echo "nr=$(python -c "import csv;print(next(csv.DictReader(open('programma.csv')))['ronde'])")" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Model draaien
+        run: |
+          python cvhj_model.py \
+            --ronde ${{ steps.ronde.outputs.nr }} \
+            --transfers ${{ github.event.inputs.transfers || 1 }} \
+            --json besluit.json | tee advies.txt
+
+      - name: Advies mailen
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_POORT: ${{ secrets.SMTP_POORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_WACHTWOORD: ${{ secrets.SMTP_WACHTWOORD }}
+          MAIL_NAAR: ${{ secrets.MAIL_NAAR }}
+        run: python notify.py besluit.json
+
+      - name: Besluit vastleggen
+        run: |
+          mkdir -p historie
+          cp besluit.json "historie/ronde-${{ steps.ronde.outputs.nr }}.json"
+          cp advies.txt   "historie/ronde-${{ steps.ronde.outputs.nr }}.txt"
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add prijzen.csv programma.csv historie/
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "advies ronde ${{ steps.ronde.outputs.nr }}"
+          # scrape.yml kan intussen gepusht hebben; eerst bijtrekken.
+          git pull --rebase origin main
+          git push
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: besluit-ronde-${{ steps.ronde.outputs.nr }}
+          path: |
+            besluit.json
+            advies.txt
+            programma.csv
+            prijzen.csv
+
+  # ---------------------------------------------------------------------------
+  # Inleggen op coachvanhetjaar.nl. Aparte job, zodat het advies blijft draaien
+  # als het inleggen stukloopt en je dit kunt uitzetten zonder de rest te raken.
+  #
+  # NOG NIET INGEVULD: inleggen.py bestaat nog niet. Zolang de variable INLEGGEN
+  # niet op 'ja' staat, wordt deze job overgeslagen.
+  # ---------------------------------------------------------------------------
+  inleggen:
+    needs: advies
+    runs-on: ubuntu-latest
+    if: vars.INLEGGEN == 'ja'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install requests
+
+      - uses: actions/download-artifact@v4
+        with: { pattern: besluit-ronde-*, merge-multiple: true }
+
+      - name: Deadline controleren
+        id: check
+        run: python deadline.py programma.csv --uren "${{ vars.DEADLINE_UREN || 6 }}"
+
+      - name: Team doorzetten
+        if: steps.check.outputs.binnen_venster == 'ja'
+        env:
+          CVHJ_GEBRUIKER: ${{ secrets.CVHJ_GEBRUIKER }}
+          CVHJ_WACHTWOORD: ${{ secrets.CVHJ_WACHTWOORD }}
+          DRY_RUN: ${{ vars.DRY_RUN || 'ja' }}
+        run: python inleggen.py besluit.json
