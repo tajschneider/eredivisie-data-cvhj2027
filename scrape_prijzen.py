@@ -101,6 +101,48 @@ def get(url, pauze=1.2, pogingen=4):
     raise RuntimeError(f"niet op te halen: {url} ({laatste})")
 
 
+# De naamcel bevat naast de naam ook status: "Sekou Sylla bank",
+# "Calvin Stengs basis nieuw", "Jordan Bos ! geblesseerd tot en met 1 januari".
+# Dat is waardevolle informatie, maar het hoort niet IN de naam -- zo sluit de
+# join met spelers.csv niet meer aan. Naam en status worden dus gescheiden.
+#
+# re.IGNORECASE: op 6 september 2026 bleek "Gjivai Zechiël basis" niet als
+# marktdata-naam te matchen met de "Gjivai Zechiël" uit selectie.csv (zie
+# cvhj_model.vind_bijna_match, dat als vangnet zulke gevallen alsnog repareert).
+# Een hoofdlettervariant van het statuswoord ("Basis" i.p.v. "basis") was een
+# van de reproduceerbare manieren om dat te veroorzaken: \b(?:basis|...)\b is
+# hoofdlettergevoelig, dus "Basis" liep er ongestript doorheen. Niet met
+# zekerheid vastgesteld dat dit precies de live oorzaak was (de site-HTML zelf
+# is niet ingezien) -- maar het is een reeel, reproduceerbaar gat, dus dicht.
+STATUS_RE = re.compile(r"\s*(?:!\s*(?P<bless>[^!]*)$|\b(?P<rol>basis|bank|nieuw)\b)",
+                        re.IGNORECASE)
+
+
+def splits_status(cel):
+    """'Jordan Bos ! geblesseerd tot en met 1 januari'
+        -> ('Jordan Bos', {'rol': '', 'nieuw': 0, 'blessure': 'tot en met 1 januari'})"""
+    naam, rol, is_nieuw, blessure = cel, "", 0, ""
+    for _ in range(4):
+        m = STATUS_RE.search(naam)
+        if not m:
+            break
+        if m.group("bless") is not None:
+            tekst = m.group("bless").strip().rstrip(",")
+            tekst = re.sub(r"^geblesseerd\s*,?\s*", "", tekst, flags=re.IGNORECASE).strip()
+            blessure = tekst or "onbekend"
+        elif m.group("rol").lower() == "nieuw":
+            is_nieuw = 1
+        else:
+            rol = m.group("rol").lower()
+        naam = (naam[:m.start()] + naam[m.end():]).strip()
+    # Opruimen wat de status-strip kan achterlaten: lege haakjes/vierkante
+    # haken ("Naam ()" na het strippen van "(basis)"), en dubbele spaties of
+    # losse komma's/streepjes die overblijven tussen de weggehaalde stukken.
+    naam = re.sub(r"\(\s*\)|\[\s*\]", "", naam)
+    naam = re.sub(r"\s+", " ", naam).strip(" ,-")
+    return naam, {"rol": rol, "nieuw": is_nieuw, "blessure": blessure}
+
+
 def parse_prijs(tekst):
     """'4,0 mln' / '1,75M' / '€ 3.75 mln' -> 4.0 / 1.75 / 3.75"""
     t = tekst.replace(" ", " ").strip()
@@ -156,7 +198,7 @@ def parse_rijen(html):
         if len(cellen) <= max(idx.values()):
             continue  # koprij of tussenkop
 
-        naam = cellen[idx["speler"]].get_text(" ", strip=True)
+        naam, status = splits_status(cellen[idx["speler"]].get_text(" ", strip=True))
         club_ruw = cellen[idx["club"]].get_text(" ", strip=True)
         positie = parse_positie(cellen[idx["positie"]].get_text(" ", strip=True))
         prijs = parse_prijs(cellen[idx["prijs"]].get_text(" ", strip=True))
@@ -176,6 +218,9 @@ def parse_rijen(html):
             "positie": positie,
             "prijs": f"{prijs:.2f}",
             "speler_id": slug,
+            "rol": status["rol"],
+            "nieuw": status["nieuw"],
+            "blessure": status["blessure"],
         })
     return rijen, overgeslagen
 
@@ -243,7 +288,8 @@ def main():
     uit.mkdir(parents=True, exist_ok=True)
     pad = uit / "prijzen.csv"
     with pad.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["team", "speler", "positie", "prijs", "speler_id"])
+        w = csv.DictWriter(f, fieldnames=["team", "speler", "positie", "prijs",
+                                          "speler_id", "rol", "nieuw", "blessure"])
         w.writeheader()
         w.writerows(rijen)
 
@@ -256,6 +302,9 @@ def main():
     print(f"  clubs:   {len(set(r['team'] for r in rijen))}")
     print(f"  posities: " + ", ".join(f"{k}={v}" for k, v in sorted(per_positie.items())))
     print(f"  prijs:   {min(prijzen):.2f} - {max(prijzen):.2f} mln")
+    print(f"  status:  {sum(1 for r in rijen if r['rol'])} met rol, "
+          f"{sum(r['nieuw'] for r in rijen)} nieuw, "
+          f"{sum(1 for r in rijen if r['blessure'])} geblesseerd")
 
 
 if __name__ == "__main__":

@@ -140,18 +140,27 @@ def som_horizon(reeksen, decay, spelers):
 def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
     """Matcht selectie_in (uit lees_selectie) tegen de kandidatenlijst op naam+club.
 
-    Voor een speler die niet in `kandidaten` zit (te weinig speeltijd,
-    geblesseerd, of niet gevonden -- net als in cvhj_model.py's main()) wordt
-    een dood slot toegevoegd aan `kandidaten` (in-place), met E=0. Als
-    `extra_waarde` is meegegeven (bv. e_multi), krijgt dat dode slot daar ook
-    een waarde 0.0, in-place.
+    Voor een speler die niet exact matcht, wordt eerst m.vind_bijna_match()
+    geprobeerd (zelfde club, naam-woorden een deelverzameling van elkaar --
+    het vangnet voor een vervuilde naam in prijzen.csv, zie de docstring
+    daar). Matcht ook dat niet (te weinig speeltijd, geblesseerd, of echt
+    niet gevonden -- net als in cvhj_model.py's main()), dan wordt een dood
+    slot toegevoegd aan `kandidaten` (in-place), met E=0. Als `extra_waarde`
+    is meegegeven (bv. e_multi), krijgt dat dode slot daar ook een waarde
+    0.0, in-place.
 
-    Retourneert de speler_id's van de huidige 15.
+    Retourneert de speler_id's van de huidige 15, en (als tweede waarde) een
+    lijst (selectienaam, gevonden marktnaam) voor elke bijna-match, zodat de
+    aanroeper dit kan melden.
     """
-    selectie_ids = set()
+    selectie_ids, bijna_match = set(), []
     for naam, (club, pos, prijs) in selectie_in.items():
         sid = m.norm(naam)
         match = next((p for p in kandidaten if m.norm(p["speler"]) == sid and p["club"] == club), None)
+        if not match:
+            match = m.vind_bijna_match(naam, club, kandidaten)
+            if match:
+                bijna_match.append((naam, match["speler"]))
         if match:
             selectie_ids.add(match["speler_id"])
         else:
@@ -161,7 +170,7 @@ def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
             if extra_waarde is not None:
                 extra_waarde[dood_id] = 0.0
             selectie_ids.add(dood_id)
-    return selectie_ids
+    return selectie_ids, bijna_match
 
 
 def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, formaties_dict):
@@ -380,7 +389,7 @@ def main():
     # De huidige selectie moet ALTIJD als kandidaat meedoen, ook als een speler
     # (nog) niet in de horizon-pool zit (te weinig speeltijd, geblesseerd --
     # dan krijgt hij net als in cvhj_model.py een dood slot met E=0).
-    selectie_ids = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
+    selectie_ids, bijna_match = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
     op_speler_id = {p["speler_id"]: p for p in kandidaten}
 
     # Huidig team (VOOR een eventuele transfer), met ronde-0-E -- exact wat
@@ -399,6 +408,11 @@ def main():
                 if f"__huidig__{m.norm(naam)}" in selectie_ids]
     if ontbreekt:
         print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
+    if bijna_match:
+        print("LET OP MOGELIJKE NAAM-BUG IN prijzen.csv (automatisch gerepareerd, "
+              "maar controleer de brondata):")
+        for naam, gevonden in bijna_match:
+            print(f"    '{naam}' (jouw selectie) <-> '{gevonden}' (marktdata, zelfde club)")
 
     nieuw, score_horizon = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, a.transfers, m.FORMATIES)
     if nieuw is None:
@@ -473,6 +487,7 @@ def main():
                 "bank": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
                           "E": round(x["E"], 3)} for x in bank_h]},
             "zonder_speeltijd": ontbreekt,
+            "bijna_match": [{"selectie": naam, "marktdata": gevonden} for naam, gevonden in bijna_match],
             "geblesseerd_in_selectie": [{"speler": n, "duur": d} for n, d in eigen_bless],
             "programma": [{"thuis": h, "uit": u} for h, u in per_ronde[a.ronde][0]],
             "inhaal": sorted(per_ronde[a.ronde][1]),

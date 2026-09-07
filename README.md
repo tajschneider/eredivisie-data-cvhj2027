@@ -143,6 +143,40 @@ helften een bekende club zijn; getest op alle 306 thuis-uitcombinaties.
 spelers. Een half gevuld `prijzen.csv` laat het model doorrekenen op een
 onvolledige markt, en dat merk je pas aan de uitslag.
 
+## Vangnet tegen vervuilde namen ("transfer X voor X")
+
+Op 6 september 2026 kreeg Thomas een advies om Gjivai Zechiël te
+transfereren voor Gjivai Zechiël: een zinloze zelf-transfer. Oorzaak:
+`prijzen.csv` bevatte voor die speler `"Gjivai Zechiël basis"` in plaats van
+`"Gjivai Zechiël"` — de naamkolom op pouletips.nl bevat naast de naam ook
+statuswoorden ("basis"/"bank"/"nieuw"), die `scrape_prijzen.py`'s
+`splits_status()` hoort te strippen. Dat matchte niet meer met
+`selectie.csv`'s schone naam, dus kreeg de "echte" Zechiël een dood slot
+(E=0, "verkoop") terwijl de vervuilde marktdata-naam als aparte, nieuwe
+aankoop verscheen (E=7,60, "koop") — twee losse regels voor dezelfde speler.
+
+Twee lagen tegen dit soort fouten:
+
+1. **Hoofdlettergevoeligheid gefixt.** `STATUS_RE` in `scrape_prijzen.py` was
+   hoofdlettergevoelig; een statuswoord met een andere hoofdletter ("Basis"
+   i.p.v. "basis") liep er ongestript doorheen. Dit is een reproduceerbaar
+   gat dat nu gedicht is (`re.IGNORECASE`), maar niet met zekerheid
+   vastgesteld als DE live oorzaak — de site-HTML zelf is niet ingezien.
+2. **Vangnet, voor onbekende toekomstige gevallen.** `cvhj_model.vind_bijna_match()`
+   zoekt, als de exacte naam niet matcht, naar een kandidaat bij dezelfde
+   club wiens naam-woorden een deelverzameling zijn van elkaar (of
+   omgekeerd). Vindt hij er precies één, dan wordt die automatisch gebruikt
+   in plaats van een dood slot — en wordt dit LUID gemeld (console, `advies.txt`,
+   `besluit.json`'s `bijna_match`-veld, en bovenaan de e-mail), zodat een
+   scraper-bug die de eerste laag niet vangt niet meer stilzwijgend een
+   onzinnig advies oplevert, en toch opgemerkt wordt om alsnog te fixen.
+   Bij meer dan één kandidaat (bv. twee bankspelers met overlappende namen)
+   valt het terug op het oude, veilige dode-slot-gedrag — gokken is hier
+   erger dan een gemiste repair.
+
+Regressietest: `test_scrape_prijzen.py` (splits_status-edge cases inclusief
+deze exacte casus, en vind_bijna_match's matching/niet-matching-gevallen).
+
 ## Perioden en drie transfers
 
 CVHJ deelt het seizoen in acht perioden van 4 of 5 ronden. Voorafgaand aan elke
@@ -266,6 +300,62 @@ het script beslist zelf of dat te vroeg is. Herhaal deze kalibratie zodra er
 meer rondes zijn; drie rondes is genoeg om een grove misser te detecteren
 (KRIMP_SPELER=1), niet genoeg om een fijnere waarde te kiezen -- vandaar
 waarborg 1.
+
+## Rol en speeltijd (stap 1+2)
+
+Twee samenhangende tekortkomingen uit het oorspronkelijke plan, in één keer
+opgelost: het model reageerde traag op een rolwijziging (een speler die net
+basisspeler wordt, of hem juist verliest), en gebruikte speeltijd alleen
+indirect (via de krimpformule), niet als een eigen voorspellende factor voor
+HOEVEEL van een wedstrijd iemand waarschijnlijk meemaakt.
+
+**Het probleem met het oude vlakke gemiddelde.** `bouw_pool()` schatte de
+kans op een basisplaats (`p_basis`) als het aandeel basisplaatsen over de
+laatste `--venster` (standaard 6) ronden, allemaal even zwaar meegewogen. Een
+speler die twee ronden geleden net doorbrak, sleepte dan nog 4 oude
+bankronden mee die niet meer representatief zijn -- en omgekeerd voor een
+speler die zijn plek net kwijtraakte.
+
+**De oplossing: recency-weging in plaats van een vlak gemiddelde.**
+`rol_kenmerken()` weegt elke ronde in het venster met `ROL_DECAY` tot de
+macht "hoeveel ronden geleden" (dezelfde soort weging als de decay in
+`multi_periode.py`, hier toegepast op het VERLEDEN in plaats van de
+toekomst). Daarmee vervangt één vlakke `p_basis` drie aparte, gerichtere
+signalen:
+
+- **p_speelt** -- kans dat de speler aan het spel komt (elke minuut telt).
+  Stuurt de ploegpunten, die je krijgt zodra je meedoet.
+- **p_60plus** -- kans dat hij minstens `CLEANSHEET_MINUTEN_DREMPEL` (60)
+  minuten speelt. Stuurt de clean-sheet-bonus. **Aanname:** CVHJ hanteert,
+  net als de meeste fantasy-competities (waaronder de officiële Premier
+  League-competitie), een minutendrempel voor clean sheets -- dit is niet
+  bij CVHJ zelf geverifieerd. Pas `CLEANSHEET_MINUTEN_DREMPEL` aan als dat
+  niet klopt.
+- **speelfractie** -- verwacht aandeel van de wedstrijd dat hij speelt
+  (gewogen minuten/90). Zet de per-90-productieschatting (doelpunten,
+  assists, kaarten) om in een verwachting voor DEZE wedstrijd: een speler
+  die vaak na 60 minuten wordt gewisseld, krijgt nu minder toegerekend dan
+  iemand die altijd de volle wedstrijd speelt, ook al starten ze even vaak.
+
+Dezelfde recency-weging geldt voor de doelpuntenschatting zelf (`ind90`):
+niet langer een plat seizoensgemiddelde, maar een gewogen gemiddelde dat
+recente vorm zwaarder laat wegen -- vooral relevant vlak na een rolwijziging.
+
+**Validatie en de grens daarvan.** `backtest.py` (voor/na dezelfde ronden,
+zie "Backtest en kalibratie") laat een kleine, consistente verbetering zien:
+RMSE 3.27 -> 3.25, rho (rangcorrelatie, belangrijker dan RMSE voor de
+opstellingskeuze) 0.44 -> 0.46. Eerlijk gezegd: dat is op een dataset van
+maar 3 evalueerbare ronden vroeg in het seizoen, en de uitkomst bleek in die
+test nauwelijks gevoelig voor de precieze `ROL_DECAY`-waarde (0.2 tot 1.0
+gaven bijna hetzelfde resultaat) -- simpelweg omdat er nog geen 6 ronden
+geschiedenis is om verschil in te laten zien. Het is dus een reële, maar
+zwak geteste verbetering. Draai `backtest.py` opnieuw zodra er meer ronden
+data zijn (het venster van 6 ronden is dan pas volledig gevuld) en stel
+`ROL_DECAY` bij als dat een duidelijkere winnaar aanwijst.
+
+Geen nieuwe bestanden, secrets of variabelen: dit verandert alleen de
+puntenformule in `cvhj_model.py`, gebruikt door zowel `cvhj_model.py` als
+`multi_periode.py`.
 
 ## Meerdere ronden vooruit kijken
 
@@ -495,6 +585,9 @@ kaarten" hierboven voor wat daar nog niet geverifieerd is.
 
 Nieuw:
 
+- `ROL_DECAY` en `CLEANSHEET_MINUTEN_DREMPEL` (zie "Rol en speeltijd") zijn
+  slechts op 3 ronden getest en de minutendrempel is een aanname, niet
+  bevestigd bij CVHJ. Draai `backtest.py` opnieuw zodra er meer data is.
 - De volgende deadline wordt op zeven dagen na de huidige geschat (zie
   "Uitgestelde duels"). Bij een interlandperiode of bekerweek klopt dat niet;
   corrigeer dan met `--venster-dagen`.
@@ -518,3 +611,10 @@ Nieuw:
 - `inleggen.py` bestaat, maar het inlogformulier en een live run vanuit
   GitHub Actions zijn niet geverifieerd (zie "Inleggen op coachvanhetjaar.nl").
   Staat uit totdat `INLEGGEN=ja` én `DRY_RUN=nee` bewust zijn gezet.
+- `vind_bijna_match()` (zie "Vangnet tegen vervuilde namen") is een vangnet,
+  geen garantie: het lost alleen het geval op waarbij precies één kandidaat
+  bij dezelfde club een deelverzameling-naam heeft. Een fout die de naam
+  ONHERKENBAAR verandert (i.p.v. een extra woord toevoegt), of een fout die
+  de CLUB verkeerd zet, glipt er nog steeds doorheen als een dood slot
+  (E=0, met een melding) — controleer bij zo'n melding altijd `prijzen.csv`
+  zelf voor je een geadviseerde transfer volgt.

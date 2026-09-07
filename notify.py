@@ -41,6 +41,17 @@ def bouw_tekst(d):
         r += ["### VOLGENDE RONDE BEGINT EEN NIEUWE PERIODE (3 transfers) ###",
               "Een transfer deze week bewaren kan lonen: volgende week heb je er drie.", ""]
 
+    # Vermoedelijke naam-vervuiling in prijzen.csv (zie cvhj_model.vind_bijna_match) is
+    # automatisch gerepareerd, maar hoort bovenaan te staan -- dit wijst op een
+    # scraper-bug die de moeite waard is om na te kijken, ook al is het advies
+    # hieronder er niet meer door verstoord.
+    if d.get("bijna_match"):
+        r += ["### LET OP: MOGELIJKE NAAM-BUG IN prijzen.csv (automatisch gerepareerd) ###"]
+        for x in d["bijna_match"]:
+            r.append(f"  '{x['selectie']}' (jouw selectie) <-> '{x['marktdata']}' (marktdata, zelfde club)")
+        r += ["  Dit advies is hierop gecorrigeerd, maar controleer de brondata."]
+        r.append("")
+
     h = d["huidig"]
     r.append(f"Huidig team: {h['verwacht']:.1f} verwachte punten, kosten EUR {h['kosten']:.2f}")
 

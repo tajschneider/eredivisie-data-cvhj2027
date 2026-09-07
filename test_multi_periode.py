@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
 Regressietest: met --horizon 1 moet multi_periode.py's MILP exact dezelfde
-beste spelersgroep en score vinden als cvhj_model.py's brute-force zoeker,
-voor 1 EN 3 transfers. Het zijn twee verschillende algoritmes voor precies
-dezelfde vraag (kies de beste transfer(s) voor de eerstvolgende ronde) --
-elk verschil in de uitkomst betekent een fout in een van de twee, niet een
-verbeterd inzicht.
+score vinden als cvhj_model.py's brute-force zoeker, voor 1 EN 3 transfers,
+met dezelfde spelersgroep TENZIJ er een exacte gelijkstand is (twee spelers
+met bit-voor-bit dezelfde E -- bijvoorbeeld twee bankspelers die allebei
+volledig op de positieprior terugvallen). Het zijn twee verschillende
+algoritmes voor precies dezelfde vraag (kies de beste transfer(s) voor de
+eerstvolgende ronde) -- elk verschil dat niet als zo'n gelijkstand te
+verklaren is, betekent een fout in een van de twee, niet een verbeterd
+inzicht.
 
 Draai dit na elke wijziging aan multi_periode.py of aan de spelregels-
 constraints in los_op() (budget, formatie, club, transfers):
@@ -39,7 +42,7 @@ def test_horizon_1_matcht_brute_force(ronde, transfers):
         per_ronde, ronde, 1, venster=6, min_minuten=60)
     e_multi = bereken_multi_E(reeksen, decay=0.84)  # decay is irrelevant bij horizon=1
     kandidaten = list(metadata.values())
-    selectie_ids = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
+    selectie_ids, _bijna_match = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
     nieuw, score_milp = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, transfers, m.FORMATIES)
 
     # --- cvhj_model.py, brute force ---
@@ -62,12 +65,29 @@ def test_horizon_1_matcht_brute_force(ronde, transfers):
 
     ok_score = abs(score_milp - score_bf) < 0.05
     ok_spelers = namen_milp == namen_bf
+
+    # Verschilt de spelersgroep, dan is dat alleen onschuldig als het om een
+    # EXACTE gelijkstand gaat: precies zoveel spelers anders aan elke kant,
+    # en die twee kantjes hebben (multiset-gewijs) bit-voor-bit dezelfde
+    # E-waarden. Dat bewijst een gelijkspel-wissel, geen scoreverschil dat
+    # toevallig wegvalt in de som.
+    gelijkstand = False
+    if not ok_spelers:
+        alleen_milp = namen_milp - namen_bf
+        alleen_bf = namen_bf - namen_milp
+        e_pool0 = {p["speler"]: p["E"] for p in pool_0}
+        es_milp = sorted(round(e_pool0.get(n, float("nan")), 6) for n in alleen_milp)
+        es_bf = sorted(round(e_pool0.get(n, float("nan")), 6) for n in alleen_bf)
+        gelijkstand = len(alleen_milp) == len(alleen_bf) and es_milp == es_bf and not any(
+            v != v for v in es_milp + es_bf)  # NaN uitsluiten (speler niet in pool_0 gevonden)
+
+    status = "gelijk" if ok_spelers else ("gelijkspel (E's kloppen exact)" if gelijkstand else "VERSCHILT")
     print(f"  ronde {ronde}, {transfers} transfer(s): MILP {score_milp:.2f} vs brute-force {score_bf:.2f}"
-          f"  spelersgroep {'gelijk' if ok_spelers else 'VERSCHILT'}")
+          f"  spelersgroep {status}")
     if not ok_spelers:
         print(f"    MILP:        {sorted(namen_milp)}")
         print(f"    brute-force: {sorted(namen_bf)}")
-    return ok_score and ok_spelers
+    return ok_score and (ok_spelers or gelijkstand)
 
 
 def main():

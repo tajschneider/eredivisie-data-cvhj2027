@@ -28,13 +28,26 @@ Methode in het kort
 2. Daaruit worden met ridge-regressie aanval- en verdedigingswaarden per club
    geschat, gekrompen naar een prior uit het vorige seizoen.
 3. Per speler wordt de individuele productie per 90 minuten geschat uit de
-   waargenomen doelpunten, gekrompen naar een positieprior.
-4. Verwachte CVHJ-punten = ploegpunten + clean sheet + individuele productie,
-   gewogen met de kans op een basisplaats.
+   waargenomen doelpunten, gekrompen naar een positieprior -- recency-gewogen
+   (ROL_DECAY, stap 1+2) zodat een recente rolwijziging (net basisspeler
+   geworden, of juist verloren) sneller doorwerkt dan een vlak seizoens-
+   gemiddelde zou doen. Optioneel aangevuld met FBref-xG (stap 5).
+4. Verwachte CVHJ-punten = ploegpunten (kans dat hij meedoet) + clean sheet
+   (kans op minstens CLEANSHEET_MINUTEN_DREMPEL minuten) + individuele
+   productie (doelpunten/assists/kaarten, geschaald naar VERWACHTE speeltijd
+   in plaats van alleen basisplaats-kans -- zie rol_kenmerken()).
 5. Optimalisatie kiest de beste elf en de beste transfers binnen de spelregels.
 
 Beperkingen die je moet kennen
 ------------------------------
+- ROL_DECAY en CLEANSHEET_MINUTEN_DREMPEL (stap 1+2) zijn gevalideerd met
+  backtest.py op een vroeg-seizoensdataset van maar 3 evalueerbare ronden --
+  een reële, maar zwakke, verbetering (RMSE 3.27->3.25, rho 0.44->0.46) die
+  met zoveel data nauwelijks gevoelig bleek voor de precieze ROL_DECAY-
+  waarde. Draai backtest.py opnieuw zodra er meer ronden data zijn, en
+  overweeg dan de waarde bij te stellen.
+- CLEANSHEET_MINUTEN_DREMPEL=60 is een AANNAME (de gangbare conventie in
+  de meeste fantasy-competities), niet bevestigd bij CVHJ zelf.
 - Assists en kaarten kunnen worden meegewogen via fbref.csv (scrape_fbref.py,
   stap 5) -- optioneel: zonder dat bestand draait dit script exact als
   voorheen. FBref's live paginastructuur is niet in dit project geverifieerd
@@ -66,6 +79,21 @@ KRIMP_CLUB = 1.0               # ridge-krimp clubratings naar de prior
 KRIMP_SPELER = 8.0             # wedstrijden prior bij de individuele productie
 BANK_FACTOR = 0.5              # een niet-ingevallen reserve scoort 50%
 INHAAL_FACTOR = 0.85           # inhaalduel telt mee, maar met onzekerheid
+
+# --------------------------------------------------- stap 1+2: rol en speeltijd
+# ROL_DECAY: gewicht van een ronde geleden t.o.v. de meest recente ronde in het
+# venster (per ronde terug in de tijd, dus 2 ronden terug weegt ROL_DECAY**2).
+# Een vlak gemiddelde over `venster` ronden (het oude gedrag, ROL_DECAY=1.0)
+# reageert traag op een rolwijziging: een speler die twee weken geleden net
+# basisspeler werd, sleept dan nog 4 oude bankronden mee. Met een kleinere
+# waarde wegen de laatste 1-2 ronden veel zwaarder, zodat zo'n wijziging
+# vrijwel meteen doorwerkt -- zie bouw_pool()/rol_kenmerken() en de README.
+ROL_DECAY = 0.65
+# Aanname (niet geverifieerd bij CVHJ zelf, wel de gangbare conventie in bijna
+# elke fantasy-competitie, waaronder de officiele Premier League-competitie):
+# de clean-sheet-bonus telt alleen als de speler minstens dit aantal minuten
+# heeft gespeeld. Pas aan als CVHJ een andere grens hanteert.
+CLEANSHEET_MINUTEN_DREMPEL = 60
 
 GOALWAARDE = {"Goalkeeper": 12, "Defender": 10, "Midfielder": 8, "Forward": 6}
 CLEANSHEET = {"K": 5.0, "V": 3.0, "M": 0.0, "A": 0.0}
@@ -121,6 +149,51 @@ def norm(s: str) -> str:
     s = (s or "").translate(tr)
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     return " ".join(s.split()).lower()
+
+
+def vind_bijna_match(naam, club, pool):
+    """Vangnet voor een naam die niet EXACT matcht met de pool, maar er wel
+    duidelijk hetzelfde-speler-uitziet: zelfde club, en de genormaliseerde
+    naam-woorden van de een zijn een deelverzameling van de ander (bv.
+    'gjivai zechiel' zit in 'gjivai zechiel basis').
+
+    Waarom dit nodig is: prijzen.csv's naamkolom hoort schoon te zijn --
+    scrape_prijzen.py's splits_status() strript statuswoorden als 'basis'/
+    'bank'/'nieuw' uit de brontekst. Maar die stripping is een regex tegen
+    een website die Claude niet live kan controleren; een ongeziene
+    schrijfwijze (andere hoofdletter, extra woord, ander scheidingsteken)
+    kan een keer door de mazen glippen. Zonder dit vangnet krijgt zo'n
+    speler dan een 'dood slot' (E=0, want geen match in selectie.csv) EN
+    verschijnt hij ALS APARTE MARKTSPELER in de pool (met zijn echte E) --
+    en dat levert precies een zinloos "verkoop X, koop X"-advies op, zoals
+    Thomas meldde met Gjivai Zechiël op 6 september 2026 (prijzen.csv bevatte
+    kennelijk 'Gjivai Zechiel basis' i.p.v. 'Gjivai Zechiel').
+
+    Dit repareert het symptoom (de speler telt weer gewoon als 'in bezit'
+    mee, met zijn echte E in plaats van 0), maar is bewust een vangnet en
+    geen vervanging voor het schoonhouden van de brondata -- de aanroeper
+    hoort dit luid te melden zodat de onderliggende scraper-bug alsnog
+    wordt opgemerkt en gefixt, niet stilzwijgend weg te laten vallen.
+
+    Retourneert het pool-item van de dichtstbijzijnde niet-exacte match, of
+    None als er geen (eenduidige) kandidaat is.
+    """
+    woorden = set(norm(naam).split())
+    if not woorden:
+        return None
+    kandidaten = []
+    for p in pool:
+        if p["club"] != club:
+            continue
+        pw = set(norm(p["speler"]).split())
+        if pw == woorden:
+            continue  # exacte match: hoort al gewoon gematcht te zijn, geen "bijna"
+        if woorden <= pw or pw <= woorden:
+            kandidaten.append(p)
+    # Bij meer dan 1 kandidaat is het niet meer eenduidig welke de bedoelde
+    # speler is (bv. twee bankspelers met een deels overlappende naam) --
+    # dan liever terugvallen op het oude dode-slot-gedrag dan gokken.
+    return kandidaten[0] if len(kandidaten) == 1 else None
 
 
 # ------------------------------------------------------------- wedstrijdmodel
@@ -186,6 +259,56 @@ def schat_clubratings(clubrijen):
 
 
 # ------------------------------------------------------------------ spelerspool
+def rol_kenmerken(rijen, decay):
+    """Recency-gewogen rol-/speeltijdkenmerken uit een lijst
+    (ronde_offset, minuten, goals, status) -- offset 0 is de meest recente
+    ronde in het venster. Vervangt het oude vlakke gemiddelde (stap 1+2):
+
+    - p_speelt: kans dat de speler AAN het spel komt (elke minuut telt).
+      Stuurt de ploegpunten -- die krijg je zodra je meedoet.
+    - p_60plus: kans dat hij minstens CLEANSHEET_MINUTEN_DREMPEL minuten
+      speelt. Stuurt de clean-sheet-bonus, die (aanname, zie de constante)
+      aan die drempel gebonden is -- een invaller van 20 minuten telt voor
+      de ploegpunten mee, maar niet voor de clean sheet.
+    - speelfractie: verwacht aandeel van de wedstrijd dat hij speelt
+      (gewogen minuten / 90). Zet een per-90-productieschatting (doelpunten,
+      assists, kaarten) om in een verwachting VOOR DEZE WEDSTRIJD -- een
+      speler die vaak na 60 minuten wordt gewisseld, moet minder productie
+      toegerekend krijgen dan iemand die altijd de volle wedstrijd speelt,
+      ook al starten ze allebei even vaak.
+    - n90/goals: gewogen minuten/90 en gewogen doelpunten, voor dezelfde
+      krimpformule als voorheen (ind90) maar dan recency-gewogen in plaats
+      van een plat seizoensgemiddelde.
+
+    Retourneert None als `rijen` leeg is (kan niet voorkomen via bouw_pool()'s
+    eigen aanroep, want die filtert al op v["min"] >= min_minuten, maar wel
+    verdedigd voor los hergebruik/tests).
+    """
+    totaal_gewicht = gew_minuten = gew_goals = 0.0
+    gew_speelt = gew_60plus = gew_basis = 0.0
+    for offset, minuten, goals, status in rijen:
+        g = decay ** offset
+        totaal_gewicht += g
+        gew_minuten += g * minuten
+        gew_goals += g * goals
+        if minuten > 0:
+            gew_speelt += g
+        if minuten >= CLEANSHEET_MINUTEN_DREMPEL:
+            gew_60plus += g
+        if status == "basis":
+            gew_basis += g
+    if totaal_gewicht == 0:
+        return None
+    return {
+        "n90": gew_minuten / 90,
+        "goals": gew_goals,
+        "p_speelt": gew_speelt / totaal_gewicht,
+        "p_60plus": gew_60plus / totaal_gewicht,
+        "speelfractie": min(0.97, gew_minuten / (90 * totaal_gewicht)),
+        "p_basis": min(0.97, 0.15 + 0.85 * gew_basis / totaal_gewicht),
+    }
+
+
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
               programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None):
     """Verwachte CVHJ-punten per speler voor de komende ronde.
@@ -205,15 +328,19 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
       krijgen een eigen tweeweg-menging (FBref, prior).
     """
     recent = {str(r) for r in range(max(1, laatste_ronde - venster + 1), laatste_ronde + 1)}
-    vorm = collections.defaultdict(lambda: {"min": 0, "goals": 0, "basis": 0, "duels": 0})
+    vorm = collections.defaultdict(lambda: {"min": 0, "goals": 0, "basis": 0, "duels": 0, "rijen": []})
     for r in spelerrijen:
         if r["ronde"] not in recent or r["status"] == "afwezig":
             continue
         v = vorm[r.get("speler_id") or norm(r["speler"])]
-        v["min"] += int(r["minuten"] or 0)
-        v["goals"] += int(r["goals"] or 0)
+        minuten, goals = int(r["minuten"] or 0), int(r["goals"] or 0)
+        v["min"] += minuten
+        v["goals"] += goals
         v["basis"] += 1 if r["status"] == "basis" else 0
         v["duels"] += 1
+        # offset 0 = meest recente ronde in het venster, groter = ouder --
+        # invoer voor rol_kenmerken()'s recency-weging (stap 1+2).
+        v["rijen"].append((laatste_ronde - int(r["ronde"]), minuten, goals, r["status"]))
 
     gem_lambda = sum(GEM_DOELPUNTEN * math.exp(a) for a in aanval.values()) / len(aanval)
 
@@ -241,24 +368,26 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             continue
         if not v or v["min"] < min_minuten:   # uitgestelde duels drukken de teller
             continue
-        n90 = v["min"] / 90
+        rol = rol_kenmerken(v["rijen"], ROL_DECAY)
+        n90 = rol["n90"]           # recency-gewogen i.p.v. het vlakke seizoenstotaal
+        p_speelt = rol["p_speelt"]
+        p_60plus = rol["p_60plus"]
+        speelfractie = rol["speelfractie"]
 
         # fbref-entry opzoeken (of niets: telt dan overal voor 0 mee, zie de
         # docstring hierboven). sleutel exact zoals lees_fbref() hem opbouwt.
         fb = fbref.get(f"{norm(r['speler'])}|{norm(club)}") if fbref is not None else None
         fb_n90 = fb["minuten_90s"] if fb else 0.0
 
-        # 1. doelpunten: drieweg-menging lokaal venster / fbref-xG / prior.
-        #    fb_n90=0 (fbref ontbreekt of speler niet gematcht) elimineert de
-        #    fbref-term volledig uit teller EN noemer -- wat overblijft is
-        #    bit-voor-bit de oude tweeweg-formule.
+        # 1. doelpunten: drieweg-menging lokaal venster (nu recency-gewogen) /
+        #    fbref-xG / prior. fb_n90=0 (fbref ontbreekt of speler niet
+        #    gematcht) elimineert de fbref-term volledig uit teller EN noemer.
         fb_gewicht = fb_n90 * XG_GEWICHT
         fb_doel_punten = (fb["xg_per90"] * GOALWAARDE[positie]) if fb else 0.0
-        ind90 = (v["goals"] * GOALWAARDE[positie]
+        ind90 = (rol["goals"] * GOALWAARDE[positie]
                  + fb_gewicht * fb_doel_punten
                  + PRIOR_P90[positie] * KRIMP_SPELER) / (n90 + fb_gewicht + KRIMP_SPELER)
 
-        p_basis = min(0.97, 0.15 + 0.85 * v["basis"] / max(v["duels"], 1))
         pos = KORT[positie]
 
         # 2. assists: fbref (gemiddelde van assists/90 en xAG/90, ter demping
@@ -286,13 +415,19 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                 return 0.0
             lv, lt = paar
             winst, gelijk, cs = uitkomstkansen(lv, lt)
-            e = p_basis * (3 * winst + gelijk)
-            e += p_basis * cs * CLEANSHEET[pos]
-            e += p_basis * ind90 * (lv / gem_lambda)
-            e += p_basis * e_assist90 * (lv / gem_lambda)   # assists volgen de aanval, net als doelpunten
-            e += p_basis * e_kaart90                        # kaarten hangen niet af van de tegenstander
+            # p_speelt/p_60plus/speelfractie i.p.v. één vlakke p_basis (stap 1+2):
+            # ploegpunten en kaartrisico horen bij "komt aan het spel", een
+            # clean sheet (aanname: CLEANSHEET_MINUTEN_DREMPEL) bij "speelt
+            # lang genoeg", en per-90-schattingen (doelpunten/assists) horen
+            # geschaald te worden naar VERWACHTE speelminuten, niet naar
+            # basisplaats-kans alleen -- zie rol_kenmerken().
+            e = p_speelt * (3 * winst + gelijk)
+            e += p_60plus * cs * CLEANSHEET[pos]
+            e += speelfractie * ind90 * (lv / gem_lambda)
+            e += speelfractie * e_assist90 * (lv / gem_lambda)   # assists volgen de aanval, net als doelpunten
+            e += speelfractie * e_kaart90                        # kaartrisico schaalt met speelminuten
             if pos == "K":
-                e += p_basis * 1.6 * lt / 5      # ruwe schatting reddingspunten
+                e += speelfractie * 1.6 * lt / 5     # ruwe schatting reddingspunten
             return weging * e
 
         E = punten(programma)
@@ -568,15 +703,25 @@ def main():
     geblesseerd = {norm(r["speler"]): r.get("blessure", "")
                    for r in prijsrijen if r.get("blessure")}
     op_naam = {norm(x["speler"]): x for x in pool}
-    selectie, ontbreekt = [], []
+    selectie, ontbreekt, bijna_match = [], [], []
     for naam, (club, pos, prijs) in selectie_in.items():
         x = op_naam.get(norm(naam))
         if x and x["club"] == club:
             selectie.append(x)
+            continue
+        y = vind_bijna_match(naam, club, pool)
+        if y:  # vermoedelijk dezelfde speler, alleen een vervuilde naam in prijzen.csv
+            selectie.append(y)
+            bijna_match.append((naam, y["speler"]))
         else:  # te weinig speeltijd of niet in de pool: dood slot, E = 0
             selectie.append({"speler": naam, "club": club, "pos": pos, "prijs": prijs,
                              "E": 0.0, "min": 0, "goals": 0, "basis": 0, "duels": 0})
             ontbreekt.append(naam)
+    if bijna_match:
+        print("LET OP MOGELIJKE NAAM-BUG IN prijzen.csv (automatisch gerepareerd, "
+              "maar controleer de brondata):")
+        for naam, gevonden in bijna_match:
+            print(f"    '{naam}' (jouw selectie) <-> '{gevonden}' (marktdata, zelfde club)")
     if ontbreekt:
         print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
     eigen_bless = [(n, geblesseerd[norm(n)]) for n in selectie_in if norm(n) in geblesseerd]
@@ -632,6 +777,7 @@ def main():
                 "bank": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
                           "E": round(x["E"], 3)} for x in bank]},
             "zonder_speeltijd": ontbreekt,
+            "bijna_match": [{"selectie": naam, "marktdata": gevonden} for naam, gevonden in bijna_match],
             "geblesseerd_in_selectie": [{"speler": n, "duur": d} for n, d in eigen_bless],
             "programma": [{"thuis": h, "uit": u} for h, u in programma],
             "inhaal": sorted(inhaal),
