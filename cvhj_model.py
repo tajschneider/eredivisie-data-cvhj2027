@@ -48,11 +48,13 @@ Beperkingen die je moet kennen
   overweeg dan de waarde bij te stellen.
 - CLEANSHEET_MINUTEN_DREMPEL=60 is een AANNAME (de gangbare conventie in
   de meeste fantasy-competities), niet bevestigd bij CVHJ zelf.
-- Assists en kaarten kunnen worden meegewogen via fbref.csv (scrape_fbref.py,
+- Assists en kaarten kunnen worden meegewogen via xg.csv (scrape_sofascore.py,
   stap 5) -- optioneel: zonder dat bestand draait dit script exact als
-  voorheen. FBref's live paginastructuur is niet in dit project geverifieerd
-  (een testfetch gaf een 403); controleer scrape_fbref.py's uitvoer handmatig
-  voor je erop vertrouwt. Er is ook geen backtestbron voor assists/kaarten
+  voorheen. Die bron is per februari 2026 Sofascore in plaats van FBref: FBref
+  verloor in januari 2026 zijn Opta-licentie en blokkeert bovendien
+  datacenter-IP's. Het script is niet live gedraaid in de bouwomgeving, wel
+  getest tegen de echte veldnamen; draai het één keer handmatig voor je erop
+  vertrouwt. Er is ook geen backtestbron voor assists/kaarten
   (spelers.csv houdt ze niet bij), dus de nauwkeurigheid van dat deel is
   niet gemeten, alleen wiskundig gecontroleerd op het terugvalgedrag.
 - Het model optimaliseert één ronde vooruit, niet de hele periode (zie
@@ -118,10 +120,10 @@ PRIOR_TEGEN = {
     "PEC Zwolle": 1.65, "Excelsior": 1.75, "Telstar": 1.75, "Willem II": 1.85,
     "ADO Den Haag": 1.85, "SC Cambuur": 1.95}
 
-# --------------------------------------------------- stap 5: FBref (xG/xA/kaarten)
+# ------------------------------------------------- stap 5: xG, assists, kaarten
 # Assists en kaarten ontbreken in de pouletips-bron; xG is een minder ruizige
 # schatter van doelpuntenproductie dan de ruwe telling uit een venster van een
-# paar duels. Alle drie komen uit fbref.csv (scrape_fbref.py). Ontbreekt dat
+# paar duels. Alle drie komen uit xg.csv (scrape_sofascore.py). Ontbreekt dat
 # bestand, of staat een speler er niet in, dan telt dit blok voor 0 mee -- zie
 # de commentaren in bouw_pool() voor de precieze terugvalgarantie.
 ASSISTWAARDE = {"Goalkeeper": 5, "Defender": 4, "Midfielder": 3, "Forward": 2}
@@ -581,8 +583,28 @@ def lees_selectie(pad):
     return selectie
 
 
+def xg_pad(pad, standaard="xg.csv", oud="fbref.csv"):
+    """Het te gebruiken xG-bestand: `pad`, of het oude fbref.csv als terugval.
+
+    De bron is sinds februari 2026 Sofascore (xg.csv) in plaats van FBref
+    (fbref.csv) -- FBref raakte zijn Opta-licentie kwijt en blokkeerde
+    bovendien datacenter-IP's. Het BESTANDSFORMAAT is identiek gebleven, dus
+    een repo waar nog een oud fbref.csv in staat blijft gewoon werken; die
+    data is alleen niet meer actueel.
+    """
+    if Path(pad).exists():
+        return pad
+    if pad == standaard and Path(oud).exists():
+        return oud
+    return pad
+
+
 def lees_fbref(pad):
-    """fbref.csv (scrape_fbref.py) -> {norm(speler)|norm(club): {...}}, of None.
+    """xg.csv (scrape_sofascore.py) -> {norm(speler)|norm(club): {...}}, of None.
+
+    Heet nog lees_fbref omdat het bestandsformaat exact hetzelfde is gebleven
+    toen de bron van FBref naar Sofascore ging; hernoemen zou alleen maar
+    aanroepers breken zonder dat er iets aan de werking verandert.
 
     None betekent "bestand ontbreekt" en is het signaal voor bouw_pool() om de
     hele stap-5-bijdrage over te slaan (0.0), niet alleen de prior te gebruiken
@@ -639,8 +661,11 @@ def main():
                    help="programma van de komende ronde (scrape_programma.py)")
     p.add_argument("--selectie", default="selectie.csv",
                    help="huidige vijftien; valt terug op het blok onderin")
-    p.add_argument("--fbref", default="fbref.csv",
-                   help="xG/xA/kaarten van scrape_fbref.py; ontbreekt het, dan "
+    # --fbref blijft als alias werken: FBref was tot januari 2026 de bron, nu is
+    # dat Sofascore (scrape_sofascore.py). Het BESTANDSFORMAAT is identiek, dus
+    # alleen de naam verandert; een oud fbref.csv wordt hieronder nog gevonden.
+    p.add_argument("--xg", "--fbref", dest="xg", default="xg.csv",
+                   help="xG/xA/kaarten van scrape_sofascore.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
     p.add_argument("--json", metavar="BESTAND",
                    help="besluit machineleesbaar wegschrijven")
@@ -685,10 +710,11 @@ def main():
     print(f"Clubratings uit {n_obs} wedstrijden met marktnotering "
           f"(thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
-    fbref = lees_fbref(a.fbref)
+    pad_xg = xg_pad(a.xg)
+    fbref = lees_fbref(pad_xg)
     if fbref is None:
-        print(f"LET OP: {a.fbref} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder FBref (zoals vóór stap 5).")
+        print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
+              f"draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.")
 
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
@@ -697,8 +723,8 @@ def main():
     if fbref is not None:
         pool_sleutels = {f"{norm(x['speler'])}|{norm(x['club'])}" for x in pool}
         n_match = len(pool_sleutels & fbref.keys())
-        print(f"  FBref gekoppeld: {n_match}/{len(pool)} spelers uit de pool "
-              f"(fbref.csv bevat {len(fbref)} spelers)")
+        print(f"  xG-data gekoppeld: {n_match}/{len(pool)} spelers uit de pool "
+              f"({pad_xg} bevat {len(fbref)} spelers)")
 
     geblesseerd = {norm(r["speler"]): r.get("blessure", "")
                    for r in prijsrijen if r.get("blessure")}

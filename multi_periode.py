@@ -306,8 +306,8 @@ def main():
     p.add_argument("--programma", default="programma.csv")
     p.add_argument("--selectie", default="selectie.csv")
     p.add_argument("--perioden", default="perioden.csv")
-    p.add_argument("--fbref", default="fbref.csv",
-                   help="xG/xA/kaarten van scrape_fbref.py; ontbreekt het, dan "
+    p.add_argument("--xg", "--fbref", dest="xg", default="xg.csv",
+                   help="xG/xA/kaarten van scrape_sofascore.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
     p.add_argument("--ronde", type=int, required=True)
     p.add_argument("--transfers", default="1",
@@ -364,10 +364,13 @@ def main():
     aanval, verdediging, thuisvoordeel, n_obs = m.schat_clubratings(clubrijen)
     print(f"Clubratings uit {n_obs} wedstrijden (thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
-    fbref = m.lees_fbref(a.fbref)
+    pad_xg = m.xg_pad(a.xg)
+    fbref = m.lees_fbref(pad_xg)
     if fbref is None:
-        print(f"LET OP: {a.fbref} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder FBref (zoals vóór stap 5).")
+        print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
+              f"draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.")
+    else:
+        print(f"xG-data geladen: {len(fbref)} spelers uit {pad_xg}")
 
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:

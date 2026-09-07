@@ -58,16 +58,16 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
                       -> kalibratie/status.json (altijd)
                       -> e-mail (alleen bij een daadwerkelijke aanpassing)
 
-fbref.yml (nieuw, ALLEEN handmatig -- bewust niet op een schema, zie
-           "FBref: xG, assists en kaarten")
-  scrape_fbref.py -> fbref.csv
-                     (pikt wekelijks.yml automatisch op als het bestand
-                      al in de repo staat; ontbreekt het, dan verandert
-                      er niets aan het bestaande advies)
+xg.yml (ma 05:00 en do 08:00 UTC -- telkens vóór wekelijks.yml; zie
+        "xG, assists en kaarten")
+  scrape_sofascore.py -> xg.csv
+                     (pikt wekelijks.yml automatisch op; ontbreekt het,
+                      dan draait het advies zonder stap 5 -- een mindere
+                      schatting, geen storing)
 ```
 
 Alle workflows die naar `main` pushen (`wekelijks.yml`, `data.yml`,
-`kalibratie.yml`, `fbref.yml`) staan in dezelfde concurrency-groep en doen
+`kalibratie.yml`, `xg.yml`) staan in dezelfde concurrency-groep en doen
 `git pull --rebase` voor de push, zodat ze elkaar niet omverduwen.
 `wekelijks.yml` draait een uur na `scrape.yml`.
 
@@ -90,7 +90,7 @@ pip install scipy                # alleen nodig voor multi_periode.py
 
 python scrape_prijzen.py        # -> prijzen.csv
 python scrape_programma.py      # -> programma.csv
-python scrape_fbref.py          # -> fbref.csv (optioneel, zie "FBref" hieronder)
+python scrape_sofascore.py      # -> xg.csv (optioneel, zie "xG" hieronder)
 
 python cvhj_model.py --ronde 6 --transfers 1 --json besluit.json
 python notify.py besluit.json --toon      # advies afdrukken zonder te mailen
@@ -449,60 +449,87 @@ besluit.json-vorm als cvhj_model.py (met een paar extra velden die notify.py
 gebruikt om de gekozen horizon en decay in de mail te vermelden zodra die
 horizon groter is dan 1).
 
-## FBref: xG, assists en kaarten
+## xG, assists en kaarten (Sofascore)
 
 Stap 5 uit het optimalisatieplan. Pouletips (de bron van `clubs.csv` en
 `spelers.csv`) levert geen assists en geen kaarten, en de doelpuntenschatting
 draaide tot nu toe op RUWE doelpunten uit een venster van een paar recente
-duels -- ruizig, vooral vroeg in het seizoen. `scrape_fbref.py` haalt xG, xAG
-(verwachte assists), en gele/rode kaarten per speler op uit FBref's
-standaardstatistiekentabel voor de Eredivisie, in `fbref.csv`.
+duels -- ruizig, vooral vroeg in het seizoen. `scrape_sofascore.py` haalt xG,
+xAG (verwachte assists), en gele/rode kaarten per speler op, in `xg.csv`.
 
-**Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `fbref.csv`,
+### Waarom niet meer FBref
+
+Dit draaide oorspronkelijk op FBref. Die bron is om twee onafhankelijke
+redenen vervallen, beide bevestigd:
+
+1. **De data is er niet meer.** Sports Reference (moederbedrijf van FBref)
+   raakte op 23 januari 2026 zijn Opta-licentie kwijt na een geschil over de
+   overeenkomst. De xG/xAG-data is daar weg; alleen basisstatistiek blijft.
+   Aangekondigd als permanent.
+2. **De pagina is niet bereikbaar vanaf GitHub Actions.** FBref geeft HTTP 403
+   op scripted requests vanaf datacenter-IP's. De oude `fbref.yml` liep daar in
+   de praktijk ook op stuk.
+
+Sofascore heeft beide problemen niet, en geeft bovendien exacte gespeelde
+minuten waar FBref afgeronde "90s" gaf -- de per-90-omrekening is daardoor
+iets nauwkeuriger dan voorheen.
+
+### Wat er wél en niet geverifieerd is
+
+**Wel** (met echte, live respons van `api.sofascore.com`):
+
+- Toernooi-id 37 = Eredivisie; `/seasons` geeft het nieuwste seizoen vooraan.
+- `/statistics` levert per speler exact de benodigde velden: `goals`,
+  `assists`, `expectedGoals`, `expectedAssists`, `yellowCards`, `redCards`,
+  `minutesPlayed`, `appearances`. Voorbeeld uit de echte respons: Gjivai
+  Zechiel (Feyenoord) -- 4 goals, 3 assists, xG 1.83, xAG 1.71, 1 gele kaart,
+  440 minuten, 5 wedstrijden.
+- Paginering met `limit`/`offset` werkt (~4-5 verzoeken voor de hele competitie).
+- Alle 18 clubnamen zoals Sofascore ze schrijft -- `CLUB_ALIAS_SOFASCORE` is
+  dus nagelopen, geen gok.
+- De `robots.txt` van sofascore.com noemt `/api/` niet en verbiedt het dus niet.
+  Dat is niet hetzelfde als expliciete toestemming in de gebruiksvoorwaarden;
+  bij één ophaalactie per paar dagen is dit een hobbygebruik-afweging die je
+  zelf moet maken. De gelicentieerde route is Sportmonks (betaald, ~€48/mnd).
+
+**Niet**: het script als geheel is nooit live gedraaid -- de bouwomgeving kon
+`api.sofascore.com` niet met een eigen HTTP-verzoek bereiken. De parsing is
+getest tegen een synthetische respons met exact de echte veldnamen en waarden
+(`test_sofascore.py`). **Draai `xg.yml` dus één keer handmatig** en controleer
+het aantal spelers en de 18 clubnamen in de samenvatting.
+
+### Terugval en menging
+
+**Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `xg.csv`,
 dan draaien `cvhj_model.py` en `multi_periode.py` WISKUNDIG IDENTIEK aan vóór
-deze stap -- getest door de output met en zonder dit bestand te diffen op
-dezelfde data (enige verschil: een `LET OP`-regel dat het bestand ontbreekt).
-Staat een speler niet in `fbref.csv` (transfer, te weinig FBref-minuten, naam/
-club niet gematcht), dan geldt voor hem hetzelfde: 0-bijdrage, alsof het
-bestand er voor hem niet is.
+deze stap (enige verschil: een `LET OP`-regel dat het bestand ontbreekt).
+Staat een speler er niet in (transfer, geen speelminuten, naam/club niet
+gematcht), dan geldt voor hem hetzelfde: 0-bijdrage.
 
-**De schatting is een gewogen menging, geen vervanging.** Doelpunten worden nu
-een drieweg-menging van het lokale venster, FBref's xG-per-90 over het hele
-seizoen, en de bestaande positieprior -- elk gewogen naar hoeveel data erachter
-zit (`XG_GEWICHT` dempt hoeveel een FBref-90-tal weegt t.o.v. een lokaal
-90-tal, want xG is niet gecorrigeerd voor de specifieke tegenstanders die het
-model elders al verrekent). Assists en kaarten hebben geen lokale bron, dus
-daar is het een tweeweg-menging van FBref en een positieprior
+**De schatting is een gewogen menging, geen vervanging.** Doelpunten worden
+een drieweg-menging van het lokale venster, de xG-per-90 over het hele
+seizoen, en de bestaande positieprior -- elk gewogen naar hoeveel data
+erachter zit (`XG_GEWICHT` dempt hoeveel een seizoens-90-tal weegt t.o.v. een
+lokaal 90-tal, want xG is niet gecorrigeerd voor de specifieke tegenstanders
+die het model elders al verrekent). Assists en kaarten hebben geen lokale
+bron, dus daar is het een tweeweg-menging met een positieprior
 (`KRIMP_ASSIST`/`KRIMP_KAART`, `PRIOR_ASSIST_RATE`/`PRIOR_GEEL_RATE`/
 `PRIOR_ROOD_RATE` in `cvhj_model.py`).
 
-**Twee dingen die nog niet geverifieerd zijn, en dat moeten worden voordat je
-dit vertrouwt:**
+De prior-constanten zijn schattingen op basis van algemene kennis van
+posities, niet gekalibreerd op jouw data -- `spelers.csv` houdt geen assists
+of kaarten bij, dus `backtest.py` kan dat deel niet toetsen (het RMSE-getal
+daar blijft een ondergrens die alleen doelpunten/ploegpunten/clean sheets
+meet). De richting klopt (hoge xG/xAG stijgt, veel kaarten daalt), de precieze
+grootte is niet gevalideerd.
 
-- *De scraper zelf.* FBref draait achter Cloudflare; een enkele testfetch
-  vanuit deze bouwomgeving kreeg al een 403, zonder dat er iets geprobeerd was
-  om te blokkeren. Of `scrape_fbref.py` vanuit GitHub Actions wél werkt is dus
-  niet bevestigd -- draai `fbref.yml` een paar keer met de hand en controleer
-  de samenvatting (aantal spelers, onbekende clubnamen) voordat je overweegt
-  om het aan de wekelijkse keten te koppelen. Zolang je dat niet doet, telt
-  stap 5 gewoon niet mee (zie hierboven) en verandert er niets aan de
-  bestaande mail.
-- *De prior-constanten.* `PRIOR_ASSIST_RATE`, `PRIOR_GEEL_RATE` en
-  `PRIOR_ROOD_RATE` zijn schattingen op basis van algemene kennis van
-  posities, niet gekalibreerd op jouw data -- `spelers.csv` houdt geen
-  assists of kaarten bij, dus `backtest.py` kan dat deel van de schatting
-  niet toetsen (het RMSE-getal daar blijft, zoals altijd al vermeld stond,
-  een ondergrens die alleen doelpunten/ploegpunten/clean sheets meet). Zie de
-  scoretest hierboven met een verzonnen `fbref.csv`: de richting klopt (een
-  speler met hoge xG/xAG stijgt, een speler met veel kaarten daalt), de
-  precieze grootte is niet gevalideerd.
-
-**Geen nieuwe secrets of variabelen.** `fbref.yml` is een losse, handmatige
-workflow (`workflow_dispatch`, geen schema) die alleen `fbref.csv` commit --
-bewust NIET gekoppeld aan `wekelijks.yml`, gezien de twee punten hierboven.
-Staat `fbref.csv` eenmaal in de repo, dan pikken `cvhj_model.py` en
-`multi_periode.py` het automatisch op (standaardpad `fbref.csv`, net als
-`clubs.csv`/`spelers.csv`).
+**Geen nieuwe secrets of variabelen.** `xg.yml` draait maandag 05:00 en
+donderdag 08:00 UTC -- telkens vóór `wekelijks.yml` -- en commit alleen
+`xg.csv`. Bewust een APARTE workflow: loopt het ophalen stuk, dan blijft het
+wekelijkse advies gewoon draaien (zonder stap 5). Naamcompatibiliteit: het
+bestandsformaat is identiek aan het oude `fbref.csv`, de vlag `--fbref` werkt
+nog als alias voor `--xg`, en staat er nog een oud `fbref.csv` in de repo dan
+wordt dat als terugval gelezen als `xg.csv` ontbreekt.
 
 ## Inleggen op coachvanhetjaar.nl
 
@@ -580,11 +607,16 @@ Onveranderd uit het model: maximaliseert de verwachting en niet de
 klassering (per ronde; over de horizon wordt nu wel meerdere ronden
 vooruitgekeken, zie hierboven), en geen blessurenieuws van vandaag. De mail
 herhaalt dat laatste elke week als expliciete controlestap. Assists en
-kaarten kunnen worden meegewogen via `fbref.csv`, zie "FBref: xG, assists en
-kaarten" hierboven voor wat daar nog niet geverifieerd is.
+kaarten kunnen worden meegewogen via `xg.csv`, zie "xG, assists en kaarten"
+hierboven voor wat daar nog niet geverifieerd is.
 
 Nieuw:
 
+- `scrape_sofascore.py` is niet live gedraaid in de bouwomgeving (wel getest
+  tegen de echte veldnamen). Draai `xg.yml` één keer handmatig en controleer
+  het aantal spelers en de 18 clubnamen voordat je erop vertrouwt. Sofascore's
+  `/api/` is een niet-gedocumenteerde interne API: geen SLA, kan zonder
+  aankondiging wijzigen -- hetzelfde risicoprofiel als de pouletips-scrapers.
 - `ROL_DECAY` en `CLEANSHEET_MINUTEN_DREMPEL` (zie "Rol en speeltijd") zijn
   slechts op 3 ronden getest en de minutendrempel is een aanname, niet
   bevestigd bij CVHJ. Draai `backtest.py` opnieuw zodra er meer data is.
