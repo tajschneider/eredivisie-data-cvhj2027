@@ -49,6 +49,7 @@ jobs:
       - name: Kalibratie draaien
         id: kalibratie
         run: |
+          set -o pipefail
           python auto_kalibreer.py \
             --elke "${{ vars.KALIBREER_ELKE || 4 }}" \
             --min-rondes "${{ vars.MIN_RONDES_KALIBRATIE || 8 }}" \
