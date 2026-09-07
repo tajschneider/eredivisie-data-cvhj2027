@@ -610,6 +610,13 @@ herhaalt dat laatste elke week als expliciete controlestap. Assists en
 kaarten kunnen worden meegewogen via `xg.csv`, zie "xG, assists en kaarten"
 hierboven voor wat daar nog niet geverifieerd is.
 
+Voor je een workflow of een import aanpast: draai `python test_workflows.py`.
+Die controleert statisch of elke workflow installeert wat zijn scripts
+(direct én indirect) nodig hebben. Drie storingen in één week kwamen uit die
+hoek -- een ontbrekend bestand, een verstopte crash, een vergeten `numpy` --
+en dit vangt die soort af zonder iets te hoeven draaien. `xg.yml` draait hem
+ook automatisch, twee keer per week.
+
 Nieuw:
 
 - `scrape_sofascore.py` is niet live gedraaid in de bouwomgeving (wel getest
