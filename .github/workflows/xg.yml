@@ -44,7 +44,18 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
 
-      - run: pip install requests
+      # requests: voor scrape_sofascore.py zelf.
+      # numpy:    test_sofascore.py controleert de koppeling met het model en
+      #           importeert daarvoor cvhj_model.py, dat numpy nodig heeft.
+      #           Weglaten geeft een ModuleNotFoundError in de teststap.
+      - run: pip install requests numpy
+
+      # Draait hier omdat deze workflow toch al twee keer per week draait en
+      # zijn falen niets kritieks blokkeert: de controle kijkt of ALLE workflows
+      # installeren wat hun scripts nodig hebben. Precies de fout die deze
+      # workflow zelf maakte (numpy vergeten), maar dan voordat hij live gaat.
+      - name: Workflows controleren op ontbrekende afhankelijkheden
+        run: python test_workflows.py
 
       - name: Regressietest scraper
         run: python test_sofascore.py
