@@ -45,6 +45,12 @@ jobs:
           for f in clubs.csv spelers.csv prijzen.csv; do
             [ -f "$f" ] || { echo "::error::$f ontbreekt -- draai eerst de data- of wekelijks-workflow"; exit 1; }
           done
+          # auto_kalibreer.py importeert deze twee -- ontbreken ze (bv. een keer
+          # niet meegeüpload naar de repo), dan krijg je anders pas verderop een
+          # cryptische "ModuleNotFoundError" in plaats van dit duidelijke bericht.
+          for f in backtest.py calibrate.py; do
+            [ -f "$f" ] || { echo "::error::$f ontbreekt in de repo -- upload dit bestand (zie cvhj-model.zip)"; exit 1; }
+          done
 
       - name: Kalibratie draaien
         id: kalibratie
