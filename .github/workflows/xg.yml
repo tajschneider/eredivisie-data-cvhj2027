@@ -1,0 +1,90 @@
+name: xG-data ophalen (Sofascore)
+
+# Vervangt fbref.yml. FBref viel als bron weg: Opta trok in januari 2026 de
+# licentie in (de xG/xAG-data is daar weg) EN FBref blokkeert datacenter-IP's
+# met een 403 -- wat een GitHub Actions-runner nu eenmaal is. Sofascore heeft
+# beide problemen niet; het endpoint antwoordde in een test vanaf een
+# datacenter-IP gewoon met 200.
+#
+# BEWUST LOS van wekelijks.yml gehouden, net als fbref.yml was: als het
+# ophalen stukloopt, moet het wekelijkse advies gewoon blijven doordraaien.
+# Het model valt dan terug op het gedrag van vóór stap 5 (geen assists en
+# kaarten meegewogen) -- dat is een mindere schatting, geen storing.
+#
+# De tijden liggen telkens vóór wekelijks.yml (maandag 07:00, donderdag 09:00),
+# zodat het advies met verse xG-data rekent.
+#
+# LET OP bij de eerste keer: draai dit één keer handmatig (Run workflow) en
+# controleer in de samenvatting het aantal spelers, het aantal clubs (18) en
+# of er geen onbekende clubnamen worden gemeld. Het script schrijft niets bij
+# te weinig spelers, dus half gevulde data kan niet doorstromen.
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+    - cron: '0 8 * * 4'
+  workflow_dispatch:
+    inputs:
+      seizoen:
+        description: 'Seizoen-id forceren (leeg = automatisch het nieuwste)'
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  xg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests
+
+      - name: Regressietest scraper
+        run: python test_sofascore.py
+
+      - name: xG-data ophalen
+        run: |
+          set -o pipefail
+          python scrape_sofascore.py \
+            ${{ github.event.inputs.seizoen && format('--seizoen {0}', github.event.inputs.seizoen) || '' }} \
+            | tee xg_log.txt
+
+      - name: Samenvatting
+        run: |
+          {
+            echo "### xG-data opgehaald (Sofascore)"
+            echo ""
+            echo '```'
+            cat xg_log.txt
+            echo '```'
+            echo ""
+            echo "Eerste regels van xg.csv:"
+            echo '```'
+            head -5 xg.csv
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Vastleggen
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add xg.csv
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "xG-data bijgewerkt $(date +%F)"
+          git pull --rebase origin main
+          git push
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xg
+          path: |
+            xg.csv
+            xg_log.txt
