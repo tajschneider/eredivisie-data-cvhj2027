@@ -1,512 +1,513 @@
-team,speler,positie,prijs,speler_id
-ADO Den Haag,Illaijh de Ruijter,Defender,1.20,illaijh-de-ruijter
-ADO Den Haag,Jonas Jensen-Abbew nieuw,Defender,1.20,jonas-jensen-abbew
-ADO Den Haag,Lasse Wilhelm nieuw,Defender,1.20,lasse-wilhelm
-ADO Den Haag,Matteo Waem,Defender,1.50,matteo-waem
-ADO Den Haag,Milan Hokke,Defender,1.50,milan-hokke
-ADO Den Haag,Othniël Raterink,Defender,1.50,othniel-raterink
-ADO Den Haag,Pascal Mulder,Defender,1.50,pascal-mulder
-ADO Den Haag,Sanyika Bergtop,Defender,1.00,sanyika-bergtop
-ADO Den Haag,Sekou Sylla,Defender,1.50,sekou-sylla
-ADO Den Haag,"Cameron Peupion ! geblesseerd, duur onbekend",Forward,1.50,cameron-peupion
-ADO Den Haag,Dani van Loenen nieuw,Forward,1.00,dani-van-loenen
-ADO Den Haag,Daryl van Mieghem,Forward,1.50,daryl-van-mieghem
-ADO Den Haag,Donát Bárány nieuw,Forward,1.50,donat-barany
-ADO Den Haag,Evan Rottier,Forward,1.50,evan-rottier
-ADO Den Haag,Jalen Hawkins,Forward,1.20,jalen-hawkins
-ADO Den Haag,Jesse Bal,Forward,1.50,jesse-bal
-ADO Den Haag,Luka Reischl,Forward,1.50,luka-reischl
-ADO Den Haag,Nigel Thomas nieuw,Forward,1.20,nigel-thomas
-ADO Den Haag,Yannick Eduardo,Forward,1.50,yannick-eduardo
-ADO Den Haag,Caleb Kramer nieuw,Goalkeeper,1.00,caleb-kramer
-ADO Den Haag,Kilian Nikièma bank,Goalkeeper,1.50,kilian-nikiema
-ADO Den Haag,Niclas Thiede nieuw,Goalkeeper,1.20,niclas-thiede
-ADO Den Haag,Sem Eekhout nieuw,Goalkeeper,1.00,sem-eekhout
-ADO Den Haag,Alexander Veselov nieuw,Midfielder,1.00,alexander-veselov-nieuw
-ADO Den Haag,Finn de Bruin,Midfielder,1.20,finn-de-bruin
-ADO Den Haag,Jan Zamburek,Midfielder,1.50,jan-zamburek
-ADO Den Haag,Juho Kilo,Midfielder,1.50,juho-kilo
-ADO Den Haag,"Matej Sin ! geblesseerd, duur onbekend",Midfielder,1.50,matej-sin
-ADO Den Haag,Mylian Jiménez,Midfielder,1.20,mylian-jimenez
-AZ,Andrea Natali,Defender,1.20,andrea-natali
-AZ,"Denso Kasius ! geblesseerd, duur onbekend",Defender,2.20,denso-kasius
-AZ,Elijah Dijkstra,Defender,2.00,elijah-dijkstra
-AZ,Mateo Chávez basis,Defender,2.00,mateo-chavez
-AZ,Mees de Wit,Defender,2.50,mees-de-wit
-AZ,Rion Ichihara,Defender,1.80,rion-ichihara
-AZ,Seiya Maikuma,Defender,2.00,seiya-maikuma
-AZ,Wesley Hoedt nieuw,Defender,2.00,wesley-hoedt
-AZ,Wouter Goes,Defender,2.20,wouter-goes
-AZ,Ayoub Oufkir,Forward,1.80,ayoub-oufkir
-AZ,Bendegúz Kovács,Forward,1.20,bendeguz-kovacs
-AZ,Jizz Hornkamp,Forward,2.00,jizz-hornkamp
-AZ,Julian Oerip nieuw,Forward,1.20,julian-oerip-nieuw
-AZ,Mexx Meerdink,Forward,2.50,mexx-meerdink
-AZ,Ro-Zangelo Daal,Forward,2.00,ro-zangelo-daal
-AZ,Wassim Bouziane,Forward,1.20,wassim-bouziane
-AZ,Weslley Patati,Forward,2.00,weslley-patati
-AZ,"Hobie Verhulst ! geblesseerd, duur onbekend",Goalkeeper,1.80,hobie-verhulst
-AZ,Ismail Ka nieuw,Goalkeeper,1.50,ismail-ka-nieuw
-AZ,Jari De Busser,Goalkeeper,2.20,jari-de-busser
-AZ,Jeroen Zoet,Goalkeeper,2.00,jeroen-zoet
-AZ,Rome-Jayden Owusu-Oduro,Goalkeeper,2.20,rome-jayden-owusu-oduro
-AZ,Calvin Stengs nieuw,Midfielder,2.20,calvin-stengs
-AZ,Dave Kwakman,Midfielder,1.50,dave-kwakman
-AZ,Hessel de Wit,Midfielder,1.20,hessel-de-wit
-AZ,Jordy Clasie,Midfielder,1.80,jordy-clasie
-AZ,"Kees Smit ! geblesseerd, duur onbekend",Midfielder,2.00,kees-smit
-AZ,Lewis Schouten,Midfielder,1.20,lewis-schouten
-AZ,Peer Koopmeiners,Midfielder,2.00,peer-koopmeiners
-AZ,Stije Resink ! geblesseerd tot en met 1 januari,Midfielder,1.80,stije-resink
-AZ,Valdemar Byskov nieuw,Midfielder,2.00,valdemar-byskov
-Ajax,Aaron Bouwman,Defender,2.50,aaron-bouwman
-Ajax,Anton Gaaei,Defender,2.50,anton-gaaei
-Ajax,Caio Henrique nieuw,Defender,2.50,caio-henrique
-Ajax,"Daley Blind nieuw ! geblesseerd, duur onbekend",Defender,2.50,daley-blind
-Ajax,Dies Janse,Defender,2.00,dies-janse
-Ajax,Jofre Torrents nieuw,Defender,2.20,jofre-torrents
-Ajax,Lucas Rosa,Defender,2.20,lucas-rosa
-Ajax,Owen Wijndal,Defender,2.00,owen-wijndal
-Ajax,Youri Baas,Defender,2.80,youri-baas
-Ajax,Amourricho van Axel Dongen nieuw,Forward,1.50,amourricho-van-axel-dongen-nieuw
-Ajax,Kasper Dolberg,Forward,2.50,kasper-dolberg
-Ajax,Marcos Leonardo nieuw,Forward,3.00,marcos-leonardo
-Ajax,Oliver Edvardsen,Forward,2.00,oliver-edvardsen
-Ajax,Tolu Arokodare,Forward,2.50,tolu-arokodare
-Ajax,Viktor Tsyhankov nieuw,Forward,3.00,viktor-tsyhankov-nieuw
-Ajax,Joeri Heerkens,Goalkeeper,1.80,joeri-heerkens
-Ajax,Maarten Paes,Goalkeeper,2.00,maarten-paes
-Ajax,Marc-André ter Stegen nieuw,Goalkeeper,2.80,marc-ter-stegen
-Ajax,Abdellah Ouazane,Midfielder,1.50,abdellah-ouazane
-Ajax,Davy Klaassen,Midfielder,2.80,davy-klaassen
-Ajax,Jorthy Mokio,Midfielder,2.00,jorthy-mokio
-Ajax,Julian Brandt basis,Midfielder,2.80,julian-brandt
-Ajax,Mohamed Abdalla nieuw,Midfielder,1.20,mohamed-abdalla-nieuw
-Ajax,Oscar Gloukh,Midfielder,2.80,oscar-gloukh
-Ajax,Rayane Bounida,Midfielder,2.00,rayane-bounida
-Ajax,Sofyan Amrabat nieuw,Midfielder,2.20,sofyan-amrabat
-Ajax,Steven Berghuis,Midfielder,2.50,steven-berghuis
-Excelsior,Casper Widell,Defender,1.50,casper-widell
-Excelsior,Eric da Silva Moreira nieuw,Defender,1.20,eric-da-silva-moreira
-Excelsior,Guilliano Cairo,Defender,1.00,giulliano-cairo
-Excelsior,Jan Plug,Defender,1.50,jan-plug
-Excelsior,Kasey Bos nieuw,Defender,1.50,kasey-bos
-Excelsior,Marlon van de Wetering,Defender,1.00,marlon-van-de-wetering
-Excelsior,Osman Turay nieuw,Defender,1.20,osman-turay
-Excelsior,Rick Meissen,Defender,1.50,rick-meissen
-Excelsior,Simon Janssen,Defender,1.20,simon-janssen
-Excelsior,"Alireza Jahanbakhsh nieuw ! geblesseerd, duur onbekend",Forward,1.80,alireza-jahanbakhsh
-Excelsior,Aymen Sliti,Forward,1.50,aymen-sliti
-Excelsior,David Garden nieuw,Forward,1.20,david-garden
-Excelsior,"Mario Domínguez nieuw ! geblesseerd, duur onbekend",Forward,1.50,mario-dominguez
-Excelsior,Nesto Groen,Forward,1.00,nesto-groen
-Excelsior,Ágúst Orri Thorsteinsson nieuw,Forward,1.50,agust-orri-thorsteinsson
-Excelsior,Celton Biai,Goalkeeper,1.20,celton-biai
-Excelsior,Stijn van Gassel,Goalkeeper,1.80,stijn-van-gassel
-Excelsior,Tijmen Holla,Goalkeeper,1.00,tijmen-holla
-Excelsior,Daniel van Vianen,Midfielder,1.20,daniel-van-vianen
-Excelsior,Ilano Silva Timas,Midfielder,1.50,ilano-silva-timas
-Excelsior,Irakli Yegoian basis,Midfielder,1.80,irakli-yegoian
-Excelsior,Lennard Hartjes,Midfielder,1.20,lennard-hartjes
-Excelsior,"Noah Naujoks ! geblesseerd, duur onbekend",Midfielder,1.80,noah-naujoks
-Excelsior,Valentin Sulzbacher nieuw,Midfielder,1.20,valentin-sulzbacher
-Excelsior,Yacqub Finey nieuw,Midfielder,1.50,y-finey
-FC Groningen,Elvis van der Laan nieuw,Defender,1.00,elvis-van-der-laan
-FC Groningen,Jesper Mosselaar nieuw,Defender,1.20,jesper-mosselaar
-FC Groningen,Malcolm Jeng,Defender,1.80,malcolm-jeng
-FC Groningen,"Marco Rente ! geblesseerd, duur onbekend",Defender,2.20,marco-rente
-FC Groningen,Márk Csinger nieuw,Defender,1.80,mark-csinger
-FC Groningen,Nikolas Brandis nieuw,Defender,1.80,nikolas-brandis
-FC Groningen,Thijmen Blokzijl,Defender,2.00,thijmen-blokzijl
-FC Groningen,"Tyrique Mercera ! geblesseerd, duur onbekend",Defender,1.50,tyrique-mercera
-FC Groningen,Wouter Prins,Defender,1.80,wouter-prins
-FC Groningen,Brynjólfur Willumsson,Forward,1.80,brynjolfur-willumsson
-FC Groningen,Jacob Ondrejka nieuw,Forward,1.80,jacob-ondrejka
-FC Groningen,Nils Eggens,Forward,1.20,nils-eggens
-FC Groningen,Oskar Zawada,Forward,1.50,oskar-zawada
-FC Groningen,"Ryan Metu ! geblesseerd, duur onbekend",Forward,1.20,ryan-metu
-FC Groningen,Thom van Bergen basis,Forward,2.20,thom-van-bergen
-FC Groningen,Daan Erdman nieuw,Goalkeeper,1.00,daan-erdman-nieuw
-FC Groningen,Etienne Vaessen,Goalkeeper,2.20,etienne-vaessen
-FC Groningen,Lovro Stubljar nieuw,Goalkeeper,1.20,lovro-stubljar
-FC Groningen,Rijk Janse ! geblesseerd tot en met 1 juli,Goalkeeper,1.00,rijk-janse
-FC Groningen,Alvin Nordin nieuw,Midfielder,1.50,alvin-nordin
-FC Groningen,David van der Werff,Midfielder,1.80,david-van-der-werff
-FC Groningen,Jahelille Hall nieuw,Midfielder,1.20,jahelille-hall-nieuw
-FC Groningen,Jismerai Dillema nieuw,Midfielder,1.00,jismerai-dillema-nieuw
-FC Groningen,Jorg Schreuders,Midfielder,1.80,jorg-schreuders
-FC Groningen,Pelle Clement,Midfielder,1.80,pelle-clement
-FC Groningen,Tika de Jonge,Midfielder,1.80,tika-de-jonge
-FC Groningen,Travis Hernes,Midfielder,1.20,travis-hernes
-FC Groningen,Tygo Land,Midfielder,1.80,tygo-land
-FC Twente,Aske Adelgaard,Defender,1.50,aske-adelgaard
-FC Twente,Bart van Rooij basis,Defender,2.50,bart-van-rooij
-FC Twente,Björn Titulaer nieuw,Defender,1.00,bjorn-titulaer-nieuw
-FC Twente,Jip Meilink nieuw,Defender,1.00,jip-meilink-nieuw
-FC Twente,Juliën Mesbahi,Defender,1.00,julien-mesbahi
-FC Twente,Krzysztof Kurowski nieuw,Defender,1.20,krzysztof-kurowski
-FC Twente,Max Bruns,Defender,1.80,max-bruns
-FC Twente,Robin Pröpper,Defender,2.00,robin-propper
-FC Twente,Ruud Nijstad,Defender,2.00,ruud-nijstad
-FC Twente,"Stav Lemkin ! geblesseerd, duur onbekend",Defender,1.80,stav-lemkin
-FC Twente,Daan Rots,Forward,2.50,daan-rots
-FC Twente,Filip Thorvaldsen nieuw,Forward,2.20,filip-thorvaldsen
-FC Twente,Lucas Vennegoor of Hesselink,Forward,1.20,lucas-vennegoor-of-hesselink
-FC Twente,Marko Pjaca,Forward,2.00,marko-pjaca
-FC Twente,Naci Ünüvar,Forward,1.80,naci-unuvar
-FC Twente,Nigel Groenewald nieuw,Forward,1.20,nigel-groenewald-nieuw
-FC Twente,Sondre Ørjasæter,Forward,2.20,sondre-rjaster
-FC Twente,Wout Weghorst,Forward,2.80,wout-weghorst
-FC Twente,Issam El Maach nieuw,Goalkeeper,1.20,issam-el-maach-nieuw
-FC Twente,Joël Drommel,Goalkeeper,2.00,joel-drommel
-FC Twente,Lars Unnerstall,Goalkeeper,2.50,lars-unnerstall
-FC Twente,Remko Pasveer,Goalkeeper,1.80,remko-pasveer
-FC Twente,Yannick Gerritsen nieuw,Goalkeeper,1.00,yannick-gerritsen
-FC Twente,Benjamin Nagel nieuw,Midfielder,1.00,benjamin-nagel-nieuw
-FC Twente,Daouda Weidmann,Midfielder,1.80,daouda-weidmann
-FC Twente,Gijs Besselink,Midfielder,1.20,gijs-besselink
-FC Twente,Jordy Bawuah,Midfielder,1.50,jordy-bawuah
-FC Twente,Kristian Hlynsson,Midfielder,2.80,kristian-hlynsson
-FC Twente,Ramiz Zerrouki,Midfielder,2.00,ramiz-zerrouki
-FC Twente,Thomas van den Belt,Midfielder,2.00,thomas-van-den-belt
-FC Twente,Younes Taha,Midfielder,2.00,younes-taha
-FC Utrecht,Arthur Zagré,Defender,1.80,arthur-zagre
-FC Utrecht,Ferdinand Pohl nieuw,Defender,1.20,ferdinand-pohl
-FC Utrecht,Guus Offerhaus,Defender,1.80,guus-offerhaus
-FC Utrecht,Jakov Medic nieuw,Defender,1.80,jakov-medic
-FC Utrecht,Jamie Schuldes nieuw,Defender,1.20,jamie-schuldes
-FC Utrecht,"Kevin Paredes ! geblesseerd, duur onbekend",Defender,1.80,kevin-paredes
-FC Utrecht,Matisse Didden,Defender,1.80,matisse-didden
-FC Utrecht,Neville Ogidi Nwankwo,Defender,1.50,neville-ogidi-nwankwo
-FC Utrecht,Niklas Vesterlund,Defender,1.80,niklas-vesterlund
-FC Utrecht,Per Kloosterboer,Defender,1.00,per-kloosterboer
-FC Utrecht,Siebe Horemans,Defender,2.00,siebe-horemans
-FC Utrecht,Viggo Plantinga nieuw,Defender,1.00,viggo-plantinga-nieuw
-FC Utrecht,Adrian Blake bank,Forward,1.80,adrian-blake
-FC Utrecht,Artem Stepanov,Forward,2.20,artem-stepanov
-FC Utrecht,Emmanuel Chigozie Owen nieuw,Forward,1.20,emmanuel-chigozie-owen
-FC Utrecht,Miliano Jonathans,Forward,1.50,miliano-jonathans
-FC Utrecht,Noah Ohio,Forward,1.50,noah-ohio
-FC Utrecht,Nordin Amrabat nieuw,Forward,1.80,nordin-amrabat
-FC Utrecht,Sem van Duijn,Forward,2.00,sem-van-duijn
-FC Utrecht,Yoann Cathline,Forward,2.00,yoann-cathline
-FC Utrecht,Ángel Alarcón,Forward,2.20,angel-alarcon
-FC Utrecht,Kevin Gadellaa,Goalkeeper,1.00,kevin-gadellaa
-FC Utrecht,Mees Eppink,Goalkeeper,1.00,mees-eppink
-FC Utrecht,Vasilis Barkas,Goalkeeper,2.50,vasilios-barkas
-FC Utrecht,Alonzo Engwanda,Midfielder,1.80,alonzo-engwanda
-FC Utrecht,Dani de Wit,Midfielder,2.20,dani-de-wit
-FC Utrecht,Davy van den Berg,Midfielder,1.80,davy-van-den-berg
-FC Utrecht,Jaygo van Ommeren nieuw,Midfielder,1.20,jaygo-van-ommeren-nieuw
-FC Utrecht,"Joris van Overeem ! geblesseerd, duur onbekend",Midfielder,2.00,joris-van-overeem
-FC Utrecht,Marius Broholm nieuw,Midfielder,2.00,marius-broholm
-FC Utrecht,Oualid Agougil,Midfielder,1.20,oualid-agougil
-FC Utrecht,Victor Jensen,Midfielder,2.20,victor-jensen
-Feyenoord,Bart Nieuwkoop,Defender,2.00,bart-nieuwkoop
-Feyenoord,"Gijs Smal ! geblesseerd, duur onbekend",Defender,2.00,gijs-smal
-Feyenoord,Givairo Read,Defender,2.80,givairo-read
-Feyenoord,Javi López nieuw,Defender,2.20,javi-lopez
-Feyenoord,Jeremiah St. Juste,Defender,2.00,jeremiah-st-juste
-Feyenoord,Jordan Bos ! geblesseerd tot en met 1 januari,Defender,3.20,jordan-bos
-Feyenoord,Mats Deijl,Defender,2.20,mats-deijl
-Feyenoord,Mika Mármol nieuw,Defender,2.50,mika-marmol
-Feyenoord,Thomas Beelen nieuw,Defender,1.80,thomas-beelen
-Feyenoord,Tijme Wessels nieuw,Defender,1.50,tijme-wessels
-Feyenoord,Tsuyoshi Watanabe,Defender,2.80,tsuyoshi-watanabe
-Feyenoord,Anis Hadj Moussa,Forward,3.00,anis-hadj-moussa
-Feyenoord,Gaoussou Diarra,Forward,2.00,gaoussou-diarra
-Feyenoord,Gonçalo Borges,Forward,2.00,goncalo-borges
-Feyenoord,Jivayno Zinhagel,Forward,1.50,jivayno-zinhagel
-Feyenoord,Nacho Ferri nieuw,Forward,2.50,nacho-ferri
-Feyenoord,Shaqueel van Persie,Forward,2.00,shaqueel-van-persie
-Feyenoord,Florian Kastenmeier nieuw,Goalkeeper,2.00,florian-kastenmeier
-Feyenoord,Liam Bossin nieuw,Goalkeeper,1.20,liam-bossin
-Feyenoord,Mannou Berger nieuw,Goalkeeper,1.20,mannou-berger
-Feyenoord,Tjark Ernst nieuw,Goalkeeper,3.00,tjark-ernst
-Feyenoord,Charles Vanhoutte nieuw,Midfielder,1.80,charles-vanhoutte
-Feyenoord,Gjivai Zechiël basis,Midfielder,2.00,gjivai-zechiel
-Feyenoord,Jakub Moder,Midfielder,2.00,jakub-moder
-Feyenoord,Luciano Valente,Midfielder,2.80,luciano-valente
-Feyenoord,Oussama Targhalline,Midfielder,2.20,oussama-targhalline
-Feyenoord,Sem Steijn,Midfielder,3.00,sem-steijn
-Feyenoord,Thijs Kraaijeveld,Midfielder,1.80,thijs-kraaijeveld
-Feyenoord,Tobias van den Elshout,Midfielder,1.80,tobias-van-den-elshout
-Fortuna Sittard,Ivo Pinto,Defender,1.80,ivo-pinto
-Fortuna Sittard,Iván Márquez,Defender,1.80,ivan-marquez
-Fortuna Sittard,Jasper Dahlhaus,Defender,1.50,jasper-dahlhaus
-Fortuna Sittard,Justin Hubner,Defender,1.50,justin-hubner
-Fortuna Sittard,Kevin van Burgsteden nieuw,Defender,1.20,kevin-van-burgsteden-nieuw
-Fortuna Sittard,Rodrigo Guth nieuw,Defender,1.80,rodrigo-guth
-Fortuna Sittard,"Siebe Wylin nieuw ! geblesseerd, duur onbekend",Defender,1.20,siebe-wylin
-Fortuna Sittard,Syb van Ottele,Defender,1.50,syb-van-ottele
-Fortuna Sittard,Anthony Descotte,Forward,1.80,anthony-descotte
-Fortuna Sittard,David Stockbrink nieuw,Forward,1.00,david-stockbrink-nieuw
-Fortuna Sittard,"Kristoffer Peterson ! geblesseerd, duur onbekend",Forward,1.80,kristoffer-peterson
-Fortuna Sittard,Lequincio Zeefuik,Forward,1.80,lequincio-zeefuik
-Fortuna Sittard,Ole Romeny nieuw,Forward,1.50,ole-romeny
-Fortuna Sittard,Kaylen Reitmaier nieuw,Goalkeeper,1.20,kaylen
-Fortuna Sittard,Luuk Koopmans,Goalkeeper,1.50,luuk-koopmans
-Fortuna Sittard,Mattijs Branderhorst,Goalkeeper,1.80,mattijs-branderhorst
-Fortuna Sittard,Ramazan Bayram nieuw,Goalkeeper,1.00,ramazan-bayram-nieuw
-Fortuna Sittard,Alhaji Bah nieuw,Midfielder,1.00,alhaji-bah-nieuw
-Fortuna Sittard,Edouard Michut,Midfielder,1.50,edouard-michut
-Fortuna Sittard,Gani Buyukhan,Midfielder,1.20,gani-buyukhan
-Fortuna Sittard,Mohamed Ihattaren basis,Midfielder,2.00,mohamed-ihattaren
-Fortuna Sittard,Moussa Gbemou,Midfielder,1.00,moussa-gbemou
-Fortuna Sittard,Nick de Groot,Midfielder,1.20,nick-de-groot
-Fortuna Sittard,Philip Brittijn,Midfielder,1.50,philip-brittijn
-Fortuna Sittard,Shiloh 't Zand nieuw,Midfielder,1.50,shiloh-t-zand
-Fortuna Sittard,Sven Simons,Midfielder,1.20,sven-simons
-Fortuna Sittard,Yassin Oukili,Midfielder,1.50,yassin-oukili
-Go Ahead Eagles,Alfons Sampsted,Defender,1.80,alfons-sampsted
-Go Ahead Eagles,Dean James,Defender,1.80,dean-james
-Go Ahead Eagles,Eus Waayers,Defender,1.20,eus-waayers
-Go Ahead Eagles,Gerrit Nauber,Defender,1.80,gerrit-nauber
-Go Ahead Eagles,"Giovanni van Zwam ! geblesseerd, duur onbekend",Defender,1.50,giovanni-van-zwam
-Go Ahead Eagles,Joris Kramer,Defender,2.00,joris-kramer
-Go Ahead Eagles,Julius Dirksen,Defender,1.50,julius-dirksen
-Go Ahead Eagles,Pim Saathof nieuw,Defender,1.00,pim-saathof
-Go Ahead Eagles,Terence Lantveld nieuw,Defender,1.00,terence-lantveld-nieuw
-Go Ahead Eagles,Tino Jukic nieuw,Defender,1.80,tino-jukic
-Go Ahead Eagles,"Tomas Galvez ! geblesseerd, duur onbekend",Defender,1.50,tomas-galvez
-Go Ahead Eagles,Dani Tijman nieuw,Forward,1.00,dani-tijman-nieuw
-Go Ahead Eagles,Erik Flataker nieuw,Forward,1.80,erik-flataker
-Go Ahead Eagles,Mathis Suray,Forward,2.20,mathis-suray
-Go Ahead Eagles,Ofosu Boakye,Forward,1.00,ofosu-boakye
-Go Ahead Eagles,Oskar Sivertsen,Forward,1.20,oskar-sivertsen
-Go Ahead Eagles,Richonell Margaret,Forward,1.50,richonell-margaret
-Go Ahead Eagles,Stefán Ingi Sigurdarson,Forward,1.80,stefan-ingi-sigurdarson
-Go Ahead Eagles,Søren Tengstedt,Forward,1.80,sren-tengstedt
-Go Ahead Eagles,Thibo Baeten,Forward,1.50,thibo-baeten
-Go Ahead Eagles,Victor Edvardsen,Forward,2.00,victor-edvardsen
-Go Ahead Eagles,Kjetil Haug nieuw,Goalkeeper,1.50,kjetil-haug
-Go Ahead Eagles,Nando Verdoni nieuw,Goalkeeper,1.00,nando-verdoni
-Go Ahead Eagles,"Nick Marsman nieuw ! geblesseerd, duur onbekend",Goalkeeper,1.50,sasha-panah
-Go Ahead Eagles,Thomas Hulleman nieuw,Goalkeeper,1.00,thomas-hulleman-nieuw
-Go Ahead Eagles,Evert Linthorst,Midfielder,1.50,evert-linthorst
-Go Ahead Eagles,Melle Meulensteen,Midfielder,1.80,melle-meulensteen
-Go Ahead Eagles,Robbin Weijenberg,Midfielder,1.20,robbin-weijenberg
-Go Ahead Eagles,Yassir Salah Rahmouni,Midfielder,1.20,yassir-salah-rahmouni
-NEC,Ahmetcan Kaplan,Defender,2.00,ahmetcan-kaplan
-NEC,Almugera Kabar,Defender,1.80,almugera-kabar
-NEC,Bram Nuytinck,Defender,1.80,bram-nuytinck
-NEC,"Deveron Fonville ! geblesseerd, duur onbekend",Defender,2.00,deveron-fonville
-NEC,Gabriel Brás nieuw,Defender,1.80,gabriel-bras
-NEC,Perr Schuurs nieuw,Defender,2.00,p-schuurs
-NEC,"Philippe Sandler ! geblesseerd, duur onbekend",Defender,2.00,philippe-sandler
-NEC,Tobias Storm nieuw,Defender,1.80,t-storm
-NEC,Ayodele Thomas,Forward,1.80,ayodele-thomas
-NEC,Bryan Linssen,Forward,2.50,bryan-linssen
-NEC,Clement Bischoff nieuw,Forward,2.00,clement-bischoff
-NEC,Dusan Tadic nieuw,Forward,2.50,dusan-tadic
-NEC,"Emre Mor nieuw ! geblesseerd, duur onbekend",Forward,2.20,emre-mor
-NEC,Kaj Sierhuis,Forward,2.00,kaj-sierhuis
-NEC,Kevin Kers,Forward,1.00,kevin-kers
-NEC,Freek Entius nieuw,Goalkeeper,1.00,freek-entius
-NEC,Gonzalo Crettaz,Goalkeeper,2.20,gonzalo-crettaz
-NEC,Joep Geneste nieuw,Goalkeeper,1.20,joep-geneste
-NEC,Nikolas Polster nieuw,Goalkeeper,1.80,nikolas-polster
-NEC,Adam Tahaui,Midfielder,1.80,adam-tahaui
-NEC,Darko Nejasmic,Midfielder,1.80,darko-nejasmic
-NEC,Dennis Geiger nieuw,Midfielder,1.80,dennis-geiger
-NEC,Isak Hansen-Aarøen,Midfielder,1.50,isak-hansen-aaren
-NEC,Jamiro Monteiro,Midfielder,1.80,jamiro-monteiro
-NEC,Merijn van de Wiel,Midfielder,1.00,merijn-van-de-wiel
-NEC,Noé Lebreton,Midfielder,2.20,noe-lebreton
-NEC,Sam de Laat,Midfielder,1.20,sam-de-laat
-NEC,Tjaronn Chery basis,Midfielder,2.80,tjaronn-chery
-NEC,Willum Thór Willumsson nieuw,Midfielder,2.00,willum-thor-willumsson
-PEC Zwolle,Damian van der Haar,Defender,1.50,damian-van-der-haar
-PEC Zwolle,Dylan Ruward nieuw,Defender,1.20,dylan-ruward-nieuw
-PEC Zwolle,Jan Bürger,Defender,1.50,jan-burger
-PEC Zwolle,Milan Westerhuis nieuw,Defender,1.00,milan-westerhuis-nieuw
-PEC Zwolle,Nick Viergever,Defender,1.80,nick-viergever
-PEC Zwolle,Olivier Aertssen,Defender,1.50,olivier-aertssen
-PEC Zwolle,Sherel Floranus,Defender,1.80,sherel-floranus
-PEC Zwolle,Simon Graves,Defender,1.50,simon-graves
-PEC Zwolle,Tijs Velthuis,Defender,1.20,tijs-velthuis
-PEC Zwolle,Dylan Mbayo,Forward,1.50,dylan-mbayo
-PEC Zwolle,Elias Sørensen nieuw,Forward,1.80,elias-srensen
-PEC Zwolle,Ibrahim Cissoko nieuw,Forward,1.80,ibrahim-cissoko
-PEC Zwolle,Koen Kostons,Forward,2.20,koen-kostons
-PEC Zwolle,Sydney van Hooijdonk,Forward,2.00,sydney-van-hooijdonk
-PEC Zwolle,Younes Namli,Forward,2.00,younes-namli
-PEC Zwolle,Duke Verduin,Goalkeeper,1.00,duke-verduin
-PEC Zwolle,Jasper Schendelaar,Goalkeeper,1.80,jasper-schendelaar
-PEC Zwolle,Tom de Graaff,Goalkeeper,1.80,tom-de-graaff
-PEC Zwolle,Gabriël Reiziger,Midfielder,1.20,gabriel-reiziger
-PEC Zwolle,Gilles van der Wal nieuw,Midfielder,1.20,gilles-van-der-wal
-PEC Zwolle,Givaro Rahajaän nieuw,Midfielder,1.00,givaro-rahajaan
-PEC Zwolle,Jadiel Pereira da Gama,Midfielder,1.20,jadiel-pereira-da-gama
-PEC Zwolle,Nick Fichtinger,Midfielder,1.50,nick-fichtinger
-PEC Zwolle,Odysseus Velanas,Midfielder,1.80,odysseus-velanas
-PEC Zwolle,Ryan Thomas,Midfielder,1.50,ryan-thomas
-PEC Zwolle,Thijs Oosting,Midfielder,2.00,thijs-oosting
-PEC Zwolle,Tobias Sommer nieuw,Midfielder,1.50,t-sommer
-PSV,"Adamo Nagalo nieuw ! geblesseerd, duur onbekend",Defender,1.80,adamo-nagalo
-PSV,Armando Obispo,Defender,2.50,armando-obispo
-PSV,Fabian Merién,Defender,1.00,fabian-merien
-PSV,Filip Kostic nieuw,Defender,3.00,filip-kostic
-PSV,"Kiliann Sildillia ! geblesseerd, duur onbekend",Defender,2.50,kiliann-sildillia
-PSV,Lutsharel Geertruida,Defender,3.00,lutsharel-geertruida
-PSV,Mauro Júnior,Defender,3.00,mauro-junior
-PSV,Ryan Flamingo,Defender,3.00,ryan-flamingo
-PSV,Sergiño Dest,Defender,3.20,sergino-dest
-PSV,Yarek Gasiorowski,Defender,3.00,yarek-gasiorowski
-PSV,"Alassane Pléa ! geblesseerd, duur onbekend",Forward,2.50,alassane-plea
-PSV,Amir Bouhamdi,Forward,1.80,amir-bouhamdi
-PSV,"Dennis Man ! geblesseerd, duur onbekend",Forward,3.00,dennis-man
-PSV,Esmir Bajraktarevic,Forward,2.20,esmir-bajraktarevic
-PSV,Ivan Perisic,Forward,3.80,ivan-perisic
-PSV,Ricardo Pepi basis,Forward,3.80,ricardo-pepi
-PSV,Ruben van Bommel,Forward,3.20,ruben-van-bommel
-PSV,"Sami Ouaissa ! geblesseerd, duur onbekend",Forward,2.80,sami-ouaissa
-PSV,Khadim Ngom,Goalkeeper,1.20,khadim-ngom
-PSV,Matej Kovar,Goalkeeper,3.00,matej-kovar
-PSV,Nick Olij,Goalkeeper,2.00,nick-olij
-PSV,Tijn Smolenaars,Goalkeeper,1.00,tijn-smolenaars
-PSV,Guus Til,Midfielder,4.00,guus-til
-PSV,Jerdy Schouten ! geblesseerd tot en met 1 mei,Midfielder,2.50,jerdy-schouten
-PSV,Joël van den Berg,Midfielder,1.20,joel-van-den-berg
-PSV,Kodai Sano,Midfielder,2.50,kodai-sano
-PSV,Noah Fernandez,Midfielder,1.80,noah-fernandez
-PSV,Paul Wanner,Midfielder,2.80,paul-wanner
-PSV,Sven Mijnans,Midfielder,3.80,sven-mijnans
-SC Cambuur,Billy van Duijl,Defender,1.50,billy-van-duijl
-SC Cambuur,Buddy Vogelzang nieuw,Defender,1.00,buddy-vogelzang-nieuw
-SC Cambuur,Devid Bouah nieuw,Defender,1.20,devid-eugene-bouah
-SC Cambuur,Ismaël Baouf,Defender,1.50,ismael-baouf
-SC Cambuur,Jamal Amofa,Defender,1.50,jamal-amofa
-SC Cambuur,Jorn Berkhout,Defender,1.20,jorn-berkhout
-SC Cambuur,Lucas Jetten,Defender,1.20,lucas-jetten
-SC Cambuur,Morgan Costarelli nieuw,Defender,1.20,morgan-costarelli
-SC Cambuur,Danyello Look,Forward,1.20,danyello-look
-SC Cambuur,Fabian Kvam,Forward,1.20,f-kvam
-SC Cambuur,Ilyes Hamache nieuw,Forward,1.50,ilyes-hamache
-SC Cambuur,Nicolas Binder,Forward,1.20,nicolas-binder
-SC Cambuur,Sami Bouhoudane,Forward,1.20,sami-bouhoudane
-SC Cambuur,Skye Vink,Forward,1.50,s-vink
-SC Cambuur,Wiebe Kooistra,Forward,1.20,wiebe-kooistra
-SC Cambuur,Jasper Meijster nieuw,Goalkeeper,1.00,jasper-meijster
-SC Cambuur,Luca Plogmann nieuw,Goalkeeper,1.50,luca-plogmann
-SC Cambuur,Matthijs Kalisvaart nieuw,Goalkeeper,1.20,matthijs-kalisvaart
-SC Cambuur,Thijs Jansen,Goalkeeper,1.50,thijs-jansen
-SC Cambuur,Daan Visser,Midfielder,1.20,daan-visser
-SC Cambuur,Damian Westerhof nieuw,Midfielder,1.00,damian-westerhof-nieuw
-SC Cambuur,Ethan Apkakou,Midfielder,1.20,ethan-apkakou
-SC Cambuur,Iwan Henstra,Midfielder,1.20,iwan-henstra
-SC Cambuur,Mathieu Maertens nieuw,Midfielder,1.80,mathieu-maertens
-SC Cambuur,Nicky Souren,Midfielder,1.50,nicky-souren
-SC Cambuur,Rafik El Arguioui bank,Midfielder,1.50,rafik-el-arguioui
-SC Cambuur,Rik Mulders,Midfielder,1.50,rik-mulders
-SC Cambuur,Wessel van der Goot nieuw,Midfielder,1.20,wessel-van-der-goot-nieuw
-SC Cambuur,Wiebe van der Heide,Midfielder,1.00,wiebe-van-der-heide
-Sparta Rotterdam,Bas Kuipers,Defender,1.80,bas-kuipers
-Sparta Rotterdam,Boyd Reith,Defender,1.20,boyd-reith
-Sparta Rotterdam,Bruno Martins Indi,Defender,1.80,bruno-martins-indi
-Sparta Rotterdam,Lushendry Martes,Defender,1.00,lushendry-edward-martes
-Sparta Rotterdam,Marvin Young basis,Defender,1.80,marvin-young
-Sparta Rotterdam,"Max de Ligt nieuw ! geblesseerd, duur onbekend",Defender,1.00,max-de-ligt
-Sparta Rotterdam,Nick Verschuren,Defender,1.50,nick-verschuren
-Sparta Rotterdam,Teo Quintero,Defender,1.80,teo-quintero
-Sparta Rotterdam,Andrej Kostic nieuw,Forward,1.80,andrej-kostic
-Sparta Rotterdam,Casper Terho,Forward,1.20,casper-terho
-Sparta Rotterdam,Giannino Vianello,Forward,1.20,giannino-vianello
-Sparta Rotterdam,Joel Ideho,Forward,1.50,joel-ideho
-Sparta Rotterdam,Milan Zonneveld,Forward,1.80,milan-zonneveld
-Sparta Rotterdam,Mitchell van Bergen,Forward,2.00,mitchell-van-bergen
-Sparta Rotterdam,Filip Bednarek nieuw,Goalkeeper,1.50,filip-bednarek
-Sparta Rotterdam,Michael Brouwer,Goalkeeper,1.50,michael-brouwer
-Sparta Rotterdam,Pascal Kuiper nieuw,Goalkeeper,1.20,pascal-kuiper
-Sparta Rotterdam,Rik Suur nieuw,Goalkeeper,1.00,rik-suur
-Sparta Rotterdam,Alwande Roaldsøy nieuw,Midfielder,1.20,a-roaldsy
-Sparta Rotterdam,Ayoni Santos,Midfielder,1.50,ayoni-santos
-Sparta Rotterdam,Cedric Hatenboer,Midfielder,1.80,cedric-hatenboer
-Sparta Rotterdam,Jens Toornstra,Midfielder,1.80,jens-toornstra
-Sparta Rotterdam,Julian Baas,Midfielder,1.50,julian-baas
-Sparta Rotterdam,Robin van Cruijsen,Midfielder,1.80,robin-van-cruijsen
-Sparta Rotterdam,Shunsuke Mito,Midfielder,2.00,shunsuke-mito
-Telstar,Abdelnour Soualhia nieuw,Defender,1.20,abdelnour-soualhia
-Telstar,Abdelraffie Benzzine nieuw,Defender,1.00,abdelraffie-benzzine
-Telstar,Gerald Alders,Defender,1.50,gerald-alders
-Telstar,Jeff Hardeveld,Defender,2.00,jeff-hardeveld
-Telstar,Marvin Peersman,Defender,1.80,marvin-peersman
-Telstar,Nigel Ogidi Nwankwo,Defender,1.20,nigel-ogidi-nwankwo
-Telstar,Prince Aning nieuw,Defender,1.20,prince-aning
-Telstar,Sem Valk,Defender,1.50,sem-valk
-Telstar,Yamano Olfers nieuw,Defender,1.00,yamano-olfers
-Telstar,Emirhan Demircan,Forward,1.50,emirhan-demircan
-Telstar,Fabiano Rust nieuw,Forward,1.00,fabiano-rust
-Telstar,Fofin Turay,Forward,1.20,fofin-turay
-Telstar,Jelani Seedorf,Forward,1.20,jelani-seedorf
-Telstar,Nökkvi Thórisson nieuw,Forward,1.50,nokkvi-thorisson
-Telstar,Patrick Brouwer,Forward,1.80,patrick-brouwer
-Telstar,Rui Mendes,Forward,1.50,rui-mendes
-Telstar,Daan Reiziger,Goalkeeper,1.20,daan-reiziger
-Telstar,Finn Mulder nieuw,Goalkeeper,1.00,finn-mulder
-Telstar,Ronald Koeman basis,Goalkeeper,1.80,ronald-koeman-jr
-Telstar,Gabi Caschili nieuw,Midfielder,1.20,gabi-caschili
-Telstar,Harrie Kuster,Midfielder,1.50,harrie-kuster
-Telstar,Isaiah Ahmed,Midfielder,1.20,isaiah-ahmed
-Telstar,Nils Rossen,Midfielder,1.50,nils-rossen
-Telstar,Noach Shenkman nieuw,Midfielder,1.00,noach-shenkman
-Telstar,Rojendro Oudsten,Midfielder,1.20,rojendro-oudsten
-Telstar,Tyrone Owusu,Midfielder,1.20,tyrone-owusu
-Willem II,Alessandro Ciranni,Defender,1.20,alessandro-ciranni
-Willem II,Amine Et-Taïbi,Defender,1.20,amine-et-taibi
-Willem II,Finn Stam,Defender,1.20,finn-stam
-Willem II,Hidde ter Avest nieuw,Defender,1.50,hidde-ter-avest
-Willem II,Jens Mathijsen,Defender,1.00,jens-mathijsen
-Willem II,"Justin Hoogma ! geblesseerd, duur onbekend",Defender,1.50,justin-hoogma
-Willem II,Kayen Scheepens nieuw,Defender,1.20,kayen-scheepens-nieuw
-Willem II,Mats Lemmens nieuw,Defender,1.20,mats-lemmens
-Willem II,Nathan Tjoe-A-On,Defender,1.50,nathan-tjoe-a-on
-Willem II,"Armin Culum ! geblesseerd, duur onbekend",Forward,1.50,armin-culum
-Willem II,Devin Haen,Forward,1.80,devin-haen
-Willem II,Eser Gürbüz,Forward,1.50,eser-gurbuz
-Willem II,Ismael Mouhoul nieuw,Forward,1.00,ismael-mouhoul-nieuw
-Willem II,Jaden Slory,Forward,1.50,jaden-slory
-Willem II,Luca Maal nieuw,Forward,1.00,luca-maal-nieuw
-Willem II,Thomas Verheydt,Forward,1.50,thomas-verheydt
-Willem II,Karst de Leeuw,Goalkeeper,1.00,karst-de-leeuw
-Willem II,Maxime Delanghe nieuw,Goalkeeper,1.20,maxime-delanghe
-Willem II,Thomas Didillon-Hödl,Goalkeeper,1.50,thomas-didillon-hodl
-Willem II,Wouter van der Steen nieuw,Goalkeeper,1.20,wouter-van-der-steen
-Willem II,Amine Lachkar nieuw,Midfielder,1.20,amine-lachkar
-Willem II,Anass Zarrouk,Midfielder,1.20,anass-zarrouk
-Willem II,Calvin Twigt,Midfielder,1.50,calvin-twigt
-Willem II,Divano Fernandez Iglesias nieuw,Midfielder,1.00,divano-fernandez-iglesias-nieuw
-Willem II,Jari Schuurman,Midfielder,1.20,jari-schuurman
-Willem II,Julian van Esdonk nieuw,Midfielder,1.20,julian-van-esdonk-nieuw
-Willem II,Kasper Boogaard,Midfielder,1.50,kasper-boogaard
-Willem II,Per van Loon,Midfielder,1.00,per-van-loon
-Willem II,Sebas Wermenbil nieuw,Midfielder,1.00,sebas-wermenbil-nieuw
-Willem II,"Thijs Muller ! geblesseerd, duur onbekend",Midfielder,1.20,thijs-muller
-Willem II,Tonny Vilhena nieuw,Midfielder,1.80,tonny-vilhena
-Willem II,Uriël van Aalst,Midfielder,1.50,uriel-van-aalst
-Willem II,"Vito van Crooij ! geblesseerd, duur onbekend",Midfielder,1.80,vito-van-crooij
-sc Heerenveen,Darling Bladi nieuw,Defender,1.50,darling-bladi
-sc Heerenveen,Hristiyan Petrov,Defender,1.50,hristiyan-petrov
-sc Heerenveen,Jimte Scholten nieuw,Defender,1.20,jimte-scholten-nieuw
-sc Heerenveen,Maas Willemsen,Defender,1.80,maas-willemsen
-sc Heerenveen,"Mats Egbring ! geblesseerd, duur onbekend",Defender,1.20,mats-egbring
-sc Heerenveen,"Mees Hilgers nieuw ! geblesseerd, duur onbekend",Defender,1.80,mees-hilgers
-sc Heerenveen,Oliver Braude bank,Defender,1.80,oliver-braude
-sc Heerenveen,Sam Kersten,Defender,1.80,sam-kersten
-sc Heerenveen,Vasilios Zagaritis,Defender,2.00,vasilios-zagaritis
-sc Heerenveen,Dylan Vente,Forward,2.00,dylan-vente
-sc Heerenveen,Jacob Trenskow,Forward,2.20,jacob-trenskow
-sc Heerenveen,Jermaine Rijssel nieuw,Forward,1.00,jermaine-rijssel-nieuw
-sc Heerenveen,Kirayno Schaken nieuw,Forward,1.20,kirayno-schaken-nieuw
-sc Heerenveen,Lanroy Machine nieuw,Forward,1.80,lanroy-machine
-sc Heerenveen,Marko Farji nieuw,Forward,1.80,marko-farji
-sc Heerenveen,Maxence Rivera,Forward,1.80,maxence-rivera
-sc Heerenveen,Andries Noppert,Goalkeeper,1.80,andries-noppert
-sc Heerenveen,Bernt Klaverboer,Goalkeeper,2.00,bernt-klaverboer
-sc Heerenveen,Timo Schreuder nieuw,Goalkeeper,1.00,t-schreuder
-sc Heerenveen,Dirk Proper,Midfielder,1.80,dirk-proper
-sc Heerenveen,Levi Smans,Midfielder,1.50,levi-smans
-sc Heerenveen,Luca Oyen,Midfielder,1.50,luca-oyen
-sc Heerenveen,"Marcus Linday ! geblesseerd, duur onbekend",Midfielder,1.50,marcus-linday
-sc Heerenveen,Nolhan Courtens,Midfielder,1.20,nolhan-courtens
-sc Heerenveen,Ringo Meerveld,Midfielder,2.20,ringo-meerveld
+team,speler,positie,prijs,speler_id,rol,nieuw,blessure
+ADO Den Haag,Illaijh de Ruijter,Defender,1.20,illaijh-de-ruijter,,0,
+ADO Den Haag,Jonas Jensen-Abbew,Defender,1.20,jonas-jensen-abbew,,1,
+ADO Den Haag,Lasse Wilhelm,Defender,1.20,lasse-wilhelm,,1,
+ADO Den Haag,Matteo Waem,Defender,1.50,matteo-waem,,0,
+ADO Den Haag,Milan Hokke,Defender,1.50,milan-hokke,,0,
+ADO Den Haag,Othniël Raterink,Defender,1.50,othniel-raterink,,0,
+ADO Den Haag,Pascal Mulder,Defender,1.50,pascal-mulder,,0,
+ADO Den Haag,Sanyika Bergtop,Defender,1.00,sanyika-bergtop,,0,
+ADO Den Haag,Sekou Sylla,Defender,1.50,sekou-sylla,bank,0,
+ADO Den Haag,Cameron Peupion,Forward,1.50,cameron-peupion,,0,duur onbekend
+ADO Den Haag,Dani van Loenen,Forward,1.00,dani-van-loenen,,1,
+ADO Den Haag,Daryl van Mieghem,Forward,1.50,daryl-van-mieghem,,0,
+ADO Den Haag,Donát Bárány,Forward,1.50,donat-barany,,1,
+ADO Den Haag,Evan Rottier,Forward,1.50,evan-rottier,,0,
+ADO Den Haag,Jalen Hawkins,Forward,1.20,jalen-hawkins,,0,
+ADO Den Haag,Jesse Bal,Forward,1.50,jesse-bal,,0,
+ADO Den Haag,Luka Reischl,Forward,1.50,luka-reischl,,0,
+ADO Den Haag,Nigel Thomas,Forward,1.20,nigel-thomas,,1,
+ADO Den Haag,Yannick Eduardo,Forward,1.50,yannick-eduardo,,0,
+ADO Den Haag,Caleb Kramer,Goalkeeper,1.00,caleb-kramer,,1,
+ADO Den Haag,Kilian Nikièma,Goalkeeper,1.50,kilian-nikiema,,0,
+ADO Den Haag,Niclas Thiede,Goalkeeper,1.20,niclas-thiede,,1,
+ADO Den Haag,Sem Eekhout,Goalkeeper,1.00,sem-eekhout,,1,
+ADO Den Haag,Alexander Veselov,Midfielder,1.00,alexander-veselov-nieuw,,1,
+ADO Den Haag,Finn de Bruin,Midfielder,1.20,finn-de-bruin,,0,
+ADO Den Haag,Jan Zamburek,Midfielder,1.50,jan-zamburek,,0,
+ADO Den Haag,Juho Kilo,Midfielder,1.50,juho-kilo,,0,
+ADO Den Haag,Matej Sin,Midfielder,1.50,matej-sin,,0,duur onbekend
+ADO Den Haag,Mylian Jiménez,Midfielder,1.20,mylian-jimenez,,0,
+AZ,Andrea Natali,Defender,1.20,andrea-natali,,0,
+AZ,Denso Kasius,Defender,2.20,denso-kasius,,0,duur onbekend
+AZ,Elijah Dijkstra,Defender,2.00,elijah-dijkstra,,0,
+AZ,Mateo Chávez,Defender,2.00,mateo-chavez,,0,
+AZ,Mees de Wit,Defender,2.50,mees-de-wit,,0,
+AZ,Rion Ichihara,Defender,1.80,rion-ichihara,,0,
+AZ,Seiya Maikuma,Defender,2.00,seiya-maikuma,,0,
+AZ,Wesley Hoedt,Defender,2.00,wesley-hoedt,,1,
+AZ,Wouter Goes,Defender,2.20,wouter-goes,,0,
+AZ,Ayoub Oufkir,Forward,1.80,ayoub-oufkir,,0,
+AZ,Bendegúz Kovács,Forward,1.20,bendeguz-kovacs,,0,
+AZ,Jizz Hornkamp,Forward,2.00,jizz-hornkamp,,0,
+AZ,Julian Oerip,Forward,1.20,julian-oerip-nieuw,,1,
+AZ,Mexx Meerdink,Forward,2.50,mexx-meerdink,,0,
+AZ,Ro-Zangelo Daal,Forward,2.00,ro-zangelo-daal,,0,
+AZ,Wassim Bouziane,Forward,1.20,wassim-bouziane,,0,
+AZ,Weslley Patati,Forward,2.00,weslley-patati,,0,
+AZ,Hobie Verhulst,Goalkeeper,1.80,hobie-verhulst,,0,duur onbekend
+AZ,Ismail Ka,Goalkeeper,1.50,ismail-ka-nieuw,,1,
+AZ,Jari De Busser,Goalkeeper,2.20,jari-de-busser,,0,
+AZ,Jeroen Zoet,Goalkeeper,2.00,jeroen-zoet,,0,
+AZ,Rome-Jayden Owusu-Oduro,Goalkeeper,2.20,rome-jayden-owusu-oduro,,0,
+AZ,Calvin Stengs,Midfielder,2.20,calvin-stengs,basis,1,
+AZ,Dave Kwakman,Midfielder,1.50,dave-kwakman,,0,
+AZ,Hessel de Wit,Midfielder,1.20,hessel-de-wit-nieuw,,1,
+AZ,Jordy Clasie,Midfielder,1.80,jordy-clasie,,0,
+AZ,Kees Smit,Midfielder,2.00,kees-smit,,0,duur onbekend
+AZ,Lewis Schouten,Midfielder,1.20,lewis-schouten,,0,
+AZ,Peer Koopmeiners,Midfielder,2.00,peer-koopmeiners,,0,
+AZ,Stije Resink,Midfielder,1.80,stije-resink,,0,tot en met 1 januari
+AZ,Valdemar Byskov,Midfielder,2.00,valdemar-byskov,,1,
+Ajax,Aaron Bouwman,Defender,2.50,aaron-bouwman,,0,
+Ajax,Anton Gaaei,Defender,2.50,anton-gaaei,,0,
+Ajax,Caio Henrique,Defender,2.50,caio-henrique,,1,
+Ajax,Daley Blind,Defender,2.50,daley-blind,,1,duur onbekend
+Ajax,Dies Janse,Defender,2.00,dies-janse,,0,
+Ajax,Jofre Torrents,Defender,2.20,jofre-torrents,,1,
+Ajax,Lucas Rosa,Defender,2.20,lucas-rosa,,0,
+Ajax,Owen Wijndal,Defender,2.00,owen-wijndal,,0,
+Ajax,Youri Baas,Defender,2.80,youri-baas,,0,
+Ajax,Amourricho van Axel Dongen,Forward,1.50,amourricho-van-axel-dongen-nieuw,,1,
+Ajax,Kasper Dolberg,Forward,2.50,kasper-dolberg,,0,
+Ajax,Marcos Leonardo,Forward,3.00,marcos-leonardo,,1,
+Ajax,Oliver Edvardsen,Forward,2.00,oliver-edvardsen,,0,
+Ajax,Tolu Arokodare,Forward,2.50,tolu-arokodare,,0,
+Ajax,Viktor Tsyhankov,Forward,3.00,viktor-tsyhankov-nieuw,,1,
+Ajax,Joeri Heerkens,Goalkeeper,1.80,joeri-heerkens,,0,
+Ajax,Maarten Paes,Goalkeeper,2.00,maarten-paes,,0,
+Ajax,Marc-André ter Stegen,Goalkeeper,2.80,marc-ter-stegen,,1,
+Ajax,Abdellah Ouazane,Midfielder,1.50,abdellah-ouazane,,0,
+Ajax,Davy Klaassen,Midfielder,2.80,davy-klaassen,,0,
+Ajax,Jorthy Mokio,Midfielder,2.00,jorthy-mokio,,0,
+Ajax,Julian Brandt,Midfielder,2.80,julian-brandt,basis,0,
+Ajax,Mohamed Abdalla,Midfielder,1.20,mohamed-abdalla-nieuw,,1,
+Ajax,Oscar Gloukh,Midfielder,2.80,oscar-gloukh,,0,
+Ajax,Rayane Bounida,Midfielder,2.00,rayane-bounida,,0,
+Ajax,Sofyan Amrabat,Midfielder,2.20,sofyan-amrabat,,1,
+Ajax,Steven Berghuis,Midfielder,2.50,steven-berghuis,,0,
+Excelsior,Casper Widell,Defender,1.50,casper-widell,,0,
+Excelsior,Eric da Silva Moreira,Defender,1.20,eric-da-silva-moreira,,1,
+Excelsior,Guilliano Cairo,Defender,1.00,giulliano-cairo,,0,
+Excelsior,Jan Plug,Defender,1.50,jan-plug,,0,
+Excelsior,Kasey Bos,Defender,1.50,kasey-bos,,1,
+Excelsior,Marlon van de Wetering,Defender,1.00,marlon-van-de-wetering,,0,
+Excelsior,Osman Turay,Defender,1.20,osman-turay,,1,
+Excelsior,Rick Meissen,Defender,1.50,rick-meissen,,0,
+Excelsior,Simon Janssen,Defender,1.20,simon-janssen,,0,
+Excelsior,Alireza Jahanbakhsh,Forward,1.80,alireza-jahanbakhsh,,1,duur onbekend
+Excelsior,Aymen Sliti,Forward,1.50,aymen-sliti,,0,
+Excelsior,David Garden,Forward,1.20,david-garden,,1,
+Excelsior,Mario Domínguez,Forward,1.50,mario-dominguez,,1,duur onbekend
+Excelsior,Nesto Groen,Forward,1.00,nesto-groen,,0,
+Excelsior,Ágúst Orri Thorsteinsson,Forward,1.50,agust-orri-thorsteinsson,,1,
+Excelsior,Celton Biai,Goalkeeper,1.20,celton-biai,,0,
+Excelsior,Stijn van Gassel,Goalkeeper,1.80,stijn-van-gassel,basis,0,
+Excelsior,Tijmen Holla,Goalkeeper,1.00,tijmen-holla,,0,
+Excelsior,Daniel van Vianen,Midfielder,1.20,daniel-van-vianen,,0,
+Excelsior,Ilano Silva Timas,Midfielder,1.50,ilano-silva-timas,,0,
+Excelsior,Irakli Yegoian,Midfielder,1.80,irakli-yegoian,,0,
+Excelsior,Lennard Hartjes,Midfielder,1.20,lennard-hartjes,,0,
+Excelsior,Noah Naujoks,Midfielder,1.80,noah-naujoks,,0,duur onbekend
+Excelsior,Valentin Sulzbacher,Midfielder,1.20,valentin-sulzbacher,,1,
+Excelsior,Yacqub Finey,Midfielder,1.50,y-finey,,1,
+FC Groningen,Elvis van der Laan,Defender,1.00,elvis-van-der-laan,,1,
+FC Groningen,Jesper Mosselaar,Defender,1.20,jesper-mosselaar,,1,
+FC Groningen,Malcolm Jeng,Defender,1.80,malcolm-jeng,,0,
+FC Groningen,Marco Rente,Defender,2.20,marco-rente,,0,duur onbekend
+FC Groningen,Márk Csinger,Defender,1.80,mark-csinger,,1,
+FC Groningen,Nikolas Brandis,Defender,1.80,nikolas-brandis,,1,
+FC Groningen,Thijmen Blokzijl,Defender,2.00,thijmen-blokzijl,,0,
+FC Groningen,Tyrique Mercera,Defender,1.50,tyrique-mercera,,0,duur onbekend
+FC Groningen,Wouter Prins,Defender,1.80,wouter-prins,,0,
+FC Groningen,Brynjólfur Willumsson,Forward,1.80,brynjolfur-willumsson,basis,0,
+FC Groningen,Jacob Ondrejka,Forward,1.80,jacob-ondrejka,,1,
+FC Groningen,Nils Eggens,Forward,1.20,nils-eggens,,0,
+FC Groningen,Oskar Zawada,Forward,1.50,oskar-zawada,,0,
+FC Groningen,Ryan Metu,Forward,1.20,ryan-metu,,0,duur onbekend
+FC Groningen,Thom van Bergen,Forward,2.20,thom-van-bergen,,0,
+FC Groningen,Daan Erdman,Goalkeeper,1.00,daan-erdman-nieuw,,1,
+FC Groningen,Etienne Vaessen,Goalkeeper,2.20,etienne-vaessen,,0,
+FC Groningen,Lovro Stubljar,Goalkeeper,1.20,lovro-stubljar,,1,
+FC Groningen,Rijk Janse,Goalkeeper,1.00,rijk-janse,,0,tot en met 1 juli
+FC Groningen,Alvin Nordin,Midfielder,1.50,alvin-nordin,,1,
+FC Groningen,David van der Werff,Midfielder,1.80,david-van-der-werff,,0,
+FC Groningen,Jahelille Hall,Midfielder,1.20,jahelille-hall-nieuw,,1,
+FC Groningen,Jismerai Dillema,Midfielder,1.00,jismerai-dillema-nieuw,,1,
+FC Groningen,Jorg Schreuders,Midfielder,1.80,jorg-schreuders,,0,
+FC Groningen,Pelle Clement,Midfielder,1.80,pelle-clement,,0,
+FC Groningen,Tika de Jonge,Midfielder,1.80,tika-de-jonge,,0,
+FC Groningen,Travis Hernes,Midfielder,1.20,travis-hernes,,0,
+FC Groningen,Tygo Land,Midfielder,1.80,tygo-land,,0,
+FC Twente,Aske Adelgaard,Defender,1.50,aske-adelgaard,,0,
+FC Twente,Bart van Rooij,Defender,2.50,bart-van-rooij,basis,0,
+FC Twente,Björn Titulaer,Defender,1.00,bjorn-titulaer-nieuw,,1,
+FC Twente,Jip Meilink,Defender,1.00,jip-meilink-nieuw,,1,
+FC Twente,Juliën Mesbahi,Defender,1.00,julien-mesbahi,,0,
+FC Twente,Krzysztof Kurowski,Defender,1.20,krzysztof-kurowski,,1,
+FC Twente,Max Bruns,Defender,1.80,max-bruns,,0,
+FC Twente,Robin Pröpper,Defender,2.00,robin-propper,,0,
+FC Twente,Ruud Nijstad,Defender,2.00,ruud-nijstad,,0,
+FC Twente,Stav Lemkin,Defender,1.80,stav-lemkin,,0,duur onbekend
+FC Twente,Daan Rots,Forward,2.50,daan-rots,,0,
+FC Twente,Filip Thorvaldsen,Forward,2.20,filip-thorvaldsen,,1,
+FC Twente,Lucas Vennegoor of Hesselink,Forward,1.20,lucas-vennegoor-of-hesselink,,0,
+FC Twente,Marko Pjaca,Forward,2.00,marko-pjaca,,0,
+FC Twente,Naci Ünüvar,Forward,1.80,naci-unuvar,,0,
+FC Twente,Nigel Groenewald,Forward,1.20,nigel-groenewald-nieuw,,1,
+FC Twente,Sondre Ørjasæter,Forward,2.20,sondre-rjaster,,0,
+FC Twente,Wout Weghorst,Forward,2.80,wout-weghorst,,0,
+FC Twente,Issam El Maach,Goalkeeper,1.20,issam-el-maach-nieuw,,1,
+FC Twente,Joël Drommel,Goalkeeper,2.00,joel-drommel,,0,
+FC Twente,Lars Unnerstall,Goalkeeper,2.50,lars-unnerstall,,0,
+FC Twente,Remko Pasveer,Goalkeeper,1.80,remko-pasveer,,0,
+FC Twente,Yannick Gerritsen,Goalkeeper,1.00,yannick-gerritsen,,1,
+FC Twente,Benjamin Nagel,Midfielder,1.00,benjamin-nagel-nieuw,,1,
+FC Twente,Daouda Weidmann,Midfielder,1.80,daouda-weidmann,,0,
+FC Twente,Gijs Besselink,Midfielder,1.20,gijs-besselink,,0,
+FC Twente,Jordy Bawuah,Midfielder,1.50,jordy-bawuah,,0,
+FC Twente,Kristian Hlynsson,Midfielder,2.80,kristian-hlynsson,,0,
+FC Twente,Ramiz Zerrouki,Midfielder,2.00,ramiz-zerrouki,,0,
+FC Twente,Thomas van den Belt,Midfielder,2.00,thomas-van-den-belt,,0,
+FC Twente,Younes Taha,Midfielder,2.00,younes-taha,,0,
+FC Utrecht,Arthur Zagré,Defender,1.80,arthur-zagre,,0,
+FC Utrecht,Ferdinand Pohl,Defender,1.20,ferdinand-pohl,,1,
+FC Utrecht,Guus Offerhaus,Defender,1.80,guus-offerhaus,,0,
+FC Utrecht,Jakov Medic,Defender,1.80,jakov-medic,,1,
+FC Utrecht,Jamie Schuldes,Defender,1.20,jamie-schuldes,,1,
+FC Utrecht,Kevin Paredes,Defender,1.80,kevin-paredes,,0,duur onbekend
+FC Utrecht,Matisse Didden,Defender,1.80,matisse-didden,,0,
+FC Utrecht,Neville Ogidi Nwankwo,Defender,1.50,neville-ogidi-nwankwo,,0,
+FC Utrecht,Niklas Vesterlund,Defender,1.80,niklas-vesterlund,,0,
+FC Utrecht,Per Kloosterboer,Defender,1.00,per-kloosterboer,,0,
+FC Utrecht,Siebe Horemans,Defender,2.00,siebe-horemans,,0,
+FC Utrecht,Viggo Plantinga,Defender,1.00,viggo-plantinga-nieuw,,1,
+FC Utrecht,Adrian Blake,Forward,1.80,adrian-blake,bank,0,
+FC Utrecht,Artem Stepanov,Forward,2.20,artem-stepanov,,0,
+FC Utrecht,Emmanuel Chigozie Owen,Forward,1.20,emmanuel-chigozie-owen,,1,
+FC Utrecht,Miliano Jonathans,Forward,1.50,miliano-jonathans,,0,
+FC Utrecht,Noah Ohio,Forward,1.50,noah-ohio,,0,
+FC Utrecht,Nordin Amrabat,Forward,1.80,nordin-amrabat,,1,
+FC Utrecht,Sem van Duijn,Forward,2.00,sem-van-duijn,,0,
+FC Utrecht,Yoann Cathline,Forward,2.00,yoann-cathline,,0,
+FC Utrecht,Ángel Alarcón,Forward,2.20,angel-alarcon,,0,
+FC Utrecht,Kevin Gadellaa,Goalkeeper,1.00,kevin-gadellaa,,0,
+FC Utrecht,Mees Eppink,Goalkeeper,1.00,mees-eppink,,0,
+FC Utrecht,Vasilis Barkas,Goalkeeper,2.50,vasilios-barkas,,0,
+FC Utrecht,Alonzo Engwanda,Midfielder,1.80,alonzo-engwanda,,0,
+FC Utrecht,Dani de Wit,Midfielder,2.20,dani-de-wit,,0,
+FC Utrecht,Davy van den Berg,Midfielder,1.80,davy-van-den-berg,,0,
+FC Utrecht,Jaygo van Ommeren,Midfielder,1.20,jaygo-van-ommeren-nieuw,,1,
+FC Utrecht,Joris van Overeem,Midfielder,2.00,joris-van-overeem,,0,duur onbekend
+FC Utrecht,Marius Broholm,Midfielder,2.00,marius-broholm,,1,
+FC Utrecht,Oualid Agougil,Midfielder,1.20,oualid-agougil,,0,
+FC Utrecht,Victor Jensen,Midfielder,2.20,victor-jensen,,0,
+Feyenoord,Bart Nieuwkoop,Defender,2.00,bart-nieuwkoop,,0,
+Feyenoord,Gijs Smal,Defender,2.00,gijs-smal,,0,duur onbekend
+Feyenoord,Givairo Read,Defender,2.80,givairo-read,,0,
+Feyenoord,Javi López,Defender,2.20,javi-lopez,,1,
+Feyenoord,Jeremiah St. Juste,Defender,2.00,jeremiah-st-juste,,0,
+Feyenoord,Jordan Bos,Defender,3.20,jordan-bos,,0,tot en met 1 januari
+Feyenoord,Mats Deijl,Defender,2.20,mats-deijl,,0,
+Feyenoord,Mika Mármol,Defender,2.50,mika-marmol,,1,
+Feyenoord,Thomas Beelen,Defender,1.80,thomas-beelen,,1,
+Feyenoord,Tijme Wessels,Defender,1.50,tijme-wessels,,1,
+Feyenoord,Tsuyoshi Watanabe,Defender,2.80,tsuyoshi-watanabe,,0,
+Feyenoord,Anis Hadj Moussa,Forward,3.00,anis-hadj-moussa,,0,
+Feyenoord,Gaoussou Diarra,Forward,2.00,gaoussou-diarra,,0,
+Feyenoord,Gonçalo Borges,Forward,2.00,goncalo-borges,,0,
+Feyenoord,Jivayno Zinhagel,Forward,1.50,jivayno-zinhagel,,0,
+Feyenoord,Nacho Ferri,Forward,2.50,nacho-ferri,,1,
+Feyenoord,Shaqueel van Persie,Forward,2.00,shaqueel-van-persie,,0,
+Feyenoord,Florian Kastenmeier,Goalkeeper,2.00,florian-kastenmeier,,1,
+Feyenoord,Liam Bossin,Goalkeeper,1.20,liam-bossin,,1,
+Feyenoord,Mannou Berger,Goalkeeper,1.20,mannou-berger,,1,
+Feyenoord,Tjark Ernst,Goalkeeper,3.00,tjark-ernst,,1,
+Feyenoord,Charles Vanhoutte,Midfielder,1.80,charles-vanhoutte,,1,
+Feyenoord,Gjivai Zechiël,Midfielder,2.00,gjivai-zechiel,basis,0,
+Feyenoord,Jakub Moder,Midfielder,2.00,jakub-moder,,0,
+Feyenoord,Luciano Valente,Midfielder,2.80,luciano-valente,,0,
+Feyenoord,Oussama Targhalline,Midfielder,2.20,oussama-targhalline,,0,
+Feyenoord,Sem Steijn,Midfielder,3.00,sem-steijn,,0,
+Feyenoord,Thijs Kraaijeveld,Midfielder,1.80,thijs-kraaijeveld,,0,
+Feyenoord,Tobias van den Elshout,Midfielder,1.80,tobias-van-den-elshout,,0,
+Fortuna Sittard,Ivo Pinto,Defender,1.80,ivo-pinto,,0,
+Fortuna Sittard,Iván Márquez,Defender,1.80,ivan-marquez,,0,
+Fortuna Sittard,Jasper Dahlhaus,Defender,1.50,jasper-dahlhaus,,0,
+Fortuna Sittard,Justin Hubner,Defender,1.50,justin-hubner,,0,
+Fortuna Sittard,Kevin van Burgsteden,Defender,1.20,kevin-van-burgsteden-nieuw,,1,
+Fortuna Sittard,Rodrigo Guth,Defender,1.80,rodrigo-guth,,1,
+Fortuna Sittard,Siebe Wylin,Defender,1.20,siebe-wylin,,1,
+Fortuna Sittard,Syb van Ottele,Defender,1.50,syb-van-ottele,,0,
+Fortuna Sittard,Anthony Descotte,Forward,1.80,anthony-descotte,,0,
+Fortuna Sittard,David Stockbrink,Forward,1.00,david-stockbrink-nieuw,,1,
+Fortuna Sittard,Kristoffer Peterson,Forward,1.80,kristoffer-peterson,,0,duur onbekend
+Fortuna Sittard,Lequincio Zeefuik,Forward,1.80,lequincio-zeefuik,,0,
+Fortuna Sittard,Ole Romeny,Forward,1.50,ole-romeny,,1,
+Fortuna Sittard,Kaylen Reitmaier,Goalkeeper,1.20,kaylen,,1,
+Fortuna Sittard,Luuk Koopmans,Goalkeeper,1.50,luuk-koopmans,,0,
+Fortuna Sittard,Mattijs Branderhorst,Goalkeeper,1.80,mattijs-branderhorst,bank,0,
+Fortuna Sittard,Ramazan Bayram,Goalkeeper,1.00,ramazan-bayram-nieuw,,1,
+Fortuna Sittard,Alhaji Bah,Midfielder,1.00,alhaji-bah-nieuw,,1,
+Fortuna Sittard,Edouard Michut,Midfielder,1.50,edouard-michut,,0,duur onbekend
+Fortuna Sittard,Gani Buyukhan,Midfielder,1.20,gani-buyukhan-nieuw,,1,
+Fortuna Sittard,Mohamed Ihattaren,Midfielder,2.00,mohamed-ihattaren,,0,
+Fortuna Sittard,Moussa Gbemou,Midfielder,1.00,moussa-gbemou,,0,
+Fortuna Sittard,Nick de Groot,Midfielder,1.20,nick-de-groot,,0,
+Fortuna Sittard,Philip Brittijn,Midfielder,1.50,philip-brittijn,,0,
+Fortuna Sittard,Shiloh 't Zand,Midfielder,1.50,shiloh-t-zand,,1,
+Fortuna Sittard,Sven Simons,Midfielder,1.20,sven-simons,,0,
+Fortuna Sittard,Yassin Oukili,Midfielder,1.50,yassin-oukili,,0,
+Go Ahead Eagles,Alfons Sampsted,Defender,1.80,alfons-sampsted,,0,
+Go Ahead Eagles,Dean James,Defender,1.80,dean-james,,0,
+Go Ahead Eagles,Eus Waayers,Defender,1.20,eus-waayers,,0,
+Go Ahead Eagles,Gerrit Nauber,Defender,1.80,gerrit-nauber,,0,
+Go Ahead Eagles,Giovanni van Zwam,Defender,1.50,giovanni-van-zwam,,0,duur onbekend
+Go Ahead Eagles,Joris Kramer,Defender,2.00,joris-kramer,,0,
+Go Ahead Eagles,Julius Dirksen,Defender,1.50,julius-dirksen,,0,
+Go Ahead Eagles,Pim Saathof,Defender,1.00,pim-saathof,,1,
+Go Ahead Eagles,Terence Lantveld,Defender,1.00,terence-lantveld-nieuw,,1,
+Go Ahead Eagles,Tino Jukic,Defender,1.80,tino-jukic,,1,
+Go Ahead Eagles,Tomas Galvez,Defender,1.50,tomas-galvez,,0,duur onbekend
+Go Ahead Eagles,Dani Tijman,Forward,1.00,dani-tijman-nieuw,,1,
+Go Ahead Eagles,Erik Flataker,Forward,1.80,erik-flataker,,1,
+Go Ahead Eagles,Mathis Suray,Forward,2.20,mathis-suray,,0,
+Go Ahead Eagles,Ofosu Boakye,Forward,1.00,ofosu-boakye,,0,
+Go Ahead Eagles,Oskar Sivertsen,Forward,1.20,oskar-sivertsen,,0,
+Go Ahead Eagles,Richonell Margaret,Forward,1.50,richonell-margaret,,0,
+Go Ahead Eagles,Stefán Ingi Sigurdarson,Forward,1.80,stefan-ingi-sigurdarson,,0,
+Go Ahead Eagles,Søren Tengstedt,Forward,1.80,sren-tengstedt,,0,
+Go Ahead Eagles,Thibo Baeten,Forward,1.50,thibo-baeten,,0,
+Go Ahead Eagles,Victor Edvardsen,Forward,2.00,victor-edvardsen,,0,
+Go Ahead Eagles,Kjetil Haug,Goalkeeper,1.50,kjetil-haug,,1,
+Go Ahead Eagles,Nando Verdoni,Goalkeeper,1.00,nando-verdoni,,1,
+Go Ahead Eagles,Nick Marsman,Goalkeeper,1.50,sasha-panah,,1,duur onbekend
+Go Ahead Eagles,Thomas Hulleman,Goalkeeper,1.00,thomas-hulleman-nieuw,,1,
+Go Ahead Eagles,Evert Linthorst,Midfielder,1.50,evert-linthorst,,0,
+Go Ahead Eagles,Melle Meulensteen,Midfielder,1.80,melle-meulensteen,,0,
+Go Ahead Eagles,Robbin Weijenberg,Midfielder,1.20,robbin-weijenberg,,0,
+Go Ahead Eagles,Yassir Salah Rahmouni,Midfielder,1.20,yassir-salah-rahmouni,,0,
+NEC,Ahmetcan Kaplan,Defender,2.00,ahmetcan-kaplan,,0,
+NEC,Almugera Kabar,Defender,1.80,almugera-kabar,,0,
+NEC,Bram Nuytinck,Defender,1.80,bram-nuytinck,,0,
+NEC,Deveron Fonville,Defender,2.00,deveron-fonville,,0,duur onbekend
+NEC,Gabriel Brás,Defender,1.80,gabriel-bras,,1,
+NEC,Perr Schuurs,Defender,2.00,p-schuurs,,1,
+NEC,Philippe Sandler,Defender,2.00,philippe-sandler,,0,duur onbekend
+NEC,Tobias Storm,Defender,1.80,t-storm,,1,
+NEC,Ayodele Thomas,Forward,1.80,ayodele-thomas,,0,
+NEC,Bryan Linssen,Forward,2.50,bryan-linssen,,0,
+NEC,Clement Bischoff,Forward,2.00,clement-bischoff,,1,
+NEC,Dusan Tadic,Forward,2.50,dusan-tadic,,1,
+NEC,Emre Mor,Forward,2.20,emre-mor,,1,duur onbekend
+NEC,Kaj Sierhuis,Forward,2.00,kaj-sierhuis,,0,
+NEC,Kevin Kers,Forward,1.00,kevin-kers,,0,
+NEC,Freek Entius,Goalkeeper,1.00,freek-entius,,1,
+NEC,Gonzalo Crettaz,Goalkeeper,2.20,gonzalo-crettaz,,0,
+NEC,Joep Geneste,Goalkeeper,1.20,joep-geneste,,1,
+NEC,Nikolas Polster,Goalkeeper,1.80,nikolas-polster,,1,
+NEC,Adam Tahaui,Midfielder,1.80,adam-tahaui,,0,
+NEC,Darko Nejasmic,Midfielder,1.80,darko-nejasmic,,0,
+NEC,Dennis Geiger,Midfielder,1.80,dennis-geiger,,1,
+NEC,Isak Hansen-Aarøen,Midfielder,1.50,isak-hansen-aaren,,0,
+NEC,Jamiro Monteiro,Midfielder,1.80,jamiro-monteiro,,0,
+NEC,Merijn van de Wiel,Midfielder,1.00,merijn-van-de-wiel,,0,
+NEC,Noé Lebreton,Midfielder,2.20,noe-lebreton,,0,
+NEC,Sam de Laat,Midfielder,1.20,sam-de-laat,,0,
+NEC,Tjaronn Chery,Midfielder,2.80,tjaronn-chery,basis,0,
+NEC,Willum Thór Willumsson,Midfielder,2.00,willum-thor-willumsson,,1,
+PEC Zwolle,Damian van der Haar,Defender,1.50,damian-van-der-haar,,0,
+PEC Zwolle,Dylan Ruward,Defender,1.20,dylan-ruward-nieuw,,1,
+PEC Zwolle,Jan Bürger,Defender,1.50,jan-burger,,0,
+PEC Zwolle,Milan Westerhuis,Defender,1.00,milan-westerhuis-nieuw,,1,
+PEC Zwolle,Nick Viergever,Defender,1.80,nick-viergever,,0,
+PEC Zwolle,Olivier Aertssen,Defender,1.50,olivier-aertssen,,0,
+PEC Zwolle,Sherel Floranus,Defender,1.80,sherel-floranus,,0,
+PEC Zwolle,Simon Graves,Defender,1.50,simon-graves,,0,
+PEC Zwolle,Tijs Velthuis,Defender,1.20,tijs-velthuis,,0,
+PEC Zwolle,Dylan Mbayo,Forward,1.50,dylan-mbayo,,0,
+PEC Zwolle,Elias Sørensen,Forward,1.80,elias-srensen,,1,
+PEC Zwolle,Ibrahim Cissoko,Forward,1.80,ibrahim-cissoko,,1,
+PEC Zwolle,Koen Kostons,Forward,2.20,koen-kostons,,0,
+PEC Zwolle,Sydney van Hooijdonk,Forward,2.00,sydney-van-hooijdonk,,0,
+PEC Zwolle,Younes Namli,Forward,2.00,younes-namli,,0,
+PEC Zwolle,Duke Verduin,Goalkeeper,1.00,duke-verduin,,0,
+PEC Zwolle,Jasper Schendelaar,Goalkeeper,1.80,jasper-schendelaar,,0,
+PEC Zwolle,Tom de Graaff,Goalkeeper,1.80,tom-de-graaff,,0,
+PEC Zwolle,Gabriël Reiziger,Midfielder,1.20,gabriel-reiziger,,0,
+PEC Zwolle,Gilles van der Wal,Midfielder,1.20,gilles-van-der-wal-nieuw,,1,
+PEC Zwolle,Givaro Rahajaän,Midfielder,1.00,givaro-rahajaan,,1,
+PEC Zwolle,Jadiel Pereira da Gama,Midfielder,1.20,jadiel-pereira-da-gama,,0,
+PEC Zwolle,Nick Fichtinger,Midfielder,1.50,nick-fichtinger,,0,
+PEC Zwolle,Odysseus Velanas,Midfielder,1.80,odysseus-velanas,,0,
+PEC Zwolle,Ryan Thomas,Midfielder,1.50,ryan-thomas,,0,
+PEC Zwolle,Thijs Oosting,Midfielder,2.00,thijs-oosting,,0,
+PEC Zwolle,Tobias Sommer,Midfielder,1.50,t-sommer,,1,
+PSV,Adamo Nagalo,Defender,1.80,adamo-nagalo,,1,duur onbekend
+PSV,Armando Obispo,Defender,2.50,armando-obispo,,0,
+PSV,Fabian Merién,Defender,1.00,fabian-merien,,0,
+PSV,Filip Kostic,Defender,3.00,filip-kostic,,1,
+PSV,Kiliann Sildillia,Defender,2.50,kiliann-sildillia,,0,duur onbekend
+PSV,Lutsharel Geertruida,Defender,3.00,lutsharel-geertruida,,0,
+PSV,Mauro Júnior,Defender,3.00,mauro-junior,,0,
+PSV,Ryan Flamingo,Defender,3.00,ryan-flamingo,,0,
+PSV,Sergiño Dest,Defender,3.20,sergino-dest,,0,
+PSV,Yarek Gasiorowski,Defender,3.00,yarek-gasiorowski,,0,
+PSV,Alassane Pléa,Forward,2.50,alassane-plea,,0,duur onbekend
+PSV,Amir Bouhamdi,Forward,1.80,amir-bouhamdi,,1,
+PSV,Dennis Man,Forward,3.00,dennis-man,,0,duur onbekend
+PSV,Esmir Bajraktarevic,Forward,2.20,esmir-bajraktarevic,,0,
+PSV,Ivan Perisic,Forward,3.80,ivan-perisic,,0,
+PSV,Ricardo Pepi,Forward,3.80,ricardo-pepi,basis,0,
+PSV,Ruben van Bommel,Forward,3.20,ruben-van-bommel,,0,
+PSV,Sami Ouaissa,Forward,2.80,sami-ouaissa,,0,duur onbekend
+PSV,Khadim Ngom,Goalkeeper,1.20,khadim-ngom-nieuw,,1,
+PSV,Matej Kovar,Goalkeeper,3.00,matej-kovar,,0,
+PSV,Nick Olij,Goalkeeper,2.00,nick-olij,,0,
+PSV,Tijn Smolenaars,Goalkeeper,1.00,tijn-smolenaars,,0,
+PSV,Guus Til,Midfielder,4.00,guus-til,,0,
+PSV,Jerdy Schouten,Midfielder,2.50,jerdy-schouten,,0,tot en met 1 mei
+PSV,Joël van den Berg,Midfielder,1.20,joel-van-den-berg,,0,
+PSV,Kodai Sano,Midfielder,2.50,kodai-sano,,0,
+PSV,Noah Fernandez,Midfielder,1.80,noah-fernandez,,0,
+PSV,Paul Wanner,Midfielder,2.80,paul-wanner,,0,
+PSV,Shuryjano Cornecion,Midfielder,1.50,shuryjano-cornecion-nieuw,,1,
+PSV,Sven Mijnans,Midfielder,3.80,sven-mijnans,,0,
+SC Cambuur,Billy van Duijl,Defender,1.50,billy-van-duijl,,0,
+SC Cambuur,Buddy Vogelzang,Defender,1.00,buddy-vogelzang-nieuw,,1,
+SC Cambuur,Devid Bouah,Defender,1.20,devid-eugene-bouah,,1,
+SC Cambuur,Ismaël Baouf,Defender,1.50,ismael-baouf,,0,
+SC Cambuur,Jamal Amofa,Defender,1.50,jamal-amofa,,0,
+SC Cambuur,Jorn Berkhout,Defender,1.20,jorn-berkhout,,0,
+SC Cambuur,Lucas Jetten,Defender,1.20,lucas-jetten,,0,
+SC Cambuur,Morgan Costarelli,Defender,1.20,morgan-costarelli,,1,
+SC Cambuur,Danyello Look,Forward,1.20,danyello-look,,0,
+SC Cambuur,Fabian Kvam,Forward,1.20,f-kvam,,0,
+SC Cambuur,Ilyes Hamache,Forward,1.50,ilyes-hamache,,1,
+SC Cambuur,Nicolas Binder,Forward,1.20,nicolas-binder,,0,
+SC Cambuur,Sami Bouhoudane,Forward,1.20,sami-bouhoudane,,0,
+SC Cambuur,Skye Vink,Forward,1.50,s-vink,,0,
+SC Cambuur,Wiebe Kooistra,Forward,1.20,wiebe-kooistra,,0,
+SC Cambuur,Jasper Meijster,Goalkeeper,1.00,jasper-meijster,,1,
+SC Cambuur,Luca Plogmann,Goalkeeper,1.50,luca-plogmann,,1,
+SC Cambuur,Matthijs Kalisvaart,Goalkeeper,1.20,matthijs-kalisvaart,,1,
+SC Cambuur,Thijs Jansen,Goalkeeper,1.50,thijs-jansen,,0,
+SC Cambuur,Daan Visser,Midfielder,1.20,daan-visser,,0,
+SC Cambuur,Damian Westerhof,Midfielder,1.00,damian-westerhof-nieuw,,1,
+SC Cambuur,Ethan Apkakou,Midfielder,1.20,ethan-apkakou,,0,
+SC Cambuur,Iwan Henstra,Midfielder,1.20,iwan-henstra,,0,
+SC Cambuur,Mathieu Maertens,Midfielder,1.80,mathieu-maertens,,1,
+SC Cambuur,Nicky Souren,Midfielder,1.50,nicky-souren,,0,
+SC Cambuur,Rafik El Arguioui,Midfielder,1.50,rafik-el-arguioui,bank,0,
+SC Cambuur,Rik Mulders,Midfielder,1.50,rik-mulders,,0,
+SC Cambuur,Wessel van der Goot,Midfielder,1.20,wessel-van-der-goot-nieuw,,1,
+SC Cambuur,Wiebe van der Heide,Midfielder,1.00,wiebe-van-der-heide,,0,
+Sparta Rotterdam,Bas Kuipers,Defender,1.80,bas-kuipers,,0,
+Sparta Rotterdam,Boyd Reith,Defender,1.20,boyd-reith,,0,
+Sparta Rotterdam,Bruno Martins Indi,Defender,1.80,bruno-martins-indi,,0,
+Sparta Rotterdam,Lushendry Martes,Defender,1.00,lushendry-edward-martes,,0,
+Sparta Rotterdam,Marvin Young,Defender,1.80,marvin-young,basis,0,
+Sparta Rotterdam,Max de Ligt,Defender,1.00,max-de-ligt,,1,duur onbekend
+Sparta Rotterdam,Nick Verschuren,Defender,1.50,nick-verschuren,,0,
+Sparta Rotterdam,Teo Quintero,Defender,1.80,teo-quintero,,0,
+Sparta Rotterdam,Andrej Kostic,Forward,1.80,andrej-kostic,,1,
+Sparta Rotterdam,Casper Terho,Forward,1.20,casper-terho,,0,
+Sparta Rotterdam,Giannino Vianello,Forward,1.20,giannino-vianello,,0,
+Sparta Rotterdam,Joel Ideho,Forward,1.50,joel-ideho,,0,
+Sparta Rotterdam,Milan Zonneveld,Forward,1.80,milan-zonneveld,,0,
+Sparta Rotterdam,Mitchell van Bergen,Forward,2.00,mitchell-van-bergen,,0,
+Sparta Rotterdam,Filip Bednarek,Goalkeeper,1.50,filip-bednarek,,1,
+Sparta Rotterdam,Michael Brouwer,Goalkeeper,1.50,michael-brouwer,,0,
+Sparta Rotterdam,Pascal Kuiper,Goalkeeper,1.20,pascal-kuiper,,1,
+Sparta Rotterdam,Rik Suur,Goalkeeper,1.00,rik-suur,,1,
+Sparta Rotterdam,Alwande Roaldsøy,Midfielder,1.20,a-roaldsy,,1,
+Sparta Rotterdam,Ayoni Santos,Midfielder,1.50,ayoni-santos,,0,
+Sparta Rotterdam,Cedric Hatenboer,Midfielder,1.80,cedric-hatenboer,,0,
+Sparta Rotterdam,Jens Toornstra,Midfielder,1.80,jens-toornstra,,0,
+Sparta Rotterdam,Julian Baas,Midfielder,1.50,julian-baas,,0,
+Sparta Rotterdam,Robin van Cruijsen,Midfielder,1.80,robin-van-cruijsen,,0,
+Sparta Rotterdam,Shunsuke Mito,Midfielder,2.00,shunsuke-mito,,0,
+Telstar,Abdelnour Soualhia,Defender,1.20,abdelnour-soualhia,,1,
+Telstar,Abdelraffie Benzzine,Defender,1.00,abdelraffie-benzzine,,1,
+Telstar,Gerald Alders,Defender,1.50,gerald-alders,,0,
+Telstar,Jeff Hardeveld,Defender,2.00,jeff-hardeveld,basis,0,
+Telstar,Marvin Peersman,Defender,1.80,marvin-peersman,,0,duur onbekend
+Telstar,Nigel Ogidi Nwankwo,Defender,1.20,nigel-ogidi-nwankwo,,0,
+Telstar,Prince Aning,Defender,1.20,prince-aning,,1,
+Telstar,Sem Valk,Defender,1.50,sem-valk,,0,
+Telstar,Yamano Olfers,Defender,1.00,yamano-olfers,,1,
+Telstar,Emirhan Demircan,Forward,1.50,emirhan-demircan,,0,
+Telstar,Fabiano Rust,Forward,1.00,fabiano-rust,,1,
+Telstar,Fofin Turay,Forward,1.20,fofin-turay,,0,
+Telstar,Jelani Seedorf,Forward,1.20,jelani-seedorf,,0,
+Telstar,Nökkvi Thórisson,Forward,1.50,nokkvi-thorisson,,1,
+Telstar,Patrick Brouwer,Forward,1.80,patrick-brouwer,,0,
+Telstar,Rui Mendes,Forward,1.50,rui-mendes,,0,
+Telstar,Daan Reiziger,Goalkeeper,1.20,daan-reiziger,,0,
+Telstar,Finn Mulder,Goalkeeper,1.00,finn-mulder,,1,
+Telstar,Ronald Koeman,Goalkeeper,1.80,ronald-koeman-jr,,0,
+Telstar,Gabi Caschili,Midfielder,1.20,gabi-caschili,,1,
+Telstar,Harrie Kuster,Midfielder,1.50,harrie-kuster,,0,
+Telstar,Isaiah Ahmed,Midfielder,1.20,isaiah-ahmed,,0,
+Telstar,Nils Rossen,Midfielder,1.50,nils-rossen,,0,
+Telstar,Noach Shenkman,Midfielder,1.00,noach-shenkman,,1,
+Telstar,Rojendro Oudsten,Midfielder,1.20,rojendro-oudsten,,0,
+Telstar,Tyrone Owusu,Midfielder,1.20,tyrone-owusu,,0,
+Willem II,Alessandro Ciranni,Defender,1.20,alessandro-ciranni,,0,
+Willem II,Amine Et-Taïbi,Defender,1.20,amine-et-taibi,,0,
+Willem II,Finn Stam,Defender,1.20,finn-stam,,0,
+Willem II,Hidde ter Avest,Defender,1.50,hidde-ter-avest,,1,
+Willem II,Jens Mathijsen,Defender,1.00,jens-mathijsen,,0,
+Willem II,Justin Hoogma,Defender,1.50,justin-hoogma,,0,duur onbekend
+Willem II,Kayen Scheepens,Defender,1.20,kayen-scheepens-nieuw,,1,
+Willem II,Mats Lemmens,Defender,1.20,mats-lemmens,,1,
+Willem II,Nathan Tjoe-A-On,Defender,1.50,nathan-tjoe-a-on,,0,
+Willem II,Armin Culum,Forward,1.50,armin-culum,,0,duur onbekend
+Willem II,Devin Haen,Forward,1.80,devin-haen,,0,
+Willem II,Eser Gürbüz,Forward,1.50,eser-gurbuz,,0,
+Willem II,Ismael Mouhoul,Forward,1.00,ismael-mouhoul-nieuw,,1,
+Willem II,Jaden Slory,Forward,1.50,jaden-slory,,0,
+Willem II,Luca Maal,Forward,1.00,luca-maal-nieuw,,1,
+Willem II,Thomas Verheydt,Forward,1.50,thomas-verheydt,,0,
+Willem II,Karst de Leeuw,Goalkeeper,1.00,karst-de-leeuw,,0,
+Willem II,Maxime Delanghe,Goalkeeper,1.20,maxime-delanghe,,1,
+Willem II,Thomas Didillon-Hödl,Goalkeeper,1.50,thomas-didillon-hodl,,0,
+Willem II,Wouter van der Steen,Goalkeeper,1.20,wouter-van-der-steen,,1,
+Willem II,Amine Lachkar,Midfielder,1.20,amine-lachkar,,1,
+Willem II,Anass Zarrouk,Midfielder,1.20,anass-zarrouk,,0,
+Willem II,Calvin Twigt,Midfielder,1.50,calvin-twigt,,0,
+Willem II,Divano Fernandez Iglesias,Midfielder,1.00,divano-fernandez-iglesias-nieuw,,1,
+Willem II,Jari Schuurman,Midfielder,1.20,jari-schuurman,,0,
+Willem II,Julian van Esdonk,Midfielder,1.20,julian-van-esdonk-nieuw,,1,
+Willem II,Kasper Boogaard,Midfielder,1.50,kasper-boogaard,,0,
+Willem II,Per van Loon,Midfielder,1.00,per-van-loon,,0,
+Willem II,Sebas Wermenbil,Midfielder,1.00,sebas-wermenbil-nieuw,,1,
+Willem II,Thijs Muller,Midfielder,1.20,thijs-muller,,0,
+Willem II,Tonny Vilhena,Midfielder,1.80,tonny-vilhena,,1,
+Willem II,Uriël van Aalst,Midfielder,1.50,uriel-van-aalst,,0,
+Willem II,Vito van Crooij,Midfielder,1.80,vito-van-crooij,,0,
+sc Heerenveen,Darling Bladi,Defender,1.50,darling-bladi,,1,
+sc Heerenveen,Hristiyan Petrov,Defender,1.50,hristiyan-petrov,,0,
+sc Heerenveen,Jimte Scholten,Defender,1.20,jimte-scholten-nieuw,,1,
+sc Heerenveen,Maas Willemsen,Defender,1.80,maas-willemsen,,0,
+sc Heerenveen,Mats Egbring,Defender,1.20,mats-egbring,,0,duur onbekend
+sc Heerenveen,Mees Hilgers,Defender,1.80,mees-hilgers,,1,
+sc Heerenveen,Oliver Braude,Defender,1.80,oliver-braude,,0,
+sc Heerenveen,Sam Kersten,Defender,1.80,sam-kersten,,0,
+sc Heerenveen,Vasilios Zagaritis,Defender,2.00,vasilios-zagaritis,,0,
+sc Heerenveen,Dylan Vente,Forward,2.00,dylan-vente,,0,
+sc Heerenveen,Jacob Trenskow,Forward,2.20,jacob-trenskow,basis,0,
+sc Heerenveen,Jermaine Rijssel,Forward,1.00,jermaine-rijssel-nieuw,,1,
+sc Heerenveen,Kirayno Schaken,Forward,1.20,kirayno-schaken-nieuw,,1,
+sc Heerenveen,Lanroy Machine,Forward,1.80,lanroy-machine,,1,
+sc Heerenveen,Marko Farji,Forward,1.80,marko-farji,,1,
+sc Heerenveen,Maxence Rivera,Forward,1.80,maxence-rivera,,0,
+sc Heerenveen,Andries Noppert,Goalkeeper,1.80,andries-noppert,,0,
+sc Heerenveen,Bernt Klaverboer,Goalkeeper,2.00,bernt-klaverboer,,0,
+sc Heerenveen,Timo Schreuder,Goalkeeper,1.00,t-schreuder,,1,
+sc Heerenveen,Dirk Proper,Midfielder,1.80,dirk-proper,,0,
+sc Heerenveen,Levi Smans,Midfielder,1.50,levi-smans,,0,
+sc Heerenveen,Luca Oyen,Midfielder,1.50,luca-oyen,,0,
+sc Heerenveen,Marcus Linday,Midfielder,1.50,marcus-linday,,0,duur onbekend
+sc Heerenveen,Nolhan Courtens,Midfielder,1.20,nolhan-courtens,,0,
+sc Heerenveen,Ringo Meerveld,Midfielder,2.20,ringo-meerveld,,0,
