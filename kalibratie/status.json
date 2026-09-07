@@ -1,0 +1,12 @@
+{
+  "laatst_gecontroleerd_tot_ronde": 5,
+  "geschiedenis": [
+    {
+      "tijdstip": "2026-09-07T17:17:13.905721+00:00",
+      "tot_ronde": 5,
+      "n_evalueerbaar": 4,
+      "besluit": "geen aanpassing",
+      "reden": "slechts 4 evalueerbare ronde(s), minimaal 8 vereist"
+    }
+  ]
+}
