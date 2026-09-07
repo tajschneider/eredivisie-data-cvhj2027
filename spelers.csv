@@ -1114,7 +1114,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 3,"zaterdag 22 augustus 2026, 18:45",Mitchell van Bergen,mitchell-van-bergen,Sparta Rotterdam,FC Utrecht,thuis,invaller,0,28,0,0,1,,2026-09-07
 3,"zaterdag 22 augustus 2026, 18:45",Milan Zonneveld,milan-zonneveld,Sparta Rotterdam,FC Utrecht,thuis,invaller,0,28,1,0,1,,2026-09-07
 3,"zaterdag 22 augustus 2026, 18:45",Casper Terho,casper-terho,Sparta Rotterdam,FC Utrecht,thuis,invaller,0,4,0,0,1,,2026-09-07
-3,"zaterdag 22 augustus 2026, 18:45",Max de Ligt,max-de-ligt,Sparta Rotterdam,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-31
+3,"zaterdag 22 augustus 2026, 18:45",Max de Ligt,max-de-ligt,Sparta Rotterdam,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-09-07
 3,"zaterdag 22 augustus 2026, 18:45",Vasilios Barkas,vasilios-barkas,FC Utrecht,Sparta Rotterdam,uit,basis,1,90,0,0,1,,2026-09-07
 3,"zaterdag 22 augustus 2026, 18:45",Neville Ogidi Nwankwo,neville-ogidi-nwankwo,FC Utrecht,Sparta Rotterdam,uit,basis,1,72,0,0,1,,2026-09-07
 3,"zaterdag 22 augustus 2026, 18:45",Matisse Didden,matisse-didden,FC Utrecht,Sparta Rotterdam,uit,basis,1,90,1,0,1,,2026-09-07
@@ -1246,7 +1246,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 4,"zaterdag 29 augustus 2026, 16:30",Casper Terho,casper-terho,Sparta Rotterdam,Excelsior,uit,invaller,0,51,0,0,0,,2026-09-07
 4,"zaterdag 29 augustus 2026, 16:30",Andrej Kostic,andrej-kostic,Sparta Rotterdam,Excelsior,uit,bank,0,0,0,,0,,2026-09-07
 4,"zaterdag 29 augustus 2026, 16:30",Joel Ideho,joel-ideho,Sparta Rotterdam,Excelsior,uit,invaller,0,7,0,0,0,,2026-09-07
-4,"zaterdag 29 augustus 2026, 16:30",Max de Ligt,max-de-ligt,Sparta Rotterdam,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-08-31
+4,"zaterdag 29 augustus 2026, 16:30",Max de Ligt,max-de-ligt,Sparta Rotterdam,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-09-07
 4,"vrijdag 28 augustus 2026, 20:00",Etienne Vaessen,etienne-vaessen,FC Groningen,Fortuna Sittard,thuis,basis,1,90,0,0,0,,2026-09-07
 4,"vrijdag 28 augustus 2026, 20:00",Wouter Prins,wouter-prins,FC Groningen,Fortuna Sittard,thuis,basis,1,81,0,0,0,,2026-09-07
 4,"vrijdag 28 augustus 2026, 20:00",Márk Csinger,mark-csinger,FC Groningen,Fortuna Sittard,thuis,basis,1,82,0,0,0,,2026-09-07
@@ -1651,7 +1651,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 5,"zaterdag 5 september 2026, 20:00",Esmir Bajraktarevic,esmir-bajraktarevic,PSV,Ajax,uit,invaller,0,27,1,0,3,,2026-09-07
 5,"zaterdag 5 september 2026, 20:00",Kiliann Sildillia,kiliann-sildillia,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-09-07
 5,"zaterdag 5 september 2026, 20:00",Sam Lammers,sam-lammers,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-09-07
-5,"zaterdag 5 september 2026, 20:00",Adamo Nagalo,adamo-nagalo,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-09-07
+5,"zaterdag 5 september 2026, 20:00",Adamo Nagalo,adamo-nagalo,PSV,Ajax,uit,afwezig,0,0,0,,0,schorsing,2026-09-07
 5,"zaterdag 5 september 2026, 20:00",Dennis Man,dennis-man,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-09-07
 5,"zaterdag 5 september 2026, 20:00",Mikkel Bro Hansen,mikkel-bro-hansen,PSV,Ajax,uit,afwezig,0,0,0,,0,schorsing,2026-09-07
 5,"zaterdag 5 september 2026, 20:00",Jerdy Schouten,jerdy-schouten,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-09-07
@@ -2026,3 +2026,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 5,"zondag 6 september 2026, 14:30",Wout Asselman,wout-asselman,SC Cambuur,Telstar,uit,afwezig,0,0,0,,0,blessure,2026-09-07
 5,"zaterdag 5 september 2026, 21:00",Thijs Muller,thijs-muller,Willem II,Excelsior,thuis,afwezig,0,0,0,,0,blessure,2026-09-07
 5,"zaterdag 5 september 2026, 21:00",Vito van Crooij,vito-van-crooij,Willem II,Excelsior,thuis,afwezig,0,0,0,,0,blessure,2026-09-07
+5,"zaterdag 5 september 2026, 16:30",Isak Hansen-Aaröen,isak-hansen-aaroen,NEC,Feyenoord,thuis,afwezig,0,0,0,,0,schorsing,2026-09-07
+5,"zaterdag 5 september 2026, 16:30",Freek Entius,freek-entius,NEC,Feyenoord,thuis,afwezig,0,0,0,,0,schorsing,2026-09-07
+5,"zaterdag 5 september 2026, 16:30",Thomas Beelen,thomas-beelen,Feyenoord,NEC,uit,afwezig,0,0,0,,0,schorsing,2026-09-07
+5,"zondag 6 september 2026, 14:30",Mees Hilgers,mees-hilgers,sc Heerenveen,AZ,thuis,afwezig,0,0,0,,0,blessure,2026-09-07
