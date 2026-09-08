@@ -7,6 +7,13 @@
       "n_evalueerbaar": 4,
       "besluit": "geen aanpassing",
       "reden": "slechts 4 evalueerbare ronde(s), minimaal 8 vereist"
+    },
+    {
+      "tijdstip": "2026-09-08T08:17:49.474822+00:00",
+      "tot_ronde": 5,
+      "n_evalueerbaar": 4,
+      "besluit": "overgeslagen",
+      "reden": "nog maar 0 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
     }
   ]
 }
