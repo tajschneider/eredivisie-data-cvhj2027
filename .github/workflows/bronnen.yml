@@ -1,0 +1,70 @@
+name: Bronnen proberen (welke xG-bron werkt vanaf Actions?)
+
+# Handmatige knop. Dit is het antwoord op de vraag die twee keer verkeerd is
+# beantwoord: "werkt deze bron vanuit GitHub Actions?" Zowel FBref als
+# Sofascore leken elders te werken en gaven hier een 403. De enige manier om
+# het te weten is meten op de plek waar het moet draaien -- dat doet deze
+# workflow.
+#
+# Er wordt niets gewijzigd en niets gecommit; dit is puur een meting. De
+# uitslag komt in de samenvatting van de run te staan.
+#
+# Optionele secrets (zonder secret wordt die bron netjes overgeslagen):
+#   API_FOOTBALL_KEY      gratis sleutel van api-sports.io (100 verzoeken/dag)
+#   FOOTBALL_DATA_TOKEN   gratis sleutel van football-data.org
+#
+# Juist die twee zijn interessant: een API met een sleutel hoort niet op
+# IP-reputatie geblokkeerd te worden, want authenticatie is geen scrapen.
+# Als er iets vanaf GitHub Actions werkt, is het waarschijnlijk daar te vinden.
+on:
+  workflow_dispatch:
+    inputs:
+      bron:
+        description: 'Alleen bronnen met deze tekst in de naam (leeg = alle)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  proberen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests
+
+      - name: Bronnen proberen
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+        run: |
+          set -o pipefail
+          python probeer_bronnen.py \
+            ${{ github.event.inputs.bron && format('--bron {0}', github.event.inputs.bron) || '' }} \
+            --dump antwoorden \
+            | tee bronnen.txt
+
+      - name: Samenvatting
+        if: always()
+        run: |
+          {
+            echo "### Welke bron werkt vanaf een GitHub-runner?"
+            echo ""
+            echo '```'
+            cat bronnen.txt
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
+
+      # De ruwe antwoorden meenemen: bij een 200 wil je zelf kunnen kijken of
+      # er echt bruikbare spelersdata in zit, niet alleen of de velden voorkomen.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: antwoorden
+          path: |
+            bronnen.txt
+            antwoorden/
