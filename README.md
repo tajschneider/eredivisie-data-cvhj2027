@@ -578,6 +578,54 @@ getest tegen een synthetische respons met exact de echte veldnamen en waarden
 (`test_sofascore.py`). **Draai het lokaal** (of via een self-hosted runner) en controleer
 het aantal spelers en de 18 clubnamen in de samenvatting.
 
+### Welke bron werkt wél? Meten in plaats van gokken
+
+Twee keer is een bron gekozen op basis van een test die ergens anders draaide
+dan de uiteindelijke workflow, en twee keer gaf GitHub Actions een 403. De
+les is niet "kies een betere site", maar: **deze vraag is niet te beantwoorden
+zonder te meten op de plek waar het moet draaien.**
+
+`probeer_bronnen.py` doet dat. Het probeert een lijst kandidaten en
+rapporteert per bron drie dingen: staat `robots.txt` het toe, wat is de
+HTTP-status, en komen de gezochte veldnamen (assists, kaarten, xG, minuten)
+in het antwoord voor. `bronnen.yml` draait dat op een GitHub-runner — en
+alleen díé uitslag telt voor de automatisering.
+
+```bash
+python probeer_bronnen.py            # alle bronnen
+python probeer_bronnen.py --bron espn
+python probeer_bronnen.py --dump antwoorden/   # de antwoorden bewaren
+```
+
+In de lijst staan bewust twee ijkpunten (Sofascore en FBref, beide bekend als
+403 vanaf Actions): zie je die in het rapport terug als "geblokkeerd", dan
+weet je dat de meting klopt.
+
+Twee kandidaten vragen een gratis sleutel, in te stellen als GitHub Secret;
+zonder sleutel worden ze netjes overgeslagen in plaats van als mislukt
+gerapporteerd:
+
+| Secret | Bron | Gratis laag | xG? |
+|---|---|---|---|
+| `API_FOOTBALL_KEY` | api-sports.io | 100 verzoeken/dag | wisselend per competitie — juist daarom meten |
+| `FOOTBALL_DATA_TOKEN` | football-data.org | ja | nee, wel assists bij topscorers |
+
+Dat zijn de kansrijkste kandidaten, en om een structurele reden: **een API met
+een sleutel hoort niet op IP-reputatie geblokkeerd te worden.** Dat is het hele
+verschil met scrapen — je identificeert je, in plaats van te hopen dat je voor
+een browser wordt aangezien. Werkt er iets vanaf GitHub Actions, dan is het
+daar te vinden.
+
+Wat er níét in staat: FotMob (robots.txt verbiedt het pad — het script haalt
+zulke bronnen dan ook niet op) en betaalde diensten. En er wordt niets gedaan
+om een blokkade te omzeilen: geen proxies, geen vervalste headers. Een 403 is
+een antwoord, geen obstakel.
+
+Merk op dat assists en kaarten het zwaarst wegen: die ontbreken volledig in de
+pouletips-data, terwijl doelpunten en minuten er al zijn. Een bron zonder xG
+maar mét assists en kaarten levert dus al het grootste deel van stap 5 op —
+het rapport noemt dat "deels (geen xG)".
+
 ### Terugval en menging
 
 **Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `xg.csv`,
