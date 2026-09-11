@@ -1,27 +1,30 @@
 name: xG-data ophalen (Sofascore)
 
-# Vervangt fbref.yml. FBref viel als bron weg: Opta trok in januari 2026 de
-# licentie in (de xG/xAG-data is daar weg) EN FBref blokkeert datacenter-IP's
-# met een 403 -- wat een GitHub Actions-runner nu eenmaal is. Sofascore heeft
-# beide problemen niet; het endpoint antwoordde in een test vanaf een
-# datacenter-IP gewoon met 200.
+# ALLEEN HANDMATIG, EN OP EEN GITHUB-RUNNER WERKT HET NIET.
 #
-# BEWUST LOS van wekelijks.yml gehouden, net als fbref.yml was: als het
-# ophalen stukloopt, moet het wekelijkse advies gewoon blijven doordraaien.
-# Het model valt dan terug op het gedrag van vóór stap 5 (geen assists en
-# kaarten meegewogen) -- dat is een mindere schatting, geen storing.
+# Vastgesteld op 7 september 2026: Sofascore geeft een 403 op de gedeelde
+# IP-reeksen van GitHub-hosted runners, bij het allereerste verzoek. Precies
+# wat FBref daarvoor ook deed. Twee verschillende sites, hetzelfde patroon --
+# cloud-IP's worden categorisch geblokkeerd, ongeacht wat je verstuurt.
 #
-# De tijden liggen telkens vóór wekelijks.yml (maandag 07:00, donderdag 09:00),
-# zodat het advies met verse xG-data rekent.
+# Daarom staat het schema hieronder UIT. Deze workflow heeft alleen zin als je
+# hem op een SELF-HOSTED RUNNER draait (dan gaat het verkeer via jouw eigen IP):
+# zet dan `runs-on: self-hosted` hieronder, en haal de twee cron-regels uit het
+# commentaar. De tijden liggen bewust vóór wekelijks.yml (ma 07:00, do 09:00).
 #
-# LET OP bij de eerste keer: draai dit één keer handmatig (Run workflow) en
-# controleer in de samenvatting het aantal spelers, het aantal clubs (18) en
-# of er geen onbekende clubnamen worden gemeld. Het script schrijft niets bij
-# te weinig spelers, dus half gevulde data kan niet doorstromen.
+# Zonder self-hosted runner: draai `python scrape_sofascore.py` op je eigen
+# machine en commit xg.csv zelf. Ontbreekt xg.csv helemaal, dan draait het
+# model zoals vóór stap 5 -- een mindere schatting, geen storing.
+#
+# LET OP bij de eerste keer: controleer in de samenvatting het aantal spelers,
+# het aantal clubs (18) en of er geen onbekende clubnamen worden gemeld. Het
+# script schrijft niets bij te weinig spelers, dus half gevulde data kan niet
+# doorstromen.
 on:
-  schedule:
-    - cron: '0 5 * * 1'
-    - cron: '0 8 * * 4'
+  # Uitgezet zolang dit op een GitHub-hosted runner draait -- zie hierboven.
+  # schedule:
+  #   - cron: '0 5 * * 1'
+  #   - cron: '0 8 * * 4'
   workflow_dispatch:
     inputs:
       seizoen:

@@ -68,6 +68,31 @@ jobs:
             echo "nr=$(python -c "import csv;print(next(csv.DictReader(open('programma.csv')))['ronde'])")" >> $GITHUB_OUTPUT
           fi
 
+      # selectie.csv was het enige bestand dat met de hand bijgehouden moest
+      # worden, en dat ging twee keer mis (een vergeten transferregel, en een
+      # wijziging in het verkeerde bestand). Beide keren zonder foutmelding:
+      # het model rekende gewoon door op een ploeg die Thomas niet meer had.
+      # De site weet altijd wie je hebt, dus die is nu leidend.
+      #
+      # continue-on-error: is de site onbereikbaar of het inloggen stuk, dan
+      # moet het advies gewoon doorgaan met de selectie.csv die er ligt --
+      # een oude ploeg is beter dan geen mail. De waarschuwing eronder zorgt
+      # dat het wel zichtbaar blijft.
+      - name: Selectie synchroniseren met coachvanhetjaar.nl
+        id: sync
+        continue-on-error: true
+        env:
+          CVHJ_GEBRUIKER: ${{ secrets.CVHJ_GEBRUIKER }}
+          CVHJ_WACHTWOORD: ${{ secrets.CVHJ_WACHTWOORD }}
+        run: python synchroniseer_selectie.py --ronde ${{ steps.ronde.outputs.nr }} --schrijf
+
+      - name: Melden als het synchroniseren niet lukte
+        if: steps.sync.outcome != 'success'
+        run: |
+          echo "::warning::selectie.csv kon niet gecontroleerd worden tegen de site. "\
+               "Het advies hieronder gebruikt selectie.csv zoals die in de repo staat -- "\
+               "controleer zelf of die nog klopt met je echte ploeg."
+
       # Waarborg voor de MILP: met --horizon 1 moet multi_periode.py exact
       # hetzelfde vinden als cvhj_model.py's brute-force zoeker (zie
       # test_multi_periode.py). Faalt dit, dan is er iets stuk aan de nieuwe
@@ -119,7 +144,7 @@ jobs:
           cp advies.txt   "historie/ronde-${{ steps.ronde.outputs.nr }}.txt"
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add prijzen.csv programma.csv historie/
+          git add prijzen.csv programma.csv selectie.csv historie/
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "advies ronde ${{ steps.ronde.outputs.nr }}"
           # scrape.yml kan intussen gepusht hebben; eerst bijtrekken.
