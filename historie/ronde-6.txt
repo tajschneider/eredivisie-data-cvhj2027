@@ -3,7 +3,7 @@ LET OP: 54 wedstrijden in het programma, verwacht 9.
 Periode 2; volgende periodestart over 3 ronden.
 Clubratings uit 41 wedstrijden met marktnotering (thuisvoordeel x1.23)
 LET OP: xg.csv niet gevonden - doelpunten/assists/kaarten draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.
-259 spelers met voldoende speeltijd in de pool
+261 spelers met voldoende speeltijd in de pool
 Zonder recente speeltijd (E=0): Deveron Fonville, David Min
 
 GEBLESSEERD IN JE SELECTIE:

@@ -1,6 +1,6 @@
 {
   "ronde": 6,
-  "gegenereerd": "2026-09-11T08:57:24",
+  "gegenereerd": "2026-09-11T13:33:27",
   "transfers_toegestaan": 1,
   "periode": 2,
   "periodestart": false,
@@ -336,7 +336,7 @@
     "Ajax",
     "Willem II"
   ],
-  "pool_grootte": 259,
+  "pool_grootte": 261,
   "opties": [
     {
       "verwacht": 50.88,
