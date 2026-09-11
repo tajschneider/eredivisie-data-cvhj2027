@@ -42,6 +42,8 @@ wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
                                |               |
                                +-------+-------+
                                        v
+              synchroniseer_selectie.py -> selectie.csv  (site is leidend)
+                                       v
                         test_multi_periode.py  (regressie-waarborg)
                                        v
                     multi_periode.py --horizon auto  -> besluit.json
@@ -58,8 +60,8 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
                       -> kalibratie/status.json (altijd)
                       -> e-mail (alleen bij een daadwerkelijke aanpassing)
 
-xg.yml (ma 05:00 en do 08:00 UTC -- telkens vóór wekelijks.yml; zie
-        "xG, assists en kaarten")
+xg.yml (ALLEEN handmatig -- een GitHub-runner krijgt een 403; zie
+        "xG, assists en kaarten" voor de vier wegen die wel werken)
   scrape_sofascore.py -> xg.csv
                      (pikt wekelijks.yml automatisch op; ontbreekt het,
                       dan draait het advies zonder stap 5 -- een mindere
@@ -97,8 +99,10 @@ python notify.py besluit.json --toon      # advies afdrukken zonder te mailen
 ```
 
 `selectie.csv` heeft de kolommen `speler, club, positie, prijs`; positie mag
-Engels zijn of `K/V/M/A`. Dit bestand is de toestand van je ploeg — werk het bij
-zodra een transfer is doorgevoerd.
+Engels zijn of `K/V/M/A`. Dit bestand is de toestand van je ploeg; sinds
+`synchroniseer_selectie.py` wordt het elke run automatisch gelijkgetrokken met
+de site, dus je hoeft het na een transfer niet meer zelf bij te werken (zie
+"selectie.csv synchroniseren met de site").
 
 **Let op:** deze repo is publiek. `selectie.csv` en `historie/` zijn dus voor
 iedereen leesbaar. Je secrets niet — die staan in GitHub Secrets en komen niet
@@ -176,6 +180,56 @@ Twee lagen tegen dit soort fouten:
 
 Regressietest: `test_scrape_prijzen.py` (splits_status-edge cases inclusief
 deze exacte casus, en vind_bijna_match's matching/niet-matching-gevallen).
+
+## selectie.csv synchroniseren met de site
+
+`selectie.csv` was het enige bestand dat je met de hand moest bijhouden, en
+dat ging in september 2026 twee keer mis:
+
+- Na de transfer Flamingo → Geertruida bleef de oude regel staan. Het model
+  rekende een week lang met een speler die niet meer in de ploeg zat.
+- De keer erna werd de wijziging in `spelers.csv` gezet — de wedstrijddata van
+  de scraper — in plaats van in `selectie.csv`. Dat bestand wordt bovendien
+  elke maandag door de scraper overschreven, dus de aanpassing verdween ook
+  nog.
+
+Geen van beide gaf een foutmelding, want beide bestanden bleven geldig: ze
+waren alleen niet meer waar. Dat is het gevaarlijkste faalgeval in deze keten,
+want het model rekent met volle overtuiging door.
+
+`synchroniseer_selectie.py` haalt daarom je echte vijftien op bij
+coachvanhetjaar.nl en maakt die leidend. Het logt in via dezelfde (uit een
+HAR-export opgebouwde) code als `inleggen.py` — geen tweede implementatie die
+apart stuk kan gaan.
+
+```bash
+python synchroniseer_selectie.py            # alleen controleren, meldt verschillen
+python synchroniseer_selectie.py --schrijf  # selectie.csv bijwerken
+```
+
+`wekelijks.yml` draait de `--schrijf`-variant automatisch, vlak vóór het
+model, en commit het resultaat. Je hoeft `selectie.csv` dus niet meer zelf
+bij te werken na een transfer — ook niet na een transfer die je met de hand
+op de site doet.
+
+**Wat er gebeurt als het misgaat.** Twee kanten op afgedekt:
+
+- *Site onbereikbaar of inloggen stuk:* de stap staat op `continue-on-error`,
+  dus het advies gaat gewoon door met de `selectie.csv` die er ligt. Een oude
+  ploeg is beter dan geen mail. Er verschijnt wel een `::warning::` in de
+  workflow-log.
+- *Site geeft iets onverwachts terug:* dan wordt er NIETS geschreven. Het
+  script eist precies 15 spelers, elk met een naam, een club die in de
+  clublijst van de site staat, een geldige positie en een prijs. Faalt één van
+  die eisen, dan stopt het met een melding die zegt welke speler en welk veld
+  — hetzelfde "hard falen boven half werk" als in de scrapers. Een half
+  overschreven `selectie.csv` zou stilzwijgend verkeerde adviezen opleveren.
+
+Prijsverschillen tussen de site en `selectie.csv` worden gemeld maar zijn geen
+fout: prijzen bewegen elke week, en de site is daarin leidend.
+
+Regressietest: `test_synchroniseer.py` (draait zonder netwerk, met Thomas'
+echte vijftien als fixture en precies het Flamingo/Geertruida-verschil erin).
 
 ## Perioden en drie transfers
 
@@ -470,9 +524,35 @@ redenen vervallen, beide bevestigd:
    op scripted requests vanaf datacenter-IP's. De oude `fbref.yml` liep daar in
    de praktijk ook op stuk.
 
-Sofascore heeft beide problemen niet, en geeft bovendien exacte gespeelde
-minuten waar FBref afgeronde "90s" gaf -- de per-90-omrekening is daardoor
-iets nauwkeuriger dan voorheen.
+Sofascore lost het eerste probleem op: de data is er wel, compleet, en met
+exacte gespeelde minuten waar FBref afgeronde "90s" gaf -- de per-90-omrekening
+is daardoor zelfs iets nauwkeuriger dan voorheen.
+
+**Het tweede probleem heeft Sofascore ook.** Op 7 september 2026 bleek
+`scrape_sofascore.py` vanuit GitHub Actions een 403 te krijgen, bij het
+allereerste verzoek. Bij het bouwen was via een ander ophaalmechanisme wel een
+200 gekregen, en daaruit was ten onrechte geconcludeerd dat GitHub Actions dan
+ook zou werken. Twee verschillende sites, hetzelfde patroon: gedeelde
+cloud-IP-reeksen worden categorisch geblokkeerd, ongeacht wat je verstuurt.
+
+Er is bewust geen poging gedaan om die blokkade te omzeilen (roterende
+proxies, vervalste headers, "bypass"-diensten). Dat is broos, het werkt tegen
+een grens die iemand expres heeft gezet, en het hoort niet in dit project.
+
+Vier wegen die wel werken:
+
+1. **Lokaal draaien.** `python scrape_sofascore.py` op je eigen machine, en
+   `xg.csv` zelf committen. Gratis, werkt vandaag, kost je een handeling per
+   paar weken -- xG verandert langzaam, dus wekelijks verversen is niet nodig.
+2. **Self-hosted runner.** Dan draait `xg.yml` vanaf jouw IP en is het weer
+   volautomatisch. Zet `runs-on: self-hosted` en haal de cron-regels in
+   `xg.yml` uit het commentaar.
+3. **Gelicentieerde API met sleutel** (Sportmonks, ~€48/mnd inclusief de
+   xG-add-on). Werkt wél vanaf GitHub Actions, want dat is authenticatie en
+   geen scraping. De nette route als je dit onbeheerd wil laten draaien.
+4. **xG laten vallen.** Zonder `xg.csv` draait het model zoals vóór stap 5.
+
+`xg.yml` staat daarom op alleen-handmatig, met het schema uitgezet.
 
 ### Wat er wél en niet geverifieerd is
 
@@ -495,7 +575,7 @@ iets nauwkeuriger dan voorheen.
 **Niet**: het script als geheel is nooit live gedraaid -- de bouwomgeving kon
 `api.sofascore.com` niet met een eigen HTTP-verzoek bereiken. De parsing is
 getest tegen een synthetische respons met exact de echte veldnamen en waarden
-(`test_sofascore.py`). **Draai `xg.yml` dus één keer handmatig** en controleer
+(`test_sofascore.py`). **Draai het lokaal** (of via een self-hosted runner) en controleer
 het aantal spelers en de 18 clubnamen in de samenvatting.
 
 ### Terugval en menging
@@ -523,10 +603,10 @@ daar blijft een ondergrens die alleen doelpunten/ploegpunten/clean sheets
 meet). De richting klopt (hoge xG/xAG stijgt, veel kaarten daalt), de precieze
 grootte is niet gevalideerd.
 
-**Geen nieuwe secrets of variabelen.** `xg.yml` draait maandag 05:00 en
-donderdag 08:00 UTC -- telkens vóór `wekelijks.yml` -- en commit alleen
-`xg.csv`. Bewust een APARTE workflow: loopt het ophalen stuk, dan blijft het
-wekelijkse advies gewoon draaien (zonder stap 5). Naamcompatibiliteit: het
+**Geen nieuwe secrets of variabelen.** `xg.yml` staat op alleen-handmatig en
+commit alleen `xg.csv`; draai `scrape_sofascore.py` lokaal, of zet een
+self-hosted runner op. Bewust een APARTE workflow: loopt het ophalen stuk, dan
+blijft het wekelijkse advies gewoon draaien (zonder stap 5). Naamcompatibiliteit: het
 bestandsformaat is identiek aan het oude `fbref.csv`, de vlag `--fbref` werkt
 nog als alias voor `--xg`, en staat er nog een oud `fbref.csv` in de repo dan
 wordt dat als terugval gelezen als `xg.csv` ontbreekt.
@@ -615,15 +695,16 @@ Die controleert statisch of elke workflow installeert wat zijn scripts
 (direct én indirect) nodig hebben. Drie storingen in één week kwamen uit die
 hoek -- een ontbrekend bestand, een verstopte crash, een vergeten `numpy` --
 en dit vangt die soort af zonder iets te hoeven draaien. `xg.yml` draait hem
-ook automatisch, twee keer per week.
+ook, elke keer dat je die handmatig start.
 
 Nieuw:
 
-- `scrape_sofascore.py` is niet live gedraaid in de bouwomgeving (wel getest
-  tegen de echte veldnamen). Draai `xg.yml` één keer handmatig en controleer
-  het aantal spelers en de 18 clubnamen voordat je erop vertrouwt. Sofascore's
-  `/api/` is een niet-gedocumenteerde interne API: geen SLA, kan zonder
-  aankondiging wijzigen -- hetzelfde risicoprofiel als de pouletips-scrapers.
+- `scrape_sofascore.py` werkt NIET vanaf een GitHub-hosted runner (403, zie
+  "xG, assists en kaarten"). Draai het lokaal, of op een self-hosted runner.
+  Sofascore's `/api/` is bovendien een niet-gedocumenteerde interne API: geen
+  SLA, kan zonder aankondiging wijzigen -- hetzelfde risicoprofiel als de
+  pouletips-scrapers. Controleer bij de eerste run het aantal spelers en de
+  18 clubnamen.
 - `ROL_DECAY` en `CLEANSHEET_MINUTEN_DREMPEL` (zie "Rol en speeltijd") zijn
   slechts op 3 ronden getest en de minutendrempel is een aanname, niet
   bevestigd bij CVHJ. Draai `backtest.py` opnieuw zodra er meer data is.

@@ -14,8 +14,20 @@ FBref is als bron weggevallen. Twee onafhankelijke redenen, beide bevestigd:
    datacenter-IP's -- precies wat een GitHub Actions-runner is. Dat gaf de
    fbref-workflow in de praktijk ook: 403, drie pogingen, gestopt.
 
-Sofascore lost beide op: de data is er wel, en het endpoint antwoordde in een
-test vanaf een datacenter-IP gewoon met 200.
+Sofascore lost het EERSTE probleem op: de data is er wel, en compleet.
+
+Het TWEEDE probleem heeft Sofascore ook. Op 7 september 2026 bleek dit script
+vanuit GitHub Actions een 403 te geven, bij het allereerste verzoek. Bij het
+bouwen was via een ander ophaalmechanisme wel een 200 gekregen, en daaruit is
+ten onrechte geconcludeerd dat GitHub Actions dan ook zou werken -- dat bleek
+een verkeerde gevolgtrekking. Twee verschillende sites, hetzelfde patroon:
+gedeelde cloud-IP-reeksen worden categorisch geblokkeerd.
+
+DIT SCRIPT WERKT DUS ALLEEN VANAF EEN "GEWOON" IP -- je eigen machine, of een
+self-hosted runner. Zie de foutmelding bij een 403 in haal_json() voor de
+volledige lijst opties. Er is bewust GEEN poging gedaan om de blokkade te
+omzeilen (roterende proxies, vervalste headers): dat is broos, het werkt tegen
+een grens die iemand expres heeft gezet, en het hoort niet in dit project.
 
 WAT WEL EN WAT NIET GEVERIFIEERD IS -- lees dit voor je erop vertrouwt
 ---------------------------------------------------------------------
@@ -141,10 +153,26 @@ def haal_json(url, params=None, pogingen=3, pauze=3.0):
             laatste = f"ongeldige JSON: {e}"
         if poging < pogingen - 1:
             time.sleep(pauze * (poging + 1))
+    if laatste == "HTTP 403":
+        raise RuntimeError(
+            f"403 op {url}.\n"
+            f"\n"
+            f"Draai je dit vanuit GitHub Actions? Dan is dit verwacht en niet op te "
+            f"lossen met een codewijziging: Sofascore blokkeert de gedeelde IP-reeksen "
+            f"van GitHub-runners, net als FBref dat doet. Bevestigd op 7 september 2026.\n"
+            f"\n"
+            f"Wat wel werkt:\n"
+            f"  1. Draai dit script op je eigen machine en commit xg.csv zelf.\n"
+            f"  2. Zet een self-hosted runner op, dan draait de workflow vanaf jouw IP.\n"
+            f"  3. Neem een gelicentieerde API met sleutel (Sportmonks) -- die werkt\n"
+            f"     wel vanaf GitHub Actions, want dat is authenticatie, geen scraping.\n"
+            f"  4. Laat xG vallen: zonder xg.csv draait het model zoals vóór stap 5.\n"
+            f"\n"
+            f"Krijg je dit LOKAAL, dan is het waarschijnlijk een rate limit -- wacht "
+            f"een paar minuten en probeer opnieuw.")
     raise RuntimeError(
-        f"kon {url} niet ophalen ({laatste}). Bij 403/429 blokkeert Sofascore het "
-        f"verzoek (rate limit of botdetectie) -- dat is een toegangsprobleem, geen "
-        f"veldprobleem. Bij 404: het seizoen-id klopt niet meer, draai met --seizoen.")
+        f"kon {url} niet ophalen ({laatste}). Bij 429: rate limit, later opnieuw "
+        f"proberen. Bij 404: het seizoen-id klopt niet meer, draai met --seizoen.")
 
 
 def huidig_seizoen(toernooi):
