@@ -38,6 +38,7 @@ scrape.yml (bestaand, ma 06:00 UTC)
                                |
 wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
   scrape_prijzen.py             -> prijzen.csv           |
+  scrape_statistieken.py        -> xg.csv (assists, kaarten)
   scrape_programma.py --horizon -> programma.csv (N rondes)
                                |               |
                                +-------+-------+
@@ -60,16 +61,15 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
                       -> kalibratie/status.json (altijd)
                       -> e-mail (alleen bij een daadwerkelijke aanpassing)
 
-xg.yml (ALLEEN handmatig -- een GitHub-runner krijgt een 403; zie
-        "xG, assists en kaarten" voor de vier wegen die wel werken)
-  scrape_sofascore.py -> xg.csv
-                     (pikt wekelijks.yml automatisch op; ontbreekt het,
-                      dan draait het advies zonder stap 5 -- een mindere
-                      schatting, geen storing)
+bronnen.yml (ALLEEN handmatig, wijzigt niets)
+  probeer_bronnen.py -> meet welke externe bronnen een runner binnenlaat
 ```
 
+Assists en kaarten komen uit `scrape_statistieken.py`, dat meedraait in
+`wekelijks.yml` (zie "Assists, kaarten en doelpunten").
+
 Alle workflows die naar `main` pushen (`wekelijks.yml`, `data.yml`,
-`kalibratie.yml`, `xg.yml`) staan in dezelfde concurrency-groep en doen
+`kalibratie.yml`) staan in dezelfde concurrency-groep en doen
 `git pull --rebase` voor de push, zodat ze elkaar niet omverduwen.
 `wekelijks.yml` draait een uur na `scrape.yml`.
 
@@ -92,7 +92,7 @@ pip install scipy                # alleen nodig voor multi_periode.py
 
 python scrape_prijzen.py        # -> prijzen.csv
 python scrape_programma.py      # -> programma.csv
-python scrape_sofascore.py      # -> xg.csv (optioneel, zie "xG" hieronder)
+python scrape_statistieken.py   # -> xg.csv (assists en kaarten)
 
 python cvhj_model.py --ronde 6 --transfers 1 --json besluit.json
 python notify.py besluit.json --toon      # advies afdrukken zonder te mailen
@@ -562,128 +562,66 @@ besluit.json-vorm als cvhj_model.py (met een paar extra velden die notify.py
 gebruikt om de gekozen horizon en decay in de mail te vermelden zodra die
 horizon groter is dan 1).
 
-## xG, assists en kaarten (Sofascore)
+## Assists, kaarten en doelpunten (pouletips)
 
-Stap 5 uit het optimalisatieplan. Pouletips (de bron van `clubs.csv` en
-`spelers.csv`) levert geen assists en geen kaarten, en de doelpuntenschatting
-draaide tot nu toe op RUWE doelpunten uit een venster van een paar recente
-duels -- ruizig, vooral vroeg in het seizoen. `scrape_sofascore.py` haalt xG,
-xAG (verwachte assists), en gele/rode kaarten per speler op, in `xg.csv`.
+Stap 5 uit het optimalisatieplan. De pouletips-data die het model al gebruikt
+bevat geen assists en geen kaarten, en de doelpuntenschatting draaide op RUWE
+doelpunten uit een venster van een paar recente duels -- ruizig, vooral vroeg
+in het seizoen. `scrape_statistieken.py` vult die gaten en schrijft `xg.csv`.
 
-### Waarom niet meer FBref
+### Drie pogingen, en waarom de derde het werd
 
-Dit draaide oorspronkelijk op FBref. Die bron is om twee onafhankelijke
-redenen vervallen, beide bevestigd:
+Dit is drie keer gebouwd. De omweg is leerzaam genoeg om te bewaren:
 
-1. **De data is er niet meer.** Sports Reference (moederbedrijf van FBref)
-   raakte op 23 januari 2026 zijn Opta-licentie kwijt na een geschil over de
-   overeenkomst. De xG/xAG-data is daar weg; alleen basisstatistiek blijft.
-   Aangekondigd als permanent.
-2. **De pagina is niet bereikbaar vanaf GitHub Actions.** FBref geeft HTTP 403
-   op scripted requests vanaf datacenter-IP's. De oude `fbref.yml` liep daar in
-   de praktijk ook op stuk.
+1. **FBref.** Verviel om twee onafhankelijke redenen: Sports Reference raakte
+   op 23 januari 2026 zijn Opta-licentie kwijt (de xG-data is daar weg), en
+   FBref geeft een 403 op datacenter-IP's -- wat een GitHub-runner is.
+2. **Sofascore.** De data was compleet en van Opta-kwaliteit, maar gaf vanuit
+   GitHub Actions óók een 403. Bij het bouwen was via een ander
+   ophaalmechanisme een 200 gekregen, en daaruit was ten onrechte geconcludeerd
+   dat Actions dan ook zou werken. Twee verschillende sites, hetzelfde patroon:
+   gedeelde cloud-IP's worden categorisch geblokkeerd.
+3. **Pouletips.** Heeft 31 ranglijsten, waaronder assists, gele en rode
+   kaarten, doelpunten en reddingen -- op dezelfde site die dit project al
+   scrapet en die aantoonbaar werkt vanaf Actions. Vier extra verzoeken, geen
+   sleutels, geen blokkades.
 
-Sofascore lost het eerste probleem op: de data is er wel, compleet, en met
-exacte gespeelde minuten waar FBref afgeronde "90s" gaf -- de per-90-omrekening
-is daardoor zelfs iets nauwkeuriger dan voorheen.
+De les: de aanname dat zulke data alleen bij een gespecialiseerde
+statistiekensite te halen viel, was fout. De bron lag de hele tijd in de keten.
+`probeer_bronnen.py` bestaat nog om dit soort vragen voortaan te meten in
+plaats van te beredeneren.
 
-**Het tweede probleem heeft Sofascore ook.** Op 7 september 2026 bleek
-`scrape_sofascore.py` vanuit GitHub Actions een 403 te krijgen, bij het
-allereerste verzoek. Bij het bouwen was via een ander ophaalmechanisme wel een
-200 gekregen, en daaruit was ten onrechte geconcludeerd dat GitHub Actions dan
-ook zou werken. Twee verschillende sites, hetzelfde patroon: gedeelde
-cloud-IP-reeksen worden categorisch geblokkeerd, ongeacht wat je verstuurt.
+### De kolomnamen dekken de lading niet helemaal
 
-Er is bewust geen poging gedaan om die blokkade te omzeilen (roterende
-proxies, vervalste headers, "bypass"-diensten). Dat is broos, het werkt tegen
-een grens die iemand expres heeft gezet, en het hoort niet in dit project.
+Het bestandsformaat is ongewijzigd gebleven zodat `cvhj_model.py` niets hoeft
+te weten van de bronwissel. Twee kolommen betekenen daardoor iets anders dan
+hun naam suggereert, en dat is bewust:
 
-Vier wegen die wel werken:
+| kolom | wat erin zit |
+|---|---|
+| `assists_per90` | echt: assists uit de ranglijst, gedeeld door de minuten uit `spelers.csv` |
+| `gele_kaarten`, `rode_kaarten` | echt: seizoenstotalen |
+| `xag_per90` | **geen** expected assists -- gelijk aan `assists_per90`, zodat het middelen in `bouw_pool()` een no-op is in plaats van een vertekening |
+| `xg_per90` | **geen** expected goals -- het seizoensdoelpuntentempo, dat in `bouw_pool()` hetzelfde stabiliserende werk doet, alleen via volume in plaats van schotkwaliteit |
 
-1. **Lokaal draaien.** `python scrape_sofascore.py` op je eigen machine, en
-   `xg.csv` zelf committen. Gratis, werkt vandaag, kost je een handeling per
-   paar weken -- xG verandert langzaam, dus wekelijks verversen is niet nodig.
-2. **Self-hosted runner.** Dan draait `xg.yml` vanaf jouw IP en is het weer
-   volautomatisch. Zet `runs-on: self-hosted` en haal de cron-regels in
-   `xg.yml` uit het commentaar.
-3. **Gelicentieerde API met sleutel** (Sportmonks, ~€48/mnd inclusief de
-   xG-add-on). Werkt wél vanaf GitHub Actions, want dat is authenticatie en
-   geen scraping. De nette route als je dit onbeheerd wil laten draaien.
-4. **xG laten vallen.** Zonder `xg.csv` draait het model zoals vóór stap 5.
+Er wordt dus niets verzonnen. Waar een signaal ontbreekt, wordt het neutraal
+gelaten in plaats van ingevuld met iets dat er toevallig op lijkt.
 
-`xg.yml` staat daarom op alleen-handmatig, met het schema uitgezet.
+### De top-40-beperking, en waarom die meevalt
 
-### Wat er wél en niet geverifieerd is
+Elke ranglijst toont de top 40, niet alle 511 spelers. Wie er niet in staat
+krijgt een 0. Dat lijkt een gat maar is het grotendeels niet:
 
-**Wel** (met echte, live respons van `api.sofascore.com`):
+- Bij assists hebben 93 spelers er überhaupt een; buiten de top 40 zit je op
+  nul of één. De fout is hooguit één assist, en naar beneden.
+- Belangrijker: die 0 is **echte informatie**. Een speler met 500 minuten en
+  geen assists heeft daadwerkelijk een laag assisttempo. Nu krijgt hij de
+  positieprior, alsof er niets bekend is. Ook voor spelers buiten de ranglijst
+  is dit dus een verbetering.
 
-- Toernooi-id 37 = Eredivisie; `/seasons` geeft het nieuwste seizoen vooraan.
-- `/statistics` levert per speler exact de benodigde velden: `goals`,
-  `assists`, `expectedGoals`, `expectedAssists`, `yellowCards`, `redCards`,
-  `minutesPlayed`, `appearances`. Voorbeeld uit de echte respons: Gjivai
-  Zechiel (Feyenoord) -- 4 goals, 3 assists, xG 1.83, xAG 1.71, 1 gele kaart,
-  440 minuten, 5 wedstrijden.
-- Paginering met `limit`/`offset` werkt (~4-5 verzoeken voor de hele competitie).
-- Alle 18 clubnamen zoals Sofascore ze schrijft -- `CLUB_ALIAS_SOFASCORE` is
-  dus nagelopen, geen gok.
-- De `robots.txt` van sofascore.com noemt `/api/` niet en verbiedt het dus niet.
-  Dat is niet hetzelfde als expliciete toestemming in de gebruiksvoorwaarden;
-  bij één ophaalactie per paar dagen is dit een hobbygebruik-afweging die je
-  zelf moet maken. De gelicentieerde route is Sportmonks (betaald, ~€48/mnd).
-
-**Niet**: het script als geheel is nooit live gedraaid -- de bouwomgeving kon
-`api.sofascore.com` niet met een eigen HTTP-verzoek bereiken. De parsing is
-getest tegen een synthetische respons met exact de echte veldnamen en waarden
-(`test_sofascore.py`). **Draai het lokaal** (of via een self-hosted runner) en controleer
-het aantal spelers en de 18 clubnamen in de samenvatting.
-
-### Welke bron werkt wél? Meten in plaats van gokken
-
-Twee keer is een bron gekozen op basis van een test die ergens anders draaide
-dan de uiteindelijke workflow, en twee keer gaf GitHub Actions een 403. De
-les is niet "kies een betere site", maar: **deze vraag is niet te beantwoorden
-zonder te meten op de plek waar het moet draaien.**
-
-`probeer_bronnen.py` doet dat. Het probeert een lijst kandidaten en
-rapporteert per bron drie dingen: staat `robots.txt` het toe, wat is de
-HTTP-status, en komen de gezochte veldnamen (assists, kaarten, xG, minuten)
-in het antwoord voor. `bronnen.yml` draait dat op een GitHub-runner — en
-alleen díé uitslag telt voor de automatisering.
-
-```bash
-python probeer_bronnen.py            # alle bronnen
-python probeer_bronnen.py --bron espn
-python probeer_bronnen.py --dump antwoorden/   # de antwoorden bewaren
-```
-
-In de lijst staan bewust twee ijkpunten (Sofascore en FBref, beide bekend als
-403 vanaf Actions): zie je die in het rapport terug als "geblokkeerd", dan
-weet je dat de meting klopt.
-
-Twee kandidaten vragen een gratis sleutel, in te stellen als GitHub Secret;
-zonder sleutel worden ze netjes overgeslagen in plaats van als mislukt
-gerapporteerd:
-
-| Secret | Bron | Gratis laag | xG? |
-|---|---|---|---|
-| `API_FOOTBALL_KEY` | api-sports.io | 100 verzoeken/dag | wisselend per competitie — juist daarom meten |
-| `FOOTBALL_DATA_TOKEN` | football-data.org | ja | nee, wel assists bij topscorers |
-
-Dat zijn de kansrijkste kandidaten, en om een structurele reden: **een API met
-een sleutel hoort niet op IP-reputatie geblokkeerd te worden.** Dat is het hele
-verschil met scrapen — je identificeert je, in plaats van te hopen dat je voor
-een browser wordt aangezien. Werkt er iets vanaf GitHub Actions, dan is het
-daar te vinden.
-
-Wat er níét in staat: FotMob (robots.txt verbiedt het pad — het script haalt
-zulke bronnen dan ook niet op) en betaalde diensten. En er wordt niets gedaan
-om een blokkade te omzeilen: geen proxies, geen vervalste headers. Een 403 is
-een antwoord, geen obstakel.
-
-Merk op dat assists en kaarten het zwaarst wegen: die ontbreken volledig in de
-pouletips-data, terwijl doelpunten en minuten er al zijn. Een bron zonder xG
-maar mét assists en kaarten levert dus al het grootste deel van stap 5 op —
-het rapport noemt dat "deels (geen xG)".
+Regressietest: `test_statistieken.py` (zonder netwerk; test het komma-formaat
+van de spelercel, het ontleden met en zonder per-90-kolom, en de koppeling met
+`lees_fbref()`).
 
 ### Terugval en menging
 
@@ -710,10 +648,9 @@ daar blijft een ondergrens die alleen doelpunten/ploegpunten/clean sheets
 meet). De richting klopt (hoge xG/xAG stijgt, veel kaarten daalt), de precieze
 grootte is niet gevalideerd.
 
-**Geen nieuwe secrets of variabelen.** `xg.yml` staat op alleen-handmatig en
-commit alleen `xg.csv`; draai `scrape_sofascore.py` lokaal, of zet een
-self-hosted runner op. Bewust een APARTE workflow: loopt het ophalen stuk, dan
-blijft het wekelijkse advies gewoon draaien (zonder stap 5). Naamcompatibiliteit: het
+**Geen nieuwe secrets of variabelen.** `scrape_statistieken.py` draait mee in
+`wekelijks.yml` met `continue-on-error`: loopt het ophalen stuk, dan blijft het
+advies gewoon komen (zonder stap 5). Naamcompatibiliteit: het
 bestandsformaat is identiek aan het oude `fbref.csv`, de vlag `--fbref` werkt
 nog als alias voor `--xg`, en staat er nog een oud `fbref.csv` in de repo dan
 wordt dat als terugval gelezen als `xg.csv` ontbreekt.
@@ -801,17 +738,17 @@ Voor je een workflow of een import aanpast: draai `python test_workflows.py`.
 Die controleert statisch of elke workflow installeert wat zijn scripts
 (direct én indirect) nodig hebben. Drie storingen in één week kwamen uit die
 hoek -- een ontbrekend bestand, een verstopte crash, een vergeten `numpy` --
-en dit vangt die soort af zonder iets te hoeven draaien. `xg.yml` draait hem
-ook, elke keer dat je die handmatig start.
+en dit vangt die soort af zonder iets te hoeven draaien. `bronnen.yml` draait
+hem ook, elke keer dat je die handmatig start.
 
 Nieuw:
 
-- `scrape_sofascore.py` werkt NIET vanaf een GitHub-hosted runner (403, zie
-  "xG, assists en kaarten"). Draai het lokaal, of op een self-hosted runner.
-  Sofascore's `/api/` is bovendien een niet-gedocumenteerde interne API: geen
-  SLA, kan zonder aankondiging wijzigen -- hetzelfde risicoprofiel als de
-  pouletips-scrapers. Controleer bij de eerste run het aantal spelers en de
-  18 clubnamen.
+- `xg.csv` bevat geen echte xG: `xg_per90` is het seizoensdoelpuntentempo en
+  `xag_per90` is gelijk aan `assists_per90`. Zie "De kolomnamen dekken de lading
+  niet helemaal" -- de namen zijn behouden zodat het model ongewijzigd blijft,
+  maar reken er niet mee alsof er een expected-goals-model achter zit.
+- De ranglijsten zijn een top 40, geen volledige lijst. Wie er niet in staat
+  krijgt een 0; dat is meestal juist, maar hooguit één assist te laag.
 - `ROL_DECAY` en `CLEANSHEET_MINUTEN_DREMPEL` (zie "Rol en speeltijd") zijn
   slechts op 3 ronden getest en de minutendrempel is een aanname, niet
   bevestigd bij CVHJ. Draai `backtest.py` opnieuw zodra er meer data is.
