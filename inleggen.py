@@ -96,6 +96,51 @@ def laad_cvhj_model():
     return m
 
 
+MAX_HOPS = 10          # ruim genoeg voor login -> app; daarna is het een lus
+
+
+def _volg_omleidingen(sessie, resp, spoor):
+    """Volgt de omleidingen na de login-POST met de hand, en STOPT zodra de
+    sessie er is.
+
+    Waarom niet gewoon requests dat laten doen: dan krijg je bij een lus
+    alleen `TooManyRedirects: Exceeded 30 redirects` -- geen URL, geen
+    statuscode, geen idee of het inloggen zelf geslaagd was. Precies dat
+    gebeurde op 12 september 2026 in de wekelijkse workflow, en de melding
+    zei niets over de oorzaak.
+
+    Er zit ook een inhoudelijk punt achter. Deze functie moet één ding
+    opleveren: een sessie die is ingelogd. WAAR de site je daarna heen
+    stuurt is niet ons probleem. Zodra het `sessionid`-koekje er staat zijn
+    we klaar, en een lus in de navigatie erna kan ons niet meer raken.
+
+    `spoor` wordt in-place gevuld met (status, url) per hop, zodat de
+    aanroeper bij een fout kan tonen waar het misging. Wachtwoorden staan
+    daar niet in: alleen statuscodes en URL's.
+    """
+    for _ in range(MAX_HOPS):
+        spoor.append((resp.status_code, resp.url))
+        if "sessionid" in sessie.cookies.get_dict():
+            return resp, True
+        if not resp.is_redirect:
+            return resp, False
+        volgende = resp.headers.get("Location")
+        if not volgende:
+            return resp, False
+        if resp.status_code in (307, 308):
+            # Zou betekenen: stuur dezelfde POST -- inclusief wachtwoord --
+            # nog eens naar een andere URL. Dat doen we niet ongezien.
+            raise RuntimeError(
+                f"de site antwoordde met HTTP {resp.status_code} en wil de inlog-POST "
+                f"doorsturen naar {urljoin(resp.url, volgende)}. Dit script stuurt "
+                f"inloggegevens niet automatisch naar een andere URL door; controleer "
+                f"dit eerst handmatig in de browser.")
+        resp = sessie.get(urljoin(resp.url, volgende), headers=HEADERS,
+                          timeout=30, allow_redirects=False)
+    spoor.append((resp.status_code, resp.url))
+    return resp, "sessionid" in sessie.cookies.get_dict()
+
+
 def inloggen(sessie, gebruiker, wachtwoord):
     """Logt in op /accounts/login/ door het formulier LIVE te ontleden --
     geen geraden veldnamen (zie moduledocstring). Retourneert niets; gooit
@@ -137,18 +182,44 @@ def inloggen(sessie, gebruiker, wachtwoord):
     velden[gebruiker_naam] = gebruiker
     velden[wachtwoord_naam] = wachtwoord
 
-    actie = form.get("action") or LOGIN_URL
-    actie = urljoin(LOGIN_URL, actie)
-    resp = sessie.post(actie, data=velden, headers={**HEADERS, "Referer": LOGIN_URL},
-                       timeout=30)
-    resp.raise_for_status()
+    # Relatief oplossen tegen r.url, NIET tegen LOGIN_URL. Als de GET zelf is
+    # omgeleid (naar www, naar https, naar een pad met taalprefix, of naar
+    # ?next=...), dan hoort de POST naar die EINDbestemming te gaan. Tegen de
+    # oude, hardgecodeerde URL posten stuurt het csrfmiddlewaretoken naar een
+    # ander pad dan waar het vandaan komt -- en dat is een van de manieren
+    # waarop je in een omleidingslus terechtkomt.
+    basis_url = r.url
+    actie = urljoin(basis_url, form.get("action") or basis_url)
+    resp = sessie.post(actie, data=velden, headers={**HEADERS, "Referer": basis_url},
+                       timeout=30, allow_redirects=False)
 
-    if "sessionid" not in sessie.cookies.get_dict() and "/accounts/login" in resp.url:
+    spoor = []
+    resp, ingelogd = _volg_omleidingen(sessie, resp, spoor)
+    if ingelogd:
+        return
+
+    if resp.status_code >= 400:
+        resp.raise_for_status()
+
+    pad = " -> ".join(f"{code} {url}" for code, url in spoor)
+    if len(spoor) >= MAX_HOPS:
         raise RuntimeError(
-            "inloggen lijkt mislukt: geen sessionid-cookie na de POST, en de site "
-            "stuurde niet door weg van de inlogpagina. Meestal: verkeerd wachtwoord "
-            "of de site vraagt onverwacht om een tweede stap (2FA/captcha) -- dat "
-            "kan dit script niet automatisch afhandelen.")
+            f"inloggen mislukt: de site bleef omleiden zonder ooit een sessionid-"
+            f"cookie te zetten ({len(spoor)} stappen).\n  {pad}\n"
+            f"Drie oorzaken zijn hier waarschijnlijk, in deze volgorde:\n"
+            f"  1. verkeerde gebruikersnaam/wachtwoord in de GitHub Secrets "
+            f"(CVHJ_GEBRUIKER / CVHJ_WACHTWOORD) -- allauth stuurt je dan terug "
+            f"naar het inlogformulier;\n"
+            f"  2. de site weert dit IP-bereik (GitHub-runners draaien in een "
+            f"datacenter) en stuurt door naar een controlepagina;\n"
+            f"  3. het inlogformulier vraagt om een stap die dit script niet kent "
+            f"(2FA, captcha, cookiemuur).\n"
+            f"Welke van de drie het is, lees je af aan de URL's hierboven.")
+    raise RuntimeError(
+        f"inloggen lijkt mislukt: geen sessionid-cookie na de POST (eindigde op "
+        f"HTTP {resp.status_code} {resp.url}).\n  {pad}\n"
+        f"Meestal: verkeerd wachtwoord, of de site vraagt onverwacht om een tweede "
+        f"stap (2FA/captcha) -- dat kan dit script niet automatisch afhandelen.")
 
 
 def csrf_header(sessie):
