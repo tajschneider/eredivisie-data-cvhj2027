@@ -22,6 +22,7 @@ jobs:
       - run: |
           git config user.name  "eredivisie-bot"
           git config user.email "bot@users.noreply.github.com"
+          # git-add-ok  -- deze workflow maakt clubs.csv en spelers.csv zelf elke run
           git add clubs.csv spelers.csv .nojekyll index.html
           git diff --staged --quiet || git commit -m "data bijgewerkt $(date +%F)"
           git push
