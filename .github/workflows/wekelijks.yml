@@ -51,6 +51,17 @@ jobs:
       - name: Prijzen en posities ophalen
         run: python scrape_prijzen.py
 
+      # Assists en kaarten -- de twee signalen die het model volledig miste en
+      # waarvoor eerst FBref en daarna Sofascore zijn geprobeerd. Beide gaven
+      # een 403 vanaf GitHub Actions. Deze staan op pouletips, dezelfde site die
+      # hierboven al gescrapet wordt, dus hier werkt het wel.
+      #
+      # continue-on-error: zonder xg.csv draait het model zoals vóór stap 5.
+      # Een mindere schatting is geen reden om de mail tegen te houden.
+      - name: Assists, kaarten en reddingen ophalen
+        continue-on-error: true
+        run: python scrape_statistieken.py
+
       # HORIZON_SCRAPE (standaard 6) haalt in één keer ruim genoeg ronden op
       # voor de langste periode (5 ronden) plus marge. multi_periode.py's
       # eigen --horizon auto bepaalt daarna hoeveel daarvan echt meetellen
@@ -156,7 +167,7 @@ jobs:
           cp advies.txt   "historie/ronde-${{ steps.ronde.outputs.nr }}.txt"
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add prijzen.csv programma.csv selectie.csv punten_historie.csv historie/
+          git add prijzen.csv programma.csv selectie.csv xg.csv punten_historie.csv historie/
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "advies ronde ${{ steps.ronde.outputs.nr }}"
           # scrape.yml kan intussen gepusht hebben; eerst bijtrekken.
