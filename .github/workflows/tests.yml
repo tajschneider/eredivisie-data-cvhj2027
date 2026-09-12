@@ -1,0 +1,67 @@
+name: Tests
+
+# Draait bij ELKE push, en dat is precies het punt.
+#
+# De terugkerende storing in dit project is niet een fout in de logica maar een
+# onvolledige upload: een bestand dat niet mee is gekomen, een workflow die iets
+# installeert wat niet meer klopt, twee scripts die uit elkaar zijn gelopen.
+# Die kosten nu een halve week, omdat ze pas opvallen als de wekelijkse
+# workflow maandagochtend struikelt.
+#
+# Deze tests hebben geen netwerk, geen secrets en geen verse scrapes nodig --
+# ze draaien op wat er in de repo staat. Binnen een minuut na je push weet je
+# dus of de upload compleet en consistent is, in plaats van maandag.
+#
+# Wat ze afvangen, allemaal fouten die hier daadwerkelijk zijn opgetreden:
+#   test_workflows.py       ontbrekend bestand, vergeten pip-pakket,
+#                           ongeschermde `git add`
+#   test_multi_periode.py   de MILP en de brute-force zoeker die uiteenlopen
+#   test_scrape_prijzen.py  statuswoorden die aan spelersnamen blijven plakken
+#   test_statistieken.py    het ontleden van de ranglijsten
+#   test_synchroniseer.py   de selectie-synchronisatie, inclusief de weigering
+#                           om half werk weg te schrijven
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4 numpy scipy
+
+      # Deze eerst: hij controleert of de andere scripts er überhaupt zijn en
+      # of elke workflow installeert wat hij nodig heeft. Ontbreekt er iets,
+      # dan is dat de nuttigste melding en hoeft de rest niet meer te draaien.
+      - name: Repo-consistentie
+        run: python test_workflows.py
+
+      - name: Scrapers en koppeling
+        run: |
+          python test_scrape_prijzen.py
+          python test_statistieken.py
+          python test_synchroniseer.py
+
+      # Heeft clubs.csv/spelers.csv/prijzen.csv/programma.csv/selectie.csv nodig.
+      # Staan die er niet, dan is dat geen testfout maar een lege repo; dan
+      # wordt deze stap overgeslagen in plaats van vals alarm te geven.
+      - name: Model (MILP vs brute force)
+        run: |
+          ontbreekt=""
+          for f in clubs.csv spelers.csv prijzen.csv programma.csv selectie.csv; do
+            [ -f "$f" ] || ontbreekt="$ontbreekt $f"
+          done
+          if [ -n "$ontbreekt" ]; then
+            echo "::notice::overgeslagen -- deze data ontbreekt:$ontbreekt"
+          else
+            python test_multi_periode.py
+          fi
