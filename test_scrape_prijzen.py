@@ -49,6 +49,36 @@ def test_splits_status():
     return ok
 
 
+def test_status_restant():
+    """De controle die scrape_prijzen.py na elke run zelf uitvoert.
+
+    Hij moet een statuswoord vinden dat aan een naam blijft plakken, en met
+    rust laten wat gewoon een Nederlandse achternaam is -- 'Nieuwkoop' mag
+    geen vals alarm geven, anders leert het je de melding te negeren.
+    """
+    from scrape_prijzen import STATUS_RESTANT
+
+    schoon = ["Bas Dost", "Sebastiaan Bornauw", "Nieuwkoop", "Bastian Nieuwkoop",
+              "Basim Ahmed", "Gjivai Zechiël", "Tjaronn Chery", "Nieuwenhuis"]
+    vervuild = ["Tjaronn Chery basis", "Kjetil Haug nieuw", "Rafik El Arguioui bank",
+                "Gjivai Zechiël Basis", "Iemand basisspeler", "Iemand bankzitter"]
+    ok = True
+    for n in schoon:
+        goed = STATUS_RESTANT.search(n) is None
+        if not goed:
+            print(f"  FOUT {n!r} wordt ten onrechte als vervuild gezien")
+        ok = ok and goed
+    for n in vervuild:
+        goed = STATUS_RESTANT.search(n) is not None
+        if not goed:
+            print(f"  FOUT {n!r} wordt niet als vervuild herkend")
+        ok = ok and goed
+    if ok:
+        print(f"  OK   {len(schoon)} schone namen met rust gelaten, "
+              f"{len(vervuild)} vervuilde namen herkend")
+    return ok
+
+
 def test_vind_bijna_match():
     import cvhj_model as m
 
@@ -92,11 +122,13 @@ def test_vind_bijna_match():
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
+    print("\nnaam-restcontrole (draait na elke scrape)\n")
+    ok3 = test_status_restant()
     print("\nvind_bijna_match()\n")
     ok2 = test_vind_bijna_match()
 
     print()
-    if ok1 and ok2:
+    if ok1 and ok2 and ok3:
         print("OK: splits_status() en vind_bijna_match() gedragen zich zoals verwacht.")
     else:
         sys.exit("MISLUKT: zie hierboven.")

@@ -117,6 +117,15 @@ def get(url, pauze=1.2, pogingen=4):
 STATUS_RE = re.compile(r"\s*(?:!\s*(?P<bless>[^!]*)$|\b(?P<rol>basis|bank|nieuw)\b)",
                         re.IGNORECASE)
 
+# Alleen om achteraf te CONTROLEREN of er nog een statuswoord in een naam zit.
+# Ruimer dan STATUS_RE: ook 'basisspeler' en 'bankzitter' tellen hier mee, want
+# een naam met zo'n woord erin is per definitie fout -- ook als STATUS_RE hem
+# niet herkent. Juist die gevallen wil je zien.
+# Het statuswoord moet als LOSSE term in de naam staan; 'Nieuwkoop' of
+# 'Bastiaan' zijn gewone namen en mogen geen vals alarm geven.
+STATUS_RESTANT = re.compile(r"(?:^|\s)(?:basis|bank|nieuw)(?:speler|zitter)?(?=\s|$)",
+                            re.IGNORECASE)
+
 
 def splits_status(cel):
     """'Jordan Bos ! geblesseerd tot en met 1 januari'
@@ -302,9 +311,31 @@ def main():
     print(f"  clubs:   {len(set(r['team'] for r in rijen))}")
     print(f"  posities: " + ", ".join(f"{k}={v}" for k, v in sorted(per_positie.items())))
     print(f"  prijs:   {min(prijzen):.2f} - {max(prijzen):.2f} mln")
+    tel_rol = {}
+    for r in rijen:
+        tel_rol[r["rol"] or "(leeg)"] = tel_rol.get(r["rol"] or "(leeg)", 0) + 1
     print(f"  status:  {sum(1 for r in rijen if r['rol'])} met rol, "
           f"{sum(r['nieuw'] for r in rijen)} nieuw, "
           f"{sum(1 for r in rijen if r['blessure'])} geblesseerd")
+    print(f"  rol:     " + ", ".join(f"{k}={v}" for k, v in sorted(tel_rol.items())))
+
+    # De controle waar het echt om gaat: staat er nog een statuswoord IN een naam?
+    # Een lege rol-kolom is op zichzelf onschuldig (pouletips markeert lang niet
+    # elke speler), maar een statuswoord dat aan de naam blijft plakken breekt de
+    # koppeling met selectie.csv -- dat gaf in september 2026 het advies om een
+    # speler voor zichzelf te transfereren. Dit is die fout, elke run gemeten.
+    vervuild = [r["speler"] for r in rijen if STATUS_RESTANT.search(r["speler"])]
+    if vervuild:
+        print(f"\n  LET OP: {len(vervuild)} naam/namen bevatten nog een statuswoord. "
+              f"Dat hoort niet: de naam moet schoon zijn en de status in de kolom 'rol'.")
+        for n in vervuild[:10]:
+            print(f"    {n!r}")
+        if len(vervuild) > 10:
+            print(f"    ... en nog {len(vervuild) - 10}")
+        print(f"  Draai opnieuw met --dump ruw.html en stuur die HTML door, dan is te "
+              f"zien welke schrijfwijze STATUS_RE niet vangt.")
+    else:
+        print(f"  namen:   schoon (geen statuswoord blijven plakken)")
 
 
 if __name__ == "__main__":
