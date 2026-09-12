@@ -56,11 +56,19 @@ jobs:
       # een 403 vanaf GitHub Actions. Deze staan op pouletips, dezelfde site die
       # hierboven al gescrapet wordt, dus hier werkt het wel.
       #
-      # continue-on-error: zonder xg.csv draait het model zoals vóór stap 5.
+      # continue-on-error: zonder spelerstats.csv draait het model zoals vóór stap 5.
       # Een mindere schatting is geen reden om de mail tegen te houden.
       - name: Assists, kaarten en reddingen ophalen
+        id: statistieken
         continue-on-error: true
         run: python scrape_statistieken.py
+
+      - name: Melden als de statistieken niet opgehaald zijn
+        if: steps.statistieken.outcome != 'success'
+        run: |
+          echo "::warning::spelerstats.csv kon niet ververst worden. Het advies gebruikt de "\
+               "spelerstats.csv die in de repo staat, of draait zonder assists en kaarten als "\
+               "die er niet is -- een mindere schatting, geen storing."
 
       # HORIZON_SCRAPE (standaard 6) haalt in één keer ruim genoeg ronden op
       # voor de langste periode (5 ronden) plus marge. multi_periode.py's
@@ -113,7 +121,25 @@ jobs:
       - name: Regressietest multi-ronde model
         id: regressie
         continue-on-error: true
-        run: python test_multi_periode.py
+        run: |
+          set -o pipefail
+          python test_multi_periode.py | tee regressie.txt
+
+      # Faalt deze test, dan zegt de foutregel in de log alleen DAT het misging.
+      # De diagnose zit in de uitvoer zelf: de twee scores en, bij verschil, de
+      # twee spelersgroepen naast elkaar. Die hoort op de voorpagina van de run
+      # te staan en niet weggestopt in een uitklapbare stap -- anders kost elke
+      # storing een heen-en-weer voordat iemand weet wat er aan de hand is.
+      - name: Regressie-uitslag tonen bij een fout
+        if: steps.regressie.outcome != 'success'
+        run: |
+          {
+            echo "### Regressietest MISLUKT — advies viel terug op de eenronde-zoeker"
+            echo ""
+            echo '```'
+            cat regressie.txt 2>/dev/null || echo "(geen uitvoer opgevangen)"
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Model draaien
         run: |
@@ -167,7 +193,14 @@ jobs:
           cp advies.txt   "historie/ronde-${{ steps.ronde.outputs.nr }}.txt"
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add prijzen.csv programma.csv selectie.csv xg.csv punten_historie.csv historie/
+          # Alleen toevoegen wat er is. Optionele bestanden ontbreken soms
+          # legitiem -- spelerstats.csv als de statistiek-scrape faalde, punten_historie.csv
+          # bij de allereerste run. Een bare `git add spelerstats.csv` laat de hele stap
+          # dan klappen met 'pathspec did not match any files', en dan wordt het
+          # advies niet vastgelegd. Dat is twee keer gebeurd; vandaar deze vorm.
+          for f in prijzen.csv programma.csv selectie.csv spelerstats.csv punten_historie.csv historie/; do
+            [ -e "$f" ] && git add "$f"
+          done
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "advies ronde ${{ steps.ronde.outputs.nr }}"
           # scrape.yml kan intussen gepusht hebben; eerst bijtrekken.

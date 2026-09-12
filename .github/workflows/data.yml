@@ -61,7 +61,14 @@ jobs:
         run: |
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add prijzen.csv programma.csv
+          # Alleen toevoegen wat er is. Optionele bestanden ontbreken soms
+          # legitiem -- spelerstats.csv als de statistiek-scrape faalde, punten_historie.csv
+          # bij de allereerste run. Een bare `git add spelerstats.csv` laat de hele stap
+          # dan klappen met 'pathspec did not match any files', en dan wordt het
+          # advies niet vastgelegd. Dat is twee keer gebeurd; vandaar deze vorm.
+          for f in prijzen.csv programma.csv; do
+            [ -e "$f" ] && git add "$f"
+          done
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "data bijgewerkt $(date +%F)"
           git pull --rebase origin main

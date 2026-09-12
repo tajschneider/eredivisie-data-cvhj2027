@@ -124,7 +124,14 @@ jobs:
         run: |
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add cvhj_model.py kalibratie/status.json
+          # Alleen toevoegen wat er is. Optionele bestanden ontbreken soms
+          # legitiem -- spelerstats.csv als de statistiek-scrape faalde, punten_historie.csv
+          # bij de allereerste run. Een bare `git add spelerstats.csv` laat de hele stap
+          # dan klappen met 'pathspec did not match any files', en dan wordt het
+          # advies niet vastgelegd. Dat is twee keer gebeurd; vandaar deze vorm.
+          for f in cvhj_model.py kalibratie/status.json; do
+            [ -e "$f" ] && git add "$f"
+          done
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "kalibratie: KRIMP_SPELER=${{ steps.kalibratie.outputs.krimp_speler_nieuw }} KRIMP_CLUB=${{ steps.kalibratie.outputs.krimp_club_nieuw }}"
           git pull --rebase origin main
@@ -135,7 +142,14 @@ jobs:
         run: |
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add kalibratie/status.json
+          # Alleen toevoegen wat er is. Optionele bestanden ontbreken soms
+          # legitiem -- spelerstats.csv als de statistiek-scrape faalde, punten_historie.csv
+          # bij de allereerste run. Een bare `git add spelerstats.csv` laat de hele stap
+          # dan klappen met 'pathspec did not match any files', en dan wordt het
+          # advies niet vastgelegd. Dat is twee keer gebeurd; vandaar deze vorm.
+          for f in kalibratie/status.json; do
+            [ -e "$f" ] && git add "$f"
+          done
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "kalibratie: geen aanpassing ($(date +%F))"
           git pull --rebase origin main
