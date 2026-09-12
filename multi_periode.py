@@ -99,7 +99,7 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
     {speler_id: [E_0, E_1, ...]} en de metadata-pool (van ronde 0, voor
     prijs/club/pos -- die veranderen niet binnen de horizon).
 
-    `fbref` (m.lees_fbref()'s resultaat, of None) wordt ONGEWIJZIGD per ronde
+    `fbref` (m.lees_spelerstats()'s resultaat, of None) wordt ONGEWIJZIGD per ronde
     doorgegeven aan bouw_pool -- dezelfde xG/assist/kaart-schatting geldt voor
     elke ronde in de horizon, er is geen ronde-specifieke fbref-data."""
     reeksen = collections.defaultdict(list)
@@ -156,12 +156,10 @@ def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
     selectie_ids, bijna_match = set(), []
     for naam, (club, pos, prijs) in selectie_in.items():
         sid = m.norm(naam)
-        match = next((p for p in kandidaten if m.norm(p["speler"]) == sid and p["club"] == club), None)
-        if not match:
-            match = m.vind_bijna_match(naam, club, kandidaten)
-            if match:
-                bijna_match.append((naam, match["speler"]))
+        match, was_bijna = m.koppel_speler(naam, club, kandidaten)
         if match:
+            if was_bijna:
+                bijna_match.append((naam, match["speler"]))
             selectie_ids.add(match["speler_id"])
         else:
             dood_id = f"__huidig__{sid}"
@@ -306,8 +304,8 @@ def main():
     p.add_argument("--programma", default="programma.csv")
     p.add_argument("--selectie", default="selectie.csv")
     p.add_argument("--perioden", default="perioden.csv")
-    p.add_argument("--xg", "--fbref", dest="xg", default="xg.csv",
-                   help="xG/xA/kaarten van scrape_sofascore.py; ontbreekt het, dan "
+    p.add_argument("--stats", "--xg", "--fbref", dest="xg", default="spelerstats.csv",
+                   help="assists/kaarten van scrape_statistieken.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
     p.add_argument("--ronde", type=int, required=True)
     p.add_argument("--transfers", default="1",
@@ -364,13 +362,13 @@ def main():
     aanval, verdediging, thuisvoordeel, n_obs = m.schat_clubratings(clubrijen)
     print(f"Clubratings uit {n_obs} wedstrijden (thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
-    pad_xg = m.xg_pad(a.xg)
-    fbref = m.lees_fbref(pad_xg)
+    pad_xg = m.stats_pad(a.xg)
+    fbref = m.lees_spelerstats(pad_xg)
     if fbref is None:
         print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.")
+              f"draaien zonder assists/kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
     else:
-        print(f"xG-data geladen: {len(fbref)} spelers uit {pad_xg}")
+        print(f"spelerstats geladen: {len(fbref)} spelers uit {pad_xg}")
 
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
@@ -460,7 +458,7 @@ def main():
                              venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
         selectie_0 = []
         for naam, (club, pos, prijs) in selectie_in.items():
-            x = next((p for p in pool_0 if m.norm(p["speler"]) == m.norm(naam) and p["club"] == club), None)
+            x, _ = m.koppel_speler(naam, club, pool_0)   # zelfde koppeling als hierboven
             selectie_0.append(x or {"speler": naam, "club": club, "pos": pos, "prijs": prijs, "E": 0.0})
         for score_bf, uit_bf, in_bf, _ in m.beste_transfers(selectie_0, pool_0, a.transfers, top=1):
             print(f"  eenronde-optimum: verwacht {score_bf:.2f} (ronde {a.ronde} alleen, geen decay)")

@@ -104,7 +104,7 @@ def test_getal():
 
 
 def test_koppeling_met_model():
-    """xg.csv uit dit script moet leesbaar zijn voor cvhj_model.lees_fbref()."""
+    """spelerstats.csv uit dit script moet leesbaar zijn voor cvhj_model.lees_spelerstats()."""
     import csv
     import tempfile
     from pathlib import Path
@@ -120,17 +120,17 @@ def test_koppeling_met_model():
            "gele_kaarten": 1.0, "rode_kaarten": 0.0}
     ok = True
     with tempfile.TemporaryDirectory() as d:
-        pad = Path(d) / "xg.csv"
+        pad = Path(d) / "spelerstats.csv"
         with pad.open("w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=velden)
             w.writeheader()
             w.writerow(rij)
 
-        geladen = m.lees_fbref(str(pad))
+        geladen = m.lees_spelerstats(str(pad))
         sleutel = f"{m.norm('Gjivai Zechiël')}|{m.norm(m.norm_club('Feyenoord'))}"
         fb = (geladen or {}).get(sleutel)
         goed = fb is not None
-        print(f"  {'OK  ' if goed else 'FOUT'} lees_fbref() vindt de regel onder {sleutel!r}")
+        print(f"  {'OK  ' if goed else 'FOUT'} lees_spelerstats() vindt de regel onder {sleutel!r}")
         ok = ok and goed
         if fb:
             # assists en xag zijn gelijk, dus het middelen in bouw_pool() is neutraal

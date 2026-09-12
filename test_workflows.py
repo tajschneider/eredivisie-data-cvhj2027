@@ -10,8 +10,8 @@ bleek pas als het ding al draaide:
         -> ModuleNotFoundError: No module named 'backtest'
   - kalibratie.yml: de fout werd verstopt door een pipe zonder `set -o pipefail`
         -> fatal: pathspec 'kalibratie/status.json' did not match any files
-  - xg.yml: `pip install requests` miste numpy, dat test_sofascore.py via
-    cvhj_model.py nodig heeft
+  - xg.yml: `pip install requests` miste numpy, dat de teststap via
+    cvhj_model.py nodig had
         -> ModuleNotFoundError: No module named 'numpy'
 
 Alle drie zijn statisch te zien, zonder iets te draaien. Dit script doet dat:
@@ -117,6 +117,40 @@ def controleer(pad_workflow, modules):
     return ok
 
 
+def controleer_git_add(pad_workflow):
+    """`git add <bestandsnaam>` faalt hard als dat bestand niet bestaat.
+
+    Twee keer in twee weken liep een workflow daarop stuk -- eerst op
+    kalibratie/status.json, daarna op spelerstats.csv -- met een melding die niets zei
+    over de echte oorzaak:
+
+        fatal: pathspec 'spelerstats.csv' did not match any files
+
+    Erger nog: het gebeurt in de LAATSTE stap, dus het advies was al gemaakt en
+    gemaild maar werd niet meer vastgelegd. De afspraak is daarom dat elke
+    workflow alleen toevoegt wat bestaat:
+
+        for f in a.csv b.csv; do
+          [ -e "$f" ] && git add "$f"
+        done
+
+    Deze controle dwingt die vorm af: elke `git add` met iets anders dan "$f"
+    erachter is verdacht.
+    """
+    tekst = pad_workflow.read_text(encoding="utf-8")
+    fouten = []
+    for nr, regel in enumerate(tekst.splitlines(), 1):
+        kaal = regel.strip()
+        if kaal.startswith("#"):
+            continue          # commentaar dat het patroon beschrijft, niet uitvoert
+        m = re.search(r"\bgit add\s+(.+)$", kaal)
+        if not m:
+            continue
+        if m.group(1).strip() != '"$f"':
+            fouten.append((nr, kaal))
+    return fouten
+
+
 def main():
     if not WORKFLOWS.is_dir():
         sys.exit(f"geen workflows gevonden in {WORKFLOWS}")
@@ -128,6 +162,20 @@ def main():
     for pad in sorted(WORKFLOWS.glob("*.yml")):
         if not controleer(pad, modules):
             alles_ok = False
+
+    print()
+    git_fouten = []
+    for pad in sorted(WORKFLOWS.glob("*.yml")):
+        for nr, regel in controleer_git_add(pad):
+            git_fouten.append(f"{pad.name}:{nr}  {regel}")
+    if git_fouten:
+        alles_ok = False
+        print("  FOUT ongeschermde `git add` -- faalt als het bestand niet bestaat:")
+        for f in git_fouten:
+            print(f"    {f}")
+        print('    Gebruik: for f in a.csv b.csv; do [ -e "$f" ] && git add "$f"; done')
+    else:
+        print("  OK   elke `git add` voegt alleen toe wat bestaat")
 
     # Losse controle: elk lokaal script moet importeren wat het bestaat.
     print()
@@ -148,7 +196,7 @@ def main():
     if alles_ok:
         print("OK: elke workflow installeert wat zijn scripts nodig hebben.")
     else:
-        sys.exit("MISLUKT: zie hierboven -- dit zou live een ModuleNotFoundError geven.")
+        sys.exit("MISLUKT: zie hierboven -- dit zou live pas in de workflow stukgaan.")
 
 
 if __name__ == "__main__":

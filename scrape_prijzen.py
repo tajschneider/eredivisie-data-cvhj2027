@@ -261,7 +261,7 @@ def parse_rijen(html):
             continue
 
         # Optionele puntenkolommen: ontbreken ze, dan blijft het veld leeg en
-        # verandert er niets aan het model -- precies zoals xg.csv optioneel is.
+        # verandert er niets aan het model -- precies zoals spelerstats.csv optioneel is.
         rij = {
             "team": CLUB_ALIAS.get(club_ruw, club_ruw),
             "speler": naam,

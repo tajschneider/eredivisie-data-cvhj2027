@@ -38,7 +38,7 @@ scrape.yml (bestaand, ma 06:00 UTC)
                                |
 wekelijks.yml (nieuw, ma 07:00 + do 09:00 UTC)
   scrape_prijzen.py             -> prijzen.csv           |
-  scrape_statistieken.py        -> xg.csv (assists, kaarten)
+  scrape_statistieken.py        -> spelerstats.csv (assists, kaarten)
   scrape_programma.py --horizon -> programma.csv (N rondes)
                                |               |
                                +-------+-------+
@@ -92,7 +92,7 @@ pip install scipy                # alleen nodig voor multi_periode.py
 
 python scrape_prijzen.py        # -> prijzen.csv
 python scrape_programma.py      # -> programma.csv
-python scrape_statistieken.py   # -> xg.csv (assists en kaarten)
+python scrape_statistieken.py   # -> spelerstats.csv (assists en kaarten)
 
 python cvhj_model.py --ronde 6 --transfers 1 --json besluit.json
 python notify.py besluit.json --toon      # advies afdrukken zonder te mailen
@@ -567,7 +567,7 @@ horizon groter is dan 1).
 Stap 5 uit het optimalisatieplan. De pouletips-data die het model al gebruikt
 bevat geen assists en geen kaarten, en de doelpuntenschatting draaide op RUWE
 doelpunten uit een venster van een paar recente duels -- ruizig, vooral vroeg
-in het seizoen. `scrape_statistieken.py` vult die gaten en schrijft `xg.csv`.
+in het seizoen. `scrape_statistieken.py` vult die gaten en schrijft `spelerstats.csv`.
 
 ### Drie pogingen, en waarom de derde het werd
 
@@ -625,7 +625,7 @@ van de spelercel, het ontleden met en zonder per-90-kolom, en de koppeling met
 
 ### Terugval en menging
 
-**Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `xg.csv`,
+**Volledig optioneel, met een geverifieerde terugval.** Ontbreekt `spelerstats.csv`,
 dan draaien `cvhj_model.py` en `multi_periode.py` WISKUNDIG IDENTIEK aan vóór
 deze stap (enige verschil: een `LET OP`-regel dat het bestand ontbreekt).
 Staat een speler er niet in (transfer, geen speelminuten, naam/club niet
@@ -651,9 +651,9 @@ grootte is niet gevalideerd.
 **Geen nieuwe secrets of variabelen.** `scrape_statistieken.py` draait mee in
 `wekelijks.yml` met `continue-on-error`: loopt het ophalen stuk, dan blijft het
 advies gewoon komen (zonder stap 5). Naamcompatibiliteit: het
-bestandsformaat is identiek aan het oude `fbref.csv`, de vlag `--fbref` werkt
-nog als alias voor `--xg`, en staat er nog een oud `fbref.csv` in de repo dan
-wordt dat als terugval gelezen als `xg.csv` ontbreekt.
+bestandsformaat is nooit veranderd; `--xg` en `--fbref` werken nog als alias
+voor `--stats`, en staat er nog een oude `xg.csv` of `fbref.csv` in de repo dan
+wordt die als terugval gelezen zolang `spelerstats.csv` ontbreekt.
 
 ## Inleggen op coachvanhetjaar.nl
 
@@ -731,7 +731,7 @@ Onveranderd uit het model: maximaliseert de verwachting en niet de
 klassering (per ronde; over de horizon wordt nu wel meerdere ronden
 vooruitgekeken, zie hierboven), en geen blessurenieuws van vandaag. De mail
 herhaalt dat laatste elke week als expliciete controlestap. Assists en
-kaarten kunnen worden meegewogen via `xg.csv`, zie "xG, assists en kaarten"
+kaarten kunnen worden meegewogen via `spelerstats.csv`, zie "xG, assists en kaarten"
 hierboven voor wat daar nog niet geverifieerd is.
 
 Voor je een workflow of een import aanpast: draai `python test_workflows.py`.
@@ -743,7 +743,7 @@ hem ook, elke keer dat je die handmatig start.
 
 Nieuw:
 
-- `xg.csv` bevat geen echte xG: `xg_per90` is het seizoensdoelpuntentempo en
+- `spelerstats.csv` bevat geen echte xG: `xg_per90` is het seizoensdoelpuntentempo en
   `xag_per90` is gelijk aan `assists_per90`. Zie "De kolomnamen dekken de lading
   niet helemaal" -- de namen zijn behouden zodat het model ongewijzigd blijft,
   maar reken er niet mee alsof er een expected-goals-model achter zit.

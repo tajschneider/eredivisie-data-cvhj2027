@@ -31,7 +31,7 @@ Methode in het kort
    waargenomen doelpunten, gekrompen naar een positieprior -- recency-gewogen
    (ROL_DECAY, stap 1+2) zodat een recente rolwijziging (net basisspeler
    geworden, of juist verloren) sneller doorwerkt dan een vlak seizoens-
-   gemiddelde zou doen. Optioneel aangevuld met FBref-xG (stap 5).
+   gemiddelde zou doen. Optioneel aangevuld met seizoenscijfers (stap 5).
 4. Verwachte CVHJ-punten = ploegpunten (kans dat hij meedoet) + clean sheet
    (kans op minstens CLEANSHEET_MINUTEN_DREMPEL minuten) + individuele
    productie (doelpunten/assists/kaarten, geschaald naar VERWACHTE speeltijd
@@ -48,13 +48,11 @@ Beperkingen die je moet kennen
   overweeg dan de waarde bij te stellen.
 - CLEANSHEET_MINUTEN_DREMPEL=60 is een AANNAME (de gangbare conventie in
   de meeste fantasy-competities), niet bevestigd bij CVHJ zelf.
-- Assists en kaarten kunnen worden meegewogen via xg.csv (scrape_sofascore.py,
-  stap 5) -- optioneel: zonder dat bestand draait dit script exact als
-  voorheen. Die bron is per februari 2026 Sofascore in plaats van FBref: FBref
-  verloor in januari 2026 zijn Opta-licentie en blokkeert bovendien
-  datacenter-IP's. Het script is niet live gedraaid in de bouwomgeving, wel
-  getest tegen de echte veldnamen; draai het één keer handmatig voor je erop
-  vertrouwt. Er is ook geen backtestbron voor assists/kaarten
+- Assists en kaarten kunnen worden meegewogen via spelerstats.csv
+  (scrape_statistieken.py, stap 5) -- optioneel: zonder dat bestand draait dit
+  script exact als voorheen. LET OP: dat bestand bevat GEEN expected goals,
+  ondanks de historie van de kolomnamen; zie de docstring van
+  scrape_statistieken.py. Er is ook geen backtestbron voor assists/kaarten
   (spelers.csv houdt ze niet bij), dus de nauwkeurigheid van dat deel is
   niet gemeten, alleen wiskundig gecontroleerd op het terugvalgedrag.
 - Het model optimaliseert één ronde vooruit, niet de hele periode (zie
@@ -120,16 +118,17 @@ PRIOR_TEGEN = {
     "PEC Zwolle": 1.65, "Excelsior": 1.75, "Telstar": 1.75, "Willem II": 1.85,
     "ADO Den Haag": 1.85, "SC Cambuur": 1.95}
 
-# ------------------------------------------------- stap 5: xG, assists, kaarten
-# Assists en kaarten ontbreken in de pouletips-bron; xG is een minder ruizige
-# schatter van doelpuntenproductie dan de ruwe telling uit een venster van een
-# paar duels. Alle drie komen uit xg.csv (scrape_sofascore.py). Ontbreekt dat
-# bestand, of staat een speler er niet in, dan telt dit blok voor 0 mee -- zie
-# de commentaren in bouw_pool() voor de precieze terugvalgarantie.
+# ---------------------------------------------- stap 5: assists en kaarten
+# Assists en kaarten ontbreken in de pouletips-prijzenlijst; een seizoenstempo
+# is bovendien een minder ruizige schatter van doelpuntenproductie dan de ruwe
+# telling uit een venster van een paar duels. Alle drie komen uit
+# spelerstats.csv (scrape_statistieken.py). Ontbreekt dat bestand, of staat een
+# speler er niet in, dan telt dit blok voor 0 mee -- zie de commentaren in
+# bouw_pool() voor de precieze terugvalgarantie.
 ASSISTWAARDE = {"Goalkeeper": 5, "Defender": 4, "Midfielder": 3, "Forward": 2}
 KAART_GEEL_PUNTEN = -3.0
 KAART_ROOD_PUNTEN = -8.0
-XG_GEWICHT = 0.5        # hoeveel een fbref-90-tal weegt t.o.v. een lokaal 90-tal
+XG_GEWICHT = 0.5        # hoeveel een seizoens-90-tal weegt t.o.v. een lokaal 90-tal
 KRIMP_ASSIST = 8.0      # prior-gewicht (in 90-tallen) bij de assistschatting
 KRIMP_KAART = 20.0      # kaarten zijn zeldzaam; sterker krimpen dan assists
 
@@ -196,6 +195,33 @@ def vind_bijna_match(naam, club, pool):
     # speler is (bv. twee bankspelers met een deels overlappende naam) --
     # dan liever terugvallen op het oude dode-slot-gedrag dan gokken.
     return kandidaten[0] if len(kandidaten) == 1 else None
+
+
+def koppel_speler(naam, club, pool):
+    """DE manier waarop een speler uit selectie.csv aan de pool gekoppeld wordt.
+
+    Retourneert (pool-item of None, of het een bijna-match was).
+
+    Waarom dit een eigen functie is, en niet vier keer los: deze koppeling
+    gebeurde op vier plekken -- cvhj_model.main(), multi_periode's
+    koppel_selectie(), de brute-force-tak in test_multi_periode.py, en het
+    --vergelijk-blok van multi_periode.py. Toen vind_bijna_match() werd
+    toegevoegd, kreeg maar de helft daarvan die stap. Gevolg: bij een
+    vervuilde naam in prijzen.csv koppelde de MILP-tak de speler wél en de
+    brute-force-tak niet, kwamen ze op verschillende scores uit, en sloeg
+    test_multi_periode.py terecht alarm (17 september 2026, live).
+
+    De test had gelijk: twee zoekers die dezelfde vraag anders beantwoorden
+    IS een fout. Alleen zat de fout niet in de zoekers maar in de koppeling
+    ervoor. Eén implementatie kan niet meer uit elkaar lopen.
+    """
+    sleutel = norm(naam)
+    exact = next((p for p in pool
+                  if norm(p["speler"]) == sleutel and p["club"] == club), None)
+    if exact:
+        return exact, False
+    bijna = vind_bijna_match(naam, club, pool)
+    return (bijna, True) if bijna else (None, False)
 
 
 # ------------------------------------------------------------- wedstrijdmodel
@@ -315,7 +341,7 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
               programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None):
     """Verwachte CVHJ-punten per speler voor de komende ronde.
 
-    `fbref` is het resultaat van lees_fbref(), of None. Achterwaartse
+    `fbref` is het resultaat van lees_spelerstats(), of None. Achterwaartse
     compatibiliteit is hier bewust getoetst, niet aangenomen:
     - fbref=None (bestand ontbreekt): de doelpuntenschatting is WISKUNDIG
       IDENTIEK aan de oude formule (de fbref-term krijgt gewicht 0, dus valt
@@ -377,7 +403,7 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         speelfractie = rol["speelfractie"]
 
         # fbref-entry opzoeken (of niets: telt dan overal voor 0 mee, zie de
-        # docstring hierboven). sleutel exact zoals lees_fbref() hem opbouwt.
+        # docstring hierboven). sleutel exact zoals lees_spelerstats() hem opbouwt.
         fb = fbref.get(f"{norm(r['speler'])}|{norm(club)}") if fbref is not None else None
         fb_n90 = fb["minuten_90s"] if fb else 0.0
 
@@ -583,34 +609,36 @@ def lees_selectie(pad):
     return selectie
 
 
-def xg_pad(pad, standaard="xg.csv", oud="fbref.csv"):
-    """Het te gebruiken xG-bestand: `pad`, of het oude fbref.csv als terugval.
+def stats_pad(pad, standaard="spelerstats.csv", terugval=("xg.csv", "fbref.csv")):
+    """Het te gebruiken statistiekenbestand: `pad`, of een oudere naam ervan.
 
-    De bron is sinds februari 2026 Sofascore (xg.csv) in plaats van FBref
-    (fbref.csv) -- FBref raakte zijn Opta-licentie kwijt en blokkeerde
-    bovendien datacenter-IP's. Het BESTANDSFORMAAT is identiek gebleven, dus
-    een repo waar nog een oud fbref.csv in staat blijft gewoon werken; die
-    data is alleen niet meer actueel.
+    Het bestand is drie keer van bron gewisseld en twee keer van naam, en het
+    FORMAAT is al die tijd identiek gebleven. De naamgeschiedenis, nieuw naar
+    oud: spelerstats.csv (pouletips) <- xg.csv (Sofascore) <- fbref.csv
+    (FBref). Een repo waar nog een van de oude namen in staat blijft dus gewoon
+    werken -- die data is alleen niet meer actueel.
+
+    De laatste naam is bewust NIET meer naar de inhoud vernoemd als "xG": daar
+    zit geen expected-goals-model achter (zie scrape_statistieken.py). Een
+    bestandsnaam die je met documentatie moet corrigeren, is een verkeerde naam.
     """
     if Path(pad).exists():
         return pad
-    if pad == standaard and Path(oud).exists():
-        return oud
+    if pad == standaard:
+        for oud in terugval:
+            if Path(oud).exists():
+                return oud
     return pad
 
 
-def lees_fbref(pad):
-    """xg.csv (scrape_sofascore.py) -> {norm(speler)|norm(club): {...}}, of None.
-
-    Heet nog lees_fbref omdat het bestandsformaat exact hetzelfde is gebleven
-    toen de bron van FBref naar Sofascore ging; hernoemen zou alleen maar
-    aanroepers breken zonder dat er iets aan de werking verandert.
+def lees_spelerstats(pad):
+    """spelerstats.csv (scrape_statistieken.py) -> {norm(speler)|norm(club): {...}}, of None.
 
     None betekent "bestand ontbreekt" en is het signaal voor bouw_pool() om de
     hele stap-5-bijdrage over te slaan (0.0), niet alleen de prior te gebruiken
     -- zie de docstring van bouw_pool(). De sleutel wordt hier met cvhj_model.py's
-    EIGEN norm() opgebouwd uit de losse speler/club-kolommen, niet met fbref's
-    interne speler_key: die twee normaliseren verschillend (spaties vs. streepjes)
+    EIGEN norm() opgebouwd uit de losse speler/club-kolommen, niet met de
+    interne speler_key van de bron: die twee normaliseren verschillend (spaties vs. streepjes)
     en zouden nooit matchen.
     """
     if not Path(pad).exists():
@@ -661,11 +689,11 @@ def main():
                    help="programma van de komende ronde (scrape_programma.py)")
     p.add_argument("--selectie", default="selectie.csv",
                    help="huidige vijftien; valt terug op het blok onderin")
-    # --fbref blijft als alias werken: FBref was tot januari 2026 de bron, nu is
-    # dat Sofascore (scrape_sofascore.py). Het BESTANDSFORMAAT is identiek, dus
-    # alleen de naam verandert; een oud fbref.csv wordt hieronder nog gevonden.
-    p.add_argument("--xg", "--fbref", dest="xg", default="xg.csv",
-                   help="xG/xA/kaarten van scrape_sofascore.py; ontbreekt het, dan "
+    # --xg en --fbref blijven als alias werken: het bestand heette eerder zo.
+    # Het BESTANDSFORMAAT is nooit veranderd, alleen de naam -- stats_pad()
+    # vindt een oude xg.csv of fbref.csv vanzelf nog.
+    p.add_argument("--stats", "--xg", "--fbref", dest="xg", default="spelerstats.csv",
+                   help="assists/kaarten van scrape_statistieken.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
     p.add_argument("--json", metavar="BESTAND",
                    help="besluit machineleesbaar wegschrijven")
@@ -710,11 +738,11 @@ def main():
     print(f"Clubratings uit {n_obs} wedstrijden met marktnotering "
           f"(thuisvoordeel x{math.exp(thuisvoordeel):.2f})")
 
-    pad_xg = xg_pad(a.xg)
-    fbref = lees_fbref(pad_xg)
+    pad_xg = stats_pad(a.xg)
+    fbref = lees_spelerstats(pad_xg)
     if fbref is None:
         print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.")
+              f"draaien zonder assists/kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
 
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
@@ -723,22 +751,18 @@ def main():
     if fbref is not None:
         pool_sleutels = {f"{norm(x['speler'])}|{norm(x['club'])}" for x in pool}
         n_match = len(pool_sleutels & fbref.keys())
-        print(f"  xG-data gekoppeld: {n_match}/{len(pool)} spelers uit de pool "
+        print(f"  spelerstats gekoppeld: {n_match}/{len(pool)} spelers uit de pool "
               f"({pad_xg} bevat {len(fbref)} spelers)")
 
     geblesseerd = {norm(r["speler"]): r.get("blessure", "")
                    for r in prijsrijen if r.get("blessure")}
-    op_naam = {norm(x["speler"]): x for x in pool}
     selectie, ontbreekt, bijna_match = [], [], []
     for naam, (club, pos, prijs) in selectie_in.items():
-        x = op_naam.get(norm(naam))
-        if x and x["club"] == club:
+        x, was_bijna = koppel_speler(naam, club, pool)
+        if x:
             selectie.append(x)
-            continue
-        y = vind_bijna_match(naam, club, pool)
-        if y:  # vermoedelijk dezelfde speler, alleen een vervuilde naam in prijzen.csv
-            selectie.append(y)
-            bijna_match.append((naam, y["speler"]))
+            if was_bijna:   # vermoedelijk dezelfde speler, vervuilde naam in prijzen.csv
+                bijna_match.append((naam, x["speler"]))
         else:  # te weinig speeltijd of niet in de pool: dood slot, E = 0
             selectie.append({"speler": naam, "club": club, "pos": pos, "prijs": prijs,
                              "E": 0.0, "min": 0, "goals": 0, "basis": 0, "duels": 0})

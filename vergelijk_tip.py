@@ -176,7 +176,7 @@ def main():
     pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                        programma, inhaal, laatste_ronde=a.ronde - 1,
                        venster=a.venster, min_minuten=a.min_minuten,
-                       fbref=m.lees_fbref(m.xg_pad("xg.csv")))
+                       fbref=m.lees_spelerstats(m.stats_pad("spelerstats.csv")))
 
     tip = {r["speler_id"] or m.norm(r["speler"]): r["verwacht"]
            for r in prijsrijen if r.get("verwacht") not in (None, "")}

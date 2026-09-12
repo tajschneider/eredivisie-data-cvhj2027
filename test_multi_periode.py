@@ -23,12 +23,38 @@ import sys
 from multi_periode import bereken_multi_E, bouw_horizon_pools, koppel_selectie, laad_model, lees_programma_per_ronde, los_op
 
 
-def test_horizon_1_matcht_brute_force(ronde, transfers):
+def vervuil_een_naam(prijsrijen, selectie_in, m):
+    """Plakt ' basis' achter de naam van EEN speler uit de selectie.
+
+    Dit is geen kunstje maar het naspelen van een echte situatie: pouletips
+    zet statuswoorden in dezelfde cel als de naam, en als die er een keer niet
+    uit gestript worden staat er letterlijk 'Tjaronn Chery basis' in
+    prijzen.csv. Op 17 september 2026 liet precies dat deze test live falen --
+    de MILP-tak repareerde zo'n naam via vind_bijna_match() en de brute-force-
+    tak niet, dus vergeleken ze twee verschillende selecties.
+
+    Retourneert de gewijzigde naam, of None als er niets te vervuilen viel.
+    """
+    namen = {m.norm(n) for n in selectie_in}
+    for r in prijsrijen:
+        if m.norm(r["speler"]) in namen:
+            r["speler"] = r["speler"] + " basis"
+            return r["speler"]
+    return None
+
+
+def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     m = laad_model()
     clubrijen = m.lees("clubs.csv")
     spelerrijen = m.lees("spelers.csv")
     prijsrijen = m.lees("prijzen.csv")
     selectie_in = m.lees_selectie("selectie.csv") or m.SELECTIE
+
+    if vervuild:
+        naam = vervuil_een_naam(prijsrijen, selectie_in, m)
+        if naam is None:
+            print("  overgeslagen: geen selectiespeler in prijzen.csv om te vervuilen")
+            return True
 
     aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
     per_ronde = lees_programma_per_ronde("programma.csv", m)
@@ -49,9 +75,13 @@ def test_horizon_1_matcht_brute_force(ronde, transfers):
     programma_0, inhaal_0 = per_ronde[ronde]
     pool_0 = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                          programma_0, inhaal_0, laatste_ronde=ronde - 1, venster=6, min_minuten=60)
+    # Dezelfde koppeling als koppel_selectie() gebruikt -- via m.koppel_speler(),
+    # niet een eigen kopie. Anders vergelijkt deze test twee zoekers die al bij
+    # de INVOER van elkaar verschillen, en dat is precies waar hij op 17
+    # september 2026 op stukliep.
     selectie_0 = []
     for naam, (club, pos, prijs) in selectie_in.items():
-        x = next((p for p in pool_0 if m.norm(p["speler"]) == m.norm(naam) and p["club"] == club), None)
+        x, _ = m.koppel_speler(naam, club, pool_0)
         selectie_0.append(x or {"speler": naam, "club": club, "pos": pos, "prijs": prijs, "E": 0.0})
     resultaten = m.beste_transfers(selectie_0, pool_0, transfers, top=1)
 
@@ -82,8 +112,13 @@ def test_horizon_1_matcht_brute_force(ronde, transfers):
             v != v for v in es_milp + es_bf)  # NaN uitsluiten (speler niet in pool_0 gevonden)
 
     status = "gelijk" if ok_spelers else ("gelijkspel (E's kloppen exact)" if gelijkstand else "VERSCHILT")
-    print(f"  ronde {ronde}, {transfers} transfer(s): MILP {score_milp:.2f} vs brute-force {score_bf:.2f}"
-          f"  spelersgroep {status}")
+    merk = " [vervuilde naam]" if vervuild else ""
+    print(f"  ronde {ronde}, {transfers} transfer(s){merk}: MILP {score_milp:.2f} vs "
+          f"brute-force {score_bf:.2f}  spelersgroep {status}")
+    if not (ok_score and (ok_spelers or gelijkstand)) and vervuild:
+        print("    Dit is het geval van 17 september 2026: als de twee takken een "
+              "vervuilde naam verschillend koppelen, lopen ze hier uiteen. "
+              "Controleer of beide via m.koppel_speler() gaan.")
     if not ok_spelers:
         print(f"    MILP:        {sorted(namen_milp)}")
         print(f"    brute-force: {sorted(namen_bf)}")
@@ -102,6 +137,11 @@ def main():
         for transfers in (1, 3):
             if not test_horizon_1_matcht_brute_force(ronde, transfers):
                 alles_ok = False
+        # En dezelfde vergelijking met een vervuilde naam in prijzen.csv. Dat
+        # gebeurt in de echte data regelmatig, en het is de situatie waarin de
+        # twee takken vroeger uiteenliepen -- zie vervuil_een_naam().
+        if not test_horizon_1_matcht_brute_force(ronde, 1, vervuild=True):
+            alles_ok = False
 
     print()
     if alles_ok:

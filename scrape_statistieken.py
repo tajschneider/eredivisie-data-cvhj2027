@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Assists, kaarten, doelpunten en reddingen van pouletips -> xg.csv  --  stap 5, versie 3.
+Assists, kaarten, doelpunten en reddingen van pouletips -> spelerstats.csv  --  stap 5, versie 3.
 
 WAAROM DIT DE VORIGE TWEE POGINGEN VERVANGT
 -------------------------------------------
@@ -19,7 +19,7 @@ scrapet en die aantoonbaar WEL bereikbaar is vanaf GitHub Actions, want
 scrape_prijzen.py draait daar gewoon. Vier extra verzoeken, geen sleutels,
 geen blokkades.
 
-WAT ER PRECIES IN xg.csv KOMT -- lees dit, de kolomnamen liegen een beetje
+WAT ER PRECIES IN spelerstats.csv KOMT -- lees dit, de kolomnamen liegen een beetje
 --------------------------------------------------------------------------
 Het bestandsformaat is ongewijzigd gebleven zodat cvhj_model.py niets hoeft te
 weten van de bronwissel. Maar twee kolomnamen dekken de lading nu anders:
@@ -56,7 +56,7 @@ te weten. Nu krijgt hij de positieprior, alsof er niets bekend is. Ook voor de
 spelers die niet in een ranglijst staan is dit dus een verbetering.
 
 Gebruik:
-    python scrape_statistieken.py                 # -> xg.csv
+    python scrape_statistieken.py                 # -> spelerstats.csv
     python scrape_statistieken.py --uit data/
     python scrape_statistieken.py --dump ruw/     # ruwe HTML bewaren
 
@@ -204,10 +204,10 @@ def lees_minuten(pad_spelers):
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--uit", default=".", help="doelmap voor xg.csv")
+    p.add_argument("--uit", default=".", help="doelmap voor spelerstats.csv")
     p.add_argument("--spelers", default="spelers.csv")
     p.add_argument("--min-minuten", type=int, default=90,
-                   help="spelers met minder minuten komen niet in xg.csv")
+                   help="spelers met minder minuten komen niet in spelerstats.csv")
     p.add_argument("--dump", default=None, help="map om de ruwe HTML in te bewaren")
     a = p.parse_args()
 
@@ -249,7 +249,7 @@ def main():
               + (f", {len(niet)} niet: {', '.join(niet[:3])}" if niet else ""))
         if len(rijen) < MIN_GEVULD:
             sys.exit(f"FOUT: {url} leverde maar {len(rijen)} regels op. De opmaak is "
-                     f"waarschijnlijk gewijzigd -- xg.csv NIET geschreven. Draai met "
+                     f"waarschijnlijk gewijzigd -- spelerstats.csv NIET geschreven. Draai met "
                      f"--dump om de HTML te bekijken.")
 
     rijen_uit = []
@@ -282,7 +282,7 @@ def main():
               "gele_kaarten", "rode_kaarten"]
     uit = Path(a.uit)
     uit.mkdir(parents=True, exist_ok=True)
-    pad = uit / "xg.csv"
+    pad = uit / "spelerstats.csv"
     with pad.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=velden)
         w.writeheader()
