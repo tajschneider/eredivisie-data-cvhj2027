@@ -128,6 +128,18 @@ jobs:
               --json besluit.json | tee advies.txt
           fi
 
+      # Pouletips publiceert per speler ook de WERKELIJK behaalde punten. Dat is
+      # de enige echte maatstaf voor dit model -- backtest.py reconstrueert die
+      # nu uit spelers.csv en mist daarbij assists, kaarten en keepersreddingen.
+      # Het is een seizoenstotaal, dus om er per ronde mee te kunnen rekenen heb
+      # je opnamen op verschillende momenten nodig en trek je ze van elkaar af.
+      # Elke week die we niet vastleggen is grondwaarheid die we kwijt zijn,
+      # dus dit draait mee vanaf nu. Faalt het, dan blijft het advies gewoon
+      # doorgaan -- het is verzameling, geen afhankelijkheid.
+      - name: Werkelijke punten vastleggen
+        continue-on-error: true
+        run: python vergelijk_tip.py --ronde ${{ steps.ronde.outputs.nr }} --top 5
+
       - name: Advies mailen
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
@@ -144,7 +156,7 @@ jobs:
           cp advies.txt   "historie/ronde-${{ steps.ronde.outputs.nr }}.txt"
           git config user.name  "cvhj-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add prijzen.csv programma.csv selectie.csv historie/
+          git add prijzen.csv programma.csv selectie.csv punten_historie.csv historie/
           git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
           git commit -m "advies ronde ${{ steps.ronde.outputs.nr }}"
           # scrape.yml kan intussen gepusht hebben; eerst bijtrekken.
