@@ -34,6 +34,11 @@ from pathlib import Path
 HIER = Path(__file__).parent
 WORKFLOWS = HIER / ".github" / "workflows"
 
+# Markering waarmee je een `git add <bestand>` bewust vrijstelt: zet hem op
+# dezelfde regel of de regel erboven. Bedoeld voor bestanden die de workflow
+# zelf elke run aanmaakt en die dus niet kunnen ontbreken.
+OPT_OUT = "git-add-ok"
+
 # importnaam -> pakketnaam zoals pip hem kent
 EXTERN = {
     "numpy": "numpy",
@@ -134,20 +139,36 @@ def controleer_git_add(pad_workflow):
           [ -e "$f" ] && git add "$f"
         done
 
-    Deze controle dwingt die vorm af: elke `git add` met iets anders dan "$f"
-    erachter is verdacht.
+    Deze controle dwingt die vorm af. Met een uitzondering, want de eerste
+    versie keurde `scrape.yml` af -- een workflow die al weken goed draait,
+    omdat hij `clubs.csv` en `spelers.csv` zelf elke run aanmaakt en die dus
+    niet kunnen ontbreken. Een controle die werkende code afkeurt leer je
+    binnen twee weken negeren, en dan vangt hij ook de echte fout niet meer.
+
+    Daarom: zet `# git-add-ok` op of boven die regel om hem vrij te stellen.
+    Dat moet een bewuste handeling zijn -- het script kan niet zien welke
+    bestanden altijd bestaan, de auteur wel.
     """
-    tekst = pad_workflow.read_text(encoding="utf-8")
+    regels = pad_workflow.read_text(encoding="utf-8").splitlines()
     fouten = []
-    for nr, regel in enumerate(tekst.splitlines(), 1):
+    for i, regel in enumerate(regels):
         kaal = regel.strip()
         if kaal.startswith("#"):
             continue          # commentaar dat het patroon beschrijft, niet uitvoert
         m = re.search(r"\bgit add\s+(.+)$", kaal)
         if not m:
             continue
-        if m.group(1).strip() != '"$f"':
-            fouten.append((nr, kaal))
+        if m.group(1).strip() == '"$f"':
+            continue          # de geschermde vorm
+        # Bewuste uitzondering. Een bestand dat de workflow zelf elke run
+        # aanmaakt kan niet ontbreken, en dan is de lus onnodig. Die afweging
+        # is niet statisch te maken -- de auteur weet het, dit script niet.
+        # Vandaar een markering die je bewust moet zetten: zo blijft de
+        # controle streng zonder werkende workflows af te keuren.
+        vorige = regels[i - 1].strip() if i else ""
+        if OPT_OUT in kaal or OPT_OUT in vorige:
+            continue
+        fouten.append((i + 1, kaal))
     return fouten
 
 
@@ -173,7 +194,9 @@ def main():
         print("  FOUT ongeschermde `git add` -- faalt als het bestand niet bestaat:")
         for f in git_fouten:
             print(f"    {f}")
-        print('    Gebruik: for f in a.csv b.csv; do [ -e "$f" ] && git add "$f"; done')
+        print('    Gebruik:  for f in a.csv b.csv; do [ -e "$f" ] && git add "$f"; done')
+        print(f'    Of, als die bestanden elke run gemaakt worden en dus niet kunnen')
+        print(f'    ontbreken: zet `# {OPT_OUT}` op of boven die regel.')
     else:
         print("  OK   elke `git add` voegt alleen toe wat bestaat")
 
