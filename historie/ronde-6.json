@@ -1,19 +1,19 @@
 {
   "ronde": 6,
-  "gegenereerd": "2026-09-12T13:05:39",
-  "transfers_toegestaan": 1,
+  "gegenereerd": "2026-09-12T20:08:18",
+  "transfers_toegestaan": 0,
   "periode": 2,
   "periodestart": false,
   "ronden_tot_volgende_periode": 3,
   "huidig": {
-    "verwacht": 35.4,
-    "kosten": 30.35,
+    "verwacht": 24.37,
+    "kosten": 30.8,
     "basis": [
       {
-        "speler": "Kjetil Haug",
-        "club": "Go Ahead Eagles",
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
         "pos": "K",
-        "E": 3.408
+        "E": 3.025
       },
       {
         "speler": "Lutsharel Geertruida",
@@ -22,22 +22,22 @@
         "E": 3.965
       },
       {
-        "speler": "Aske Adelgaard",
-        "club": "FC Twente",
-        "pos": "V",
-        "E": 2.886
-      },
-      {
         "speler": "Jeff Hardeveld",
         "club": "Telstar",
         "pos": "V",
         "E": 1.664
       },
       {
-        "speler": "Sekou Sylla",
-        "club": "ADO Den Haag",
+        "speler": "Aske Adelgaard",
+        "club": "FC Twente",
         "pos": "V",
-        "E": 1.329
+        "E": 0.0
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 0.0
       },
       {
         "speler": "Gjivai Zechiël",
@@ -46,16 +46,16 @@
         "E": 6.5
       },
       {
+        "speler": "Shunsuke Mito",
+        "club": "Sparta Rotterdam",
+        "pos": "M",
+        "E": 0.0
+      },
+      {
         "speler": "Oscar Gloukh",
         "club": "Ajax",
         "pos": "M",
-        "E": 3.321
-      },
-      {
-        "speler": "Mohamed Ihattaren",
-        "club": "Fortuna Sittard",
-        "pos": "M",
-        "E": 2.756
+        "E": 0.0
       },
       {
         "speler": "Jacob Trenskow",
@@ -64,10 +64,10 @@
         "E": 4.79
       },
       {
-        "speler": "Brynjólfur Willumsson",
-        "club": "FC Groningen",
+        "speler": "Artem Stepanov",
+        "club": "FC Utrecht",
         "pos": "A",
-        "E": 2.748
+        "E": 4.425
       },
       {
         "speler": "Mexx Meerdink",
@@ -78,37 +78,41 @@
     ],
     "bank": [
       {
-        "speler": "Stijn van Gassel",
-        "club": "Excelsior",
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
         "pos": "K",
-        "E": 3.025
+        "E": 0.0
       },
       {
-        "speler": "Deveron Fonville",
-        "club": "NEC",
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
         "pos": "V",
         "E": 0.0
       },
       {
-        "speler": "Shunsuke Mito",
-        "club": "Sparta Rotterdam",
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
         "pos": "M",
-        "E": 1.039
+        "E": 0.0
       },
       {
-        "speler": "David Min",
-        "club": "FC Utrecht",
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
         "pos": "A",
         "E": 0.0
       }
     ]
   },
   "zonder_speeltijd": [
-    "Deveron Fonville",
-    "David Min"
+    "Shunsuke Mito",
+    "Deveron Fonville"
   ],
   "bijna_match": [],
   "geblesseerd_in_selectie": [
+    {
+      "speler": "Shunsuke Mito",
+      "duur": "duur onbekend"
+    },
     {
       "speler": "Deveron Fonville",
       "duur": "duur onbekend"
@@ -118,18 +122,6 @@
     {
       "thuis": "Excelsior",
       "uit": "FC Utrecht"
-    },
-    {
-      "thuis": "FC Twente",
-      "uit": "ADO Den Haag"
-    },
-    {
-      "thuis": "Fortuna Sittard",
-      "uit": "Ajax"
-    },
-    {
-      "thuis": "Go Ahead Eagles",
-      "uit": "FC Groningen"
     },
     {
       "thuis": "PEC Zwolle",
@@ -150,29 +142,7 @@
   ],
   "inhaal": [],
   "pool_grootte": 271,
-  "advies": {
-    "verwacht": 39.44,
-    "winst": 4.04,
-    "formatie": "3-4-3",
-    "uit": [
-      {
-        "speler": "Deveron Fonville",
-        "club": "NEC",
-        "pos": "V",
-        "prijs": 2.0,
-        "E": 0.0
-      }
-    ],
-    "in": [
-      {
-        "speler": "Darko Nejasmic",
-        "club": "NEC",
-        "pos": "M",
-        "prijs": 1.8,
-        "E": 4.708
-      }
-    ]
-  },
+  "advies": null,
   "multi_ronde": true,
   "horizon": 3,
   "horizon_rondes": [
@@ -181,5 +151,5 @@
     8
   ],
   "decay": 0.84,
-  "verwacht_horizon": 104.51
+  "verwacht_horizon": 87.75
 }
