@@ -1,0 +1,192 @@
+{
+  "ronde": 7,
+  "gegenereerd": "2026-09-12T20:17:21",
+  "transfers_toegestaan": 1,
+  "periode": 2,
+  "periodestart": false,
+  "ronden_tot_volgende_periode": 2,
+  "huidig": {
+    "verwacht": 39.37,
+    "kosten": 30.8,
+    "basis": [
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "E": 2.429
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "E": 3.682
+      },
+      {
+        "speler": "Lutsharel Geertruida",
+        "club": "PSV",
+        "pos": "V",
+        "E": 2.168
+      },
+      {
+        "speler": "Aske Adelgaard",
+        "club": "FC Twente",
+        "pos": "V",
+        "E": 1.596
+      },
+      {
+        "speler": "Jeff Hardeveld",
+        "club": "Telstar",
+        "pos": "V",
+        "E": 1.104
+      },
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "E": 5.629
+      },
+      {
+        "speler": "Oscar Gloukh",
+        "club": "Ajax",
+        "pos": "M",
+        "E": 3.829
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 3.747
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "E": 5.7
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "E": 3.954
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "E": 3.34
+      }
+    ],
+    "bank": [
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "E": 1.816
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 0.0
+      },
+      {
+        "speler": "Shunsuke Mito",
+        "club": "Sparta Rotterdam",
+        "pos": "M",
+        "E": 0.0
+      },
+      {
+        "speler": "Artem Stepanov",
+        "club": "FC Utrecht",
+        "pos": "A",
+        "E": 2.577
+      }
+    ]
+  },
+  "zonder_speeltijd": [
+    "Shunsuke Mito",
+    "Deveron Fonville"
+  ],
+  "bijna_match": [],
+  "geblesseerd_in_selectie": [
+    {
+      "speler": "Shunsuke Mito",
+      "duur": "duur onbekend"
+    },
+    {
+      "speler": "Deveron Fonville",
+      "duur": "duur onbekend"
+    }
+  ],
+  "programma": [
+    {
+      "thuis": "ADO Den Haag",
+      "uit": "SC Cambuur"
+    },
+    {
+      "thuis": "Ajax",
+      "uit": "Excelsior"
+    },
+    {
+      "thuis": "AZ",
+      "uit": "Telstar"
+    },
+    {
+      "thuis": "FC Groningen",
+      "uit": "PEC Zwolle"
+    },
+    {
+      "thuis": "FC Twente",
+      "uit": "PSV"
+    },
+    {
+      "thuis": "Feyenoord",
+      "uit": "FC Utrecht"
+    },
+    {
+      "thuis": "NEC",
+      "uit": "Go Ahead Eagles"
+    },
+    {
+      "thuis": "Sparta Rotterdam",
+      "uit": "sc Heerenveen"
+    },
+    {
+      "thuis": "Willem II",
+      "uit": "Fortuna Sittard"
+    }
+  ],
+  "inhaal": [],
+  "pool_grootte": 272,
+  "advies": {
+    "verwacht": 41.22,
+    "winst": 1.85,
+    "formatie": "4-3-3",
+    "uit": [
+      {
+        "speler": "Lutsharel Geertruida",
+        "club": "PSV",
+        "pos": "V",
+        "prijs": 3.0,
+        "E": 2.168
+      }
+    ],
+    "in": [
+      {
+        "speler": "Sergiño Dest",
+        "club": "PSV",
+        "pos": "V",
+        "prijs": 3.2,
+        "E": 4.014
+      }
+    ]
+  },
+  "multi_ronde": true,
+  "horizon": 2,
+  "horizon_rondes": [
+    7,
+    8
+  ],
+  "decay": 0.84,
+  "verwacht_horizon": 77.07
+}
