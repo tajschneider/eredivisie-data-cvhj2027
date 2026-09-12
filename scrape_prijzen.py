@@ -161,6 +161,32 @@ def parse_prijs(tekst):
     return float(m.group(1).replace(",", "."))
 
 
+def parse_punten(tekst):
+    """Puntenkolom -> float, of '' als de cel leeg/onleesbaar is.
+
+    Nederlandse notatie: komma is decimaal, punt is duizendtal ('1.238,3').
+    Staat er alleen een punt, dan is het dubbelzinnig: '2.268' kan 2268 zijn
+    (duizendtal) of 2,268 (decimaal met een Engelse punt). Dat wordt hier NIET
+    geraden -- de tekst wordt letterlijk overgenomen met de punt als decimaal,
+    en main() drukt een paar ruwe-naar-verwerkte voorbeelden af zodat je in de
+    log in één oogopslag ziet welke het is.
+
+    Voor het gebruik dat er nu van gemaakt wordt (rangcorrelatie in
+    vergelijk_tip.py) maakt die factor niets uit: zolang de omzetting
+    monotoon is, blijft de volgorde van spelers dezelfde.
+    """
+    t = (tekst or "").replace("\xa0", " ").strip()
+    t = re.sub(r"[^\d,.\-]", "", t)
+    if not t:
+        return ""
+    if "," in t:                       # ondubbelzinnig Nederlands
+        t = t.replace(".", "").replace(",", ".")
+    try:
+        return float(t)
+    except ValueError:
+        return ""
+
+
 def parse_positie(tekst):
     sleutel = re.sub(r"[^a-z]", "", tekst.strip().lower())
     return POSITIE_NL_EN.get(sleutel)
@@ -187,6 +213,19 @@ def kies_tabel(soup):
                 idx.setdefault("positie", i)
             elif k.startswith("waarde") or k.startswith("prijs"):
                 idx.setdefault("prijs", i)
+            # Pouletips publiceert per speler ook zijn eigen cijfers. Die zijn
+            # OPTIONEEL: ontbreken ze, dan werkt alles zoals voorheen. Ze zijn
+            # om twee redenen waardevol:
+            #   behaald  -- daadwerkelijk gescoorde CVHJ-punten. De enige echte
+            #               maatstaf; backtest.py reconstrueert die nu uit
+            #               spelers.csv en mist daarbij assists/kaarten/reddingen.
+            #   verwacht -- hun eigen puntenvoorspelling. Een onafhankelijke
+            #               tweede schatting van precies wat cvhj_model.py schat,
+            #               dus bruikbaar als ijking (zie vergelijk_tip.py).
+            elif k.startswith("behaald"):
+                idx.setdefault("behaald", i)
+            elif k.startswith("verwacht"):
+                idx.setdefault("verwacht", i)
         if {"speler", "club", "positie", "prijs"} <= set(idx):
             return tabel, idx
     return None, None
@@ -201,7 +240,7 @@ def parse_rijen(html):
             "opmaak van de bronpagina is waarschijnlijk gewijzigd; "
             "draai opnieuw met --dump ruw.html en bekijk de bron")
 
-    rijen, overgeslagen = [], []
+    rijen, overgeslagen, ruw_punten = [], [], []
     for tr in tabel.find_all("tr"):
         cellen = tr.find_all("td")
         if len(cellen) <= max(idx.values()):
@@ -221,7 +260,9 @@ def parse_rijen(html):
             overgeslagen.append((naam or "?", club_ruw, positie, prijs))
             continue
 
-        rijen.append({
+        # Optionele puntenkolommen: ontbreken ze, dan blijft het veld leeg en
+        # verandert er niets aan het model -- precies zoals xg.csv optioneel is.
+        rij = {
             "team": CLUB_ALIAS.get(club_ruw, club_ruw),
             "speler": naam,
             "positie": positie,
@@ -230,8 +271,17 @@ def parse_rijen(html):
             "rol": status["rol"],
             "nieuw": status["nieuw"],
             "blessure": status["blessure"],
-        })
-    return rijen, overgeslagen
+            "behaald": "",
+            "verwacht": "",
+        }
+        for veld in ("behaald", "verwacht"):
+            if veld in idx:
+                tekst = cellen[idx[veld]].get_text(" ", strip=True)
+                rij[veld] = parse_punten(tekst)
+                if len(ruw_punten) < 5 and tekst:
+                    ruw_punten.append((veld, naam, tekst, rij[veld]))
+        rijen.append(rij)
+    return rijen, overgeslagen, ruw_punten
 
 
 def volg_paginering(html, gezien):
@@ -263,7 +313,7 @@ def main():
         Path(args.dump).write_text(html, encoding="utf-8")
         print(f"  ruwe HTML -> {args.dump}")
 
-    rijen, overgeslagen = parse_rijen(html)
+    rijen, overgeslagen, ruw_punten = parse_rijen(html)
     gezien = {PRIJZEN_URL}
 
     # alleen paginering volgen als de eerste pagina te weinig opleverde
@@ -272,7 +322,7 @@ def main():
             gezien.add(url)
             print(f"  vervolgpagina: {url}")
             try:
-                extra, over_extra = parse_rijen(get(url))
+                extra, over_extra, _ = parse_rijen(get(url))
             except RuntimeError:
                 continue
             rijen.extend(extra)
@@ -298,7 +348,8 @@ def main():
     pad = uit / "prijzen.csv"
     with pad.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["team", "speler", "positie", "prijs",
-                                          "speler_id", "rol", "nieuw", "blessure"])
+                                          "speler_id", "rol", "nieuw", "blessure",
+                                          "behaald", "verwacht"])
         w.writeheader()
         w.writerows(rijen)
 
@@ -336,6 +387,27 @@ def main():
               f"zien welke schrijfwijze STATUS_RE niet vangt.")
     else:
         print(f"  namen:   schoon (geen statuswoord blijven plakken)")
+
+    # Pouletips' eigen cijfers. Het getalformaat op die pagina is niet
+    # ondubbelzinnig ('2.268' kan 2268 of 2,268 zijn), dus in plaats van te
+    # gokken tonen we ruw naast verwerkt: één blik op deze regels zegt welke
+    # het is. Zie parse_punten().
+    met_punten = [r for r in rijen if r["behaald"] != "" or r["verwacht"] != ""]
+    if met_punten:
+        b = [r["behaald"] for r in met_punten if r["behaald"] != ""]
+        v = [r["verwacht"] for r in met_punten if r["verwacht"] != ""]
+        print(f"\n  punten:  {len(met_punten)} spelers met cijfers van pouletips")
+        if b:
+            print(f"    behaald   {min(b):>10.3f} tot {max(b):>10.3f}  (gemiddeld {sum(b)/len(b):.3f})")
+        if v:
+            print(f"    verwacht  {min(v):>10.3f} tot {max(v):>10.3f}  (gemiddeld {sum(v)/len(v):.3f})")
+        if ruw_punten:
+            print(f"    ruw -> verwerkt, controleer of dit klopt:")
+            for veld, naam, tekst, waarde in ruw_punten:
+                print(f"      {veld:9s} {naam:24s} {tekst!r:>12} -> {waarde}")
+    else:
+        print(f"\n  punten:  geen kolommen 'Behaald'/'Verwacht' op de pagina gevonden "
+              f"(niet erg -- het model werkt zonder)")
 
 
 if __name__ == "__main__":

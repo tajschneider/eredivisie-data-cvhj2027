@@ -181,6 +181,18 @@ Twee lagen tegen dit soort fouten:
 Regressietest: `test_scrape_prijzen.py` (splits_status-edge cases inclusief
 deze exacte casus, en vind_bijna_match's matching/niet-matching-gevallen).
 
+**Eén koppeling, niet vier.** Dit vangnet werd aanvankelijk op twee van de vier
+plekken ingebouwd die een selectiespeler aan de pool koppelen. Gevolg: bij een
+vervuilde naam koppelde de MILP-tak de speler wél en de brute-force-tak niet,
+kwamen ze op verschillende scores uit, en faalde `test_multi_periode.py` op 17
+september live — waarna `wekelijks.yml` netjes terugviel op de eenronde-zoeker
+en de mail gewoon verstuurde. De test had gelijk: twee zoekers die dezelfde
+vraag anders beantwoorden ís een fout, alleen zat die niet in de zoekers maar
+in de koppeling ervoor. Alle vier de plekken gaan nu door
+`cvhj_model.koppel_speler()`, en `test_multi_periode.py` draait zijn
+vergelijking ook met een opzettelijk vervuilde naam, zodat dit niet opnieuw
+stilletjes kan terugkomen.
+
 ## selectie.csv synchroniseren met de site
 
 `selectie.csv` was het enige bestand dat je met de hand moest bijhouden, en
@@ -230,6 +242,53 @@ fout: prijzen bewegen elke week, en de site is daarin leidend.
 
 Regressietest: `test_synchroniseer.py` (draait zonder netwerk, met Thomas'
 echte vijftien als fixture en precies het Flamingo/Geertruida-verschil erin).
+
+## IJken tegen pouletips
+
+Op dezelfde pagina waar `prijzen.csv` vandaan komt publiceert pouletips per
+speler ook zijn eigen cijfers. `scrape_prijzen.py` leest die nu mee, in twee
+extra kolommen. Het onderscheid tussen die twee is het hele punt:
+
+| kolom | wat het is | waarom het telt |
+|---|---|---|
+| `verwacht` | hun puntenvoorspelling | een tweede schatting van wat wij ook schatten — een andere mening, met eigen fouten |
+| `behaald` | daadwerkelijk gescoorde punten | het echte antwoord; hiermee wordt het model pas echt meetbaar |
+
+**`verwacht` — een tweede mening.** `vergelijk_tip.py` legt hun volgorde naast
+die van het model met Spearman-rangcorrelatie, en toont de grootste
+meningsverschillen beide kanten op:
+
+```bash
+python vergelijk_tip.py --ronde 7
+```
+
+Bewust op rang en niet op waarde: wij schatten punten voor één ronde, zij voor
+de rest van het seizoen, dus de absolute getallen zijn onvergelijkbaar. De
+volgorde wel. Waar beide modellen dezelfde spelers bovenaan zetten, pakken ze
+waarschijnlijk allebei echt signaal op; waar ze ver uiteenlopen valt iets te
+leren. Dat is geen "zij hebben gelijk" — het is een lijstje plekken waar het de
+moeite waard is zelf te kijken.
+
+**`behaald` — de grondwaarheid.** Dit is waardevoller, en op termijn de reden
+dat dit er staat. `backtest.py` reconstrueert de werkelijke punten nu uit
+`spelers.csv` en kan assists, kaarten en keepersreddingen niet meenemen; het
+RMSE-getal daar is daarom expliciet een ondergrens, geen echte maat. Met
+`behaald` wordt dat een meting.
+
+Eén complicatie: `behaald` is een seizoenstotaal, geen ronde-score. Om er per
+ronde mee te rekenen zijn twee opnamen op verschillende momenten nodig, waarvan
+je het verschil neemt. Daarom legt `vergelijk_tip.py` bij elke run een
+momentopname vast in `punten_historie.csv`, en draait die stap mee in
+`wekelijks.yml`. Elke week die niet wordt vastgelegd is grondwaarheid die weg
+is — vandaar dat dit nu al meeloopt, terwijl de backtest er pas over een paar
+weken iets mee kan.
+
+**Getalformaat, eerlijk gezegd.** De puntenkolommen op die pagina zijn niet
+ondubbelzinnig: `2.268` kan 2268 zijn (Nederlands duizendtal) of 2,268
+(Engelse decimaal). Dat wordt niet geraden — `scrape_prijzen.py` drukt een
+paar ruwe-naar-verwerkte voorbeelden af in de log, zodat één blik volstaat.
+Voor de rangcorrelatie maakt het niets uit, zolang de omzetting monotoon is.
+Voor de backtest straks wél; dat moet vóór die stap kloppen.
 
 ## Perioden en drie transfers
 
