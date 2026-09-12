@@ -43,6 +43,75 @@ def vervuil_een_naam(prijsrijen, selectie_in, m):
     return None
 
 
+def e_waarde(naam, e_pool0, selectie_in):
+    """De E waarmee BEIDE takken deze speler gewogen hebben.
+
+    Staat hij in pool_0, dan die waarde. Staat hij er niet in, dan is hij een
+    'dood slot': een speler uit de huidige selectie die de speeltijddrempel
+    niet haalt, net is overgekomen, of geblesseerd gemeld staat. Beide takken
+    kennen zo iemand expliciet E=0.0 toe -- koppel_selectie() in de MILP-tak,
+    de terugval-dict in de brute-force-tak. Die 0.0 is dus geen aanname van
+    deze test maar precies de waarde die in de optimalisatie gebruikt is.
+
+    Eerder gaf deze opzoeking float('nan') voor iedereen buiten pool_0. Daar
+    keurde de gelijkstand-controle een ECHTE gelijkstand op af, zodra er een
+    dood slot in het verschil zat. In een ronde met weinig wedstrijden (bijna
+    alle E gelijk aan 0, dus enorm veel gelijkwaardige oplossingen) is dat
+    juist de normale situatie, en dan meldt de test een MILP-fout die er niet
+    is -- precies wat er op 12 september 2026 gebeurde.
+
+    Een naam die noch in pool_0 noch in de selectie voorkomt houdt bewust NaN:
+    zo iemand KAN in geen van beide takken gekozen zijn, dus dat zou een echte
+    inconsistentie zijn en hoort de test wel af te keuren.
+    """
+    if naam in e_pool0:
+        return e_pool0[naam]
+    return 0.0 if naam in selectie_in else float("nan")
+
+
+def test_e_waarde():
+    """De gelijkstand-opzoeking, los van de data.
+
+    Nagespeeld naar het echte geval: twee takken die allebei een dood slot
+    houden (MILP hield 'Stijn van Gassel', brute-force 'Lutsharel
+    Geertruida'), plus aan elke kant een gekochte speler met E=0. Totaalscores
+    identiek -- dit hoort een gelijkstand te heten, geen fout.
+    """
+    e_pool0 = {"Evert Linthorst": 0.0, "Jasper Schendelaar": 0.0, "Ricardo Pepi": 4.2}
+    selectie_in = {"Stijn van Gassel": (), "Lutsharel Geertruida": ()}
+
+    proeven = [
+        ("speler in pool_0", "Ricardo Pepi", 4.2),
+        ("dood slot (wel in selectie)", "Stijn van Gassel", 0.0),
+        ("ander dood slot", "Lutsharel Geertruida", 0.0),
+    ]
+    ok = True
+    for wat, naam, verwacht in proeven:
+        gekregen = e_waarde(naam, e_pool0, selectie_in)
+        if gekregen != verwacht:
+            print(f"  FOUT e_waarde {wat}: {naam} -> {gekregen}, verwacht {verwacht}")
+            ok = False
+
+    # Nergens te vinden: moet NaN blijven, anders verdwijnt een echte fout.
+    spook = e_waarde("Niemand Nergens", e_pool0, selectie_in)
+    if spook == spook:
+        print(f"  FOUT e_waarde: onbekende naam gaf {spook}, verwacht NaN")
+        ok = False
+
+    # En de gelijkstand-regel zelf, op het geval uit het echte log.
+    es_milp = sorted(round(e_waarde(n, e_pool0, selectie_in), 6)
+                     for n in ("Evert Linthorst", "Stijn van Gassel"))
+    es_bf = sorted(round(e_waarde(n, e_pool0, selectie_in), 6)
+                   for n in ("Jasper Schendelaar", "Lutsharel Geertruida"))
+    if not (es_milp == es_bf and not any(v != v for v in es_milp + es_bf)):
+        print(f"  FOUT gelijkstand niet herkend: {es_milp} vs {es_bf}")
+        ok = False
+
+    if ok:
+        print("  gelijkstand-opzoeking: dood slot telt als E=0, onbekende naam blijft NaN")
+    return ok
+
+
 def test_inhaalronde_telt_mee():
     """Een ronde met UITSLUITEND inhaalduels moet een gevulde pool opleveren.
 
@@ -148,14 +217,16 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     # E-waarden. Dat bewijst een gelijkspel-wissel, geen scoreverschil dat
     # toevallig wegvalt in de som.
     gelijkstand = False
+    alleen_milp = alleen_bf = set()
+    es_milp = es_bf = []
     if not ok_spelers:
         alleen_milp = namen_milp - namen_bf
         alleen_bf = namen_bf - namen_milp
         e_pool0 = {p["speler"]: p["E"] for p in pool_0}
-        es_milp = sorted(round(e_pool0.get(n, float("nan")), 6) for n in alleen_milp)
-        es_bf = sorted(round(e_pool0.get(n, float("nan")), 6) for n in alleen_bf)
+        es_milp = sorted(round(e_waarde(n, e_pool0, selectie_in), 6) for n in alleen_milp)
+        es_bf = sorted(round(e_waarde(n, e_pool0, selectie_in), 6) for n in alleen_bf)
         gelijkstand = len(alleen_milp) == len(alleen_bf) and es_milp == es_bf and not any(
-            v != v for v in es_milp + es_bf)  # NaN uitsluiten (speler niet in pool_0 gevonden)
+            v != v for v in es_milp + es_bf)  # NaN uitsluiten (speler nergens gevonden)
 
     status = "gelijk" if ok_spelers else ("gelijkspel (E's kloppen exact)" if gelijkstand else "VERSCHILT")
     merk = " [vervuilde naam]" if vervuild else ""
@@ -168,6 +239,15 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     if not ok_spelers:
         print(f"    MILP:        {sorted(namen_milp)}")
         print(f"    brute-force: {sorted(namen_bf)}")
+        # Het verschil zelf, met de E's waarop de gelijkstand-controle
+        # besloten heeft. Zonder deze regels zie je alleen DAT hij afkeurde en
+        # moet je de E's er met de hand bij zoeken; met deze regels staat het
+        # antwoord in het log van de mislukte workflow.
+        print(f"    alleen MILP:        {sorted(alleen_milp)}  E={es_milp}")
+        print(f"    alleen brute-force: {sorted(alleen_bf)}  E={es_bf}")
+        if any(v != v for v in es_milp + es_bf):
+            print("    (NaN = speler zit niet in pool_0 en ook niet in de selectie "
+                  "-- dat hoort niet te kunnen)")
     return ok_score and (ok_spelers or gelijkstand)
 
 
@@ -189,6 +269,8 @@ def main():
         if not test_horizon_1_matcht_brute_force(ronde, 1, vervuild=True):
             alles_ok = False
 
+    if not test_e_waarde():
+        alles_ok = False
     if not test_inhaalronde_telt_mee():
         alles_ok = False
 
