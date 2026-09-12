@@ -365,8 +365,8 @@ def main():
     pad_xg = m.stats_pad(a.xg)
     fbref = m.lees_spelerstats(pad_xg)
     if fbref is None:
-        print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder assists/kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
+        print(f"LET OP: {pad_xg} niet gevonden - het model "
+              f"draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
     else:
         print(f"spelerstats geladen: {len(fbref)} spelers uit {pad_xg}")
 
@@ -386,6 +386,7 @@ def main():
 
     e_multi = bereken_multi_E(reeksen, a.decay)
     kandidaten = list(metadata.values())
+    m.controleer_markt(prijsrijen, kandidaten)
 
     # De huidige selectie moet ALTIJD als kandidaat meedoen, ook als een speler
     # (nog) niet in de horizon-pool zit (te weinig speeltijd, geblesseerd --

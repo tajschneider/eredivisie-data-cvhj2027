@@ -197,6 +197,33 @@ def vind_bijna_match(naam, club, pool):
     return kandidaten[0] if len(kandidaten) == 1 else None
 
 
+MIN_MARKT = 400   # zelfde ondergrens als scrape_prijzen.py hanteert bij het schrijven
+
+
+def controleer_markt(prijsrijen, pool):
+    """Waarschuwt als de markt of de pool onwaarschijnlijk klein is.
+
+    `scrape_prijzen.py` weigert een prijzen.csv met minder dan MIN_MARKT
+    spelers te SCHRIJVEN. Maar het model controleerde niet wat het LEEST: een
+    half bestand dat langs een andere weg in de repo belandt (een afgebroken
+    run, een handmatige bewerking, een merge-ongeluk) liet het model gewoon
+    doorrekenen op een onvolledige markt -- en dat merk je pas aan de uitslag,
+    weken later. Vastgesteld bij de validatie van 12 september 2026: met 50 van
+    de 512 spelers kwam er zonder enige melding een advies uit.
+
+    Geen harde stop: het model mag niet weigeren te werken omdat een bron
+    tegenvalt. Maar het hoort het wel te zeggen.
+    """
+    if len(prijsrijen) < MIN_MARKT:
+        print(f"LET OP: prijzen.csv bevat maar {len(prijsrijen)} spelers (verwacht "
+              f">= {MIN_MARKT}). De markt is onvolledig, dus het advies kan spelers "
+              f"missen die je wel had kunnen kopen. Draai scrape_prijzen.py opnieuw.")
+    if not pool:
+        print("LET OP: geen enkele speler haalt de speeltijddrempel. Er valt zo niets "
+              "te optimaliseren -- controleer of spelers.csv en de opgegeven ronde "
+              "bij elkaar passen.")
+
+
 def koppel_speler(naam, club, pool):
     """DE manier waarop een speler uit selectie.csv aan de pool gekoppeld wordt.
 
@@ -741,13 +768,14 @@ def main():
     pad_xg = stats_pad(a.xg)
     fbref = lees_spelerstats(pad_xg)
     if fbref is None:
-        print(f"LET OP: {pad_xg} niet gevonden - doelpunten/assists/kaarten "
-              f"draaien zonder assists/kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
+        print(f"LET OP: {pad_xg} niet gevonden - het model "
+              f"draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
 
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
                      venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
     print(f"{len(pool)} spelers met voldoende speeltijd in de pool")
+    controleer_markt(prijsrijen, pool)
     if fbref is not None:
         pool_sleutels = {f"{norm(x['speler'])}|{norm(x['club'])}" for x in pool}
         n_match = len(pool_sleutels & fbref.keys())

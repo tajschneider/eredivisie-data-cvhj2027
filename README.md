@@ -63,6 +63,12 @@ kalibratie.yml (nieuw, di 08:00 UTC, onafhankelijk van bovenstaande)
 
 bronnen.yml (ALLEEN handmatig, wijzigt niets)
   probeer_bronnen.py -> meet welke externe bronnen een runner binnenlaat
+
+tests.yml (bij ELKE push naar main)
+  test_workflows.py, test_scrape_prijzen.py, test_statistieken.py,
+  test_synchroniseer.py, test_multi_periode.py
+                     -> binnen een minuut weten of een upload compleet is,
+                        in plaats van het maandagochtend te merken
 ```
 
 Assists en kaarten komen uit `scrape_statistieken.py`, dat meedraait in
