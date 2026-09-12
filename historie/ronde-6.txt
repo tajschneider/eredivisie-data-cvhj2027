@@ -1,52 +1,36 @@
-LET OP: 54 wedstrijden in het programma, verwacht 9.
 --transfers auto -> 1
+--horizon auto -> 3
 Periode 2; volgende periodestart over 3 ronden.
-Clubratings uit 41 wedstrijden met marktnotering (thuisvoordeel x1.23)
-LET OP: xg.csv niet gevonden - doelpunten/assists/kaarten draaien zonder xG-data (zoals vóór stap 5). Draai scrape_sofascore.py.
-261 spelers met voldoende speeltijd in de pool
-Zonder recente speeltijd (E=0): Deveron Fonville, David Min
+Clubratings uit 45 wedstrijden (thuisvoordeel x1.23)
+LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
+Horizon: ronde [6, 7, 8] (decay 0.84)
 
-GEBLESSEERD IN JE SELECTIE:
-    Deveron Fonville (duur onbekend)
-
-OPSTELLING  4-3-3   verwacht 46.0 punten   kosten EUR 30.35
-  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.39
-  Verdediging  Ryan Flamingo             PSV              EUR 3.00  E  4.52
-  Verdediging  Aske Adelgaard            FC Twente        EUR 1.50  E  2.56
-  Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  1.68
-  Verdediging  Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.32
-  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  6.95
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.46
+OPSTELLING  4-3-3   verwacht 35.4 punten   kosten EUR 30.35
+  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.41
+  Verdediging  Lutsharel Geertruida      PSV              EUR 3.00  E  3.97
+  Verdediging  Aske Adelgaard            FC Twente        EUR 1.50  E  2.89
+  Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  1.66
+  Verdediging  Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.33
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.50
+  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  3.32
   Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  2.76
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  6.77
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.76
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  2.80
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.79
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  2.75
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  0.00
   ---- bank (50%) ----
-  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.98
+  K            Stijn van Gassel          Excelsior        EUR 1.80  E  3.03
   M            Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  1.04
   V            Deveron Fonville          NEC              EUR 2.00  E  0.00
   A            David Min                 FC Utrecht       EUR 1.75  E  0.00
 
-BESTE 1 TRANSFER(S)
+GEBLESSEERD IN JE SELECTIE:
+    Deveron Fonville (duur onbekend)
+Zonder recente speeltijd (E=0): Deveron Fonville, David Min
 
-  verwacht 50.9  (3-4-3)   winst +4.9
+MULTI-RONDE ADVIES (horizon 3, decay 0.84, 1 transfer(s))
+  ronde 6: verwacht 39.4 punten  (3-4-3)  winst +4.0
+  gedecayde som over de horizon: 104.51  (huidig team: 102.30)
     UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
-    IN   Tjaronn Chery             NEC              EUR 2.80  E  5.54
-
-  verwacht 49.0  (4-3-3)   winst +3.0
-    UIT  Aske Adelgaard            FC Twente        EUR 1.50  E  2.56
-    IN   Ruud Nijstad              FC Twente        EUR 2.00  E  5.59
-
-  verwacht 48.8  (4-3-3)   winst +2.8
-    UIT  Ryan Flamingo             PSV              EUR 3.00  E  4.52
-    IN   Sergiño Dest              PSV              EUR 3.20  E  7.31
-
-  verwacht 48.7  (4-3-3)   winst +2.7
-    UIT  David Min                 FC Utrecht       EUR 1.75  E  0.00
-    IN   Artem Stepanov            FC Utrecht       EUR 2.20  E  4.07
-
-  verwacht 47.7  (4-3-3)   winst +1.7
-    UIT  Oscar Gloukh              Ajax             EUR 2.80  E  6.95
-    IN   Steven Berghuis           Ajax             EUR 2.50  E  8.67
+    IN   Darko Nejasmic            NEC              EUR 1.80  E  4.71  E(horizon) 10.12
 
 besluit -> besluit.json

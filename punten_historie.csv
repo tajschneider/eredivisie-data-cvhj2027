@@ -1,0 +1,426 @@
+ronde,speler_id,speler,club,behaald
+6,illaijh-de-ruijter,Illaijh de Ruijter,ADO Den Haag,1.0
+6,jonas-jensen-abbew,Jonas Jensen-Abbew,ADO Den Haag,0.0
+6,lasse-wilhelm,Lasse Wilhelm,ADO Den Haag,0.0
+6,matteo-waem,Matteo Waem,ADO Den Haag,1.0
+6,milan-hokke,Milan Hokke,ADO Den Haag,5.0
+6,othniel-raterink,Othniël Raterink,ADO Den Haag,1.0
+6,pascal-mulder,Pascal Mulder,ADO Den Haag,-2.0
+6,sekou-sylla,Sekou Sylla,ADO Den Haag,11.0
+6,dani-van-loenen,Dani van Loenen,ADO Den Haag,0.0
+6,daryl-van-mieghem,Daryl van Mieghem,ADO Den Haag,1.0
+6,evan-rottier,Evan Rottier,ADO Den Haag,5.0
+6,jalen-hawkins,Jalen Hawkins,ADO Den Haag,1.0
+6,jesse-bal,Jesse Bal,ADO Den Haag,7.0
+6,luka-reischl,Luka Reischl,ADO Den Haag,0.0
+6,yannick-eduardo,Yannick Eduardo,ADO Den Haag,13.0
+6,caleb-kramer,Caleb Kramer,ADO Den Haag,0.0
+6,kilian-nikiema,Kilian Nikièma,ADO Den Haag,1.0
+6,niclas-thiede,Niclas Thiede,ADO Den Haag,0.0
+6,sem-eekhout,Sem Eekhout,ADO Den Haag,0.0
+6,finn-de-bruin,Finn de Bruin,ADO Den Haag,3.0
+6,jan-zamburek,Jan Zamburek,ADO Den Haag,1.0
+6,juho-kilo,Juho Kilo,ADO Den Haag,-2.0
+6,matej-sin,Matej Sin,ADO Den Haag,0.0
+6,mylian-jimenez,Mylian Jiménez,ADO Den Haag,-2.0
+6,andrea-natali,Andrea Natali,AZ,0.0
+6,elijah-dijkstra,Elijah Dijkstra,AZ,22.0
+6,mateo-chavez,Mateo Chávez,AZ,41.0
+6,mees-de-wit,Mees de Wit,AZ,12.0
+6,rion-ichihara,Rion Ichihara,AZ,3.0
+6,seiya-maikuma,Seiya Maikuma,AZ,15.0
+6,wesley-hoedt,Wesley Hoedt,AZ,0.0
+6,wouter-goes,Wouter Goes,AZ,26.0
+6,ayoub-oufkir,Ayoub Oufkir,AZ,22.0
+6,bendeguz-kovacs,Bendegúz Kovács,AZ,1.0
+6,jizz-hornkamp,Jizz Hornkamp,AZ,16.0
+6,mexx-meerdink,Mexx Meerdink,AZ,32.0
+6,ro-zangelo-daal,Ro-Zangelo Daal,AZ,37.0
+6,weslley-patati,Weslley Patati,AZ,19.0
+6,hobie-verhulst,Hobie Verhulst,AZ,0.0
+6,jari-de-busser,Jari De Busser,AZ,26.0
+6,rome-jayden-owusu-oduro,Rome-Jayden Owusu-Oduro,AZ,0.0
+6,calvin-stengs,Calvin Stengs,AZ,30.0
+6,dave-kwakman,Dave Kwakman,AZ,27.0
+6,hessel-de-wit,Hessel de Wit,AZ,3.0
+6,jordy-clasie,Jordy Clasie,AZ,18.0
+6,kees-smit,Kees Smit,AZ,18.0
+6,lewis-schouten,Lewis Schouten,AZ,32.0
+6,peer-koopmeiners,Peer Koopmeiners,AZ,24.0
+6,valdemar-byskov,Valdemar Byskov,AZ,7.0
+6,aaron-bouwman,Aaron Bouwman,Ajax,10.0
+6,anton-gaaei,Anton Gaaei,Ajax,3.0
+6,caio-henrique,Caio Henrique,Ajax,17.0
+6,daley-blind,Daley Blind,Ajax,0.0
+6,dies-janse,Dies Janse,Ajax,6.0
+6,jofre-torrents,Jofre Torrents,Ajax,6.0
+6,lucas-rosa,Lucas Rosa,Ajax,4.0
+6,owen-wijndal,Owen Wijndal,Ajax,0.0
+6,youri-baas,Youri Baas,Ajax,10.0
+6,kasper-dolberg,Kasper Dolberg,Ajax,4.0
+6,marcos-leonardo,Marcos Leonardo,Ajax,13.0
+6,oliver-edvardsen,Oliver Edvardsen,Ajax,4.0
+6,tolu-arokodare,Tolu Arokodare,Ajax,21.0
+6,joeri-heerkens,Joeri Heerkens,Ajax,0.0
+6,maarten-paes,Maarten Paes,Ajax,0.0
+6,marc-ter-stegen,Marc-André ter Stegen,Ajax,17.0
+6,abdellah-ouazane,Abdellah Ouazane,Ajax,12.0
+6,davy-klaassen,Davy Klaassen,Ajax,9.0
+6,jorthy-mokio,Jorthy Mokio,Ajax,15.0
+6,julian-brandt,Julian Brandt,Ajax,15.0
+6,oscar-gloukh,Oscar Gloukh,Ajax,10.0
+6,sofyan-amrabat,Sofyan Amrabat,Ajax,0.0
+6,steven-berghuis,Steven Berghuis,Ajax,21.0
+6,casper-widell,Casper Widell,Excelsior,26.0
+6,eric-da-silva-moreira,Eric da Silva Moreira,Excelsior,10.0
+6,giulliano-cairo,Guilliano Cairo,Excelsior,6.0
+6,jan-plug,Jan Plug,Excelsior,13.0
+6,kasey-bos,Kasey Bos,Excelsior,4.0
+6,osman-turay,Osman Turay,Excelsior,6.0
+6,rick-meissen,Rick Meissen,Excelsior,23.0
+6,simon-janssen,Simon Janssen,Excelsior,25.0
+6,alireza-jahanbakhsh,Alireza Jahanbakhsh,Excelsior,4.0
+6,aymen-sliti,Aymen Sliti,Excelsior,18.0
+6,david-garden,David Garden,Excelsior,28.0
+6,mario-dominguez,Mario Domínguez,Excelsior,0.0
+6,nesto-groen,Nesto Groen,Excelsior,13.0
+6,celton-biai,Celton Biai,Excelsior,0.0
+6,stijn-van-gassel,Stijn van Gassel,Excelsior,25.0
+6,tijmen-holla,Tijmen Holla,Excelsior,0.0
+6,daniel-van-vianen,Daniel van Vianen,Excelsior,9.0
+6,ilano-silva-timas,Ilano Silva Timas,Excelsior,13.0
+6,irakli-yegoian,Irakli Yegoian,Excelsior,38.0
+6,lennard-hartjes,Lennard Hartjes,Excelsior,7.0
+6,noah-naujoks,Noah Naujoks,Excelsior,19.0
+6,valentin-sulzbacher,Valentin Sulzbacher,Excelsior,6.0
+6,y-finey,Yacqub Finey,Excelsior,0.0
+6,elvis-van-der-laan,Elvis van der Laan,FC Groningen,7.0
+6,jesper-mosselaar,Jesper Mosselaar,FC Groningen,0.0
+6,marco-rente,Marco Rente,FC Groningen,3.0
+6,mark-csinger,Márk Csinger,FC Groningen,-2.0
+6,nikolas-brandis,Nikolas Brandis,FC Groningen,4.0
+6,thijmen-blokzijl,Thijmen Blokzijl,FC Groningen,11.0
+6,tyrique-mercera,Tyrique Mercera,FC Groningen,3.0
+6,wouter-prins,Wouter Prins,FC Groningen,7.0
+6,brynjolfur-willumsson,Brynjólfur Willumsson,FC Groningen,25.0
+6,jacob-ondrejka,Jacob Ondrejka,FC Groningen,1.0
+6,nils-eggens,Nils Eggens,FC Groningen,9.0
+6,oskar-zawada,Oskar Zawada,FC Groningen,1.0
+6,ryan-metu,Ryan Metu,FC Groningen,3.0
+6,thom-van-bergen,Thom van Bergen,FC Groningen,29.0
+6,etienne-vaessen,Etienne Vaessen,FC Groningen,9.0
+6,lovro-stubljar,Lovro Stubljar,FC Groningen,0.0
+6,rijk-janse,Rijk Janse,FC Groningen,0.0
+6,alvin-nordin,Alvin Nordin,FC Groningen,0.0
+6,david-van-der-werff,David van der Werff,FC Groningen,23.0
+6,jismerai-dillema,Jismerai Dillema,FC Groningen,0.0
+6,jorg-schreuders,Jorg Schreuders,FC Groningen,15.0
+6,pelle-clement,Pelle Clement,FC Groningen,7.0
+6,tika-de-jonge,Tika de Jonge,FC Groningen,7.0
+6,travis-hernes,Travis Hernes,FC Groningen,4.0
+6,tygo-land,Tygo Land,FC Groningen,18.0
+6,aske-adelgaard,Aske Adelgaard,FC Twente,12.0
+6,bart-van-rooij,Bart van Rooij,FC Twente,17.0
+6,krzysztof-kurowski,Krzysztof Kurowski,FC Twente,3.0
+6,max-bruns,Max Bruns,FC Twente,10.0
+6,robin-propper,Robin Pröpper,FC Twente,13.0
+6,ruud-nijstad,Ruud Nijstad,FC Twente,23.0
+6,daan-rots,Daan Rots,FC Twente,10.0
+6,filip-thorvaldsen,Filip Thorvaldsen,FC Twente,10.0
+6,lucas-vennegoor-of-hesselink,Lucas Vennegoor of Hesselink,FC Twente,1.0
+6,marko-pjaca,Marko Pjaca,FC Twente,22.0
+6,naci-unuvar,Naci Ünüvar,FC Twente,0.0
+6,sondre-rjaster,Sondre Ørjasæter,FC Twente,17.0
+6,wout-weghorst,Wout Weghorst,FC Twente,22.0
+6,joel-drommel,Joël Drommel,FC Twente,8.0
+6,lars-unnerstall,Lars Unnerstall,FC Twente,12.0
+6,remko-pasveer,Remko Pasveer,FC Twente,0.0
+6,daouda-weidmann,Daouda Weidmann,FC Twente,18.0
+6,jordy-bawuah,Jordy Bawuah,FC Twente,0.0
+6,kristian-hlynsson,Kristian Hlynsson,FC Twente,3.0
+6,ramiz-zerrouki,Ramiz Zerrouki,FC Twente,10.0
+6,thomas-van-den-belt,Thomas van den Belt,FC Twente,10.0
+6,younes-taha,Younes Taha,FC Twente,18.0
+6,arthur-zagre,Arthur Zagré,FC Utrecht,-4.0
+6,ferdinand-pohl,Ferdinand Pohl,FC Utrecht,-3.0
+6,guus-offerhaus,Guus Offerhaus,FC Utrecht,-4.0
+6,jakov-medic,Jakov Medic,FC Utrecht,1.0
+6,kevin-paredes,Kevin Paredes,FC Utrecht,1.0
+6,matisse-didden,Matisse Didden,FC Utrecht,22.0
+6,neville-ogidi-nwankwo,Neville Ogidi Nwankwo,FC Utrecht,1.0
+6,niklas-vesterlund,Niklas Vesterlund,FC Utrecht,9.0
+6,per-kloosterboer,Per Kloosterboer,FC Utrecht,1.0
+6,siebe-horemans,Siebe Horemans,FC Utrecht,-1.0
+6,adrian-blake,Adrian Blake,FC Utrecht,14.0
+6,artem-stepanov,Artem Stepanov,FC Utrecht,18.0
+6,emmanuel-chigozie-owen,Emmanuel Chigozie Owen,FC Utrecht,0.0
+6,nordin-amrabat,Nordin Amrabat,FC Utrecht,0.0
+6,sem-van-duijn,Sem van Duijn,FC Utrecht,1.0
+6,yoann-cathline,Yoann Cathline,FC Utrecht,6.0
+6,angel-alarcon,Ángel Alarcón,FC Utrecht,2.0
+6,kevin-gadellaa,Kevin Gadellaa,FC Utrecht,0.0
+6,mees-eppink,Mees Eppink,FC Utrecht,0.0
+6,vasilios-barkas,Vasilis Barkas,FC Utrecht,-1.0
+6,dani-de-wit,Dani de Wit,FC Utrecht,4.0
+6,davy-van-den-berg,Davy van den Berg,FC Utrecht,5.0
+6,joris-van-overeem,Joris van Overeem,FC Utrecht,-3.0
+6,marius-broholm,Marius Broholm,FC Utrecht,1.0
+6,givairo-read,Givairo Read,Feyenoord,14.0
+6,javi-lopez,Javi López,Feyenoord,4.0
+6,jeremiah-st-juste,Jeremiah St. Juste,Feyenoord,13.0
+6,mats-deijl,Mats Deijl,Feyenoord,3.0
+6,mika-marmol,Mika Mármol,Feyenoord,14.0
+6,tijme-wessels,Tijme Wessels,Feyenoord,6.0
+6,tsuyoshi-watanabe,Tsuyoshi Watanabe,Feyenoord,8.0
+6,anis-hadj-moussa,Anis Hadj Moussa,Feyenoord,13.0
+6,gaoussou-diarra,Gaoussou Diarra,Feyenoord,13.0
+6,goncalo-borges,Gonçalo Borges,Feyenoord,1.0
+6,jivayno-zinhagel,Jivayno Zinhagel,Feyenoord,3.0
+6,nacho-ferri,Nacho Ferri,Feyenoord,12.0
+6,shaqueel-van-persie,Shaqueel van Persie,Feyenoord,11.0
+6,florian-kastenmeier,Florian Kastenmeier,Feyenoord,0.0
+6,liam-bossin,Liam Bossin,Feyenoord,0.0
+6,mannou-berger,Mannou Berger,Feyenoord,0.0
+6,tjark-ernst,Tjark Ernst,Feyenoord,16.0
+6,charles-vanhoutte,Charles Vanhoutte,Feyenoord,8.0
+6,gjivai-zechiel,Gjivai Zechiël,Feyenoord,49.0
+6,luciano-valente,Luciano Valente,Feyenoord,35.0
+6,oussama-targhalline,Oussama Targhalline,Feyenoord,10.0
+6,sem-steijn,Sem Steijn,Feyenoord,5.0
+6,thijs-kraaijeveld,Thijs Kraaijeveld,Feyenoord,11.0
+6,tobias-van-den-elshout,Tobias van den Elshout,Feyenoord,3.0
+6,ivo-pinto,Ivo Pinto,Fortuna Sittard,14.0
+6,jasper-dahlhaus,Jasper Dahlhaus,Fortuna Sittard,11.0
+6,justin-hubner,Justin Hubner,Fortuna Sittard,4.0
+6,rodrigo-guth,Rodrigo Guth,Fortuna Sittard,3.0
+6,siebe-wylin,Siebe Wylin,Fortuna Sittard,4.0
+6,syb-van-ottele,Syb van Ottele,Fortuna Sittard,10.0
+6,anthony-descotte,Anthony Descotte,Fortuna Sittard,16.0
+6,lequincio-zeefuik,Lequincio Zeefuik,Fortuna Sittard,27.0
+6,ole-romeny,Ole Romeny,Fortuna Sittard,2.0
+6,kaylen,Kaylen Reitmaier,Fortuna Sittard,0.0
+6,luuk-koopmans,Luuk Koopmans,Fortuna Sittard,0.0
+6,mattijs-branderhorst,Mattijs Branderhorst,Fortuna Sittard,10.0
+6,edouard-michut,Edouard Michut,Fortuna Sittard,21.0
+6,gani-buyukhan,Gani Buyukhan,Fortuna Sittard,1.0
+6,mohamed-ihattaren,Mohamed Ihattaren,Fortuna Sittard,40.0
+6,moussa-gbemou,Moussa Gbemou,Fortuna Sittard,1.0
+6,nick-de-groot,Nick de Groot,Fortuna Sittard,10.0
+6,philip-brittijn,Philip Brittijn,Fortuna Sittard,15.0
+6,shiloh-t-zand,Shiloh 't Zand,Fortuna Sittard,14.0
+6,yassin-oukili,Yassin Oukili,Fortuna Sittard,10.0
+6,alfons-sampsted,Alfons Sampsted,Go Ahead Eagles,12.0
+6,dean-james,Dean James,Go Ahead Eagles,9.0
+6,eus-waayers,Eus Waayers,Go Ahead Eagles,0.0
+6,giovanni-van-zwam,Giovanni van Zwam,Go Ahead Eagles,7.0
+6,joris-kramer,Joris Kramer,Go Ahead Eagles,5.0
+6,julius-dirksen,Julius Dirksen,Go Ahead Eagles,11.0
+6,tino-jukic,Tino Jukic,Go Ahead Eagles,0.0
+6,dani-tijman,Dani Tijman,Go Ahead Eagles,0.0
+6,erik-flataker,Erik Flataker,Go Ahead Eagles,13.0
+6,mathis-suray,Mathis Suray,Go Ahead Eagles,30.0
+6,ofosu-boakye,Ofosu Boakye,Go Ahead Eagles,0.0
+6,oskar-sivertsen,Oskar Sivertsen,Go Ahead Eagles,4.0
+6,richonell-margaret,Richonell Margaret,Go Ahead Eagles,4.0
+6,stefan-ingi-sigurdarson,Stefán Ingi Sigurdarson,Go Ahead Eagles,20.0
+6,sren-tengstedt,Søren Tengstedt,Go Ahead Eagles,46.0
+6,thibo-baeten,Thibo Baeten,Go Ahead Eagles,8.0
+6,victor-edvardsen,Victor Edvardsen,Go Ahead Eagles,38.0
+6,kjetil-haug,Kjetil Haug,Go Ahead Eagles,8.0
+6,nando-verdoni,Nando Verdoni,Go Ahead Eagles,0.0
+6,sasha-panah,Nick Marsman,Go Ahead Eagles,0.0
+6,evert-linthorst,Evert Linthorst,Go Ahead Eagles,11.0
+6,melle-meulensteen,Melle Meulensteen,Go Ahead Eagles,18.0
+6,robbin-weijenberg,Robbin Weijenberg,Go Ahead Eagles,0.0
+6,yassir-salah-rahmouni,Yassir Salah Rahmouni,Go Ahead Eagles,4.0
+6,almugera-kabar,Almugera Kabar,NEC,3.0
+6,bram-nuytinck,Bram Nuytinck,NEC,7.0
+6,deveron-fonville,Deveron Fonville,NEC,6.0
+6,gabriel-bras,Gabriel Brás,NEC,1.0
+6,p-schuurs,Perr Schuurs,NEC,18.0
+6,philippe-sandler,Philippe Sandler,NEC,1.0
+6,t-storm,Tobias Storm,NEC,4.0
+6,ayodele-thomas,Ayodele Thomas,NEC,1.0
+6,bryan-linssen,Bryan Linssen,NEC,12.0
+6,clement-bischoff,Clement Bischoff,NEC,10.0
+6,dusan-tadic,Dusan Tadic,NEC,7.0
+6,emre-mor,Emre Mor,NEC,6.0
+6,kaj-sierhuis,Kaj Sierhuis,NEC,15.0
+6,kevin-kers,Kevin Kers,NEC,1.0
+6,freek-entius,Freek Entius,NEC,0.0
+6,gonzalo-crettaz,Gonzalo Crettaz,NEC,6.0
+6,joep-geneste,Joep Geneste,NEC,0.0
+6,nikolas-polster,Nikolas Polster,NEC,1.0
+6,adam-tahaui,Adam Tahaui,NEC,23.0
+6,darko-nejasmic,Darko Nejasmic,NEC,11.0
+6,dennis-geiger,Dennis Geiger,NEC,1.0
+6,isak-hansen-aaren,Isak Hansen-Aarøen,NEC,-2.0
+6,jamiro-monteiro,Jamiro Monteiro,NEC,4.0
+6,merijn-van-de-wiel,Merijn van de Wiel,NEC,0.0
+6,noe-lebreton,Noé Lebreton,NEC,12.0
+6,tjaronn-chery,Tjaronn Chery,NEC,28.0
+6,willum-thor-willumsson,Willum Thór Willumsson,NEC,7.0
+6,damian-van-der-haar,Damian van der Haar,PEC Zwolle,7.0
+6,jan-burger,Jan Bürger,PEC Zwolle,0.0
+6,nick-viergever,Nick Viergever,PEC Zwolle,17.0
+6,olivier-aertssen,Olivier Aertssen,PEC Zwolle,4.0
+6,sherel-floranus,Sherel Floranus,PEC Zwolle,-10.0
+6,simon-graves,Simon Graves,PEC Zwolle,7.0
+6,tijs-velthuis,Tijs Velthuis,PEC Zwolle,6.0
+6,dylan-mbayo,Dylan Mbayo,PEC Zwolle,10.0
+6,elias-srensen,Elias Sørensen,PEC Zwolle,10.0
+6,ibrahim-cissoko,Ibrahim Cissoko,PEC Zwolle,10.0
+6,koen-kostons,Koen Kostons,PEC Zwolle,12.0
+6,sydney-van-hooijdonk,Sydney van Hooijdonk,PEC Zwolle,1.0
+6,duke-verduin,Duke Verduin,PEC Zwolle,0.0
+6,jasper-schendelaar,Jasper Schendelaar,PEC Zwolle,9.0
+6,tom-de-graaff,Tom de Graaff,PEC Zwolle,0.0
+6,gabriel-reiziger,Gabriël Reiziger,PEC Zwolle,0.0
+6,gilles-van-der-wal,Gilles van der Wal,PEC Zwolle,0.0
+6,jadiel-pereira-da-gama,Jadiel Pereira da Gama,PEC Zwolle,0.0
+6,nick-fichtinger,Nick Fichtinger,PEC Zwolle,0.0
+6,odysseus-velanas,Odysseus Velanas,PEC Zwolle,4.0
+6,ryan-thomas,Ryan Thomas,PEC Zwolle,1.0
+6,thijs-oosting,Thijs Oosting,PEC Zwolle,7.0
+6,t-sommer,Tobias Sommer,PEC Zwolle,4.0
+6,armando-obispo,Armando Obispo,PSV,10.0
+6,fabian-merien,Fabian Merién,PSV,0.0
+6,filip-kostic,Filip Kostic,PSV,3.0
+6,kiliann-sildillia,Kiliann Sildillia,PSV,4.0
+6,lutsharel-geertruida,Lutsharel Geertruida,PSV,13.0
+6,mauro-junior,Mauro Júnior,PSV,27.0
+6,ryan-flamingo,Ryan Flamingo,PSV,23.0
+6,sergino-dest,Sergiño Dest,PSV,40.0
+6,yarek-gasiorowski,Yarek Gasiorowski,PSV,6.0
+6,alassane-plea,Alassane Pléa,PSV,3.0
+6,amir-bouhamdi,Amir Bouhamdi,PSV,14.0
+6,dennis-man,Dennis Man,PSV,4.0
+6,esmir-bajraktarevic,Esmir Bajraktarevic,PSV,12.0
+6,ivan-perisic,Ivan Perisic,PSV,24.0
+6,ricardo-pepi,Ricardo Pepi,PSV,29.0
+6,ruben-van-bommel,Ruben van Bommel,PSV,23.0
+6,sami-ouaissa,Sami Ouaissa,PSV,0.0
+6,khadim-ngom,Khadim Ngom,PSV,0.0
+6,matej-kovar,Matej Kovar,PSV,13.0
+6,nick-olij,Nick Olij,PSV,0.0
+6,tijn-smolenaars,Tijn Smolenaars,PSV,0.0
+6,guus-til,Guus Til,PSV,29.0
+6,joel-van-den-berg,Joël van den Berg,PSV,5.0
+6,kodai-sano,Kodai Sano,PSV,9.0
+6,noah-fernandez,Noah Fernandez,PSV,15.0
+6,paul-wanner,Paul Wanner,PSV,16.0
+6,sven-mijnans,Sven Mijnans,PSV,19.0
+6,billy-van-duijl,Billy van Duijl,SC Cambuur,1.0
+6,devid-eugene-bouah,Devid Bouah,SC Cambuur,1.0
+6,ismael-baouf,Ismaël Baouf,SC Cambuur,-2.0
+6,jamal-amofa,Jamal Amofa,SC Cambuur,1.0
+6,jorn-berkhout,Jorn Berkhout,SC Cambuur,0.0
+6,lucas-jetten,Lucas Jetten,SC Cambuur,-2.0
+6,morgan-costarelli,Morgan Costarelli,SC Cambuur,1.0
+6,f-kvam,Fabian Kvam,SC Cambuur,1.0
+6,ilyes-hamache,Ilyes Hamache,SC Cambuur,9.0
+6,nicolas-binder,Nicolas Binder,SC Cambuur,11.0
+6,sami-bouhoudane,Sami Bouhoudane,SC Cambuur,-2.0
+6,s-vink,Skye Vink,SC Cambuur,0.0
+6,wiebe-kooistra,Wiebe Kooistra,SC Cambuur,0.0
+6,jasper-meijster,Jasper Meijster,SC Cambuur,0.0
+6,luca-plogmann,Luca Plogmann,SC Cambuur,0.0
+6,matthijs-kalisvaart,Matthijs Kalisvaart,SC Cambuur,0.0
+6,thijs-jansen,Thijs Jansen,SC Cambuur,1.0
+6,ethan-apkakou,Ethan Apkakou,SC Cambuur,0.0
+6,iwan-henstra,Iwan Henstra,SC Cambuur,0.0
+6,mathieu-maertens,Mathieu Maertens,SC Cambuur,1.0
+6,nicky-souren,Nicky Souren,SC Cambuur,-2.0
+6,rafik-el-arguioui,Rafik El Arguioui,SC Cambuur,30.0
+6,rik-mulders,Rik Mulders,SC Cambuur,-2.0
+6,wiebe-van-der-heide,Wiebe van der Heide,SC Cambuur,0.0
+6,bas-kuipers,Bas Kuipers,Sparta Rotterdam,10.0
+6,boyd-reith,Boyd Reith,Sparta Rotterdam,0.0
+6,bruno-martins-indi,Bruno Martins Indi,Sparta Rotterdam,2.0
+6,lushendry-edward-martes,Lushendry Martes,Sparta Rotterdam,2.0
+6,marvin-young,Marvin Young,Sparta Rotterdam,25.0
+6,nick-verschuren,Nick Verschuren,Sparta Rotterdam,15.0
+6,teo-quintero,Teo Quintero,Sparta Rotterdam,4.0
+6,andrej-kostic,Andrej Kostic,Sparta Rotterdam,1.0
+6,casper-terho,Casper Terho,Sparta Rotterdam,2.0
+6,giannino-vianello,Giannino Vianello,Sparta Rotterdam,0.0
+6,joel-ideho,Joel Ideho,Sparta Rotterdam,3.0
+6,milan-zonneveld,Milan Zonneveld,Sparta Rotterdam,25.0
+6,mitchell-van-bergen,Mitchell van Bergen,Sparta Rotterdam,4.0
+6,filip-bednarek,Filip Bednarek,Sparta Rotterdam,4.0
+6,michael-brouwer,Michael Brouwer,Sparta Rotterdam,1.0
+6,pascal-kuiper,Pascal Kuiper,Sparta Rotterdam,0.0
+6,rik-suur,Rik Suur,Sparta Rotterdam,0.0
+6,ayoni-santos,Ayoni Santos,Sparta Rotterdam,4.0
+6,cedric-hatenboer,Cedric Hatenboer,Sparta Rotterdam,1.0
+6,jens-toornstra,Jens Toornstra,Sparta Rotterdam,1.0
+6,julian-baas,Julian Baas,Sparta Rotterdam,8.0
+6,robin-van-cruijsen,Robin van Cruijsen,Sparta Rotterdam,12.0
+6,shunsuke-mito,Shunsuke Mito,Sparta Rotterdam,11.0
+6,abdelnour-soualhia,Abdelnour Soualhia,Telstar,12.0
+6,gerald-alders,Gerald Alders,Telstar,4.0
+6,jeff-hardeveld,Jeff Hardeveld,Telstar,4.0
+6,marvin-peersman,Marvin Peersman,Telstar,1.0
+6,nigel-ogidi-nwankwo,Nigel Ogidi Nwankwo,Telstar,0.0
+6,prince-aning,Prince Aning,Telstar,8.0
+6,sem-valk,Sem Valk,Telstar,-2.0
+6,emirhan-demircan,Emirhan Demircan,Telstar,3.0
+6,fabiano-rust,Fabiano Rust,Telstar,0.0
+6,fofin-turay,Fofin Turay,Telstar,0.0
+6,jelani-seedorf,Jelani Seedorf,Telstar,4.0
+6,patrick-brouwer,Patrick Brouwer,Telstar,12.0
+6,rui-mendes,Rui Mendes,Telstar,7.0
+6,daan-reiziger,Daan Reiziger,Telstar,0.0
+6,finn-mulder,Finn Mulder,Telstar,0.0
+6,ronald-koeman-jr,Ronald Koeman,Telstar,9.0
+6,gabi-caschili,Gabi Caschili,Telstar,3.0
+6,harrie-kuster,Harrie Kuster,Telstar,1.0
+6,isaiah-ahmed,Isaiah Ahmed,Telstar,0.0
+6,nils-rossen,Nils Rossen,Telstar,4.0
+6,noach-shenkman,Noach Shenkman,Telstar,4.0
+6,rojendro-oudsten,Rojendro Oudsten,Telstar,1.0
+6,tyrone-owusu,Tyrone Owusu,Telstar,4.0
+6,alessandro-ciranni,Alessandro Ciranni,Willem II,2.0
+6,amine-et-taibi,Amine Et-Taïbi,Willem II,1.0
+6,finn-stam,Finn Stam,Willem II,2.0
+6,hidde-ter-avest,Hidde ter Avest,Willem II,6.0
+6,jens-mathijsen,Jens Mathijsen,Willem II,0.0
+6,justin-hoogma,Justin Hoogma,Willem II,1.0
+6,mats-lemmens,Mats Lemmens,Willem II,1.0
+6,nathan-tjoe-a-on,Nathan Tjoe-A-On,Willem II,7.0
+6,devin-haen,Devin Haen,Willem II,20.0
+6,eser-gurbuz,Eser Gürbüz,Willem II,1.0
+6,jaden-slory,Jaden Slory,Willem II,-1.0
+6,thomas-verheydt,Thomas Verheydt,Willem II,8.0
+6,karst-de-leeuw,Karst de Leeuw,Willem II,1.0
+6,maxime-delanghe,Maxime Delanghe,Willem II,1.0
+6,thomas-didillon-hodl,Thomas Didillon-Hödl,Willem II,0.0
+6,wouter-van-der-steen,Wouter van der Steen,Willem II,0.0
+6,calvin-twigt,Calvin Twigt,Willem II,9.0
+6,kasper-boogaard,Kasper Boogaard,Willem II,-1.0
+6,per-van-loon,Per van Loon,Willem II,2.0
+6,tonny-vilhena,Tonny Vilhena,Willem II,-2.0
+6,uriel-van-aalst,Uriël van Aalst,Willem II,13.0
+6,vito-van-crooij,Vito van Crooij,Willem II,0.0
+6,darling-bladi,Darling Bladi,sc Heerenveen,6.0
+6,hristiyan-petrov,Hristiyan Petrov,sc Heerenveen,7.0
+6,maas-willemsen,Maas Willemsen,sc Heerenveen,8.0
+6,mats-egbring,Mats Egbring,sc Heerenveen,6.0
+6,oliver-braude,Oliver Braude,sc Heerenveen,12.0
+6,sam-kersten,Sam Kersten,sc Heerenveen,12.0
+6,vasilios-zagaritis,Vasilios Zagaritis,sc Heerenveen,8.0
+6,dylan-vente,Dylan Vente,sc Heerenveen,9.0
+6,jacob-trenskow,Jacob Trenskow,sc Heerenveen,16.0
+6,kirayno-schaken,Kirayno Schaken,sc Heerenveen,11.0
+6,lanroy-machine,Lanroy Machine,sc Heerenveen,4.0
+6,marko-farji,Marko Farji,sc Heerenveen,0.0
+6,maxence-rivera,Maxence Rivera,sc Heerenveen,8.0
+6,andries-noppert,Andries Noppert,sc Heerenveen,0.0
+6,bernt-klaverboer,Bernt Klaverboer,sc Heerenveen,10.0
+6,t-schreuder,Timo Schreuder,sc Heerenveen,0.0
+6,dirk-proper,Dirk Proper,sc Heerenveen,5.0
+6,levi-smans,Levi Smans,sc Heerenveen,4.0
+6,luca-oyen,Luca Oyen,sc Heerenveen,10.0
+6,marcus-linday,Marcus Linday,sc Heerenveen,1.0
+6,nolhan-courtens,Nolhan Courtens,sc Heerenveen,9.0
+6,ringo-meerveld,Ringo Meerveld,sc Heerenveen,13.0
