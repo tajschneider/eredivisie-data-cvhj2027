@@ -110,9 +110,19 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
         if ronde not in per_ronde:
             break  # geen programma meer bekend -- horizon stopt hier
         programma, inhaal = per_ronde[ronde]
-        if not programma:
-            break
         inhaal_k = inhaal if k == 0 else {}  # zie module-docstring
+        # Een ronde zonder ENIGE wedstrijd is het einde van de horizon. Let op
+        # de volgorde: dit moet NA inhaal_k, en over allebei. Stond hier eerst
+        # alleen `if not programma`, dan viel een ronde met uitsluitend
+        # inhaalduels weg -- die komt in september wel degelijk voor, en dan
+        # bouwde deze functie nul pools, kreeg koppel_selectie() een lege
+        # kandidatenlijst, werd de hele selectie als dood slot (E=0)
+        # toegevoegd en gaf de MILP 0.00 met een ongewijzigd elftal, terwijl
+        # de brute-force zoeker die inhaalduels gewoon meenam. De
+        # regressietest zag het verschil pas toen programma.csv voor het eerst
+        # zo'n ronde bevatte (12 september 2026, live in wekelijks.yml).
+        if not programma and not inhaal_k:
+            break
         pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                            programma, inhaal_k, laatste_ronde=start_ronde - 1,
                            venster=venster, min_minuten=min_minuten, fbref=fbref)
@@ -382,6 +392,11 @@ def main():
         print(f"LET OP: programma dekt maar {len(rondes_gebruikt)}/{a.horizon} gevraagde ronden "
               f"({rondes_gebruikt}) -- horizon wordt daartoe beperkt. "
               f"Draai scrape_programma.py met --horizon {a.horizon} voor het volledige venster.")
+    if not rondes_gebruikt:
+        sys.exit(f"GEEN HORIZON: programma.csv bevat geen enkele wedstrijd voor ronde "
+                 f"{a.ronde}. Zonder wedstrijden is elke E gelijk aan 0 en zou het "
+                 f"advies 'niets doen' zijn -- dat lijkt op een uitkomst maar is het "
+                 f"niet. Draai eerst scrape_programma.py --ronde {a.ronde}.")
     print(f"Horizon: ronde {rondes_gebruikt} (decay {a.decay})")
 
     e_multi = bereken_multi_E(reeksen, a.decay)

@@ -43,6 +43,52 @@ def vervuil_een_naam(prijsrijen, selectie_in, m):
     return None
 
 
+def test_inhaalronde_telt_mee():
+    """Een ronde met UITSLUITEND inhaalduels moet een gevulde pool opleveren.
+
+    Dit stond er niet omdat de eerste versie van bouw_horizon_pools afbrak op
+    `if not programma`, zonder naar de inhaallijst te kijken. Gevolg: nul
+    pools, een lege kandidatenlijst, de hele selectie als dood slot met E=0,
+    en een MILP die 0.00 teruggaf met een ongewijzigd elftal -- oftewel het
+    advies "doe niets", precies in een week waarin er wel degelijk gespeeld
+    werd. De regressietest hierboven vond dat pas toen programma.csv voor het
+    eerst zo'n ronde bevatte (12 september 2026, live).
+
+    Deze test wacht daar niet op: hij bouwt zo'n ronde zelf.
+    """
+    m = laad_model()
+    clubrijen = m.lees("clubs.csv")
+    spelerrijen = m.lees("spelers.csv")
+    prijsrijen = m.lees("prijzen.csv")
+    aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
+
+    per_ronde = lees_programma_per_ronde("programma.csv", m)
+    if not per_ronde:
+        print("  overgeslagen: geen programma.csv")
+        return True
+
+    # Neem een bestaande ronde en gooi de reguliere duels eruit: wat overblijft
+    # is een ronde die alleen uit inhaalduels bestaat.
+    bron = max(per_ronde)
+    programma, _ = per_ronde[bron]
+    if not programma:
+        print(f"  overgeslagen: ronde {bron} heeft geen reguliere duels om om te bouwen")
+        return True
+    thuis, uit = programma[0]
+    kunstmatig = {bron: ([], {thuis: (uit, True), uit: (thuis, False)})}
+
+    _reeksen, metadata, rondes = bouw_horizon_pools(
+        m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
+        kunstmatig, bron, 1, venster=6, min_minuten=60)
+
+    if not rondes or not metadata:
+        print(f"  FOUT inhaalronde: horizon brak af op een ronde met alleen "
+              f"inhaalduels ({thuis}-{uit}); pool is leeg, MILP zou 0.00 geven")
+        return False
+    print(f"  inhaalronde ({thuis}-{uit}): pool gevuld, {len(metadata)} kandidaten")
+    return True
+
+
 def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     m = laad_model()
     clubrijen = m.lees("clubs.csv")
@@ -142,6 +188,9 @@ def main():
         # twee takken vroeger uiteenliepen -- zie vervuil_een_naam().
         if not test_horizon_1_matcht_brute_force(ronde, 1, vervuild=True):
             alles_ok = False
+
+    if not test_inhaalronde_telt_mee():
+        alles_ok = False
 
     print()
     if alles_ok:
