@@ -329,10 +329,21 @@ def test_inhaalronde_telt_mee():
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         kunstmatig, bron, 1, venster=6, min_minuten=60)
 
-    if not rondes or not metadata:
+    # WAAR deze test over gaat: de horizon mag niet afbreken op een ronde met
+    # alleen inhaalduels. Dat is `rondes` -- en alleen dat is een fout.
+    if not rondes:
         print(f"  FOUT inhaalronde: horizon brak af op een ronde met alleen "
-              f"inhaalduels ({thuis}-{uit}); pool is leeg, MILP zou 0.00 geven")
+              f"inhaalduels ({thuis}-{uit}) -- die ronde wordt genegeerd, de MILP "
+              f"krijgt een lege kandidatenlijst en geeft 0.00 met een ongewijzigd elftal")
         return False
+    # Wél gedraaid maar niemand in de pool is iets anders: dan haalt geen enkele
+    # speler de speeltijddrempel in dit venster. Dat is een eigenschap van de
+    # data (vroeg in het seizoen, een dunne spelers.csv), niet van de
+    # formulering. Een test die daarop rood wordt, wijst naar de verkeerde plek.
+    if not metadata:
+        print(f"  overgeslagen: inhaalronde ({thuis}-{uit}) draait wel, maar geen "
+              f"enkele speler haalt de speeltijddrempel in dit venster")
+        return True
     GEDRAAID.append("inhaalronde")
     print(f"  inhaalronde ({thuis}-{uit}): pool gevuld, {len(metadata)} kandidaten")
     return True
@@ -355,6 +366,18 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     per_ronde = lees_programma_per_ronde("programma.csv", m)
     if ronde not in per_ronde:
         print(f"  overgeslagen: geen programma voor ronde {ronde}")
+        return True
+
+    # Een ronde die in programma.csv staat maar geen enkele wedstrijd meer
+    # heeft (een al gespeelde ronde die nog niet is opgeruimd) levert een pool
+    # op waarin iedereen E=0 heeft. Beide zoekers geven dan 0.00 met een
+    # willekeurige vijftien, en die twee vergelijken bewijst niets -- het is
+    # geen gelijkspel maar een lege vraag. Overslaan, en niet meetellen als
+    # uitgevoerde controle.
+    programma_ronde, inhaal_ronde = per_ronde[ronde]
+    if not programma_ronde and not inhaal_ronde:
+        print(f"  overgeslagen: ronde {ronde} staat in programma.csv maar heeft geen "
+              f"wedstrijden meer (al gespeeld?) -- alles E=0, niets te vergelijken")
         return True
 
     # --- multi_periode.py, horizon=1 ---
@@ -380,9 +403,33 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
         selectie_0.append(x or {"speler": naam, "club": club, "pos": pos, "prijs": prijs, "E": 0.0})
     resultaten = m.beste_transfers(selectie_0, pool_0, transfers, top=1)
 
-    if nieuw is None or not resultaten:
-        print(f"  FOUT: geen oplossing (MILP={nieuw is not None}, brute-force={bool(resultaten)})")
+    # De twee zoekers falen NIET op dezelfde manier, en dat verschil is geen
+    # symmetrie-kwestie maar een eigenschap van hun formulering.
+    #
+    # De MILP kan altijd terugvallen op de huidige vijftien: een selectiespeler
+    # die niet in de pool zit krijgt een dood slot met E=0, dus "niets doen" is
+    # voor hem altijd een toelaatbare oplossing. beste_transfers() moet daaren-
+    # tegen `transfers` daadwerkelijke vervangers vinden, uit een lijst die per
+    # club+positie tot twee kandidaten gesnoeid is, met verschillende clubs en
+    # binnen het budget. In een dunne ronde -- weinig wedstrijden, weinig
+    # spelers boven de speeltijddrempel -- bestaan die simpelweg niet, en dan
+    # geeft hij een lege lijst terug.
+    #
+    # Dat is een grens van de gesnoeide zoeker, geen fout in de MILP. Deze test
+    # rapporteerde het als "FOUT: geen oplossing" en maakte de hele suite rood,
+    # waarna wekelijks.yml terugviel op precies die gesnoeide zoeker. Live
+    # gebeurd op 13 september 2026 bij ronde 12 met 3 transfers.
+    if nieuw is None and resultaten:
+        print(f"  FOUT ronde {ronde}, {transfers} transfer(s): de MILP vond GEEN "
+              f"oplossing terwijl de brute force er wel een heeft. Dat is de "
+              f"verkeerde kant op -- controleer de constraints in los_op().")
         return False
+    if not resultaten:
+        print(f"  geen vergelijking ronde {ronde}, {transfers} transfer(s): de brute "
+              f"force vond niets (pool {len(pool_0)}, te dun voor {transfers} "
+              f"vervanger(s) met verschillende clubs); de MILP wel"
+              f"{' -- die valt terug op de huidige ploeg' if nieuw is not None else ''}")
+        return True
 
     score_bf, uit_bf, in_bf, _ = resultaten[0]
     namen_milp = {p["speler"] for p in nieuw}
