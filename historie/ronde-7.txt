@@ -1,13 +1,8 @@
-LET OP: 54 wedstrijden in het programma, verwacht 9.
+--horizon auto -> 2
 Periode 2; volgende periodestart over 2 ronden.
-Clubratings uit 45 wedstrijden met marktnotering (thuisvoordeel x1.23)
+Clubratings uit 45 wedstrijden (thuisvoordeel x1.23)
 LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
-272 spelers met voldoende speeltijd in de pool
-Zonder recente speeltijd (E=0): Shunsuke Mito, Deveron Fonville
-
-GEBLESSEERD IN JE SELECTIE:
-    Shunsuke Mito (duur onbekend)
-    Deveron Fonville (duur onbekend)
+Horizon: ronde [7, 8] (decay 0.84)
 
 OPSTELLING  4-3-3   verwacht 39.4 punten   kosten EUR 30.80
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.43
@@ -27,26 +22,19 @@ OPSTELLING  4-3-3   verwacht 39.4 punten   kosten EUR 30.80
   V            Deveron Fonville          NEC              EUR 2.00  E  0.00
   M            Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.00
 
-BESTE 1 TRANSFER(S)
+GEBLESSEERD IN JE SELECTIE:
+    Shunsuke Mito (duur onbekend)
+    Deveron Fonville (duur onbekend)
+Zonder recente speeltijd (E=0): Shunsuke Mito, Deveron Fonville
 
-  verwacht 43.0  (3-4-3)   winst +3.6
+WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
+  0 transfer(s):   73.19
+  1 transfer(s):   77.64   +4.45 t.o.v. 0
+
+MULTI-RONDE ADVIES (horizon 2, decay 0.84, 1 transfer(s))
+  ronde 7: verwacht 43.0 punten  (3-4-3)  winst +3.6
+  gedecayde som over de horizon: 77.64  (huidig team: 73.19)
     UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
-    IN   Darko Nejasmic            NEC              EUR 1.80  E  4.15
-
-  verwacht 41.2  (4-3-3)   winst +1.8
-    UIT  Lutsharel Geertruida      PSV              EUR 3.00  E  2.17
-    IN   Sergiño Dest              PSV              EUR 3.20  E  4.01
-
-  verwacht 41.0  (3-4-3)   winst +1.6
-    UIT  Jeff Hardeveld            Telstar          EUR 2.00  E  1.10
-    IN   Uriël van Aalst           Willem II        EUR 1.50  E  2.73
-
-  verwacht 40.8  (4-3-3)   winst +1.4
-    UIT  Aske Adelgaard            FC Twente        EUR 1.50  E  1.60
-    IN   Ruud Nijstad              FC Twente        EUR 2.00  E  3.03
-
-  verwacht 40.7  (4-3-3)   winst +1.4
-    UIT  Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.00
-    IN   Uriël van Aalst           Willem II        EUR 1.50  E  2.73
+    IN   Darko Nejasmic            NEC              EUR 1.80  E  4.15  E(horizon)  6.00
 
 besluit -> besluit.json
