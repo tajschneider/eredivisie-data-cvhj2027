@@ -76,7 +76,17 @@ jobs:
       # voor DEZE beslissing (tot de volgende periodestart) -- extra
       # opgehaalde ronden die niet nodig zijn, worden gewoon genegeerd.
       - name: Programma komende ronden ophalen
-        run: python scrape_programma.py --horizon "${{ vars.HORIZON_SCRAPE || 6 }}"
+        run: |
+          # Geef --ronde door bij een handmatige dispatch. Zonder dit scrapete
+          # de workflow altijd de ronde die volgende_ronde() zelf vond, terwijl
+          # de stap hieronder het opgegeven rondenummer gebruikt -- dan rekent
+          # het model door op een ronde die niet in programma.csv staat.
+          if [ -n "${{ github.event.inputs.ronde }}" ]; then
+            python scrape_programma.py --ronde "${{ github.event.inputs.ronde }}" \
+                                       --horizon "${{ vars.HORIZON_SCRAPE || 6 }}"
+          else
+            python scrape_programma.py --horizon "${{ vars.HORIZON_SCRAPE || 6 }}"
+          fi
 
       - name: Ronde bepalen
         id: ronde
@@ -184,7 +194,27 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_WACHTWOORD: ${{ secrets.SMTP_WACHTWOORD }}
           MAIL_NAAR: ${{ secrets.MAIL_NAAR }}
+          # Of de selectie tegen de site gecontroleerd is weet alleen deze
+          # workflow: die stap draait met continue-on-error. Zonder deze regel
+          # stond een mislukte synchronisatie alleen in het log, en las je een
+          # volstrekt normale mail met een advies over de ploeg van vorige week.
+          SYNC_GELUKT: ${{ steps.sync.outcome == 'success' && 'ja' || 'nee' }}
         run: python notify.py besluit.json
+
+      # VOOR het vastleggen, en met if: always(). De commit-stap hieronder
+      # eindigt op `git pull --rebase` + `git push`, en dat is het breekbaarste
+      # stukje van de hele workflow. Stond de upload daarachter, dan was bij een
+      # push-conflict ook het advies zelf onbereikbaar -- precies op het moment
+      # dat je het nodig hebt om te zien wat er geadviseerd werd.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: besluit-ronde-${{ steps.ronde.outputs.nr }}
+          path: |
+            besluit.json
+            advies.txt
+            programma.csv
+            prijzen.csv
 
       - name: Besluit vastleggen
         run: |
@@ -207,14 +237,6 @@ jobs:
           git pull --rebase origin main
           git push
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: besluit-ronde-${{ steps.ronde.outputs.nr }}
-          path: |
-            besluit.json
-            advies.txt
-            programma.csv
-            prijzen.csv
 
   # ---------------------------------------------------------------------------
   # Inleggen op coachvanhetjaar.nl. Aparte job, zodat het advies blijft draaien

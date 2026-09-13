@@ -20,6 +20,8 @@ name: Tests
 #   test_statistieken.py    het ontleden van de ranglijsten
 #   test_synchroniseer.py   de selectie-synchronisatie, inclusief de weigering
 #                           om half werk weg te schrijven
+#   test_notify.py          dat elke waarschuwing die het model uitrekent ook
+#                           daadwerkelijk in de mail belandt
 on:
   push:
     branches: [main]
@@ -50,6 +52,7 @@ jobs:
           python test_scrape_prijzen.py
           python test_statistieken.py
           python test_synchroniseer.py
+          python test_notify.py
 
       # Heeft clubs.csv/spelers.csv/prijzen.csv/programma.csv/selectie.csv nodig.
       # Staan die er niet, dan is dat geen testfout maar een lege repo; dan
@@ -61,7 +64,7 @@ jobs:
             [ -f "$f" ] || ontbreekt="$ontbreekt $f"
           done
           if [ -n "$ontbreekt" ]; then
-            echo "::notice::overgeslagen -- deze data ontbreekt:$ontbreekt"
+            echo "::warning::test_multi_periode.py OVERGESLAGEN -- deze data ontbreekt:$ontbreekt. De MILP is deze run dus NIET getoetst."
           else
             python test_multi_periode.py
           fi
