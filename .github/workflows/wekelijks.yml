@@ -187,6 +187,16 @@ jobs:
         continue-on-error: true
         run: python vergelijk_tip.py --ronde ${{ steps.ronde.outputs.nr }} --top 5
 
+      # De mailtekst apart wegschrijven, VOOR het versturen. advies.txt is de
+      # uitvoer van het model (stdout), niet wat er in je inbox belandt -- de
+      # waarschuwingen bovenaan de mail en de vlag in het onderwerp stonden dus
+      # nergens waar je ze kon nakijken. Nu zitten ze in de artifact, ook als
+      # het mailen zelf mislukt.
+      - name: Mailtekst vastleggen
+        env:
+          SYNC_GELUKT: ${{ steps.sync.outcome == 'success' && 'ja' || 'nee' }}
+        run: python notify.py besluit.json --toon | tee mail.txt
+
       - name: Advies mailen
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
@@ -213,6 +223,7 @@ jobs:
           path: |
             besluit.json
             advies.txt
+            mail.txt
             programma.csv
             prijzen.csv
 
