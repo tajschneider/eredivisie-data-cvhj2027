@@ -28,6 +28,13 @@
       "n_evalueerbaar": 4,
       "besluit": "overgeslagen",
       "reden": "nog maar 0 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
+    },
+    {
+      "tijdstip": "2026-09-13T08:38:06.007631+00:00",
+      "tot_ronde": 6,
+      "n_evalueerbaar": 5,
+      "besluit": "overgeslagen",
+      "reden": "nog maar 1 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
     }
   ]
 }
