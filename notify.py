@@ -29,6 +29,50 @@ def regel(x):
     return f"{x['speler']} ({x['club']}, {x['pos']}) EUR {x['prijs']:.2f}"
 
 
+def blokkerende_waarschuwingen(d):
+    """Alles wat het advies onbetrouwbaar maakt, bovenaan de mail.
+
+    Dit bestand bepaalt als enige wat jij werkelijk ziet: je leest het advies,
+    niet het Actions-log. Alles wat alleen in dat log stond, bestond dus in de
+    praktijk niet. Uit de validatie van 13 september kwamen vier van die
+    gevallen, allemaal met dezelfde vorm -- een stap valt om, het model draait
+    door op oudere data, en de mail ziet er volkomen normaal uit:
+
+      - de selectie-synchronisatie mislukte (login om, secrets verlopen), dus
+        het advies rust op de selectie.csv van vorige week -- en adviseert je
+        mogelijk een speler te verkopen die je al niet meer hebt;
+      - selectie.csv of programma.csv ontbrak en er is teruggevallen op de
+        hardgecodeerde ploeg/fixtures uit september;
+      - spelerstats.csv was oud, of kwam uit xg.csv/fbref.csv -- bronnen die
+        sinds januari 2026 dood zijn;
+      - de regressietest faalde, dus het advies komt uit de eenronde-zoeker en
+        niet uit het multi-ronde-model.
+
+    Alles wat hier terechtkomt, komt vóór het advies te staan. Niet in de
+    AANDACHT-lijst onderaan: die lees je nadat je je mening al gevormd hebt.
+    """
+    w = []
+    if d.get("model") and d["model"] != "multi_periode":
+        w.append(f"### TERUGVAL: dit advies komt uit {d['model']}, niet uit het "
+                 f"multi-ronde-model ###")
+    for veld, wat in (("bron_selectie", "selectie.csv"), ("bron_programma", "programma.csv")):
+        if d.get(veld) == "hardgecodeerd":
+            w.append(f"### {wat.upper()} ONTBRAK -- gerekend met de hardgecodeerde "
+                     f"noodwaarden uit september. Dit advies is niet bruikbaar. ###")
+    if d.get("sync_gelukt") is False:
+        w.append("### SELECTIE NIET GECONTROLEERD tegen coachvanhetjaar.nl "
+                 "(synchronisatie mislukt) -- het advies gebruikt selectie.csv "
+                 "zoals die in de repo staat. Controleer of dat nog jouw ploeg is. ###")
+    stats = d.get("stats_bron") or {}
+    if stats.get("bestand") and stats["bestand"] != "spelerstats.csv":
+        w.append(f"### STATISTIEKEN uit {stats['bestand']} -- een oude bestandsnaam "
+                 f"van een bron die niet meer bestaat. Assists en kaarten zijn verouderd. ###")
+    elif stats.get("leeftijd_dagen") is not None and stats["leeftijd_dagen"] > 8:
+        w.append(f"### STATISTIEKEN zijn {stats['leeftijd_dagen']} dagen oud "
+                 f"(scrape waarschijnlijk mislukt). ###")
+    return w
+
+
 def bouw_tekst(d):
     r = [f"CVHJ ronde {d['ronde']} - gegenereerd {d['gegenereerd']}", ""]
 
@@ -50,6 +94,11 @@ def bouw_tekst(d):
         for x in d["bijna_match"]:
             r.append(f"  '{x['selectie']}' (jouw selectie) <-> '{x['marktdata']}' (marktdata, zelfde club)")
         r += ["  Dit advies is hierop gecorrigeerd, maar controleer de brondata."]
+        r.append("")
+
+    for regel_tekst in blokkerende_waarschuwingen(d):
+        r.append(regel_tekst)
+    if blokkerende_waarschuwingen(d):
         r.append("")
 
     h = d["huidig"]
@@ -88,6 +137,20 @@ def bouw_tekst(d):
         r.append(f"  {x['pos']}  {x['speler']:26s} {x['club']:18s} E {x['E']:.2f}")
 
     aandacht = []
+    # Blessures eerst. Het model kent ze (beide zoekers zetten
+    # geblesseerd_in_selectie in besluit.json en filteren geblesseerden uit de
+    # markt), maar dit bestand gebruikte dat veld niet -- je las alleen
+    # "Zonder recente speeltijd (E=0)", wat als vormprobleem oogt. De vaste
+    # regel over blessurenieuws versterkte de indruk dat er niets bekend was.
+    for x in d.get("geblesseerd_in_selectie", []):
+        duur = f" ({x['duur']})" if x.get("duur") else ""
+        aandacht.append(f"GEBLESSEERD in je ploeg: {x['speler']}{duur}")
+    # Geen statistiekenbestand is geen storing (het model draait dan zoals vóór
+    # stap 5), maar je hoort te weten dat assists en kaarten ontbreken -- niet
+    # alleen in het log.
+    if (d.get("stats_bron") or {}).get("bestand") is None:
+        aandacht.append("Geen spelerstats.csv: assists en kaarten zitten NIET in deze "
+                        "schatting.")
     if d.get("zonder_speeltijd"):
         aandacht.append(f"Zonder recente speeltijd (E=0): {', '.join(d['zonder_speeltijd'])}")
     if d.get("inhaal"):
@@ -112,6 +175,11 @@ def main():
     args = p.parse_args()
 
     d = json.loads(Path(args.besluit).read_text(encoding="utf-8"))
+    # Of de selectie-synchronisatie lukte weet alleen de workflow (die stap
+    # draait met continue-on-error). Hij geeft het door als env-variabele,
+    # zodat het besluit.json-formaat niet van de workflow hoeft te weten.
+    if os.environ.get("SYNC_GELUKT"):
+        d["sync_gelukt"] = os.environ["SYNC_GELUKT"].strip().lower() in ("ja", "yes", "true", "1")
     tekst = bouw_tekst(d)
 
     if args.toon:
@@ -126,12 +194,16 @@ def main():
 
     a = d.get("advies")
     kern = f"{len(a['uit'])} transfer(s), {a['winst']:+.1f} punt" if a else "alleen opstelling"
+    # Het onderwerp is het enige dat je zeker ziet, ook op je telefoon. Staat er
+    # iets fundamenteels mis met de invoer, dan hoort dat daar en niet pas
+    # halverwege de tekst.
+    vlag = "LET OP - " if blokkerende_waarschuwingen(d) else ""
     if d.get("periodestart"):
-        kop = f"CVHJ ronde {d['ronde']} - PERIODE {d['periode']} START, 3 transfers: {kern}"
+        kop = f"{vlag}CVHJ ronde {d['ronde']} - PERIODE {d['periode']} START, 3 transfers: {kern}"
     elif d.get("ronden_tot_volgende_periode") == 1:
-        kop = f"CVHJ ronde {d['ronde']} (volgende week 3 transfers): {kern}"
+        kop = f"{vlag}CVHJ ronde {d['ronde']} (volgende week 3 transfers): {kern}"
     else:
-        kop = f"CVHJ ronde {d['ronde']}: {kern}"
+        kop = f"{vlag}CVHJ ronde {d['ronde']}: {kern}"
 
     msg = EmailMessage()
     msg["Subject"] = kop

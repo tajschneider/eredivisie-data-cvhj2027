@@ -106,7 +106,8 @@ def spearman(x, y):
     return cov / (sx * sy) if sx > 0 and sy > 0 else None
 
 
-def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_minuten):
+def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_minuten,
+                   fbref=None):
     """Eén ronde: fit op < ronde, voorspel ronde, vergelijk met werkelijkheid."""
     training = [r for r in clubrijen if int(r["ronde"]) < ronde]
     if not training:
@@ -127,9 +128,20 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
     if not programma:
         return None
 
+    # fbref DOORGEVEN. Zonder dit argument meet deze backtest een modelvariant
+    # die niemand draait: productie (cvhj_model.py en multi_periode.py) geeft
+    # spelerstats.csv wel mee, dus de assist- en kaarttermen zaten wel in het
+    # advies en niet in de ijking. KRIMP_SPELER en KRIMP_CLUB werden daardoor
+    # gekalibreerd op een ander model dan het model dat je gebruikt.
+    #
+    # Blijvende beperking, en die blijft staan: de WERKELIJKHEID hiernaast
+    # (punten_met_positie) kan assists, kaarten en keepersreddingen niet
+    # reconstrueren uit spelers.csv. De voorspelling bevat ze nu wel, de
+    # waarheid niet. Dat maakt de RMSE een ondergrens, geen exacte maat --
+    # maar het is eerlijker dan twee verschillende modellen vergelijken.
     pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                        programma, {}, laatste_ronde=ronde - 1,
-                       venster=venster, min_minuten=min_minuten)
+                       venster=venster, min_minuten=min_minuten, fbref=fbref)
     if not pool:
         return None
 
@@ -223,9 +235,16 @@ def main():
     print(f"{'ronde':>5s}{'n_train':>9s}{'n_pool':>8s}{'n_eval':>8s}"
           f"{'RMSE':>8s}{'MAE':>7s}{'bias':>7s}{'rho':>7s}{'RMSE naief':>12s}{'rho naief':>11s}")
 
+    # Dezelfde statistieken als productie gebruikt; zie evalueer_ronde().
+    fbref = m.lees_spelerstats(m.stats_pad("spelerstats.csv"))
+    print("spelerstats: " + (f"{len(fbref)} spelers" if fbref else
+                             "niet gevonden -- de ijking meet dan het model ZONDER "
+                             "assists en kaarten, terwijl het advies ze wel gebruikt"))
+
     resultaten, alle_rijen = [], []
     for ronde in range(vanaf, tot + 1):
-        r = evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, a.venster, a.min_minuten)
+        r = evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, a.venster,
+                           a.min_minuten, fbref=fbref)
         b = basislijn(m, spelerrijen, prijsrijen, ronde, a.venster, a.min_minuten)
         if r is None:
             print(f"{ronde:5d}   -- onvoldoende data om te voorspellen of te evalueren --")

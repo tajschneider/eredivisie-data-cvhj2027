@@ -66,6 +66,7 @@ import collections
 import csv
 import itertools
 import math
+import time
 import sys
 import unicodedata
 from pathlib import Path
@@ -384,10 +385,21 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
     """
     recent = {str(r) for r in range(max(1, laatste_ronde - venster + 1), laatste_ronde + 1)}
     vorm = collections.defaultdict(lambda: {"min": 0, "goals": 0, "basis": 0, "duels": 0, "rijen": []})
+    # Tweede ingang op naam+club. De join met prijzen.csv loopt op de slug uit
+    # pouletips' eigen href, en die is niet altijd dezelfde als de slug in
+    # spelers.csv: een pas aangetrokken speler staat daar bijvoorbeeld als
+    # "alexander-veselov-nieuw". Mist de slug, dan valt de opzoeking terug op
+    # naam+club -- maar alleen als die combinatie precies EEN speler oplevert,
+    # anders koppel je twee naamgenoten aan elkaar en dat is erger dan niets.
+    op_naam_club = collections.defaultdict(list)
     for r in spelerrijen:
         if r["ronde"] not in recent or r["status"] == "afwezig":
             continue
-        v = vorm[r.get("speler_id") or norm(r["speler"])]
+        sid = r.get("speler_id") or norm(r["speler"])
+        sleutel = f"{norm(r['speler'])}|{norm_club(r.get('club', ''))}"
+        if sid not in op_naam_club[sleutel]:
+            op_naam_club[sleutel].append(sid)
+        v = vorm[sid]
         minuten, goals = int(r["minuten"] or 0), int(r["goals"] or 0)
         v["min"] += minuten
         v["goals"] += goals
@@ -410,6 +422,7 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         return None
 
     pool = []
+    via_naam = 0
     for r in prijsrijen:
         club, positie = norm_club(r["team"]), r["positie"]
         if club not in aanval or positie not in GOALWAARDE:
@@ -417,6 +430,11 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         # Joinen op de slug, niet op de naam: die is stabiel over accenten
         # ('Soren Tengstedt') en immuun voor spelling die per pagina verschilt.
         v = vorm.get(r.get("speler_id") or norm(r["speler"]))
+        if v is None:
+            kandidaten = op_naam_club.get(f"{norm(r['speler'])}|{norm(club)}", [])
+            if len(kandidaten) == 1:
+                v = vorm.get(kandidaten[0])
+                via_naam += 1
         if r.get("blessure"):
             # Pouletips markeert de speler als geblesseerd. Hem in de pool laten
             # betekent dat de zoeker hem kan KOPEN; dat wil je nooit.
@@ -495,6 +513,9 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      "prijs": float(r["prijs"]), "E": E,
                      "min": v["min"], "goals": v["goals"], "basis": v["basis"],
                      "duels": v["duels"]})
+    if via_naam:
+        print(f"  {via_naam} speler(s) gekoppeld op naam+club omdat de slug uit "
+              f"prijzen.csv niet in spelers.csv voorkomt")
     return pool
 
 
@@ -658,6 +679,24 @@ def stats_pad(pad, standaard="spelerstats.csv", terugval=("xg.csv", "fbref.csv")
     return pad
 
 
+
+def stats_herkomst(pad):
+    """Welk statistiekenbestand is gebruikt en hoe oud het is.
+
+    Gaat mee naar besluit.json, zodat notify.py het in de mail kan melden.
+    Twee dingen zijn hier de moeite waard om te zien: een bestandsnaam die
+    niet spelerstats.csv is (dan komt de data uit xg.csv of fbref.csv --
+    bronnen die sinds januari 2026 dood zijn), en een bestand dat ouder is
+    dan een week (dan is de wekelijkse scrape stilletjes mislukt, want die
+    stap draait met continue-on-error).
+    """
+    bestand = Path(pad)
+    if not bestand.exists():
+        return {"bestand": None, "leeftijd_dagen": None}
+    leeftijd = (time.time() - bestand.stat().st_mtime) / 86400.0
+    return {"bestand": bestand.name, "leeftijd_dagen": round(leeftijd, 1)}
+
+
 def lees_spelerstats(pad):
     """spelerstats.csv (scrape_statistieken.py) -> {norm(speler)|norm(club): {...}}, of None.
 
@@ -726,14 +765,21 @@ def main():
                    help="besluit machineleesbaar wegschrijven")
     a = p.parse_args()
 
+    # Waar de invoer vandaan komt gaat mee naar besluit.json. De terugval op
+    # de hardgecodeerde waarden uit september staat hier al jaren, maar was
+    # alleen in het log zichtbaar -- en de mail zag er daarna volstrekt
+    # normaal uit. Zie notify.blokkerende_waarschuwingen().
+    bron_programma, bron_selectie = "bestand", "bestand"
     programma, inhaal = lees_programma(a.programma)
     if programma is None:
         programma, inhaal = PROGRAMMA, INHAAL
+        bron_programma = "hardgecodeerd"
         print(f"LET OP: {a.programma} niet gevonden - het hardgecodeerde "
               f"PROGRAMMA onderin wordt gebruikt.")
     selectie_in = lees_selectie(a.selectie)
     if selectie_in is None:
         selectie_in = SELECTIE
+        bron_selectie = "hardgecodeerd"
         print(f"LET OP: {a.selectie} niet gevonden - de hardgecodeerde "
               f"SELECTIE onderin wordt gebruikt.")
     if len(programma) != 9:
@@ -842,6 +888,10 @@ def main():
     if a.json:
         besluit = {
             "ronde": a.ronde,
+            "model": "cvhj_model (eenronde-terugval)",
+            "bron_programma": bron_programma,
+            "bron_selectie": bron_selectie,
+            "stats_bron": stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
             "periode": periode,

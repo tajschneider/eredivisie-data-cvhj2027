@@ -579,6 +579,24 @@ referentie waartegen `test_multi_periode.py` de MILP-score naleest: wijken die
 twee af, dan optimaliseert de solver het verkeerde. Bij horizon 1 is de
 formulering letterlijk ongewijzigd.
 
+**Alles wat het model weet over slechte invoer, staat in de mail.** Je leest
+het advies, niet het Actions-log — dus alles wat alleen in dat log stond,
+bestond in de praktijk niet. `notify.blokkerende_waarschuwingen()` zet vier
+gevallen bovenáán de mail en in het onderwerp: de selectie is niet tegen de
+site gecontroleerd, `selectie.csv`/`programma.csv` ontbrak (hardgecodeerde
+terugval), de statistieken zijn oud of komen uit een dode bron, of het advies
+komt uit de eenronde-zoeker in plaats van het multi-ronde-model. Blessures in
+je eigen ploeg staan in de AANDACHT-lijst; die zaten al in `besluit.json` maar
+werden nergens getoond. `test_notify.py` bewaakt dat elk van die gevallen de
+tekst haalt — en dat een normaal besluit géén enkele waarschuwing oplevert.
+
+**Geen data is geen uitspraak.** `test_multi_periode.py` telt hoeveel
+controles er werkelijk op data gedraaid hebben en stopt met een foutmelding
+als dat er nul zijn. Daarvoor sloeg elke test zichzelf over bij een lege
+`programma.csv`, eindigde de suite met exitcode 0 en de mededeling dat de MILP
+overeenkwam met de brute-force zoeker — zonder één vergelijking te hebben
+gedaan. `wekelijks.yml` las die exitcode als groen licht.
+
 **Waarborg vóór vertrouwen, niet erna.** Elke run voert eerst
 `test_multi_periode.py` uit -- dezelfde regressietest die hierboven liet zien
 dat de MILP bij horizon 1 exact overeenkomt met de brute-force zoeker. Faalt

@@ -81,8 +81,15 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; cvhj-model/1.0)"}
 CATEGORIEEN = [
     ("assists", "assists/", "assist"),
     ("doelpunten", "doelpunten/", "doelpunt"),
-    ("gele_kaarten", "gele-kaarten/", "geel"),
-    ("rode_kaarten", "rode-kaarten/", "rood"),
+    # "geel"/"rood" matchte NOOIT: de kop op de pagina is "Gele kaarten" en
+    # "geel" in "gele kaarten" is onwaar. Beide categorieen vielen daardoor
+    # altijd terug op "de eerste cel na de spelernaam die een getal bevat" --
+    # wat vandaag toevallig goed gaat, maar stil de verkeerde kolom pakt zodra
+    # pouletips er een kolom Wedstrijden of Minuten tussen zet. Met -3,0 punt
+    # per gele kaart per 90 minuten sloopt dat de rangorde van je verdediging,
+    # zonder crash en zonder melding. (Gevonden 13 september 2026.)
+    ("gele_kaarten", "gele-kaarten/", "kaart"),
+    ("rode_kaarten", "rode-kaarten/", "kaart"),
     ("reddingen", "reddingen/", "redding"),
 ]
 
@@ -201,6 +208,41 @@ def lees_minuten(pad_spelers):
     return per
 
 
+
+def bouw_rij(speler, waarden):
+    """Een regel van spelerstats.csv uit de ruwe tellingen.
+
+    Apart van main() omdat dit de plek is waar de twee afspraken uit de
+    moduledocstring staan: xg_per90 IS het seizoensdoelpunttempo (geen
+    expected goals, die bestaan hier niet) en xag_per90 IS assists_per90
+    (geen expected assists, en daardoor is het middelen in cvhj_model.py
+    neutraal in plaats van vertekenend).
+
+    test_statistieken.py toetst die twee gelijkheden hierop. Eerder deed die
+    test dat op een rij die hij zelf met de hand had ingevuld -- die kon dus
+    per definitie niet falen, hoe je deze functie ook zou wijzigen.
+    """
+    n90 = speler["minuten"] / 90.0
+    assists90 = waarden.get("assists", 0.0) / n90
+    doelpunten90 = waarden.get("doelpunten", 0.0) / n90
+    return {
+        "speler": speler["speler"],
+        "club": speler["club"],
+        "positie": "",
+        "wedstrijden": speler["duels"],
+        "minuten_90s": round(n90, 4),
+        "goals_per90": round(doelpunten90, 4),
+        # GEEN expected goals: seizoenstempo. Zie de moduledocstring.
+        "xg_per90": round(doelpunten90, 4),
+        "assists_per90": round(assists90, 4),
+        # GEEN expected assists: gelijk aan assists, zodat het middelen in
+        # cvhj_model.py neutraal is in plaats van vertekenend.
+        "xag_per90": round(assists90, 4),
+        "gele_kaarten": waarden.get("gele_kaarten", 0.0),
+        "rode_kaarten": waarden.get("rode_kaarten", 0.0),
+    }
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -256,26 +298,7 @@ def main():
     for sid, d in per_speler.items():
         if d["minuten"] < a.min_minuten:
             continue
-        n90 = d["minuten"] / 90.0
-        w = waarden[sid]
-        assists90 = w.get("assists", 0.0) / n90
-        doelpunten90 = w.get("doelpunten", 0.0) / n90
-        rijen_uit.append({
-            "speler": d["speler"],
-            "club": d["club"],
-            "positie": "",
-            "wedstrijden": d["duels"],
-            "minuten_90s": round(n90, 4),
-            "goals_per90": round(doelpunten90, 4),
-            # GEEN expected goals: seizoenstempo. Zie de moduledocstring.
-            "xg_per90": round(doelpunten90, 4),
-            "assists_per90": round(assists90, 4),
-            # GEEN expected assists: gelijk aan assists, zodat het middelen in
-            # cvhj_model.py neutraal is in plaats van vertekenend.
-            "xag_per90": round(assists90, 4),
-            "gele_kaarten": w.get("gele_kaarten", 0.0),
-            "rode_kaarten": w.get("rode_kaarten", 0.0),
-        })
+        rijen_uit.append(bouw_rij(d, waarden[sid]))
 
     velden = ["speler", "club", "positie", "wedstrijden", "minuten_90s",
               "goals_per90", "xg_per90", "assists_per90", "xag_per90",

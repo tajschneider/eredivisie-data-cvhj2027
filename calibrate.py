@@ -38,9 +38,11 @@ KRIMP_SPELER_GRID = [1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 30]
 KRIMP_CLUB_GRID = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0]
 
 
-def draai_backtest(m, clubrijen, spelerrijen, prijsrijen, vanaf, tot, venster, min_minuten):
+def draai_backtest(m, clubrijen, spelerrijen, prijsrijen, vanaf, tot, venster, min_minuten,
+                   fbref=None):
     """Zelfde aggregatie als backtest.py's totaalregel, zonder de printregels."""
-    resultaten = [evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_minuten)
+    resultaten = [evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster,
+                                 min_minuten, fbref=fbref)
                   for ronde in range(vanaf, tot + 1)]
     resultaten = [r for r in resultaten if r]
     if not resultaten:
@@ -65,15 +67,50 @@ def zoek_raster(m, clubrijen, spelerrijen, prijsrijen, vanaf, tot, venster, min_
     grid_club = grid_club if grid_club is not None else KRIMP_CLUB_GRID
     origineel_speler, origineel_club = m.KRIMP_SPELER, m.KRIMP_CLUB
 
+    # Eenmalig laden, daarna aan elke rastercel doorgeven: het ijkt anders een
+    # model zonder assists en kaarten terwijl het advies ze wel gebruikt.
+    fbref = m.lees_spelerstats(m.stats_pad("spelerstats.csv"))
+
     resultaten = []
     for ks, kc in itertools.product(grid_speler, grid_club):
         m.KRIMP_SPELER, m.KRIMP_CLUB = ks, kc
-        r = draai_backtest(m, clubrijen, spelerrijen, prijsrijen, vanaf, tot, venster, min_minuten)
+        r = draai_backtest(m, clubrijen, spelerrijen, prijsrijen, vanaf, tot, venster,
+                           min_minuten, fbref=fbref)
         if r:
             resultaten.append((ks, kc, r))
 
     m.KRIMP_SPELER, m.KRIMP_CLUB = origineel_speler, origineel_club  # herstellen voor de netheid
+    waarschuw_randoptimum(resultaten, grid_speler, grid_club)
     return resultaten
+
+
+def waarschuw_randoptimum(resultaten, grid_speler, grid_club):
+    """Meldt het als de winnaar op de rand van het raster ligt.
+
+    Een optimum op de rand betekent niet "dit is de beste waarde" maar "het
+    raster houdt hier op" -- de echte optimale waarde ligt er waarschijnlijk
+    voorbij. Dat is geen theoretisch punt: op 13 september 2026 won
+    KRIMP_CLUB=8.0, de bovengrens van KRIMP_CLUB_GRID, en buiten het raster
+    bleven RMSE en rho monotoon verbeteren tot 128 (3,247/0,464 -> 3,234/0,484).
+    Zonder deze melding leest zo'n uitslag als een gevonden optimum.
+
+    Wat dat betekent is een aparte vraag: met 9 tot 27 wedstrijden schat
+    schat_clubratings() 37 parameters, dus vroeg in het seizoen is de fit
+    grotendeels ruis en wint bijna-volledig krimpen. Later in het seizoen keert
+    dat om. De juiste conclusie is dus niet "zet KRIMP_CLUB hoog", maar dat
+    deze constante met het aantal wedstrijden hoort mee te schalen.
+    """
+    if not resultaten:
+        return
+    ks, kc, _r = min(resultaten, key=lambda x: x[2]["rmse"])
+    for naam, waarde, raster in (("KRIMP_SPELER", ks, grid_speler),
+                                 ("KRIMP_CLUB", kc, grid_club)):
+        if waarde in (min(raster), max(raster)):
+            kant = "onderste" if waarde == min(raster) else "bovenste"
+            print(f"LET OP: de winnende {naam}={waarde} is de {kant} waarde van het "
+                  f"raster {raster}. Dat is geen optimum maar de rand -- het echte "
+                  f"optimum ligt er waarschijnlijk voorbij. Breid het raster uit "
+                  f"voordat je deze waarde overneemt.")
 
 
 def schrijf_constanten(pad, ks, kc):

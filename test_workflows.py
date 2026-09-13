@@ -57,6 +57,13 @@ def lokale_modules():
     return {p.stem: p for p in HIER.glob("*.py")}
 
 
+def alle_imports(pad):
+    """Elke naam die dit bestand importeert, ongefilterd."""
+    tekst = pad.read_text(encoding="utf-8")
+    return set(re.findall(r"^\s*(?:from|import)\s+([A-Za-z_][A-Za-z0-9_]*)",
+                          tekst, re.MULTILINE))
+
+
 def imports_van(pad, modules):
     """(lokale modules, externe pakketten) die dit bestand direct nodig heeft."""
     tekst = pad.read_text(encoding="utf-8")
@@ -200,20 +207,30 @@ def main():
     else:
         print("  OK   elke `git add` voegt alleen toe wat bestaat")
 
-    # Losse controle: elk lokaal script moet importeren wat het bestaat.
+    # Losse controle: elk script moet importeren wat bestaat.
+    #
+    # Deze controle liep eerst over `lok`, en `lok` is op dat moment al
+    # gefilterd met `if n in modules` (zie imports_van). De test `if m not in
+    # modules` was daardoor per constructie altijd onwaar: elke run meldde
+    # "alle onderlinge imports kloppen" en er was geen enkele invoer denkbaar
+    # waarbij hij iets zou vinden. Nu loopt hij over ALLE importnamen en
+    # meldt hij de namen die noch een lokaal script, noch een bekend extern
+    # pakket, noch een standaardbibliotheek zijn.
     print()
     kapot = []
     for naam, pad in sorted(modules.items()):
-        lok, _ = imports_van(pad, modules)
-        for m in lok:
-            if m not in modules:
-                kapot.append(f"{naam}.py importeert {m}, dat bestaat niet")
+        for n in alle_imports(pad):
+            if n in modules or n in EXTERN or n in sys.stdlib_module_names:
+                continue
+            kapot.append(f"{naam}.py importeert {n}, dat nergens vandaan komt "
+                         f"(geen script in deze map, geen pakket dat een workflow installeert)")
     if kapot:
         alles_ok = False
         for regel in kapot:
             print(f"  FOUT {regel}")
     else:
-        print(f"  OK   alle onderlinge imports tussen de {len(modules)} scripts kloppen")
+        print(f"  OK   elke import in de {len(modules)} scripts komt ergens vandaan "
+              f"(lokaal script, geïnstalleerd pakket of standaardbibliotheek)")
 
     print()
     if alles_ok:

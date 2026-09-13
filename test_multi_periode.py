@@ -64,6 +64,15 @@ def _horizon_opzet(m, start_ronde, horizon):
 
 DECAY = 0.84
 
+# Elke controle die ECHT op data gedraaid heeft, meldt zich hier. Zonder deze
+# teller eindigde de suite met exitcode 0 en de regel "OK: horizon=1 komt in
+# elk geval overeen met de brute-force zoeker" terwijl er nul vergelijkingen
+# waren gedaan -- bij een lege of ontbrekende programma.csv sloeg elke test
+# zichzelf over en gaf `return True`. Dat is geen geslaagde test maar een
+# afwezige test, en wekelijks.yml leest die exitcode als groen licht om
+# multi_periode.py te gebruiken. Geen data is geen uitspraak.
+GEDRAAID = []
+
 
 def test_score_klopt_met_waardering(ronde):
     """De MILP-score moet exact gelijk zijn aan de waarde van de gekozen ploeg.
@@ -85,6 +94,7 @@ def test_score_klopt_met_waardering(ronde):
     nieuw, score = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES,
                           reeksen=reeksen, decay=DECAY, aantal_rondes=len(rondes))
     ref = waardeer_horizon(m, reeksen, DECAY, nieuw, len(rondes))
+    GEDRAAID.append(f"score-waardering ronde {ronde}")
     goed = abs(score - ref) < 1e-9
     print(f"  {'OK  ' if goed else 'FOUT'} ronde {ronde}: MILP-score {score:.6f} == "
           f"onafhankelijke waardering {ref:.6f}")
@@ -105,6 +115,7 @@ def test_ladder_loopt_op(ronde):
         return True
     ladder = transferladder(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES,
                             reeksen=reeksen, decay=DECAY, aantal_rondes=len(rondes))
+    GEDRAAID.append(f"transferladder ronde {ronde}")
     marges = [round(mrg, 6) for _k, _p, _s, mrg in ladder[1:]]
     goed = all(mrg >= -1e-9 for mrg in marges)
     # En het aantal daadwerkelijk gewisselde spelers mag het tegoed niet overschrijden.
@@ -186,6 +197,7 @@ def test_bank_per_ronde():
     echt_oud = waardeer_horizon(m, reeksen, DECAY, oud, len(rondes))
     onderschatting = echt_oud - score_oud
     ok_bias = onderschatting >= -1e-9
+    GEDRAAID.append(f"bank per ronde, horizon {rondes}")
 
     print(f"  {'OK  ' if ok_exact else 'FOUT'} horizon {rondes}: MILP-score {score:.6f} == "
           f"waardering {ref:.6f}")
@@ -321,6 +333,7 @@ def test_inhaalronde_telt_mee():
         print(f"  FOUT inhaalronde: horizon brak af op een ronde met alleen "
               f"inhaalduels ({thuis}-{uit}); pool is leeg, MILP zou 0.00 geven")
         return False
+    GEDRAAID.append("inhaalronde")
     print(f"  inhaalronde ({thuis}-{uit}): pool gevuld, {len(metadata)} kandidaten")
     return True
 
@@ -375,7 +388,22 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     namen_milp = {p["speler"] for p in nieuw}
     namen_bf = {s["speler"] for s in selectie_0 if s["speler"] not in {x["speler"] for x in uit_bf}} | {x["speler"] for x in in_bf}
 
-    ok_score = abs(score_milp - score_bf) < 0.05
+    GEDRAAID.append(f"MILP vs brute force, ronde {ronde}, {transfers} transfer(s)")
+
+    # ASYMMETRISCH vergelijken, en dat is geen slordigheid maar het enige wat
+    # klopt. De brute-force zoeker is NIET uitputtend: beste_transfers() snoeit
+    # per (club, positie) tot de twee hoogste E's (`per_slot=2`). Bij meerdere
+    # transfers kan het echte optimum een speler nodig hebben die door die
+    # snoei is weggevallen. De MILP vindt die wel.
+    #
+    # Een MILP die HOGER uitkomt is dus geen fout maar precies de meerwaarde
+    # waarvoor hij er is. Toch keurde deze test dat af -- de vergelijking was
+    # `abs(milp - bf) < 0.05`, symmetrisch -- met als gevolg dat wekelijks.yml
+    # terugviel op de zoeker die het mis had, stil, met een mail die er normaal
+    # uitzag. Alleen een MILP die LAGER uitkomt dan een gesnoeide zoeker is een
+    # echte fout.
+    gesnoeid = score_milp > score_bf + 0.05
+    ok_score = score_milp > score_bf - 0.05
     ok_spelers = namen_milp == namen_bf
 
     # Verschilt de spelersgroep, dan is dat alleen onschuldig als het om een
@@ -395,10 +423,21 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
         gelijkstand = len(alleen_milp) == len(alleen_bf) and es_milp == es_bf and not any(
             v != v for v in es_milp + es_bf)  # NaN uitsluiten (speler nergens gevonden)
 
-    status = "gelijk" if ok_spelers else ("gelijkspel (E's kloppen exact)" if gelijkstand else "VERSCHILT")
+    if ok_spelers:
+        status = "gelijk"
+    elif gelijkstand:
+        status = "gelijkspel (E's kloppen exact)"
+    elif gesnoeid:
+        status = "anders -- MILP vond een beter elftal (brute force snoeit)"
+    else:
+        status = "VERSCHILT"
     merk = " [vervuilde naam]" if vervuild else ""
     print(f"  ronde {ronde}, {transfers} transfer(s){merk}: MILP {score_milp:.2f} vs "
           f"brute-force {score_bf:.2f}  spelersgroep {status}")
+    if gesnoeid:
+        print(f"    +{score_milp - score_bf:.2f} voor de MILP. Geen fout: "
+              f"beste_transfers() houdt per club+positie maar 2 kandidaten over "
+              f"(per_slot=2), dus die kan dit elftal niet bereiken.")
     if not (ok_score and (ok_spelers or gelijkstand)) and vervuild:
         print("    Dit is het geval van 17 september 2026: als de twee takken een "
               "vervuilde naam verschillend koppelen, lopen ze hier uiteen. "
@@ -415,7 +454,7 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
         if any(v != v for v in es_milp + es_bf):
             print("    (NaN = speler zit niet in pool_0 en ook niet in de selectie "
                   "-- dat hoort niet te kunnen)")
-    return ok_score and (ok_spelers or gelijkstand)
+    return ok_score and (ok_spelers or gelijkstand or gesnoeid)
 
 
 def main():
@@ -454,6 +493,17 @@ def main():
         alles_ok = False
 
     print()
+    if not GEDRAAID:
+        sys.exit(
+            "MISLUKT: er is geen enkele controle op echte data gedraaid -- elke test "
+            "sloeg zichzelf over omdat programma.csv leeg is of ontbreekt.\n"
+            "Dit is geen geslaagde test maar een afwezige test. Draai eerst "
+            "scrape_programma.py.\n"
+            "(Eerder eindigde deze suite hier met exitcode 0 en de mededeling dat de "
+            "MILP overeenkwam met de brute-force zoeker -- zonder een enkele "
+            "vergelijking te hebben gedaan. wekelijks.yml las dat als groen licht.)")
+
+    print(f"{len(GEDRAAID)} controle(s) op echte data gedraaid.")
     if alles_ok:
         print("OK: horizon=1 komt in elk geval overeen met de brute-force zoeker.")
     else:

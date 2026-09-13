@@ -20,13 +20,14 @@ Wat er WEL en NIET verandert ten opzichte van cvhj_model.py:
   wedstrijd alleen de twee clubs (via de clubratings), geen kans_thuis/
   kans_gelijk/kans_uit. Een ronde ver vooruit, zonder kansen vooraf, is dus
   even bruikbaar als de eerstvolgende.
-- De bank-korting (zwakste per linie telt 50%) wordt toegepast op de
-  SOM van de afgetakelde punten per speler, niet per ronde apart. Dat is een
-  bewuste vereenvoudiging: wie er per toekomstige ronde op de bank zou moeten,
-  simuleren zou het aantal variabelen met een factor `horizon` vermenigvuldigen
-  voor weinig extra scherpte -- de daadwerkelijke opstelling per ronde blijft
-  toch elke week een losse beslissing (cvhj_model.py's advies voor DIE ronde
-  gebruikt gewoon zijn eigen E, ongewijzigd).
+- De bank-korting (zwakste per linie telt 50%) wordt PER RONDE toegepast,
+  net als op de site. Tot 13 september 2026 gebeurde dat op de som over de
+  horizon, als bewuste vereenvoudiging. Dat bleek geen vereenvoudiging maar
+  een fout in de doelfunctie: de MILP maximaliseerde iets anders dan wat je
+  werkelijk scoort, en onderschatte stelselmatig de ploeg waarvan de zwakste
+  schakel per ronde wisselt. De extra variabelen (n per ronde) kosten niets --
+  de oplostijd ging van 20 naar 140 ms bij horizon 3. waardeer_horizon() is de
+  onafhankelijke referentie waartegen test_multi_periode.py dat naleest.
 - Inhaalduels worden alleen voor de eerstvolgende ronde meegeteld, zoals in
   cvhj_model.py. Een inhaalduel drie ronden verderop zou dubbel tellen met de
   reguliere wedstrijd van die ronde, dus wordt dat risico hier vermeden door
@@ -476,7 +477,18 @@ def main():
     clubrijen = m.lees(a.clubs)
     spelerrijen = m.lees(a.spelers)
     prijsrijen = m.lees(a.prijzen)
-    selectie_in = m.lees_selectie(a.selectie) or m.SELECTIE
+    # HARD stoppen in plaats van stil terugvallen. Hier stond
+    # `m.lees_selectie(a.selectie) or m.SELECTIE`: ontbrak selectie.csv, dan
+    # draaide het advies op de hardgecodeerde ploeg van 6 september -- zonder
+    # een enkele melding, ook niet in het log (cvhj_model.py printte tenminste
+    # nog een LET OP). Een advies over de verkeerde ploeg is erger dan geen
+    # advies; de workflow valt dan terug op cvhj_model.py en dat meldt het.
+    selectie_in = m.lees_selectie(a.selectie)
+    if selectie_in is None:
+        sys.exit(f"GEEN SELECTIE: {a.selectie} niet gevonden. Zonder je echte "
+                 f"vijftien is elk transferadvies over een andere ploeg dan de "
+                 f"jouwe. Draai synchroniseer_selectie.py --schrijf, of geef "
+                 f"--selectie met het juiste pad.")
 
     perioden = m.lees_perioden(a.perioden)
     periode, is_start, tot_volgende = m.periodestand(a.ronde, perioden)
@@ -661,6 +673,10 @@ def main():
     if a.json:
         besluit = {
             "ronde": a.ronde,
+            "model": "multi_periode",
+            "bron_programma": "bestand",
+            "bron_selectie": "bestand",
+            "stats_bron": m.stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
             "transfers_beschikbaar": transfers_beschikbaar,

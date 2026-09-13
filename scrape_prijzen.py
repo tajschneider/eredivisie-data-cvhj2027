@@ -370,6 +370,27 @@ def main():
           f"{sum(1 for r in rijen if r['blessure'])} geblesseerd")
     print(f"  rol:     " + ", ".join(f"{k}={v}" for k, v in sorted(tel_rol.items())))
 
+    # Koppelgraad met spelers.csv. De slug uit pouletips' href is de sleutel
+    # waarop bouw_pool() speeltijd en vorm opzoekt; komt hij daar niet voor,
+    # dan valt die speler stil uit de markt -- geen crash, geen melding, hij
+    # is er gewoon niet meer. Op 13 september kwamen 93 van de 512 slugs niet
+    # voor in spelers.csv, waarvan 42 met het achtervoegsel "-nieuw" (verse
+    # aanwinsten die nog niet gespeeld hebben; die HOREN te ontbreken).
+    # Daarom geen harde grens maar een getal dat je week op week kunt volgen:
+    # een sprong erin betekent dat de sleutel is veranderd.
+    pad_spelers = Path("spelers.csv")
+    if pad_spelers.exists():
+        with pad_spelers.open(encoding="utf-8") as f:
+            bekend = {r.get("speler_id") for r in csv.DictReader(f)}
+        mist = [r for r in rijen if r["speler_id"] not in bekend]
+        nieuw = [r for r in mist if r["speler_id"].endswith("-nieuw")]
+        print(f"\n  Koppeling met spelers.csv: {len(rijen) - len(mist)}/{len(rijen)} "
+              f"op slug gevonden; {len(mist)} niet, waarvan {len(nieuw)} nieuw aangetrokken.")
+        if len(mist) - len(nieuw) > len(rijen) * 0.25:
+            print("  LET OP: meer dan een kwart van de markt koppelt niet en is ook "
+                  "niet als nieuw gemarkeerd. Waarschijnlijk is de slug-opbouw "
+                  "op pouletips gewijzigd; controleer een href met --dump.")
+
     # De controle waar het echt om gaat: staat er nog een statuswoord IN een naam?
     # Een lege rol-kolom is op zichzelf onschuldig (pouletips markeert lang niet
     # elke speler), maar een statuswoord dat aan de naam blijft plakken breekt de

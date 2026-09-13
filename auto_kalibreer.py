@@ -181,7 +181,9 @@ def main():
         # buiten het raster om heeft gezet) -- reken ze apart uit als referentie.
         from calibrate import draai_backtest
         m.KRIMP_SPELER, m.KRIMP_CLUB = origineel_speler, origineel_club
-        huidig = draai_backtest(m, clubrijen, spelerrijen, prijsrijen, a.vanaf, tot, a.venster, a.min_minuten)
+        huidig = draai_backtest(m, clubrijen, spelerrijen, prijsrijen, a.vanaf, tot,
+                                a.venster, a.min_minuten,
+                                fbref=m.lees_spelerstats(m.stats_pad("spelerstats.csv")))
         m.KRIMP_SPELER, m.KRIMP_CLUB = origineel_speler, origineel_club
 
     beste = min(resultaten, key=lambda x: x[2]["rmse"])
@@ -197,10 +199,30 @@ def main():
     relatieve_verbetering = (huidig["rmse"] - r_kand["rmse"]) / huidig["rmse"] if huidig["rmse"] else 0
     log["relatieve_verbetering"] = relatieve_verbetering
 
+    # Hoeveel winst zit er überhaupt IN dit raster? Zonder dat getal is
+    # "onder de drempel" een mededeling zonder betekenis: op 13 september 2026
+    # spande het hele raster 3,23-3,43 en was de best haalbare winst ten
+    # opzichte van de huidige instelling 0,34%, terwijl de drempel op 3% stond.
+    # Dit script kon dus per constructie nooit iets aanpassen, ook niet met
+    # dertig ronden data -- het was een permanente uit-knop die eruitzag als
+    # een waarborg. De drempel blijft staan (hem verlagen op basis van drie
+    # ronden zou pas echt ruis fitten), maar hij meldt zichzelf nu.
+    beste_haalbaar = min(r["rmse"] for _ks, _kc, r in resultaten)
+    max_winst = (huidig["rmse"] - beste_haalbaar) / huidig["rmse"] if huidig["rmse"] else 0
+    log["max_haalbare_verbetering"] = max_winst
+
     if relatieve_verbetering < a.min_verbetering:
+        extra = ""
+        if max_winst < a.min_verbetering:
+            extra = (f" LET OP: de best haalbare winst in het HELE raster is {max_winst:.2%}, "
+                     f"nog steeds onder de drempel van {a.min_verbetering:.0%}. Deze kalibratie "
+                     f"kan dus niets aanpassen, wat je ook meet -- de drempel past niet bij de "
+                     f"schaal van deze maatstaf. Overweeg te ijken op de werkelijk behaalde "
+                     f"punten van de gekozen vijftien in plaats van op RMSE over de hele pool: "
+                     f"daar zijn de verschillen een orde van grootte groter.")
         stop(log, status, status_pad, tot, "geen aanpassing",
              f"verbetering {relatieve_verbetering:.1%} onder de drempel van {a.min_verbetering:.0%} "
-             "-- binnen de ruis van dit aantal rondes")
+             f"-- binnen de ruis van dit aantal rondes.{extra}")
         return
 
     consistent, gedeeld, n_beter = is_consistent_beter(r_kand, huidig)
