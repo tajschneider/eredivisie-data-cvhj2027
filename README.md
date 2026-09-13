@@ -550,6 +550,35 @@ in de workflow steeds `HORIZON_SCRAPE` ronden op (standaard 6, ruim boven de
 langste periode van 5) -- ronden die de auto-horizon niet nodig heeft, worden
 door `multi_periode.py` gewoon genegeerd.
 
+**Wat levert elke transfer op?** De zoeker gebruikte zijn transfertegoed altijd
+volledig op zodra het iets opleverde -- ook als dat een tiende punt was. Een
+transfer heeft optiewaarde (je hebt er een paar per periode) en die stond
+nergens in de formulering. Elke run lost nu k = 0..transfers op en toont de
+marginale winst per extra transfer:
+
+```
+WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
+  0 transfer(s):   11.66
+  1 transfer(s):   13.05   +1.39 t.o.v. 0
+  2 transfer(s):   13.15   +0.10 t.o.v. 1
+  3 transfer(s):   13.30   +0.15 t.o.v. 2
+```
+
+Met `--transfer-drempel PUNTEN` gebruikt de zoeker alleen de transfers die
+minstens dat aantal punten opleveren, en stopt hij bij de eerste magere stap.
+Standaard staat de drempel op **0.0** -- dus het oude gedrag, alles gebruiken
+wat wint. Die standaard is met opzet zo: de drempel is een ongekalibreerde
+keuze, en zo'n keuze hoort niet stilletjes je advies te veranderen. De ladder
+staat er wel altijd, zodat je zelf ziet wanneer hij zou helpen.
+
+**Bank per ronde.** De MILP koos één bankspeler per linie voor de hele
+horizon; de site stelt elke ronde opnieuw op. Dat maakte de doelfunctie iets
+anders dan wat je werkelijk scoort (ongeveer 1% op drie ronden). Nu krijgt
+elke ronde eigen bankvariabelen, en `waardeer_horizon()` is de onafhankelijke
+referentie waartegen `test_multi_periode.py` de MILP-score naleest: wijken die
+twee af, dan optimaliseert de solver het verkeerde. Bij horizon 1 is de
+formulering letterlijk ongewijzigd.
+
 **Waarborg vóór vertrouwen, niet erna.** Elke run voert eerst
 `test_multi_periode.py` uit -- dezelfde regressietest die hierboven liet zien
 dat de MILP bij horizon 1 exact overeenkomt met de brute-force zoeker. Faalt

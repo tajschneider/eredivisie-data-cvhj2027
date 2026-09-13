@@ -20,7 +20,9 @@ huidige map (dezelfde bestanden als voor cvhj_model.py).
 """
 import sys
 
-from multi_periode import bereken_multi_E, bouw_horizon_pools, koppel_selectie, laad_model, lees_programma_per_ronde, los_op
+from multi_periode import (bereken_multi_E, bouw_horizon_pools, kies_uit_ladder,
+                           koppel_selectie, laad_model, lees_programma_per_ronde, los_op,
+                           transferladder, waardeer_horizon)
 
 
 def vervuil_een_naam(prijsrijen, selectie_in, m):
@@ -41,6 +43,171 @@ def vervuil_een_naam(prijsrijen, selectie_in, m):
             r["speler"] = r["speler"] + " basis"
             return r["speler"]
     return None
+
+
+def _horizon_opzet(m, start_ronde, horizon):
+    """Gedeelde opzet voor de horizon-tests: pools, E's en de huidige 15."""
+    clubrijen = m.lees("clubs.csv")
+    spelerrijen = m.lees("spelers.csv")
+    prijsrijen = m.lees("prijzen.csv")
+    selectie_in = m.lees_selectie("selectie.csv") or m.SELECTIE
+    aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
+    per_ronde = lees_programma_per_ronde("programma.csv", m)
+    reeksen, metadata, rondes = bouw_horizon_pools(
+        m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
+        per_ronde, start_ronde, horizon, venster=6, min_minuten=60)
+    e_multi = bereken_multi_E(reeksen, DECAY)
+    kandidaten = list(metadata.values())
+    selectie_ids, _ = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
+    return reeksen, e_multi, kandidaten, selectie_ids, rondes
+
+
+DECAY = 0.84
+
+
+def test_score_klopt_met_waardering(ronde):
+    """De MILP-score moet exact gelijk zijn aan de waarde van de gekozen ploeg.
+
+    Dit is de belangrijkste controle op de formulering, en hij staat los van
+    de solver: waardeer_horizon() stelt de ploeg per ronde gewoon zelf op via
+    cvhj_model.opstelling(). Zegt de solver 'optimal' maar wijken de twee af,
+    dan meet de doelfunctie iets anders dan wat je werkelijk scoort -- en dan
+    optimaliseert hij het verkeerde.
+
+    Precies dat was het geval met de oude formulering: die koos EEN bank voor
+    de hele horizon, terwijl de site per ronde opstelt.
+    """
+    m = laad_model()
+    reeksen, e_multi, kandidaten, selectie_ids, rondes = _horizon_opzet(m, ronde, 1)
+    if not rondes:
+        print(f"  overgeslagen: geen programma voor ronde {ronde}")
+        return True
+    nieuw, score = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES,
+                          reeksen=reeksen, decay=DECAY, aantal_rondes=len(rondes))
+    ref = waardeer_horizon(m, reeksen, DECAY, nieuw, len(rondes))
+    goed = abs(score - ref) < 1e-9
+    print(f"  {'OK  ' if goed else 'FOUT'} ronde {ronde}: MILP-score {score:.6f} == "
+          f"onafhankelijke waardering {ref:.6f}")
+    return goed
+
+
+def test_ladder_loopt_op(ronde):
+    """Meer transfers mogen nooit tot een lagere score leiden.
+
+    Met k transfers toegestaan is elke oplossing met k-1 transfers ook
+    toelaatbaar -- de verzameling wordt alleen maar groter. Een dalende stap
+    betekent dus een fout in de transferconstraint, niet een inzicht.
+    """
+    m = laad_model()
+    reeksen, e_multi, kandidaten, selectie_ids, rondes = _horizon_opzet(m, ronde, 1)
+    if not rondes:
+        print(f"  overgeslagen: geen programma voor ronde {ronde}")
+        return True
+    ladder = transferladder(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES,
+                            reeksen=reeksen, decay=DECAY, aantal_rondes=len(rondes))
+    marges = [round(mrg, 6) for _k, _p, _s, mrg in ladder[1:]]
+    goed = all(mrg >= -1e-9 for mrg in marges)
+    # En het aantal daadwerkelijk gewisselde spelers mag het tegoed niet overschrijden.
+    for k, ploeg, _s, _mrg in ladder:
+        gewisseld = len([p for p in ploeg if p["speler_id"] not in selectie_ids])
+        if gewisseld > k:
+            print(f"  FOUT ronde {ronde}: {gewisseld} wissels bij een tegoed van {k}")
+            goed = False
+    print(f"  {'OK  ' if goed else 'FOUT'} ronde {ronde}: marginale winst {marges} "
+          f"(nooit negatief, nooit meer wissels dan toegestaan)")
+    return goed
+
+
+def test_bank_per_ronde():
+    """Over MEERDERE ronden moet de bank per ronde gekozen worden.
+
+    De test hierboven draait op horizon 1, en daar zijn de twee formuleringen
+    letterlijk identiek -- hij zou de fout dus niet zien. Daarom bouwt deze
+    test zelf een horizon van drie ronden, door de loting van de laatst
+    bekende ronde twee keer door te rouleren. Dat geeft per ronde een andere
+    tegenstander en dus een andere zwakste schakel, precies de situatie waarin
+    een vaste bank voor de hele horizon tekortschiet.
+
+    Rouleren, niet loten: de uitkomst moet reproduceerbaar zijn.
+    """
+    m = laad_model()
+    per_ronde = lees_programma_per_ronde("programma.csv", m)
+    if not per_ronde:
+        print("  overgeslagen: geen programma.csv")
+        return True
+    bron = max(per_ronde)
+    programma, _ = per_ronde[bron]
+    if len(programma) < 3:
+        print(f"  overgeslagen: ronde {bron} heeft te weinig duels om te rouleren")
+        return True
+
+    clubs = [c for duel in programma for c in duel]
+    kunstmatig = dict(per_ronde)
+    for stap in (1, 2):
+        # ONEVEN rouleren. Even rouleren verschuift hele koppels en levert
+        # exact dezelfde wedstrijden op -- dan zijn alle ronden identiek,
+        # wisselt de zwakste schakel nooit, en test dit niets. Dat was de
+        # eerste versie van deze test, en hij stond op groen.
+        gedraaid = clubs[2 * stap - 1:] + clubs[:2 * stap - 1]
+        kunstmatig[bron + stap] = ([(gedraaid[i], gedraaid[i + 1])
+                                    for i in range(0, len(gedraaid) - 1, 2)
+                                    if gedraaid[i] != gedraaid[i + 1]], {})
+
+    clubrijen = m.lees("clubs.csv")
+    spelerrijen = m.lees("spelers.csv")
+    prijsrijen = m.lees("prijzen.csv")
+    selectie_in = m.lees_selectie("selectie.csv") or m.SELECTIE
+    aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
+    reeksen, metadata, rondes = bouw_horizon_pools(
+        m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
+        kunstmatig, bron, 3, venster=6, min_minuten=60)
+    if len(rondes) < 2:
+        print(f"  overgeslagen: horizon werd maar {len(rondes)} ronde(n)")
+        return True
+    e_multi = bereken_multi_E(reeksen, DECAY)
+    kandidaten = list(metadata.values())
+    selectie_ids, _ = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
+
+    nieuw, score = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES,
+                          reeksen=reeksen, decay=DECAY, aantal_rondes=len(rondes))
+    ref = waardeer_horizon(m, reeksen, DECAY, nieuw, len(rondes))
+    ok_exact = abs(score - ref) < 1e-9
+
+    # De oude formulering (één bank voor de hele horizon) kan zijn eigen ploeg
+    # nooit TE HOOG inschatten: per ronde de zwakste kiezen is minstens zo goed
+    # als één keuze voor alle ronden. Dat is de invariant die hier hoort.
+    #
+    # Dat de onderschatting POSITIEF is, is geen invariant en wordt hier dus
+    # ook niet geëist: de bankspeler is meestal een speler met bijna nul E in
+    # elke ronde, en dan is hij elke ronde de zwakste en valt er niets te
+    # winnen. Een eerdere versie eiste wel een positief verschil en liep
+    # daarop vast -- terecht. Het getal wordt gerapporteerd, niet afgedwongen.
+    oud, score_oud = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, 3, m.FORMATIES)
+    echt_oud = waardeer_horizon(m, reeksen, DECAY, oud, len(rondes))
+    onderschatting = echt_oud - score_oud
+    ok_bias = onderschatting >= -1e-9
+
+    print(f"  {'OK  ' if ok_exact else 'FOUT'} horizon {rondes}: MILP-score {score:.6f} == "
+          f"waardering {ref:.6f}")
+    print(f"  {'OK  ' if ok_bias else 'FOUT'} vaste bank onderschat zijn eigen ploeg met "
+          f"{onderschatting:.3f} ({onderschatting / echt_oud * 100:.2f}%) -- nooit negatief")
+    return ok_exact and ok_bias
+
+
+def test_drempel_kiest_conservatief():
+    """kies_uit_ladder() stopt bij de eerste magere stap, niet bij de beste."""
+    ladder = [(0, [], 10.0, 0.0), (1, [], 12.0, 2.0), (2, [], 12.1, 0.1), (3, [], 14.0, 1.9)]
+    proeven = [(0.0, 3), (0.5, 1), (2.5, 0)]
+    ok = True
+    for drempel, verwacht in proeven:
+        k = kies_uit_ladder(ladder, drempel)[0]
+        if k != verwacht:
+            print(f"  FOUT drempel {drempel}: koos {k} transfers, verwacht {verwacht}")
+            ok = False
+    if ok:
+        print("  OK   drempel 0.0 -> 3 transfers, 0.5 -> 1 (stopt bij de stap van +0.1), "
+              "2.5 -> 0")
+    return ok
 
 
 def e_waarde(naam, e_pool0, selectie_in):
@@ -269,6 +436,18 @@ def main():
         if not test_horizon_1_matcht_brute_force(ronde, 1, vervuild=True):
             alles_ok = False
 
+    print()
+    for ronde in rondes:
+        if not test_score_klopt_met_waardering(ronde):
+            alles_ok = False
+        if not test_ladder_loopt_op(ronde):
+            alles_ok = False
+    if not test_bank_per_ronde():
+        alles_ok = False
+    if not test_drempel_kiest_conservatief():
+        alles_ok = False
+
+    print()
     if not test_e_waarde():
         alles_ok = False
     if not test_inhaalronde_telt_mee():
@@ -278,7 +457,9 @@ def main():
     if alles_ok:
         print("OK: horizon=1 komt in elk geval overeen met de brute-force zoeker.")
     else:
-        sys.exit("MISLUKT: zie hierboven -- de MILP-formulering wijkt af van de brute-force zoeker.")
+        sys.exit("MISLUKT: zie hierboven -- de MILP-formulering klopt niet "
+                 "(afwijking van de brute-force zoeker, van de onafhankelijke "
+                 "waardering, of van de transferregel).")
 
 
 if __name__ == "__main__":

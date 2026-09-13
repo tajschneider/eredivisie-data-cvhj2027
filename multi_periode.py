@@ -141,10 +141,49 @@ def bereken_multi_E(reeksen, decay):
 
 
 def som_horizon(reeksen, decay, spelers):
-    """Gedecayde som over de horizon voor een gegeven groep spelers (dood slot
-    of niet in de horizon-pool telt als 0, net als bereken_multi_E)."""
+    """Gedecayde som over de horizon voor een gegeven groep spelers, ZONDER
+    bankkorting -- alle vijftien tellen voor 100%.
+
+    Dit is niet de waarde van een ploeg; daarvoor is waardeer_horizon(). Deze
+    functie blijft bestaan omdat hij precies bereken_multi_E() weerspiegelt
+    (dood slot of niet in de pool telt als 0), wat handig is om te
+    controleren dat die twee hetzelfde optellen."""
     return sum(sum((decay ** k) * e for k, e in enumerate(reeksen.get(s["speler_id"], [])))
               for s in spelers)
+
+
+def ronde_e(reeksen, speler_id, k):
+    """E van deze speler in ronde-index k; 0.0 als hij er niet in voorkomt."""
+    waarden = reeksen.get(speler_id, ())
+    return waarden[k] if k < len(waarden) else 0.0
+
+
+def waardeer_horizon(m, reeksen, decay, spelers, aantal_rondes):
+    """DE waarde van een ploeg over de horizon: per ronde de beste opstelling,
+    met de zwakste per linie op de bank voor 50%, gedecayd opgeteld.
+
+    Waarom dit er moet zijn. De MILP rekende met EEN bank voor de hele
+    horizon, terwijl de site per ronde opnieuw opstelt. Op drie ronden scheelt
+    dat zo'n 0,6% -- klein, maar niet willekeurig: het benadeelt stelselmatig
+    de ploeg waarvan de zwakste schakel per ronde wisselt, en dat is juist een
+    goed gespreide ploeg.
+
+    Erger was de vergelijking die main() liet zien. Daar stond de MILP-score
+    (mét bankkorting) naast som_horizon() van het huidige team (ZONDER
+    bankkorting). Twee getallen op één regel, in verschillende eenheden, met
+    "huidig team" ernaast alsof het een eerlijke vergelijking was. Nu rekenen
+    beide kanten via deze ene functie.
+
+    Die dubbelrol is met opzet: dit is ook de ONAFHANKELIJKE referentie
+    waartegen test_multi_periode.py de MILP-score naleest. Komen die twee niet
+    tot op een haar overeen, dan klopt de formulering niet -- ongeacht of de
+    solver 'optimal' zegt.
+    """
+    totaal = 0.0
+    for k in range(aantal_rondes):
+        per_ronde = [{**s, "E": ronde_e(reeksen, s["speler_id"], k)} for s in spelers]
+        totaal += (decay ** k) * m.opstelling(per_ronde)[2]
+    return totaal
 
 
 def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
@@ -181,15 +220,44 @@ def koppel_selectie(m, selectie_in, kandidaten, extra_waarde=None):
     return selectie_ids, bijna_match
 
 
-def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, formaties_dict):
+# Miniem gewicht om gelijke oplossingen deterministisch te breken ten gunste
+# van de huidige selectie. Zie de uitleg bij los_op(); de waarde is zo gekozen
+# dat vijftien keer deze straf (1.5e-5) ruim onder elke betekenisvolle winst
+# blijft -- en ook onder de 0,05 waarmee test_multi_periode.py scores
+# vergelijkt.
+TIEBREAK = 1e-6
+
+
+def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, formaties_dict,
+           reeksen=None, decay=None, aantal_rondes=1):
     """De MILP: kies 15 spelers (met bankplek-korting), binnen budget/club/
     formatie/transferregels, die de som van e_multi maximaliseren.
 
     `kandidaten`: lijst van pool-dicts (speler, speler_id, club, pos, prijs).
     `selectie_ids`: speler_id's van de HUIDIGE 15 (voor de transferregel).
     `formaties_dict`: cvhj_model.FORMATIES, {(v,m,a)-telling: naam}.
+    `reeksen`/`decay`/`aantal_rondes`: geef deze mee om de bank PER RONDE te
+        laten kiezen (zie hieronder). Zonder deze drie valt de functie terug
+        op één bank voor de hele horizon -- bij horizon 1 is dat hetzelfde.
     Retourneert (nieuwe_selectie: list[dict], score: float) of (None, None)
     als er geen toelaatbare oplossing is.
+
+    BANK PER RONDE. De eerste versie koos één bankspeler per linie voor de
+    hele horizon. De site stelt elke ronde opnieuw op, dus dat onderschatte
+    elke ploeg, en niet gelijkmatig: juist de ploeg waarvan de zwakste schakel
+    per ronde wisselt werd benadeeld. Gemeten op drie ronden: 130,21 tegen
+    130,98, oftewel 0,6%. Met `reeksen` erbij krijgt elke ronde zijn eigen
+    bankvariabelen. Bij horizon 1 verandert er niets -- dan is het letterlijk
+    dezelfde formulering.
+
+    TIE-BREAK. In een ronde met weinig wedstrijden heeft het overgrote deel
+    van de markt E=0 (gemeten: 78% in een inhaalronde). Er zijn dan duizenden
+    even goede ploegen en de solver kiest er willekeurig een; volgende week
+    mogelijk een andere, zonder dat er iets te winnen valt. Daarom een
+    minieme straf op elke speler die NIET in de huidige selectie zit: bij een
+    exacte gelijkstand wint behoud. De straf zit alleen in de doelfunctie die
+    de solver minimaliseert -- de teruggegeven `score` wordt apart uitgerekend
+    en is er dus vrij van.
     """
     n = len(kandidaten)
     if n == 0:
@@ -198,20 +266,34 @@ def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, form
     posities = ["K", "V", "M", "A"]
     formaties = list(formaties_dict.items())  # [((v,m,a), naam), ...]
 
-    # Variabelen: x_0..x_{n-1} (in selectie), y_0..y_{n-1} (bankplek van zijn
-    # linie), f_0..f_{len(formaties)-1} (welke formatie actief is).
+    # Bank per ronde alleen als we de E per ronde kennen. Anders één bank voor
+    # de hele horizon, precies zoals voorheen.
+    per_ronde = reeksen is not None and decay is not None
+    n_r = aantal_rondes if per_ronde else 1
+
+    def bank_e(i, k):
+        """De E waarmee een bankplek in ronde k gewogen wordt."""
+        if per_ronde:
+            return (decay ** k) * ronde_e(reeksen, kandidaten[i]["speler_id"], k)
+        return e_multi.get(kandidaten[i]["speler_id"], 0.0)
+
+    # Variabelen: x_0..x_{n-1} (in selectie), y_{i,k} (speler i is bankplek van
+    # zijn linie in ronde k), f_0..f_{len(formaties)-1} (actieve formatie).
     n_f = len(formaties)
-    n_var = 2 * n + n_f
+    n_var = n + n * n_r + n_f
 
     def x(i): return i
-    def y(i): return n + i
-    def f(j): return 2 * n + j
+    def y(i, k=0): return n + k * n + i
+    def f(j): return n + n * n_r + j
 
     c = np.zeros(n_var)
     for i, p in enumerate(kandidaten):
         e = e_multi.get(p["speler_id"], 0.0)
         c[x(i)] = -e         # maximaliseren = minimaliseren van -e
-        c[y(i)] = 0.5 * e    # de bankspeler levert -0.5*e op in de doelfunctie
+        if p["speler_id"] not in selectie_ids:
+            c[x(i)] += TIEBREAK      # gelijkspel? dan wint behoud
+        for k in range(n_r):
+            c[y(i, k)] = 0.5 * bank_e(i, k)   # bank telt voor 50%
 
     constraints = []
     A_eq_rows, b_eq = [], []
@@ -244,23 +326,25 @@ def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, form
             row[f(j)] = -telling[li]
         eq(row, 0)
 
-    # 5. exact 1 bankplek per linie
-    for pos in posities:
-        row = np.zeros(n_var)
-        for i, p in enumerate(kandidaten):
-            if p["pos"] == pos: row[y(i)] = 1
-        eq(row, 1)
+    # 5. exact 1 bankplek per linie, PER RONDE
+    for k in range(n_r):
+        for pos in posities:
+            row = np.zeros(n_var)
+            for i, p in enumerate(kandidaten):
+                if p["pos"] == pos: row[y(i, k)] = 1
+            eq(row, 1)
 
     A_ub_rows, b_ub = [], []
 
     def ub(row, waarde):
         A_ub_rows.append(row); b_ub.append(waarde)
 
-    # 6. y_i <= x_i (alleen een geselecteerde speler kan de bankplek zijn)
-    for i in range(n):
-        row = np.zeros(n_var)
-        row[y(i)] = 1; row[x(i)] = -1
-        ub(row, 0)
+    # 6. y_{i,k} <= x_i (alleen een geselecteerde speler kan de bankplek zijn)
+    for k in range(n_r):
+        for i in range(n):
+            row = np.zeros(n_var)
+            row[y(i, k)] = 1; row[x(i)] = -1
+            ub(row, 0)
 
     # 7. budget
     row = np.zeros(n_var)
@@ -295,12 +379,62 @@ def los_op(kandidaten, e_multi, selectie_ids, budget, transfers_toegestaan, form
     if not res.success:
         return None, None
 
+
     xv = res.x[:n]
     gekozen = [kandidaten[i] for i in range(n) if xv[i] > 0.5]
+    # De score los van de doelfunctie uitrekenen, zodat de TIEBREAK-straf er
+    # niet in meelekt en het getal precies betekent wat het zegt.
     score = sum(e_multi.get(p["speler_id"], 0.0) for p in gekozen)
-    bankspelers = {kandidaten[i]["speler_id"] for i in range(n) if res.x[y(i)] > 0.5}
-    score -= 0.5 * sum(e_multi.get(sid, 0.0) for sid in bankspelers)
+    for k in range(n_r):
+        score -= 0.5 * sum(bank_e(i, k) for i in range(n) if res.x[y(i, k)] > 0.5)
     return gekozen, score
+
+
+def transferladder(kandidaten, e_multi, selectie_ids, budget, maximaal, formaties_dict,
+                   reeksen=None, decay=None, aantal_rondes=1):
+    """Wat levert de 1e, 2e, ... transfer eigenlijk op?
+
+    De MILP kreeg tot nu toe een vast aantal transfers mee en gebruikte dat
+    altijd volledig op zodra het iets opleverde -- ook als dat een tiende punt
+    was. Gemeten in een inhaalronde: de eerste transfer bracht +1,39, de
+    tweede +0,10. Een transfer heeft optiewaarde (je hebt er een paar per
+    periode) en die stond nergens in de formulering. Zelfs de code wist het
+    half: er staat al een waarschuwing dat een transfer bewaren kan lonen bij
+    een periodestart, naast een optimalisator die er niets mee deed.
+
+    Deze functie lost het probleem k = 0..maximaal keer op en geeft per stap
+    de marginale winst. Dat is geen aanname maar een meting; wat je met die
+    getallen doet, bepaalt de drempel in main(). Vier keer oplossen kost bij
+    250 kandidaten ongeveer 80 ms.
+
+    Retourneert een lijst [(k, ploeg, score, marginale_winst), ...].
+    """
+    ladder = []
+    vorige = None
+    for k in range(maximaal + 1):
+        ploeg, score = los_op(kandidaten, e_multi, selectie_ids, budget, k, formaties_dict,
+                              reeksen=reeksen, decay=decay, aantal_rondes=aantal_rondes)
+        if ploeg is None:
+            break
+        ladder.append((k, ploeg, score, 0.0 if vorige is None else score - vorige))
+        vorige = score
+    return ladder
+
+
+def kies_uit_ladder(ladder, drempel):
+    """De grootste k waarvoor ELKE stap tot en met k de drempel haalt.
+
+    Bewust niet 'de beste k met winst boven de drempel': als de tweede
+    transfer niets oplevert en de derde wel, dan is dat een grillig
+    randgeval waarin je er beter twee kunt bewaren. Stoppen bij de eerste
+    magere stap is voorspelbaar en makkelijk uit te leggen.
+    """
+    gekozen = ladder[0]
+    for stap in ladder[1:]:
+        if stap[3] < drempel:
+            break
+        gekozen = stap
+    return gekozen
 
 
 def main():
@@ -320,6 +454,11 @@ def main():
     p.add_argument("--ronde", type=int, required=True)
     p.add_argument("--transfers", default="1",
                    help="aantal transfers, of 'auto' (3 bij een periodestart, anders 1)")
+    p.add_argument("--transfer-drempel", type=float, default=0.0, metavar="PUNTEN",
+                   help="gebruik een transfer alleen als hij minstens dit aantal punten "
+                        "oplevert; de rest bewaar je. Standaard 0.0 (alles gebruiken wat "
+                        "wint, het oude gedrag) -- de transferladder in de uitvoer laat "
+                        "zien wat een hogere drempel zou doen.")
     p.add_argument("--horizon", default="auto",
                    help="aantal ronden vooruit (incl. de eerstvolgende), of 'auto' "
                         "(tot de volgende periodestart, of 6 zonder perioden.csv)")
@@ -431,10 +570,34 @@ def main():
         for naam, gevonden in bijna_match:
             print(f"    '{naam}' (jouw selectie) <-> '{gevonden}' (marktdata, zelfde club)")
 
-    nieuw, score_horizon = los_op(kandidaten, e_multi, selectie_ids, m.BUDGET, a.transfers, m.FORMATIES)
-    if nieuw is None:
+    ladder = transferladder(kandidaten, e_multi, selectie_ids, m.BUDGET, a.transfers,
+                            m.FORMATIES, reeksen=reeksen, decay=a.decay,
+                            aantal_rondes=len(rondes_gebruikt))
+    if not ladder:
         sys.exit("Geen toelaatbare oplossing gevonden (budget/formatie/transferregels "
                  "sluiten alles uit) -- controleer selectie.csv en --transfers.")
+
+    print(f"\nWAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)")
+    for k, _ploeg, score_k, marge in ladder:
+        merk = "" if k == 0 else f"   {marge:+.2f} t.o.v. {k - 1}"
+        print(f"  {k} transfer(s): {score_k:7.2f}{merk}")
+
+    gebruikt, nieuw, score_horizon, _marge = kies_uit_ladder(ladder, a.transfer_drempel)
+    if gebruikt < a.transfers:
+        print(f"  -> {gebruikt} van de {a.transfers} transfers gebruikt; de volgende "
+              f"levert minder dan de drempel ({a.transfer_drempel:.2f}) op.")
+    elif a.transfer_drempel == 0.0:
+        mager = [k for k, _p, _s, mrg in ladder[1:] if mrg < 0.5]
+        if mager:
+            print(f"  -> alle {a.transfers} transfers gebruikt, maar transfer "
+                  f"{', '.join(str(k) for k in mager)} levert minder dan 0,5 punt op. "
+                  f"Met --transfer-drempel 0.5 zou die vervallen en bewaar je hem.")
+    # Vanaf hier betekent a.transfers "daadwerkelijk gebruikt". Dat is wat het
+    # advies en de --vergelijk-tak moeten tonen; het oorspronkelijke tegoed
+    # gaat apart mee naar besluit.json, zodat je achteraf kunt zien dat er een
+    # transfer bewaard is en waarom.
+    transfers_beschikbaar = a.transfers
+    a.transfers = gebruikt
 
     nieuw_ids = {p["speler_id"] for p in nieuw}
     uit = [op_speler_id[sid] for sid in selectie_ids - nieuw_ids]
@@ -451,7 +614,14 @@ def main():
 
     print(f"\nMULTI-RONDE ADVIES (horizon {len(rondes_gebruikt)}, decay {a.decay}, "
           f"{a.transfers} transfer(s))")
-    score_horizon_huidig = som_horizon(reeksen, a.decay, selectie_huidig)
+    # Beide kanten via waardeer_horizon(), dus met dezelfde bankkorting per
+    # ronde. Hier stond eerder som_horizon() voor het huidige team -- zonder
+    # bankkorting -- naast de MILP-score MET bankkorting. Twee getallen op een
+    # regel, in verschillende eenheden, met "huidig team" ernaast alsof het
+    # een eerlijke vergelijking was. Het huidige team zag er zo beter uit dan
+    # het was.
+    score_horizon_huidig = waardeer_horizon(m, reeksen, a.decay, selectie_huidig,
+                                            len(rondes_gebruikt))
     print(f"  ronde {a.ronde}: verwacht {totaal_n:.1f} punten  ({formatie})  winst {winst:+.1f}")
     print(f"  gedecayde som over de horizon: {score_horizon:.2f}  (huidig team: {score_horizon_huidig:.2f})")
     if not uit:
@@ -493,6 +663,11 @@ def main():
             "ronde": a.ronde,
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
+            "transfers_beschikbaar": transfers_beschikbaar,
+            "transfer_drempel": a.transfer_drempel,
+            "transferladder": [{"transfers": k, "score": round(s, 3),
+                                "marginale_winst": round(mrg, 3)}
+                               for k, _p, s, mrg in ladder],
             "periode": periode,
             "periodestart": is_start,
             "ronden_tot_volgende_periode": tot_volgende,
