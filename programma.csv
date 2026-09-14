@@ -1,18 +1,14 @@
 ronde,datum,thuis,uit,kans_thuis,kans_gelijk,kans_uit,verwacht_thuis,verwacht_uit,soort
 7,"zaterdag 19 september 2026, 16:30",ADO Den Haag,SC Cambuur,54,21,25,1,1,regulier
-7,"zaterdag 19 september 2026, 20:00",Ajax,Excelsior,69,15,16,2,1,regulier
+7,"zaterdag 19 september 2026, 20:00",Ajax,Excelsior,71,15,14,2,1,regulier
 7,"zondag 20 september 2026, 14:30",AZ,Telstar,73,15,12,2,1,regulier
 7,"vrijdag 18 september 2026, 20:00",FC Groningen,PEC Zwolle,57,20,23,2,1,regulier
-7,"zondag 20 september 2026, 14:30",FC Twente,PSV,33,21,46,2,2,regulier
-7,"zondag 20 september 2026, 12:15",Feyenoord,FC Utrecht,71,15,14,2,1,regulier
-7,"zondag 20 september 2026, 16:45",NEC,Go Ahead Eagles,56,20,24,2,1,regulier
-7,"zaterdag 19 september 2026, 18:45",Sparta Rotterdam,sc Heerenveen,29,23,48,1,1,regulier
+7,"zondag 20 september 2026, 14:30",FC Twente,PSV,34,21,45,1,2,regulier
+7,"zondag 20 september 2026, 12:15",Feyenoord,FC Utrecht,72,16,12,2,1,regulier
+7,"zondag 20 september 2026, 16:45",NEC,Go Ahead Eagles,54,20,26,2,1,regulier
+7,"zaterdag 19 september 2026, 18:45",Sparta Rotterdam,sc Heerenveen,38,23,39,1,1,regulier
 7,"zaterdag 19 september 2026, 21:00",Willem II,Fortuna Sittard,36,23,41,1,1,regulier
-3,"dinsdag 15 september 2026, 20:00",Ajax,Willem II,80,12,8,3,0,inhaal_later
-6,"zondag 13 september 2026, 12:15",Excelsior,FC Utrecht,6,22,72,1,1,inhaal_later
-6,"zondag 13 september 2026, 16:45",PEC Zwolle,Feyenoord,16,18,66,1,2,inhaal_later
-6,"zondag 13 september 2026, 20:00",PSV,Sparta Rotterdam,80,11,9,3,1,inhaal_later
-6,"zondag 13 september 2026, 14:30",sc Heerenveen,Telstar,59,20,21,2,1,inhaal_later
+3,"dinsdag 15 september 2026, 20:00",Ajax,Willem II,81,12,7,3,0,inhaal_later
 8,"zaterdag 10 oktober 2026, 21:00",Ajax,NEC,54,23,23,1,1,regulier
 8,"zondag 11 oktober 2026, 16:45",Excelsior,FC Groningen,36,25,39,1,1,regulier
 8,"zondag 11 oktober 2026, 12:15",FC Utrecht,Willem II,58,22,20,1,1,regulier

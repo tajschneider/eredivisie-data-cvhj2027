@@ -1,23 +1,24 @@
+--transfers auto -> 1
 --horizon auto -> 2
 Periode 2; volgende periodestart over 2 ronden.
-Clubratings uit 45 wedstrijden (thuisvoordeel x1.23)
+Clubratings uit 53 wedstrijden (thuisvoordeel x1.23)
 LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
 Horizon: ronde [7, 8] (decay 0.84)
 
-OPSTELLING  4-3-3   verwacht 39.4 punten   kosten EUR 30.80
-  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.43
-  Verdediging  Sekou Sylla               ADO Den Haag     EUR 1.50  E  3.68
-  Verdediging  Lutsharel Geertruida      PSV              EUR 3.00  E  2.17
-  Verdediging  Aske Adelgaard            FC Twente        EUR 1.50  E  1.60
-  Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  1.10
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  5.63
-  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  3.83
-  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.75
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.70
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.95
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  3.34
+OPSTELLING  4-3-3   verwacht 39.6 punten   kosten EUR 30.80
+  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.36
+  Verdediging  Sekou Sylla               ADO Den Haag     EUR 1.50  E  3.09
+  Verdediging  Lutsharel Geertruida      PSV              EUR 3.00  E  2.89
+  Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  1.13
+  Verdediging  Aske Adelgaard            FC Twente        EUR 1.50  E  1.00
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.71
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.57
+  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  3.31
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.62
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  4.57
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  3.18
   ---- bank (50%) ----
-  A            Artem Stepanov            FC Utrecht       EUR 2.20  E  2.58
+  A            Artem Stepanov            FC Utrecht       EUR 2.20  E  2.56
   K            Stijn van Gassel          Excelsior        EUR 1.80  E  1.82
   V            Deveron Fonville          NEC              EUR 2.00  E  0.00
   M            Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.00
@@ -28,13 +29,13 @@ GEBLESSEERD IN JE SELECTIE:
 Zonder recente speeltijd (E=0): Shunsuke Mito, Deveron Fonville
 
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
-  0 transfer(s):   73.19
-  1 transfer(s):   77.64   +4.45 t.o.v. 0
+  0 transfer(s):   73.86
+  1 transfer(s):   79.68   +5.82 t.o.v. 0
 
 MULTI-RONDE ADVIES (horizon 2, decay 0.84, 1 transfer(s))
-  ronde 7: verwacht 43.0 punten  (3-4-3)  winst +3.6
-  gedecayde som over de horizon: 77.64  (huidig team: 73.19)
-    UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
-    IN   Darko Nejasmic            NEC              EUR 1.80  E  4.15  E(horizon)  6.00
+  ronde 7: verwacht 42.3 punten  (4-3-3)  winst +2.7
+  gedecayde som over de horizon: 79.68  (huidig team: 73.86)
+    UIT  Aske Adelgaard            FC Twente        EUR 1.50  E  1.00
+    IN   Robin Pröpper             FC Twente        EUR 2.00  E  3.71  E(horizon)  8.09
 
 besluit -> besluit.json
