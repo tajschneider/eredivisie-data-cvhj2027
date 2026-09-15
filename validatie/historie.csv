@@ -1,0 +1,2 @@
+datum,ronde,periode,ronden_tot_start,rondes_geevalueerd,rmse,rmse_naief,rho,rho_naief,top15_gevangen,pool_grootte,markt_grootte,koppelgraad,geblesseerd,suites_geslaagd,suites_totaal
+2026-09-15,7,2,2,5,3.4013,3.6934,0.4096,0.0951,0.1805,269,511,0.8865,40,6,6
