@@ -1,0 +1,103 @@
+name: Validatie
+
+# Draait WEKELIJKS, maar doet bijna altijd niets. valideer.py bepaalt zelf of
+# dit een validatieweek is: alleen op en vlak voor een periodestart. Dat is
+# waar de beslissingen het zwaarst tellen (drie transfers in plaats van een),
+# dus daar wil je met een gecontroleerd model naartoe. In de praktijk komt dat
+# neer op ongeveer eens per vier tot vijf weken.
+#
+# Waarom een cron en geen vast ritme: de periodestarts staan in perioden.csv
+# en schuiven mee met de competitie. Een vaste driewekelijkse cron zou net na
+# een periodestart kunnen vallen, precies wanneer je er het minst aan hebt.
+#
+# Wat dit toevoegt boven tests.yml en wekelijks.yml: die beantwoorden "is het
+# stuk?". Dit beantwoordt "wordt het beter?" -- door een regel per meting weg
+# te schrijven naar validatie/historie.csv. De waarde zit in de reeks, niet in
+# de losse uitslag.
+on:
+  schedule:
+    - cron: '0 6 * * 0'          # zondagochtend, ruim voor de maandagrun
+  workflow_dispatch:
+    inputs:
+      ronde:
+        description: 'Speelronde (leeg = uit programma.csv)'
+        required: false
+      forceer:
+        description: "Ook draaien als het geen validatieweek is ('ja')"
+        default: 'nee'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-main
+  cancel-in-progress: false
+
+jobs:
+  validatie:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      # test_workflows.py meldt hier "installeert ook beautifulsoup4, requests,
+      # scipy" -- dat is hier GEEN overbodige installatie en mag niet weg.
+      # valideer.py importeert ze zelf niet, maar start de zes testsuites als
+      # losse processen, en die hebben ze wel nodig. De statische controle
+      # volgt alleen imports, geen subprocessen.
+      - run: pip install requests beautifulsoup4 numpy scipy
+
+      - name: Ronde bepalen
+        id: ronde
+        run: |
+          set -o pipefail
+          if [ -n "${{ github.event.inputs.ronde }}" ]; then
+            echo "nr=${{ github.event.inputs.ronde }}" >> $GITHUB_OUTPUT
+          elif [ -f programma.csv ]; then
+            echo "nr=$(python -c "import csv;print(next(csv.DictReader(open('programma.csv')))['ronde'])")" >> $GITHUB_OUTPUT
+          else
+            echo "::warning::geen programma.csv en geen ronde opgegeven -- validatie overgeslagen"
+            echo "nr=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Valideren
+        id: val
+        if: steps.ronde.outputs.nr != ''
+        run: |
+          set -o pipefail
+          if [ "${{ github.event.inputs.forceer }}" = "ja" ]; then
+            python valideer.py --ronde ${{ steps.ronde.outputs.nr }} | tee validatie.log
+          else
+            python valideer.py --ronde ${{ steps.ronde.outputs.nr }} \
+                               --alleen-voor-periodestart | tee validatie.log
+          fi
+
+      # Het rapport in de runsamenvatting, zodat je het leest zonder iets te
+      # downloaden. Ook bij een mislukking -- juist dan.
+      - name: Rapport in de samenvatting
+        if: always() && hashFiles('validatie/rapport.md') != ''
+        run: cat validatie/rapport.md >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validatie-ronde-${{ steps.ronde.outputs.nr }}
+          path: |
+            validatie/
+            validatie.log
+
+      # Vastleggen is het hele punt: zonder de reeks in de repo is er geen trend.
+      - name: Meting vastleggen
+        if: always() && hashFiles('validatie/historie.csv') != ''
+        run: |
+          git config user.name  "cvhj-bot"
+          git config user.email "bot@users.noreply.github.com"
+          for f in validatie/historie.csv validatie/rapport.md; do
+            [ -e "$f" ] && git add "$f"
+          done
+          git diff --staged --quiet && { echo "niets gewijzigd"; exit 0; }
+          git commit -m "validatie ronde ${{ steps.ronde.outputs.nr }}"
+          git pull --rebase origin main
+          git push

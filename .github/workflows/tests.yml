@@ -22,6 +22,8 @@ name: Tests
 #                           om half werk weg te schrijven
 #   test_notify.py          dat elke waarschuwing die het model uitrekent ook
 #                           daadwerkelijk in de mail belandt
+#   test_valideer.py        de poortwachter die bepaalt of de periodieke
+#                           validatie uberhaupt draait, en de trendregel
 on:
   push:
     branches: [main]
@@ -53,6 +55,7 @@ jobs:
           python test_statistieken.py
           python test_synchroniseer.py
           python test_notify.py
+          python test_valideer.py
 
       # Heeft clubs.csv/spelers.csv/prijzen.csv/programma.csv/selectie.csv nodig.
       # Staan die er niet, dan is dat geen testfout maar een lege repo; dan
