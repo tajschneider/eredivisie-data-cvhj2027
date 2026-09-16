@@ -7,52 +7,52 @@
     "bestand": null,
     "leeftijd_dagen": null
   },
-  "gegenereerd": "2026-09-14T07:13:30",
+  "gegenereerd": "2026-09-16T09:26:46",
   "transfers_toegestaan": 1,
   "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
   "transferladder": [
     {
       "transfers": 0,
-      "score": 73.857,
+      "score": 74.359,
       "marginale_winst": 0.0
     },
     {
       "transfers": 1,
-      "score": 79.679,
-      "marginale_winst": 5.823
+      "score": 80.176,
+      "marginale_winst": 5.817
     }
   ],
   "periode": 2,
   "periodestart": false,
   "ronden_tot_volgende_periode": 2,
   "huidig": {
-    "verwacht": 39.64,
+    "verwacht": 39.92,
     "kosten": 30.8,
     "basis": [
       {
         "speler": "Kjetil Haug",
         "club": "Go Ahead Eagles",
         "pos": "K",
-        "E": 2.365
+        "E": 2.372
       },
       {
         "speler": "Sekou Sylla",
         "club": "ADO Den Haag",
         "pos": "V",
-        "E": 3.09
+        "E": 3.086
       },
       {
         "speler": "Lutsharel Geertruida",
         "club": "PSV",
         "pos": "V",
-        "E": 2.889
+        "E": 2.884
       },
       {
         "speler": "Jeff Hardeveld",
         "club": "Telstar",
         "pos": "V",
-        "E": 1.132
+        "E": 1.129
       },
       {
         "speler": "Aske Adelgaard",
@@ -64,37 +64,37 @@
         "speler": "Gjivai Zechiël",
         "club": "Feyenoord",
         "pos": "M",
-        "E": 6.713
-      },
-      {
-        "speler": "Mohamed Ihattaren",
-        "club": "Fortuna Sittard",
-        "pos": "M",
-        "E": 3.569
+        "E": 6.708
       },
       {
         "speler": "Oscar Gloukh",
         "club": "Ajax",
         "pos": "M",
-        "E": 3.311
+        "E": 3.626
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 3.575
       },
       {
         "speler": "Mexx Meerdink",
         "club": "AZ",
         "pos": "A",
-        "E": 5.622
+        "E": 5.604
       },
       {
         "speler": "Brynjólfur Willumsson",
         "club": "FC Groningen",
         "pos": "A",
-        "E": 4.574
+        "E": 4.564
       },
       {
         "speler": "Jacob Trenskow",
         "club": "sc Heerenveen",
         "pos": "A",
-        "E": 3.182
+        "E": 3.173
       }
     ],
     "bank": [
@@ -102,7 +102,7 @@
         "speler": "Stijn van Gassel",
         "club": "Excelsior",
         "pos": "K",
-        "E": 1.816
+        "E": 1.827
       },
       {
         "speler": "Deveron Fonville",
@@ -120,7 +120,7 @@
         "speler": "Artem Stepanov",
         "club": "FC Utrecht",
         "pos": "A",
-        "E": 2.564
+        "E": 2.569
       }
     ]
   },
@@ -178,10 +178,10 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 282,
+  "pool_grootte": 283,
   "advies": {
-    "verwacht": 42.35,
-    "winst": 2.71,
+    "verwacht": 42.63,
+    "winst": 2.7,
     "formatie": "4-3-3",
     "uit": [
       {
@@ -198,7 +198,7 @@
         "club": "FC Twente",
         "pos": "V",
         "prijs": 2.0,
-        "E": 3.71
+        "E": 3.705
       }
     ]
   },
@@ -209,5 +209,5 @@
     8
   ],
   "decay": 0.84,
-  "verwacht_horizon": 79.68
+  "verwacht_horizon": 80.18
 }
