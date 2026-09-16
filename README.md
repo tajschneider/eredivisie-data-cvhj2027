@@ -579,6 +579,26 @@ referentie waartegen `test_multi_periode.py` de MILP-score naleest: wijken die
 twee af, dan optimaliseert de solver het verkeerde. Bij horizon 1 is de
 formulering letterlijk ongewijzigd.
 
+**De verbeterlus, en waar de rem zit.** `validatie.yml` meet rond elke
+periodestart en schrijft een regel naar `validatie/historie.csv`;
+`verbetering.yml` laat Claude die reeks lezen en één verbetering voorstellen
+als pull request. Die PR wordt automatisch getest — `tests.yml` draait op
+`pull_request`, inclusief een `grenzen`-job — en er verandert niets aan main
+tot jij op Merge klikt.
+
+`grenzen.py` is de rem, en die is met opzet deterministisch: een prompt kan
+vragen ergens vanaf te blijven, een controle dwingt het af. Een voorstel mag
+niet aan `inleggen.py` komen (het enige script dat echte transfers doorvoert),
+niet aan `.github/workflows/` (een workflow kan zichzelf rechten geven), niet
+aan de CSV's, en niet aan `grenzen.py` zelf. Het mag ook geen testfuncties
+verliezen — een wijziging die slaagt door de test te verzwakken die hem
+tegenhield is geen verbetering — en niet groter zijn dan 400 regels.
+
+Twee dingen dwingt de repo niet af en moet je zelf instellen: branch
+protection op `main` (vereis dat `tests` en `grenzen` slagen), en de Claude
+GitHub App plus het secret. Zonder die branch protection kan een rode PR
+alsnog gemerged worden en handhaaft niets de afspraak.
+
 **Alles wat het model weet over slechte invoer, staat in de mail.** Je leest
 het advies, niet het Actions-log — dus alles wat alleen in dat log stond,
 bestond in de praktijk niet. `notify.blokkerende_waarschuwingen()` zet vier
