@@ -24,8 +24,17 @@ name: Tests
 #                           daadwerkelijk in de mail belandt
 #   test_valideer.py        de poortwachter die bepaalt of de periodieke
 #                           validatie uberhaupt draait, en de trendregel
+#   test_grenzen.py         de hekken om een automatisch voorstel: welke
+#                           bestanden het mag raken, en dat het geen tests
+#                           mag verzwakken om zelf te slagen
 on:
   push:
+    branches: [main]
+  # OOK op elke pull request, en dat is niet cosmetisch. Automatische
+  # voorstellen komen binnen als PR; draaien de tests daar niet, dan is
+  # "eerst testen, dan goedkeuren" een afspraak zonder handhaving en keur je
+  # een wijziging goed die nooit gedraaid heeft.
+  pull_request:
     branches: [main]
   workflow_dispatch: {}
 
@@ -56,6 +65,7 @@ jobs:
           python test_synchroniseer.py
           python test_notify.py
           python test_valideer.py
+          python test_grenzen.py
 
       # Heeft clubs.csv/spelers.csv/prijzen.csv/programma.csv/selectie.csv nodig.
       # Staan die er niet, dan is dat geen testfout maar een lege repo; dan
@@ -71,3 +81,41 @@ jobs:
           else
             python test_multi_periode.py
           fi
+
+  # ---------------------------------------------------------------------------
+  # Alleen op een pull request: blijft het voorstel binnen de grenzen?
+  #
+  # Dit staat los van de testsuites hierboven. Die controleren of de code nog
+  # klopt; deze job controleert of de WIJZIGING zelf toelaatbaar is -- of hij
+  # niet aan inleggen.py komt (het enige script dat echte transfers doorvoert),
+  # niet aan de workflows (die zichzelf rechten kunnen geven), en geen tests
+  # verzwakt om zelf te slagen. Die grenzen staan in grenzen.py en gelden voor
+  # elke PR, ongeacht wie of wat hem opende.
+  # ---------------------------------------------------------------------------
+  grenzen:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }      # volledige historie: nodig voor de diff
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - name: Grenzen controleren
+        run: |
+          set -o pipefail
+          git fetch origin ${{ github.base_ref }} --depth=50
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > gewijzigd.txt
+          python grenzen.py --gewijzigd gewijzigd.txt \
+                            --basis origin/${{ github.base_ref }} | tee grenzen.log
+
+      - name: Uitslag in de samenvatting
+        if: always() && hashFiles('grenzen.log') != ''
+        run: |
+          {
+            echo '## Grenzen'
+            echo '```'
+            cat grenzen.log
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY

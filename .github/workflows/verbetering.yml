@@ -1,0 +1,145 @@
+name: Verbetervoorstel
+
+# Claude leest de validatiereeks en opent een pull request met EEN verbetering.
+#
+# De keten: validatie.yml meet en schrijft validatie/historie.csv -> deze
+# workflow leest die reeks en stelt een wijziging voor -> de PR wordt
+# automatisch getest (tests.yml draait op pull_request, inclusief de
+# grenzen-job) -> jij klikt Merge, of niet. Zonder die klik verandert er niets
+# aan main.
+#
+# Waarom een PR en niet rechtstreeks: dit is de enige plek in het project waar
+# code ontstaat zonder dat iemand hem eerst gelezen heeft. Het verschil tussen
+# "automatisch" en "onbeheerst" is precies die knop.
+#
+# TWEE DINGEN MOET JE ZELF INSTELLEN, anders is de poort schijn:
+#
+#   1. Branch protection op main: vereis dat de checks 'tests' en 'grenzen'
+#      slagen voordat je kunt mergen. Zonder die instelling KAN een rode PR
+#      gemerged worden, en dan handhaaft niets de afspraak.
+#      Settings -> Branches -> Add rule -> Require status checks to pass.
+#
+#   2. De Claude GitHub App installeren en een secret zetten
+#      (ANTHROPIC_API_KEY, of CLAUDE_CODE_OAUTH_TOKEN bij een abonnement).
+#      Zie code.claude.com/docs/en/github-actions.
+#
+# Let op: geef hieronder GEEN github_token mee. Dan werkt de actie namens de
+# Claude GitHub App, en GitHub start wel workflows op haar commits. Met de
+# standaard GITHUB_TOKEN doet GitHub dat NIET -- dan opent hij een PR waarop
+# de tests nooit draaien, en dat is de stilste manier waarop deze hele opzet
+# nutteloos wordt.
+on:
+  schedule:
+    - cron: '0 8 * * 1'          # maandag, na de validatierun van zondag
+  workflow_dispatch:
+    inputs:
+      opdracht:
+        description: 'Wat moet er onderzocht worden (leeg = de validatiereeks)'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: verbetervoorstel
+  cancel-in-progress: false
+
+jobs:
+  voorstel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      # Claude moet de testsuites kunnen DRAAIEN voordat hij een PR opent --
+      # dat staat zo in de prompt hieronder. Zonder deze twee stappen kan hij
+      # dat niet en stelt hij iets voor dat hij nooit heeft uitgevoerd.
+      # (test_workflows.py ving precies dat af toen ik ze vergat.)
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - run: pip install requests beautifulsoup4 numpy scipy
+
+      # Zonder meetreeks valt er niets te verbeteren dat op iets berust.
+      # Dan stopt dit hier, in plaats van dat een model iets gaat verzinnen.
+      - name: Is er een meetreeks?
+        id: reeks
+        run: |
+          if [ -f validatie/historie.csv ] && [ "$(wc -l < validatie/historie.csv)" -gt 1 ]; then
+            echo "er=ja" >> $GITHUB_OUTPUT
+            echo "metingen=$(( $(wc -l < validatie/historie.csv) - 1 ))" >> $GITHUB_OUTPUT
+          else
+            echo "er=nee" >> $GITHUB_OUTPUT
+            echo "::warning::geen validatie/historie.csv met metingen -- draai eerst validatie.yml"
+          fi
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.reeks.outputs.er == 'ja'
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: --max-turns 30
+          prompt: |
+            Je stelt EEN verbetering voor aan dit Coach van het Jaar-model, op
+            grond van gemeten resultaten. Werk in het Nederlands.
+
+            OPDRACHT: ${{ github.event.inputs.opdracht || 'kies zelf op grond van de validatiereeks' }}
+
+            LEES EERST, in deze volgorde:
+              1. validatie/historie.csv  -- de meetreeks (${{ steps.reeks.outputs.metingen }} metingen)
+              2. validatie/rapport.md    -- het laatste rapport
+              3. README.md               -- context en de bekende beperkingen
+              4. grenzen.py              -- waar je NIET aan mag komen
+
+            KIES DAN EEN WIJZIGING. Eén, niet drie. Criteria, op volgorde:
+              - Staat suites_geslaagd onder suites_totaal, repareer dan die
+                testsuite en niets anders.
+              - Anders: de wijziging met de grootste verwachte winst in
+                top15_gevangen, de beslissingsmaat. Dat is wat in punten
+                telt; rmse is een ongevoelige proxy over een markt die je
+                grotendeels negeert.
+
+            BEKENDE OPENSTAANDE PUNTEN, gemeten en gedocumenteerd:
+              - KRIMP_CLUB staat vast op 1.0 terwijl schat_clubratings() 37
+                parameters uit 9 tot 27 wedstrijden schat. Vroeg in het seizoen
+                is die fit grotendeels ruis; de constante hoort mee te schalen
+                met het aantal wedstrijden.
+              - calibrate.py en auto_kalibreer.py ijken op RMSE over de hele
+                pool, terwijl de beslissing een top-15-keuze is. valideer.py
+                bevat met gat_gevangen() al de betere maat.
+              - CLEANSHEET_MINUTEN_DREMPEL is met deze backtest niet toetsbaar:
+                de waarheidsreconstructie kent zelf geen minutendrempel, dus
+                elke kalibratie ervan is circulair.
+
+            REGELS, en deze zijn hard:
+              - Blijf binnen grenzen.py. Kom niet aan inleggen.py, niet aan
+                .github/workflows/, niet aan CSV's, niet aan grenzen.py zelf.
+              - Verzwak NOOIT een test om je wijziging te laten slagen. Het
+                aantal testfuncties mag niet dalen; de grenzen-job keurt dat af.
+              - Voeg een test toe die faalt op de OUDE code en slaagt op de
+                nieuwe. Kun je die niet bedenken, dan is de wijziging niet
+                toetsbaar en stel je hem niet voor.
+              - Draai voor je klaar bent: python test_multi_periode.py,
+                test_valideer.py, test_grenzen.py. Falen ze, repareer dan je
+                eigen wijziging; pas ze niet aan.
+              - Houd het klein. Boven de 400 gewijzigde regels wordt de PR
+                automatisch afgekeurd.
+              - Met een handvol evalueerbare ronden is de onzekerheid groot.
+                Stel niets voor dat alleen op één meting berust, en zeg in de
+                PR expliciet hoe zeker de onderbouwing is.
+
+            OPEN DAARNA EEN PULL REQUEST met:
+              - een titel die de wijziging in één regel noemt;
+              - WAAROM, met de getallen uit de reeks erbij;
+              - WAT er precies verandert;
+              - hoe je het getoetst hebt, en welke test faalt op de oude code;
+              - wat dit NIET aantoont, en waarom Thomas er zelf naar moet kijken.
+
+            Kom je tot de slotsom dat er niets te verbeteren valt dat op de
+            metingen steunt, open dan GEEN pull request en zeg dat in één
+            alinea. Een leeg oordeel is een geldige uitkomst; een voorstel
+            verzinnen om deze run te vullen is dat niet.
