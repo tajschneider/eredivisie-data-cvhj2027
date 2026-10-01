@@ -1,3 +1,4 @@
+--transfers auto -> 1
 --horizon auto -> 1
 
 LET OP: volgende ronde start een nieuwe periode met 3 transfers. Een transfer nu bewaren kan lonen.
@@ -33,17 +34,11 @@ Zonder recente speeltijd (E=0): Artem Stepanov, Lutsharel Geertruida, Shunsuke M
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
   0 transfer(s):   33.12
   1 transfer(s):   38.61   +5.49 t.o.v. 0
-  2 transfer(s):   45.02   +6.41 t.o.v. 1
-  3 transfer(s):   48.00   +2.98 t.o.v. 2
 
-MULTI-RONDE ADVIES (horizon 1, decay 0.84, 3 transfer(s))
-  ronde 8: verwacht 48.0 punten  (4-4-2)  winst +14.9
-  gedecayde som over de horizon: 48.00  (huidig team: 33.12)
-    UIT  Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
-    UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
+MULTI-RONDE ADVIES (horizon 1, decay 0.84, 1 transfer(s))
+  ronde 8: verwacht 38.6 punten  (4-3-3)  winst +5.5
+  gedecayde som over de horizon: 38.61  (huidig team: 33.12)
     UIT  Lutsharel Geertruida      PSV              EUR 3.00  E  0.00
-    IN   Matisse Didden            FC Utrecht       EUR 1.80  E  4.96  E(horizon)  4.96
-    IN   Nick Viergever            PEC Zwolle       EUR 1.80  E  3.80  E(horizon)  3.80
-    IN   Guus Til                  PSV              EUR 4.00  E  8.00  E(horizon)  8.00
+    IN   Sergiño Dest              PSV              EUR 3.20  E  5.49  E(horizon)  5.49
 
 besluit -> besluit.json

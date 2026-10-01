@@ -7,9 +7,9 @@
     "bestand": null,
     "leeftijd_dagen": null
   },
-  "gegenereerd": "2026-09-29T06:02:29",
-  "transfers_toegestaan": 3,
-  "transfers_beschikbaar": 3,
+  "gegenereerd": "2026-10-01T15:51:44",
+  "transfers_toegestaan": 1,
+  "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
   "transferladder": [
     {
@@ -21,16 +21,6 @@
       "transfers": 1,
       "score": 38.609,
       "marginale_winst": 5.49
-    },
-    {
-      "transfers": 2,
-      "score": 45.018,
-      "marginale_winst": 6.409
-    },
-    {
-      "transfers": 3,
-      "score": 48.002,
-      "marginale_winst": 2.984
     }
   ],
   "periode": 2,
@@ -198,26 +188,12 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 278,
+  "pool_grootte": 275,
   "advies": {
-    "verwacht": 48.0,
-    "winst": 14.88,
-    "formatie": "4-4-2",
+    "verwacht": 38.61,
+    "winst": 5.49,
+    "formatie": "4-3-3",
     "uit": [
-      {
-        "speler": "Artem Stepanov",
-        "club": "FC Utrecht",
-        "pos": "A",
-        "prijs": 2.25,
-        "E": 0.0
-      },
-      {
-        "speler": "Deveron Fonville",
-        "club": "NEC",
-        "pos": "V",
-        "prijs": 2.0,
-        "E": 0.0
-      },
       {
         "speler": "Lutsharel Geertruida",
         "club": "PSV",
@@ -228,25 +204,11 @@
     ],
     "in": [
       {
-        "speler": "Matisse Didden",
-        "club": "FC Utrecht",
-        "pos": "V",
-        "prijs": 1.8,
-        "E": 4.965
-      },
-      {
-        "speler": "Nick Viergever",
-        "club": "PEC Zwolle",
-        "pos": "V",
-        "prijs": 1.8,
-        "E": 3.801
-      },
-      {
-        "speler": "Guus Til",
+        "speler": "Sergiño Dest",
         "club": "PSV",
-        "pos": "M",
-        "prijs": 4.0,
-        "E": 7.995
+        "pos": "V",
+        "prijs": 3.2,
+        "E": 5.49
       }
     ]
   },
@@ -256,5 +218,5 @@
     8
   ],
   "decay": 0.84,
-  "verwacht_horizon": 48.0
+  "verwacht_horizon": 38.61
 }
