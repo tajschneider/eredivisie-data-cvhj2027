@@ -6,39 +6,36 @@ Clubratings uit 63 wedstrijden (thuisvoordeel x1.23)
 LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
 Horizon: ronde [8] (decay 0.84)
 
-OPSTELLING  4-3-3   verwacht 33.1 punten   kosten EUR 31.35
+OPSTELLING  4-3-3   verwacht 42.5 punten   kosten EUR 31.30
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.79
+  Verdediging  Lutsharel Geertruida      PSV              EUR 3.00  E  4.73
   Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  4.26
   Verdediging  Jeff Hardeveld            Telstar          EUR 2.00  E  3.06
   Verdediging  Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.63
-  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  0.00
   Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.70
   Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  3.44
   Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  2.23
+  Aanval       Artem Stepanov            FC Utrecht       EUR 2.20  E  4.69
   Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.24
   Aanval       Mexx Meerdink             AZ               EUR 2.50  E  3.09
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  2.12
   ---- bank (50%) ----
   K            Stijn van Gassel          Excelsior        EUR 1.80  E  3.12
-  V            Lutsharel Geertruida      PSV              EUR 3.00  E  0.00
-  M            Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.00
-  A            Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
+  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  2.12
+  M            Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  2.06
+  V            Deveron Fonville          NEC              EUR 2.00  E  0.00
 
 GEBLESSEERD IN JE SELECTIE:
-    Artem Stepanov (duur onbekend)
-    Lutsharel Geertruida (duur onbekend)
-    Shunsuke Mito (duur onbekend)
     Deveron Fonville (duur onbekend)
-Zonder recente speeltijd (E=0): Artem Stepanov, Lutsharel Geertruida, Shunsuke Mito, Deveron Fonville
+Zonder recente speeltijd (E=0): Deveron Fonville
 
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
-  0 transfer(s):   33.12
-  1 transfer(s):   38.61   +5.49 t.o.v. 0
+  0 transfer(s):   42.51
+  1 transfer(s):   45.49   +2.98 t.o.v. 0
 
 MULTI-RONDE ADVIES (horizon 1, decay 0.84, 1 transfer(s))
-  ronde 8: verwacht 38.6 punten  (4-3-3)  winst +5.5
-  gedecayde som over de horizon: 38.61  (huidig team: 33.12)
-    UIT  Lutsharel Geertruida      PSV              EUR 3.00  E  0.00
-    IN   Sergiño Dest              PSV              EUR 3.20  E  5.49  E(horizon)  5.49
+  ronde 8: verwacht 45.5 punten  (4-3-3)  winst +3.0
+  gedecayde som over de horizon: 45.49  (huidig team: 42.51)
+    UIT  Deveron Fonville          NEC              EUR 2.00  E  0.00
+    IN   Nick Viergever            PEC Zwolle       EUR 1.80  E  3.80  E(horizon)  3.80
 
 besluit -> besluit.json
