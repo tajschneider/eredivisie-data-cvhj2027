@@ -70,6 +70,13 @@
       "n_evalueerbaar": 6,
       "besluit": "overgeslagen",
       "reden": "nog maar 2 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
+    },
+    {
+      "tijdstip": "2026-10-06T14:57:07.127435+00:00",
+      "tot_ronde": 7,
+      "n_evalueerbaar": 6,
+      "besluit": "overgeslagen",
+      "reden": "nog maar 2 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
     }
   ]
 }
