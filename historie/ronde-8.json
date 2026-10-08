@@ -7,7 +7,7 @@
     "bestand": null,
     "leeftijd_dagen": null
   },
-  "gegenereerd": "2026-10-05T15:34:57",
+  "gegenereerd": "2026-10-08T16:00:55",
   "transfers_toegestaan": 1,
   "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
@@ -173,7 +173,7 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 283,
+  "pool_grootte": 281,
   "advies": {
     "verwacht": 45.49,
     "winst": 2.98,
