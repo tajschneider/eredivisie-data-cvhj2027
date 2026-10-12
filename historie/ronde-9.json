@@ -1,0 +1,248 @@
+{
+  "ronde": 9,
+  "model": "multi_periode",
+  "bron_programma": "bestand",
+  "bron_selectie": "bestand",
+  "stats_bron": {
+    "bestand": null,
+    "leeftijd_dagen": null
+  },
+  "gegenereerd": "2026-10-12T16:29:18",
+  "transfers_toegestaan": 3,
+  "transfers_beschikbaar": 3,
+  "transfer_drempel": 0.0,
+  "transferladder": [
+    {
+      "transfers": 0,
+      "score": 122.315,
+      "marginale_winst": 0.0
+    },
+    {
+      "transfers": 1,
+      "score": 129.525,
+      "marginale_winst": 7.21
+    },
+    {
+      "transfers": 2,
+      "score": 143.909,
+      "marginale_winst": 14.384
+    },
+    {
+      "transfers": 3,
+      "score": 150.779,
+      "marginale_winst": 6.87
+    }
+  ],
+  "periode": 3,
+  "periodestart": true,
+  "ronden_tot_volgende_periode": 4,
+  "huidig": {
+    "verwacht": 40.09,
+    "kosten": 31.3,
+    "basis": [
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "E": 3.442
+      },
+      {
+        "speler": "Ruud Nijstad",
+        "club": "FC Twente",
+        "pos": "V",
+        "E": 4.266
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 4.074
+      },
+      {
+        "speler": "Lutsharel Geertruida",
+        "club": "PSV",
+        "pos": "V",
+        "E": 2.769
+      },
+      {
+        "speler": "Jeff Hardeveld",
+        "club": "Telstar",
+        "pos": "V",
+        "E": 0.875
+      },
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "E": 4.804
+      },
+      {
+        "speler": "Oscar Gloukh",
+        "club": "Ajax",
+        "pos": "M",
+        "E": 2.873
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 1.868
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "E": 5.234
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "E": 4.266
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "E": 3.02
+      }
+    ],
+    "bank": [
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "E": 2.444
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "E": 0.842
+      },
+      {
+        "speler": "Shunsuke Mito",
+        "club": "Sparta Rotterdam",
+        "pos": "M",
+        "E": 0.0
+      },
+      {
+        "speler": "Artem Stepanov ⚠",
+        "club": "FC Utrecht",
+        "pos": "A",
+        "E": 1.911
+      }
+    ]
+  },
+  "zonder_speeltijd": [
+    "Shunsuke Mito"
+  ],
+  "bijna_match": [],
+  "geblesseerd_in_selectie": [
+    {
+      "speler": "Shunsuke Mito",
+      "duur": "duur onbekend"
+    }
+  ],
+  "programma": [
+    {
+      "thuis": "ADO Den Haag",
+      "uit": "PSV"
+    },
+    {
+      "thuis": "FC Groningen",
+      "uit": "Ajax"
+    },
+    {
+      "thuis": "FC Twente",
+      "uit": "FC Utrecht"
+    },
+    {
+      "thuis": "NEC",
+      "uit": "Fortuna Sittard"
+    },
+    {
+      "thuis": "PEC Zwolle",
+      "uit": "Go Ahead Eagles"
+    },
+    {
+      "thuis": "SC Cambuur",
+      "uit": "AZ"
+    },
+    {
+      "thuis": "sc Heerenveen",
+      "uit": "Excelsior"
+    },
+    {
+      "thuis": "Sparta Rotterdam",
+      "uit": "Willem II"
+    },
+    {
+      "thuis": "Telstar",
+      "uit": "Feyenoord"
+    }
+  ],
+  "inhaal": [],
+  "pool_grootte": 280,
+  "advies": {
+    "verwacht": 50.09,
+    "winst": 10.0,
+    "formatie": "3-4-3",
+    "uit": [
+      {
+        "speler": "Lutsharel Geertruida",
+        "club": "PSV",
+        "pos": "V",
+        "prijs": 3.0,
+        "E": 2.769
+      },
+      {
+        "speler": "Shunsuke Mito",
+        "club": "Sparta Rotterdam",
+        "pos": "M",
+        "prijs": 2.0,
+        "E": 0.0
+      },
+      {
+        "speler": "Jeff Hardeveld",
+        "club": "Telstar",
+        "pos": "V",
+        "prijs": 2.0,
+        "E": 0.875
+      }
+    ],
+    "in": [
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "prijs": 4.0,
+        "E": 7.961
+      },
+      {
+        "speler": "Marvin Young",
+        "club": "Sparta Rotterdam",
+        "pos": "V",
+        "prijs": 1.8,
+        "E": 3.951
+      },
+      {
+        "speler": "Tyrone Owusu",
+        "club": "Telstar",
+        "pos": "M",
+        "prijs": 1.2,
+        "E": 2.666
+      }
+    ]
+  },
+  "multi_ronde": true,
+  "horizon": 4,
+  "horizon_rondes": [
+    9,
+    10,
+    11,
+    12
+  ],
+  "decay": 0.84,
+  "verwacht_horizon": 150.78
+}
