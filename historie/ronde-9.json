@@ -7,7 +7,7 @@
     "bestand": null,
     "leeftijd_dagen": null
   },
-  "gegenereerd": "2026-10-16T11:35:06",
+  "gegenereerd": "2026-10-16T12:05:02",
   "transfers_toegestaan": 3,
   "transfers_beschikbaar": 3,
   "transfer_drempel": 0.0,
@@ -232,6 +232,100 @@
         "pos": "M",
         "prijs": 1.2,
         "E": 2.666
+      }
+    ],
+    "basis": [
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "E": 3.442
+      },
+      {
+        "speler": "Ruud Nijstad",
+        "club": "FC Twente",
+        "pos": "V",
+        "E": 4.266
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 4.074
+      },
+      {
+        "speler": "Marvin Young",
+        "club": "Sparta Rotterdam",
+        "pos": "V",
+        "E": 3.951
+      },
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "E": 7.961
+      },
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "E": 4.804
+      },
+      {
+        "speler": "Oscar Gloukh",
+        "club": "Ajax",
+        "pos": "M",
+        "E": 2.873
+      },
+      {
+        "speler": "Tyrone Owusu",
+        "club": "Telstar",
+        "pos": "M",
+        "E": 2.666
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "E": 5.234
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "E": 4.266
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "E": 3.02
+      }
+    ],
+    "bank": [
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "E": 2.444
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "E": 0.842
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 1.868
+      },
+      {
+        "speler": "Artem Stepanov ⚠",
+        "club": "FC Utrecht",
+        "pos": "A",
+        "E": 1.911
       }
     ]
   },

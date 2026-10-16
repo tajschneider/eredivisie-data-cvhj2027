@@ -5,7 +5,7 @@ Clubratings uit 72 wedstrijden (thuisvoordeel x1.23)
 LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
 Horizon: ronde [9, 10, 11, 12] (decay 0.84)
 
-OPSTELLING  4-3-3   verwacht 40.1 punten   kosten EUR 31.30
+OPSTELLING NU (zonder transfers)  4-3-3   verwacht 40.1 punten   kosten EUR 31.30
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.44
   Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  4.27
   Verdediging  Deveron Fonville          NEC              EUR 2.00  E  4.07
@@ -42,5 +42,23 @@ MULTI-RONDE ADVIES (horizon 4, decay 0.84, 3 transfer(s))
     IN   Guus Til                  PSV              EUR 4.00  E  7.96  E(horizon) 26.07
     IN   Marvin Young              Sparta Rotterdam EUR 1.80  E  3.95  E(horizon)  8.57
     IN   Tyrone Owusu              Telstar          EUR 1.20  E  2.67  E(horizon) 10.04
+
+OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-4-3   verwacht 50.1 punten   kosten EUR 31.30
+  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.44
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  4.27
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  4.07
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  3.95
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  7.96
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.80
+  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  2.87
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  2.67
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.23
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.27
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.02
+  ---- bank (50%) ----
+  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.44
+  A            Artem Stepanov ⚠          FC Utrecht       EUR 2.20  E  1.91
+  M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  1.87
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  0.84
 
 besluit -> besluit.json
