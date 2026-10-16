@@ -7,7 +7,7 @@
     "bestand": null,
     "leeftijd_dagen": null
   },
-  "gegenereerd": "2026-10-16T12:05:02",
+  "gegenereerd": "2026-10-16T17:25:42",
   "transfers_toegestaan": 3,
   "transfers_beschikbaar": 3,
   "transfer_drempel": 0.0,
@@ -183,25 +183,25 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 279,
+  "pool_grootte": 278,
   "advies": {
     "verwacht": 50.09,
     "winst": 10.0,
     "formatie": "3-4-3",
     "uit": [
       {
-        "speler": "Lutsharel Geertruida",
-        "club": "PSV",
-        "pos": "V",
-        "prijs": 3.0,
-        "E": 2.769
-      },
-      {
         "speler": "Shunsuke Mito",
         "club": "Sparta Rotterdam",
         "pos": "M",
         "prijs": 2.0,
         "E": 0.0
+      },
+      {
+        "speler": "Lutsharel Geertruida",
+        "club": "PSV",
+        "pos": "V",
+        "prijs": 3.0,
+        "E": 2.769
       },
       {
         "speler": "Jeff Hardeveld",
