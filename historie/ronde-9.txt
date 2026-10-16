@@ -1,4 +1,3 @@
---transfers auto -> 3
 --horizon auto -> 4
 
 *** RONDE 9 START PERIODE 3: 3 TRANSFERS TOEGESTAAN ***
@@ -37,9 +36,9 @@ WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
 MULTI-RONDE ADVIES (horizon 4, decay 0.84, 3 transfer(s))
   ronde 9: verwacht 50.1 punten  (3-4-3)  winst +10.0
   gedecayde som over de horizon: 150.78  (huidig team: 122.31)
+    UIT  Lutsharel Geertruida      PSV              EUR 3.00  E  2.77
     UIT  Shunsuke Mito             Sparta Rotterdam EUR 2.00  E  0.00
     UIT  Jeff Hardeveld            Telstar          EUR 2.00  E  0.87
-    UIT  Lutsharel Geertruida      PSV              EUR 3.00  E  2.77
     IN   Guus Til                  PSV              EUR 4.00  E  7.96  E(horizon) 26.07
     IN   Marvin Young              Sparta Rotterdam EUR 1.80  E  3.95  E(horizon)  8.57
     IN   Tyrone Owusu              Telstar          EUR 1.20  E  2.67  E(horizon) 10.04
