@@ -8,3 +8,39 @@ ronde,datum,thuis,uit,kans_thuis,kans_gelijk,kans_uit,verwacht_thuis,verwacht_ui
 9,"vrijdag 16 oktober 2026, 20:00",sc Heerenveen,Excelsior,59,21,20,2,1,regulier
 9,"zaterdag 17 oktober 2026, 21:00",Sparta Rotterdam,Willem II,60,20,20,2,1,regulier
 9,"zaterdag 17 oktober 2026, 20:00",Telstar,Feyenoord,12,17,71,1,2,regulier
+10,"zaterdag 24 oktober 2026, 21:00",ADO Den Haag,sc Heerenveen,31,22,47,1,1,regulier
+10,"zondag 25 oktober 2026, 20:00",AZ,FC Twente,42,23,35,1,1,regulier
+10,"zaterdag 24 oktober 2026, 16:30",FC Utrecht,PEC Zwolle,61,19,20,2,1,regulier
+10,"zondag 25 oktober 2026, 12:15",Fortuna Sittard,Excelsior,37,23,40,1,1,regulier
+10,"vrijdag 23 oktober 2026, 20:00",Go Ahead Eagles,Telstar,61,19,20,2,1,regulier
+10,"zondag 25 oktober 2026, 14:30",NEC,FC Groningen,46,22,32,1,1,regulier
+10,"zondag 25 oktober 2026, 14:30",PSV,Feyenoord,50,21,29,2,1,regulier
+10,"zondag 25 oktober 2026, 16:45",Sparta Rotterdam,Ajax,16,17,67,1,2,regulier
+10,"zaterdag 24 oktober 2026, 18:45",Willem II,SC Cambuur,39,24,37,1,1,regulier
+11,"zaterdag 31 oktober 2026, 21:00",Ajax,AZ,54,23,23,1,1,regulier
+11,"zondag 1 november 2026, 14:30",Excelsior,FC Twente,20,23,57,0,1,regulier
+11,"zondag 1 november 2026, 16:45",FC Groningen,Sparta Rotterdam,50,24,26,1,1,regulier
+11,"zaterdag 31 oktober 2026, 16:30",Feyenoord,Fortuna Sittard,70,18,12,2,1,regulier
+11,"zondag 1 november 2026, 12:15",PEC Zwolle,ADO Den Haag,29,23,48,1,1,regulier
+11,"zaterdag 31 oktober 2026, 18:45",PSV,Willem II,76,15,9,2,0,regulier
+11,"zaterdag 31 oktober 2026, 21:00",SC Cambuur,Go Ahead Eagles,42,25,33,1,1,regulier
+11,"zaterdag 31 oktober 2026, 18:45",sc Heerenveen,NEC,33,25,42,1,1,regulier
+11,"zondag 1 november 2026, 14:30",Telstar,FC Utrecht,39,26,35,1,1,regulier
+12,"zaterdag 7 november 2026, 18:45",ADO Den Haag,Sparta Rotterdam,41,25,34,1,1,regulier
+12,"zondag 8 november 2026, 16:45",AZ,FC Groningen,50,24,26,1,1,regulier
+12,"zaterdag 7 november 2026, 21:00",Excelsior,Go Ahead Eagles,44,25,31,1,1,regulier
+12,"zondag 8 november 2026, 14:30",FC Twente,Ajax,38,25,37,1,1,regulier
+12,"zondag 8 november 2026, 20:00",FC Utrecht,NEC,41,25,34,1,1,regulier
+12,"zaterdag 7 november 2026, 16:30",Fortuna Sittard,Telstar,43,25,32,1,1,regulier
+12,"zondag 8 november 2026, 16:45",SC Cambuur,PSV,16,20,64,1,2,regulier
+12,"zondag 8 november 2026, 12:15",sc Heerenveen,Feyenoord,23,23,54,1,1,regulier
+12,"vrijdag 6 november 2026, 20:00",Willem II,PEC Zwolle,41,25,34,1,1,regulier
+13,"zondag 22 november 2026, 14:30",Ajax,ADO Den Haag,68,19,13,2,1,regulier
+13,"zaterdag 21 november 2026, 21:00",FC Groningen,sc Heerenveen,50,24,26,1,1,regulier
+13,"zondag 22 november 2026, 12:15",FC Twente,Willem II,65,20,15,2,1,regulier
+13,"zaterdag 21 november 2026, 18:45",FC Utrecht,SC Cambuur,57,22,21,1,1,regulier
+13,"zaterdag 21 november 2026, 18:45",Feyenoord,Excelsior,69,18,13,2,1,regulier
+13,"zondag 22 november 2026, 16:45",Go Ahead Eagles,Fortuna Sittard,44,25,31,1,1,regulier
+13,"zaterdag 21 november 2026, 16:30",NEC,PSV,28,24,48,1,1,regulier
+13,"zondag 22 november 2026, 14:30",Sparta Rotterdam,AZ,32,25,43,1,1,regulier
+13,"zaterdag 21 november 2026, 21:00",Telstar,PEC Zwolle,43,25,32,1,1,regulier
