@@ -1,6 +1,6 @@
-# Validatie ronde 8 (2026-10-11)
+# Validatie ronde 9 (2026-10-16)
 
-Periode 2; periodestart over 1 ronde(n) (venster 1). Dit is meting 3.
+Periode 3; ronde 9 IS een periodestart. Dit is meting 4.
 
 ## Testsuites
 
@@ -15,25 +15,25 @@ Periode 2; periodestart over 1 ronde(n) (venster 1). Dit is meting 3.
 
 ## Modelkwaliteit
 
-Gemeten over 6 evalueerbare ronde(n).
+Gemeten over 7 evalueerbare ronde(n).
 
-- **top15_gevangen**: 0.219 (+0.023 sinds vorige meting, beter)
-- **rho**: 0.411 (+0.002 sinds vorige meting, beter)
-- **rmse**: 3.305 (+0.001 sinds vorige meting, slechter)
+- **top15_gevangen**: 0.192 (-0.028 sinds vorige meting, slechter)
+- **rho**: 0.398 (-0.013 sinds vorige meting, slechter)
+- **rmse**: 3.309 (+0.004 sinds vorige meting, slechter)
 
 `top15_gevangen` is de beslissingsmaat: welk deel van het gat tussen willekeurig en perfect kiezen vangt de top-15 van het model. Dat is wat je in punten merkt; RMSE staat erbij voor de vergelijkbaarheid met eerdere metingen.
 
 ## Datadrift
 
-- **markt_grootte**: 509 (ongewijzigd sinds vorige meting)
-- **koppelgraad**: 0.898 (ongewijzigd sinds vorige meting)
-- **geblesseerd**: 39 (-8 sinds vorige meting, beter)
+- **markt_grootte**: 507 (-2 sinds vorige meting, slechter)
+- **koppelgraad**: 0.911 (+0.013 sinds vorige meting, beter)
+- **geblesseerd**: 40 (+1 sinds vorige meting, slechter)
 
 Een sprong in deze drie is meestal geen echte verandering in de competitie maar een scraper die stil iets anders is gaan lezen.
 
 ## Wat dit rapport NIET zegt
 
 - De waarheid in de backtest komt uit `spelers.csv` en mist assists, kaarten en keepersreddingen. Elke maat hierboven is dus een ondergrens.
-- Met 6 ronde(n) is de onzekerheid groot; een verschil tussen twee metingen is pas een signaal als het zich herhaalt.
+- Met 7 ronde(n) is de onzekerheid groot; een verschil tussen twee metingen is pas een signaal als het zich herhaalt.
 - Groene testsuites zeggen dat de code consistent is, niet dat de voorspellingen goed zijn.
 
