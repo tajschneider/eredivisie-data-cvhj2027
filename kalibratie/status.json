@@ -1,5 +1,5 @@
 {
-  "laatst_gecontroleerd_tot_ronde": 5,
+  "laatst_gecontroleerd_tot_ronde": 8,
   "geschiedenis": [
     {
       "tijdstip": "2026-09-07T17:17:13.905721+00:00",
@@ -91,6 +91,13 @@
       "n_evalueerbaar": 7,
       "besluit": "overgeslagen",
       "reden": "nog maar 3 nieuwe ronde(s) sinds de vorige controle (ronde 5); wacht tot 4"
+    },
+    {
+      "tijdstip": "2026-10-16T11:29:17.709785+00:00",
+      "tot_ronde": 8,
+      "n_evalueerbaar": 7,
+      "besluit": "geen aanpassing",
+      "reden": "slechts 7 evalueerbare ronde(s), minimaal 8 vereist"
     }
   ]
 }
