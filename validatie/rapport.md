@@ -1,6 +1,6 @@
-# Validatie ronde 9 (2026-10-16)
+# Validatie ronde 9 (2026-10-18)
 
-Periode 3; ronde 9 IS een periodestart. Dit is meting 4.
+Periode 3; ronde 9 IS een periodestart. Dit is meting 5.
 
 ## Testsuites
 
@@ -17,17 +17,17 @@ Periode 3; ronde 9 IS een periodestart. Dit is meting 4.
 
 Gemeten over 7 evalueerbare ronde(n).
 
-- **top15_gevangen**: 0.192 (-0.028 sinds vorige meting, slechter)
-- **rho**: 0.398 (-0.013 sinds vorige meting, slechter)
-- **rmse**: 3.309 (+0.004 sinds vorige meting, slechter)
+- **top15_gevangen**: 0.191 (-0.001 sinds vorige meting, slechter)
+- **rho**: 0.398 (+0.001 sinds vorige meting, beter)
+- **rmse**: 3.312 (+0.003 sinds vorige meting, slechter)
 
 `top15_gevangen` is de beslissingsmaat: welk deel van het gat tussen willekeurig en perfect kiezen vangt de top-15 van het model. Dat is wat je in punten merkt; RMSE staat erbij voor de vergelijkbaarheid met eerdere metingen.
 
 ## Datadrift
 
-- **markt_grootte**: 507 (-2 sinds vorige meting, slechter)
-- **koppelgraad**: 0.911 (+0.013 sinds vorige meting, beter)
-- **geblesseerd**: 40 (+1 sinds vorige meting, slechter)
+- **markt_grootte**: 507 (ongewijzigd sinds vorige meting)
+- **koppelgraad**: 0.911 (ongewijzigd sinds vorige meting)
+- **geblesseerd**: 42 (+2 sinds vorige meting, slechter)
 
 Een sprong in deze drie is meestal geen echte verandering in de competitie maar een scraper die stil iets anders is gaan lezen.
 
