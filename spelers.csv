@@ -64,7 +64,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 1,"zondag 9 augustus 2026, 14:30",Alvin Nordin,alvin-nordin,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-10-19
 1,"zondag 9 augustus 2026, 14:30",Nils Eggens,nils-eggens,FC Groningen,FC Utrecht,thuis,bank,0,0,0,,0,,2026-10-19
 1,"zondag 9 augustus 2026, 14:30",Ryan Metu,ryan-metu,FC Groningen,FC Utrecht,thuis,invaller,0,9,0,0,3,,2026-10-19
-1,"zondag 9 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
+1,"zondag 9 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
 1,"zondag 9 augustus 2026, 14:30",Oskar Zawada,oskar-zawada,FC Groningen,FC Utrecht,thuis,afwezig,0,0,0,,0,blessure,2026-08-18
 1,"zondag 9 augustus 2026, 14:30",Michael Brouwer,michael-brouwer,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-10-19
 1,"zondag 9 augustus 2026, 14:30",Arthur Zagré,arthur-zagre,FC Utrecht,FC Groningen,uit,basis,1,90,0,0,0,,2026-10-19
@@ -454,7 +454,7 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 2,"zondag 16 augustus 2026, 12:15",Jacob Ondrejka,jacob-ondrejka,FC Groningen,ADO Den Haag,uit,invaller,0,3,0,0,3,,2026-10-19
 2,"zondag 16 augustus 2026, 12:15",Nils Eggens,nils-eggens,FC Groningen,ADO Den Haag,uit,invaller,0,10,1,0,3,,2026-10-19
 2,"zondag 16 augustus 2026, 12:15",Malcolm John Matarr Jeng,malcolm-john-matarr-jeng,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-19
-2,"zondag 16 augustus 2026, 12:15",Stije Resink,stije-resink,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-16
+2,"zondag 16 augustus 2026, 12:15",Stije Resink,stije-resink,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-19
 2,"zondag 16 augustus 2026, 12:15",Ryan Metu,ryan-metu,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-05
 2,"zondag 16 augustus 2026, 12:15",Oskar Zawada,oskar-zawada,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-08-18
 2,"zondag 16 augustus 2026, 12:15",Tyrique Mercera,tyrique-mercera,FC Groningen,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-19
@@ -3629,21 +3629,21 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 8,"zondag 11 oktober 2026, 14:30",Luka Reischl,luka-reischl,ADO Den Haag,Telstar,uit,afwezig,0,0,0,,0,blessure,2026-10-19
 8,"zondag 11 oktober 2026, 14:30",Ichnygel Gerzjomir Minguel Thomas,ichnygel-gerzjomir-minguel-thomas,ADO Den Haag,Telstar,uit,afwezig,0,0,0,,0,blessure,2026-10-12
 8,"zondag 11 oktober 2026, 14:30",Cameron Peupion,cameron-peupion,ADO Den Haag,Telstar,uit,afwezig,0,0,0,,0,blessure,2026-10-19
-1,"zaterdag 8 augustus 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-2,"zaterdag 15 augustus 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-3,"zondag 23 augustus 2026, 14:30",Wessel Kuhn,wessel-kuhn,PSV,FC Groningen,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-3,"zondag 23 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,PSV,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-4,"vrijdag 28 augustus 2026, 20:00",Stije Resink,stije-resink,FC Groningen,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-4,"zondag 30 augustus 2026, 12:15",Wessel Kuhn,wessel-kuhn,PSV,FC Utrecht,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-5,"zaterdag 5 september 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-5,"zondag 6 september 2026, 12:15",Stije Resink,stije-resink,FC Groningen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-6,"zaterdag 12 september 2026, 18:45",Stije Resink,stije-resink,FC Groningen,Go Ahead Eagles,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-6,"zondag 13 september 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Sparta Rotterdam,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-7,"vrijdag 18 september 2026, 20:00",Stije Resink,stije-resink,FC Groningen,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
-7,"zondag 20 september 2026, 14:30",Wessel Kuhn,wessel-kuhn,PSV,FC Twente,uit,afwezig,0,0,0,,0,blessure,2026-10-16
-8,"zondag 11 oktober 2026, 16:45",Stije Resink,stije-resink,FC Groningen,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-10-16
+1,"zaterdag 8 augustus 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+2,"zaterdag 15 augustus 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+3,"zondag 23 augustus 2026, 14:30",Wessel Kuhn,wessel-kuhn,PSV,FC Groningen,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+3,"zondag 23 augustus 2026, 14:30",Stije Resink,stije-resink,FC Groningen,PSV,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+4,"vrijdag 28 augustus 2026, 20:00",Stije Resink,stije-resink,FC Groningen,Fortuna Sittard,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+4,"zondag 30 augustus 2026, 12:15",Wessel Kuhn,wessel-kuhn,PSV,FC Utrecht,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+5,"zaterdag 5 september 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Ajax,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+5,"zondag 6 september 2026, 12:15",Stije Resink,stije-resink,FC Groningen,FC Twente,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+6,"zaterdag 12 september 2026, 18:45",Stije Resink,stije-resink,FC Groningen,Go Ahead Eagles,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+6,"zondag 13 september 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,Sparta Rotterdam,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+7,"vrijdag 18 september 2026, 20:00",Stije Resink,stije-resink,FC Groningen,PEC Zwolle,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
+7,"zondag 20 september 2026, 14:30",Wessel Kuhn,wessel-kuhn,PSV,FC Twente,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+8,"zondag 11 oktober 2026, 16:45",Stije Resink,stije-resink,FC Groningen,Excelsior,uit,afwezig,0,0,0,,0,blessure,2026-10-19
 8,"zaterdag 10 oktober 2026, 20:00",Max Bruns,max-bruns,FC Twente,Fortuna Sittard,uit,afwezig,0,0,0,,0,blessure,2026-10-19
-8,"vrijdag 9 oktober 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-10-16
+8,"vrijdag 9 oktober 2026, 20:00",Wessel Kuhn,wessel-kuhn,PSV,sc Heerenveen,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
 9,"zaterdag 17 oktober 2026, 16:30",Kilian Nikièma,kilian-nikiema,ADO Den Haag,PSV,thuis,basis,1,90,0,0,3,,2026-10-19
 9,"zaterdag 17 oktober 2026, 16:30",Sekou Sylla,sekou-sylla,ADO Den Haag,PSV,thuis,basis,1,46,0,0,3,,2026-10-19
 9,"zaterdag 17 oktober 2026, 16:30",Matteo Waem,matteo-waem,ADO Den Haag,PSV,thuis,basis,1,90,0,0,3,,2026-10-19
@@ -4103,3 +4103,5 @@ ronde,datum,speler,speler_id,club,tegenstander,thuis_uit,status,basis,minuten,go
 9,"zaterdag 17 oktober 2026, 20:00",Thomas Beelen,thomas-beelen,Feyenoord,Telstar,uit,afwezig,0,0,0,,0,schorsing,2026-10-19
 9,"zaterdag 17 oktober 2026, 20:00",Jordan Bos,jordan-bos,Feyenoord,Telstar,uit,afwezig,0,0,0,,0,blessure,2026-10-19
 9,"zaterdag 17 oktober 2026, 20:00",Ayase Ueda,ayase-ueda,Feyenoord,Telstar,uit,afwezig,0,0,0,,0,afwezig,2026-10-19
+9,"zaterdag 17 oktober 2026, 16:30",Wessel Kuhn,wessel-kuhn,PSV,ADO Den Haag,uit,afwezig,0,0,0,,0,blessure,2026-10-19
+9,"zondag 18 oktober 2026, 16:45",Stije Resink,stije-resink,FC Groningen,Ajax,thuis,afwezig,0,0,0,,0,blessure,2026-10-19
