@@ -55,6 +55,14 @@ rondes aan onzin opgeleverd.
 De volledige run doet ruim 500 pagina's met 1,2 seconde pauze: ongeveer een
 kwartier. Bij een 429 of een 5xx wordt steeds langer gewacht.
 
+De uitslagenpagina noemt alle 34 ronden, ruim driehonderd duels. Het hele
+speelschema gaat in `clubs.csv` — daar haalt het model zijn programma uit —
+maar wedstrijdpagina's worden alleen opgehaald voor gespeelde ronden waarvan
+de kansen nog missen, plus de komende twee ronden (`VOORUIT_RONDEN`). Die
+laatste elke run opnieuw, want de odds scherpen naar de aftrap toe aan. Odds
+van ronde 30 in oktober zijn zinloos en zouden verouderd zijn voordat die
+ronde wordt gespeeld.
+
 ### Schema in GitHub Actions
 
 | Moment | Taken | Waarom |

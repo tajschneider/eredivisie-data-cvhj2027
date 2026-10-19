@@ -48,9 +48,13 @@ GEEL_URL = BASE + "/eredivisie/statistieken/gele-kaarten/"
 ROOD_URL = BASE + "/eredivisie/statistieken/rode-kaarten/"
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; cvhj-model/2.0)"}
+# De slug mag accenten bevatten ('mateo-chávez'); die worden pas door norm()
+# gelijkgetrokken, zodat één speler niet twee identiteiten krijgt.
+SPELER_HREF = re.compile(r"/eredivisie/speler/([^/\"'>\s]+)/")
 OUT = Path(__file__).parent
 VANDAAG = time.strftime("%Y-%m-%d")
 SEIZOEN = "2026/27"
+VOORUIT_RONDEN = 2        # hoeveel komende ronden per run verse odds krijgen
 
 # ----------------------------------------------------------------- clubnamen
 # De korte vorm is wat in clubs.csv en in de CVHJ-prijslijst staat. De bron
@@ -216,10 +220,21 @@ def tabellen(soup):
 def parse_uitslagen(soup):
     """Alle wedstrijden met ronde, datum, clubs, uitslag en wedstrijd-URL.
 
-    Een rij op de pagina ziet er zo uit:
+    Twee vormen op dezelfde pagina. Onder "Net gespeeld" staat de ronde in de
+    rij zelf:
         zo 18 okt, 20:00 Ronde 9 FC Twente 1-2 FC Utrecht
-    De ronde staat dus in de rij zelf; de kopjes 'Speelronde N' zijn niet nodig.
-    Nog niet gespeelde duels hebben geen uitslag.
+    Onder "Alle speelrondes" staat de ronde alleen in de kop erboven en is de
+    score met spaties geschreven:
+        Speelronde 9  ->  vr 16 okt, 20:00 sc Heerenveen 4 - 0 Excelsior
+
+    De HELE RIJ is de link. Daarom begint het zoeken bij de linktekst zelf en
+    niet bij de ouder: de eerstvolgende voorouder is op deze pagina de
+    container met alle negen rijen, en die liep ruim over de tekenlimiet heen
+    waardoor elke rij werd overgeslagen.
+
+    De clubs komen uit de slug en niet uit de tekst. De slug is de bron van
+    waarheid over wie thuis speelt, en dat scheelt het uiteenrafelen van
+    clubnamen rond een score.
     """
     uit, per_slug = [], {}
     kop_ronde = None
@@ -235,43 +250,54 @@ def parse_uitslagen(soup):
         href = el.get("href", "")
         if "/eredivisie/wedstrijd/" not in href:
             continue
-        ouder = el.find_parent(["tr", "li", "article", "div"])
-        if ouder is None:
+        slug = href.rstrip("/").rsplit("/", 1)[-1]
+        paar = slug_naar_clubs(slug)
+        if not paar:
             continue
-        t = re.sub(r"\s+", " ", vlak(ouder)).strip()
-        if len(t) > 220:
-            continue
-        rm = re.search(r"\bRonde\s+(\d{1,2})\b", t)
-        ronde = int(rm.group(1)) if rm else kop_ronde
+        thuis, uitc = paar
+
+        # kandidaten van klein naar groot: eerst de link, dan hoogstens drie
+        # voorouders zolang de tekst nog op een rij lijkt
+        kandidaten = [re.sub(r"\s+", " ", vlak(el)).strip()]
+        ouder = el
+        for _ in range(3):
+            ouder = getattr(ouder, "parent", None)
+            if ouder is None or getattr(ouder, "name", None) in (
+                    None, "body", "html", "[document]"):
+                break
+            t = re.sub(r"\s+", " ", vlak(ouder)).strip()
+            if len(t) > 220:
+                break
+            kandidaten.append(t)
+
+        # Per onderdeel de kleinste kandidaat die het bevat. Ronde, uitslag en
+        # datum staan niet noodzakelijk in hetzelfde element: in de ene vorm
+        # zit alles in de linktekst, in de andere staat de datum in een cel
+        # ernaast. Eén kandidaat kiezen voor alles liet daarom rijen vallen.
+        SCORE = r"(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)"
+        ronde, gh, ga, datum, rijtekst = None, None, None, "", kandidaten[0]
+        for t in kandidaten:
+            if ronde is None:
+                rm = re.search(r"\bRonde\s+(\d{1,2})\b", t)
+                if rm:
+                    ronde = int(rm.group(1))
+            if gh is None:
+                # 'Ronde 9' eerst weg, zodat een rondenummer geen score wordt
+                sm = re.search(SCORE, re.sub(r"\bRonde\s+\d{1,2}\b", " ", t))
+                if sm:
+                    gh, ga = int(sm.group(1)), int(sm.group(2))
+            if not datum:
+                datum = datum_iso(t)
+            if len(t) > len(rijtekst):
+                rijtekst = t
+        if ronde is None:
+            ronde = kop_ronde
         if ronde is None:
             continue
-        slug = href.rstrip("/").rsplit("/", 1)[-1]
-
-        # De score staat tussen de twee clubnamen. Eerst de score vinden, dan
-        # links en rechts de clubnaam. Zonder score: nog niet gespeeld.
-        na_ronde = t[rm.end():].strip() if rm else t
-        sm = re.search(r"(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)", na_ronde)
-        if sm:
-            thuis = club_naam(na_ronde[:sm.start()].strip(" -–"))
-            uitc = club_naam(na_ronde[sm.end():].strip(" -–").split("Gespeeld")[0])
-            gh, ga = int(sm.group(1)), int(sm.group(2))
-        else:
-            delen = re.split(r"\s+-\s+", na_ronde)
-            if len(delen) < 2:
-                continue
-            thuis, uitc = club_naam(delen[0]), club_naam(delen[1])
-            gh = ga = None
-
-        if thuis not in CLUB_SLUG.values() or uitc not in CLUB_SLUG.values():
-            # terugvallen op de slug, die de clubs in de juiste volgorde bevat
-            paar = slug_naar_clubs(slug)
-            if not paar:
-                continue
-            thuis, uitc = paar
 
         rij = {
-            "ronde": ronde, "datum": datum_iso(t),
-            "datum_tekst": t.split("Ronde")[0].strip(),
+            "ronde": ronde, "datum": datum,
+            "datum_tekst": rijtekst.split("Ronde")[0].strip(),
             "thuis": thuis, "uit": uitc, "thuis_goals": gh, "uit_goals": ga,
             "url": href if href.startswith("http") else BASE + href,
         }
@@ -418,7 +444,7 @@ def parse_opstelling(soup, club):
 
     sub = BeautifulSoup(blok_html, "html.parser")
     for a in sub.select('a[href*="/eredivisie/speler/"]'):
-        sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+        sm = SPELER_HREF.search(a.get("href", ""))
         if not sm:
             continue
         naam = vlak(a).strip()
@@ -430,6 +456,15 @@ def parse_opstelling(soup, club):
             if re.search(r, t, re.I):
                 reden = r
                 break
+        if not reden:
+            # Geen reden naast de naam, dus geen afwezige. Dit is nodig omdat
+            # de FAQ onderaan de pagina de spelers nog een keer in gewone
+            # tekst noemt, met links. Zonder deze eis liep het blok daar
+            # doorheen: PSV kwam op 15 afwezigen in plaats van 8, en een
+            # speler die onterecht als afwezig wordt gemerkt valt volledig uit
+            # de pool. Liever een afwezige missen dan een basisspeler
+            # weggooien.
+            continue
         tm = re.search(r"verwacht terug rond\s*(\d{2}-\d{2}-\d{4})", t, re.I)
         terug = ""
         if tm:
@@ -462,7 +497,7 @@ def parse_opstelling(soup, club):
     elf, gezien2 = [], set()
     for a in BeautifulSoup(rest, "html.parser").select(
             'a[href*="/eredivisie/speler/"]'):
-        sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+        sm = SPELER_HREF.search(a.get("href", ""))
         if not sm:
             continue
         sid = norm(sm.group(1))
@@ -517,7 +552,7 @@ def parse_spelersindex(soup):
         blok = ruw[eind:blok_eind]
         for a in BeautifulSoup(blok, "html.parser").select(
                 'a[href*="/eredivisie/speler/"]'):
-            sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+            sm = SPELER_HREF.search(a.get("href", ""))
             if not sm:
                 continue
             slug = norm(sm.group(1))
@@ -622,42 +657,59 @@ def parse_speler(soup, seizoen=SEIZOEN):
 def parse_kaartenlijst(soup, kolom_woord):
     """{speler_id: (naam, club, aantal)} uit een statistiekenranglijst.
 
-    Rij: '| 1 | Abdelnour Soualhia  Telstar | 3 |'. De clubnaam zit in dezelfde
-    cel als de naam; de speler is een link, de club ook, dus die zijn apart te
-    halen. Alleen de spelerstabel, niet de clubtabel: die heeft geen
-    spelerslink.
+    Een rij ziet er zo uit:
+        1   Abdelnour Soualhia  Telstar   3
+
+    Niet op <table> en <th> leunen. Op 19-10-2026 leverde de kopdetectie nul
+    rijen op terwijl de pagina er visueel wel als een tabel uitziet: de
+    kopteksten staan er wel ('#', 'Speler', 'Gele kaarten'), maar blijkbaar
+    niet als <th>. De rij wordt daarom gevonden via de spelerslink zelf: de
+    grootste voorouder die nog precies een spelerslink bevat en op een rij
+    lijkt. De clubtabel verderop heeft clublinks en geen spelerslinks, en valt
+    daardoor automatisch af.
+
+    De clubnaam is in deze lijst platte tekst en geen link; die komt dus uit de
+    rijtekst en niet uit een href.
     """
     uit = {}
-    for tab in soup.find_all("table"):
-        koppen = [norm(vlak(th)) for th in tab.find_all("th")]
-        if not any(norm(kolom_woord) in k for k in koppen):
+    for a in soup.select('a[href*="/eredivisie/speler/"]'):
+        sm = SPELER_HREF.search(a.get("href", ""))
+        if not sm:
             continue
-        if any(k == "club" for k in koppen):
-            continue                      # dat is de clubtabel
-        for tr in tab.find_all("tr"):
-            cellen = tr.find_all("td")
-            if len(cellen) < 2:
-                continue
-            a = tr.select_one('a[href*="/eredivisie/speler/"]')
-            if not a:
-                continue
-            sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
-            if not sm:
-                continue
-            club = ""
-            ca = tr.select_one('a[href^="/eredivisie/"]:not([href*="/speler/"])')
-            if ca:
-                cs = ca.get("href", "").strip("/").split("/")[-1]
-                club = CLUB_SLUG.get(cs, club_naam(vlak(ca)))
-            aantal = None
-            for c in reversed(cellen):
-                aantal = heel(vlak(c))
-                if aantal is not None:
-                    break
-            if aantal is None:
-                continue
-            uit[norm(sm.group(1))] = (vlak(a).strip(), club, aantal)
-        break
+        sid = norm(sm.group(1))
+        if sid in uit:
+            continue
+        naam = vlak(a).strip()
+        if not naam:
+            continue
+
+        rij, ouder = "", a
+        for _ in range(5):
+            ouder = getattr(ouder, "parent", None)
+            if ouder is None or getattr(ouder, "name", None) in (
+                    None, "body", "html", "[document]"):
+                break
+            if len(ouder.select('a[href*="/eredivisie/speler/"]')) != 1:
+                break                     # meer spelers: te hoog geklommen
+            t = re.sub(r"\s+", " ", vlak(ouder)).strip()
+            if len(t) > 160:
+                break
+            rij = t
+        if not rij:
+            continue
+
+        m = re.search(r"(\d{1,3})\s*$", rij)
+        if not m:
+            continue
+        aantal = int(m.group(1))
+        if not 1 <= aantal <= 40:
+            continue                      # geen kaartenaantal maar iets anders
+
+        # rangnummer vooraan eraf, dan de naam eruit; de rest is de club
+        rest = re.sub(r"^\s*\d{1,3}\s*", "", rij[:m.start()])
+        rest = rest.replace(naam, "", 1).strip(" -·|–")
+        club = club_naam(rest)
+        uit[sid] = (naam, club if club in CLUB_SLUG.values() else "", aantal)
     return uit
 
 
@@ -761,18 +813,24 @@ def taak_clubs(rondes=None):
         r = oud.get((str(d["ronde"]), d["thuis"]))
         return r is not None and str(r.get("kans_winst", "")).strip() != ""
 
+    gespeeld = {d["ronde"] for d in duels if d["thuis_goals"] is not None}
+    open_ = sorted({d["ronde"] for d in duels} - gespeeld)
+    binnenkort = set(open_[:VOORUIT_RONDEN])
+
     if rondes:
         haal = {d["url"] for d in duels if d["ronde"] in rondes}
     else:
-        haal = {d["url"] for d in duels if not kansen_bekend(d)}
-        # De eerstvolgende nog niet gespeelde ronde altijd opnieuw lezen: de
-        # odds scherpen naar de aftrap toe aan, en juist die ronde gaat het
-        # model in. Gespeelde ronden veranderen niet meer en blijven staan.
-        gespeeld = {d["ronde"] for d in duels if d["thuis_goals"] is not None}
-        open_ = sorted({d["ronde"] for d in duels} - gespeeld)
-        if open_:
-            haal |= {d["url"] for d in duels if d["ronde"] == open_[0]}
-    print(f"  wedstrijdpagina's op te halen: {len(haal)}")
+        # De uitslagenpagina noemt alle 34 ronden, ruim driehonderd duels. Odds
+        # van ronde 30 zijn in oktober zinloos en zouden bovendien verouderen
+        # voordat die ronde wordt gespeeld, dus alleen ophalen wat bruikbaar
+        # is: gespeelde ronden waarvan de kansen nog missen, plus de komende
+        # paar ronden. Die laatste elke run opnieuw, want de odds scherpen naar
+        # de aftrap toe aan.
+        haal = {d["url"] for d in duels
+                if d["ronde"] in binnenkort
+                or (d["ronde"] in gespeeld and not kansen_bekend(d))}
+    print(f"  wedstrijdpagina's op te halen: {len(haal)} "
+          f"(komende ronden: {sorted(binnenkort) or 'geen'})")
 
     rijen = []
     for d in sorted(duels, key=lambda x: (x["ronde"], x["url"])):
@@ -956,7 +1014,7 @@ def debug(url):
         print(f"  tabel {i}: koppen {koppen}")
         for r in rijen[:3]:
             print(f"    {r}")
-    links = re.findall(r"/eredivisie/speler/([^/\"'>\s]+)/", ruw)
+    links = SPELER_HREF.findall(ruw)
     print(f"\nSPELERSLINKS: {len(links)} totaal, {len(set(links))} uniek")
     print("  eerste 8:", list(dict.fromkeys(links))[:8])
     een = re.sub(r"\s+", " ", vlak(soup))

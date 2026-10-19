@@ -55,7 +55,12 @@ class Rapport:
     def _voeg(self, niveau, groep, tekst, detail=""):
         self.regels.append((niveau, groep, tekst, detail))
         vlag = {"OK": "ok  ", "WAARSCHUWING": "waarsch", "FOUT": "FOUT"}[niveau]
-        print(f"  {vlag:8s} {groep}: {tekst}" + (f"\n           {detail}" if detail else ""))
+        # Het detail is de uitleg bij een FOUT. Dat ook onder een geslaagde
+        # controle afdrukken leverde regels op als "ok ... minder dan 400",
+        # wat zichzelf tegenspreekt en het logboek onleesbaar maakt.
+        toon = detail if niveau != "OK" else ""
+        print(f"  {vlag:8s} {groep}: {tekst}"
+              + (f"\n           {toon}" if toon else ""))
 
     def ok(self, groep, tekst, detail=""):
         self._voeg("OK", groep, tekst, detail)
@@ -138,8 +143,12 @@ def controleer_bron(r):
           "geen enkele uitslag herkend — het scorepatroon is veranderd")
     clubs = {d["thuis"] for d in duels} | {d["uit"] for d in duels}
     onbekend = clubs - set(s.CLUB_SLUG.values())
-    r.eis(not onbekend, "uitslagen", f"{len(clubs)} clubnamen allemaal bekend",
-          f"onbekend: {sorted(onbekend)} — vul CLUB_ALIAS aan")
+    # ook eisen dat er clubs ZIJN: op een leeg resultaat was "0 clubnamen
+    # allemaal bekend" eerder vacuüm waar en dus misleidend groen
+    r.eis(clubs and not onbekend, "uitslagen",
+          f"{len(clubs)} clubnamen allemaal bekend",
+          f"onbekend: {sorted(onbekend)} — vul CLUB_ALIAS aan" if onbekend
+          else "geen enkele club herkend")
     rondes = {d["ronde"] for d in duels}
     r.eis(len(rondes) >= 1, "uitslagen", f"ronden gevonden: {min(rondes)}-{max(rondes)}"
           if rondes else "geen ronden", "geen ronde uit de rijen of de koppen te halen")
@@ -208,12 +217,25 @@ def controleer_bron(r):
     r.eis(len(met_kans) >= BASIS_PER_CLUB - 2, "opstelling",
           f"{len(met_kans)} van {len(elf)} met een basiskans",
           "het percentage naast de speler is niet meer te vinden")
-    r.eis(bool(afw), "opstelling", f"{len(afw)} afwezigen met reden",
-          "'Niet beschikbaar' of de namen eronder zijn niet gevonden")
+    # Zowel een onder- als een bovengrens. Alleen "minstens een" eisen was te
+    # zwak: PSV kwam op 15 afwezigen omdat het blok doorliep in de FAQ, die
+    # dezelfde spelers nog eens in gewone tekst noemt. Een speler die onterecht
+    # als afwezig wordt gemerkt valt volledig uit de pool, dus dit moet opvallen.
+    r.eis(1 <= len(afw) <= 12, "opstelling",
+          f"{len(afw)} afwezigen met reden",
+          "'Niet beschikbaar' of de namen eronder zijn niet gevonden"
+          if not afw else
+          f"{len(afw)} is te veel voor een selectie — het afwezigenblok loopt "
+          f"waarschijnlijk door in de rest van de pagina")
     if afw:
-        r.eis(all(a["reden"] in REDENEN for a in afw), "opstelling",
-              "alle redenen uit de bekende lijst",
-              f"onbekend: {sorted({a['reden'] for a in afw} - REDENEN)}")
+        r.eis(all(a["reden"] in REDENEN - {""} for a in afw), "opstelling",
+              "elke afwezige heeft een bekende reden",
+              f"zonder of met onbekende reden: "
+              f"{[a['speler_id'] for a in afw if a['reden'] not in REDENEN - {''}][:5]}")
+        overlap = {a["speler_id"] for a in afw} & {e["speler_id"] for e in elf}
+        r.eis(not overlap, "opstelling",
+              "geen speler zowel afwezig als in de basis",
+              f"beide: {sorted(overlap)[:5]}")
 
     # --- spelersindex
     try:

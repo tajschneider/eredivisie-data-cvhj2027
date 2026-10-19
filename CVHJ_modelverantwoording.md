@@ -176,6 +176,7 @@ Het programma van de komende ronde komt nu uit `clubs.csv` in plaats van met de 
 | Beperking | Gevolg |
 |---|---|
 | **De officiële opstelling is niet te scrapen** | Werkt met de vermoedelijke opstelling. Dit is nu de grootste blinde vlek. |
+| Een afwezige telt alleen mee met een herkenbare reden | De FAQ onderaan de clubpagina noemt spelers nog eens in gewone tekst; zonder die eis werden starters als afwezig aangemerkt en vielen ze uit de pool. De keuze is bewust: liever een afwezige missen dan een basisspeler weggooien |
 | Kaarten alleen voor de top 40 van de ranglijst | Wie minder dan ongeveer twee kaarten heeft krijgt de positieprior |
 | Productie per ronde komt uit een verschil tussen weken | Bij een midweekse of uitgestelde ronde niet exact aan één ronde toe te rekenen |
 | Optimaliseert één ronde vooruit | De transferbeslissing geldt voor een hele periode |
