@@ -1,8 +1,37 @@
 name: Eredivisie data
+
+# Drie momenten, met een reden per moment:
+#   maandag    volledige run. De ronde is gespeeld, dus de uitslagen staan
+#              erin en de seizoensstanden per speler worden bevroren. Het
+#              verschil met de stand van vorige maandag is de productie van
+#              die ronde.
+#   donderdag  licht. Uitslagen, kansen en verwachte goals van de komende
+#              ronde, plus de blessurelijst.
+#   vrijdag    licht, laatste keer voor de deadline. De odds scherpen naar de
+#              aftrap toe aan en blessures komen vaak laat.
+#
+# Elke run begint met een broncontrole en eindigt met een datacontrole. Valt
+# een van de twee om, dan wordt er NIETS vastgelegd. Dat is met opzet: in
+# oktober liep de scrape weken leeg terwijl hij groen afsloot, omdat "geen
+# uitslag gevonden" net zo stil is als "nog niet gespeeld".
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: '0 6 * * 1'       # maandag 08:00 NL
+    - cron: '0 16 * * 4'      # donderdag 18:00 NL
+    - cron: '0 7 * * 5'       # vrijdag 09:00 NL
   workflow_dispatch:
+    inputs:
+      taken:
+        description: 'Welke taken (leeg = alles)'
+        required: false
+        default: '--alles'
+      ronde:
+        description: 'Alleen deze ronde opnieuw (leeg = automatisch)'
+        required: false
+      negeer_controle:
+        description: 'Doorgaan ondanks een rode controle'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -10,19 +39,83 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
+        with:
+          python-version: '3.12'
+
       - run: pip install requests beautifulsoup4
-      - run: python scrape_eredivisie.py --alles-tot 34
-      - run: |
+
+      - name: Broncontrole
+        # Zet elke parser op een echte pagina. Faalt dit, dan is de bron
+        # verbouwd en levert doorscrapen alleen onzin op.
+        run: |
+          python controle.py --bron ${{ inputs.negeer_controle && '--soft' || '' }}
+
+      - name: Taken bepalen
+        id: kies
+        run: |
+          # De volledige run haalt ruim 500 spelerspagina's op en duurt een
+          # kwartier; dat hoeft maar een keer per week. De lichte runs doen de
+          # komende ronde en de blessures.
+          if [ -n "${{ inputs.taken }}" ]; then
+            TAKEN="${{ inputs.taken }}"
+          elif [ "${{ github.event.schedule }}" = "0 6 * * 1" ]; then
+            TAKEN="--alles"
+          elif [ -n "${{ github.event.schedule }}" ]; then
+            TAKEN="--clubs --afwezigen"
+          else
+            TAKEN="--alles"
+          fi
+          if [ -n "${{ inputs.ronde }}" ]; then
+            TAKEN="$TAKEN --ronde ${{ inputs.ronde }}"
+          fi
+          echo "taken=$TAKEN" >> "$GITHUB_OUTPUT"
+          echo "Draait met: $TAKEN"
+
+      - name: Scrapen
+        run: python scrape_eredivisie.py ${{ steps.kies.outputs.taken }}
+
+      - name: Datacontrole
+        run: |
+          python controle.py --data ${{ inputs.negeer_controle && '--soft' || '' }}
+
+      - name: Controlerapport bewaren
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: controle
+          path: |
+            controle.md
+            controle.json
+          if-no-files-found: warn
+
+      - name: Pagina klaarzetten
+        run: |
           touch .nojekyll
-          printf '<a href="spelers.csv">spelers.csv</a><br><a href="clubs.csv">clubs.csv</a>' > index.html
-      - run: |
+          {
+            echo '<!doctype html><meta charset="utf-8"><title>Eredivisie data</title>'
+            echo '<h1>Eredivisie data 2026/27</h1><ul>'
+            for f in clubs.csv spelers.csv spelers_seizoen.csv afwezigen.csv opstellingen.csv; do
+              [ -f "$f" ] && echo "<li><a href=\"$f\">$f</a> — $(wc -l < "$f") regels</li>"
+            done
+            echo '</ul>'
+            [ -f controle.json ] && echo "<p>Controle: $(python -c "import json;d=json.load(open('controle.json'));print(d['uitkomst'],'—',d['fouten'],'fout,',d['waarschuwingen'],'waarschuwing')")</p>"
+            echo '<p>Bijgewerkt: '"$(date -u +'%Y-%m-%d %H:%M')"' UTC</p>'
+          } > index.html
+
+      - name: Vastleggen
+        run: |
           git config user.name  "eredivisie-bot"
           git config user.email "bot@users.noreply.github.com"
-          # git-add-ok  -- scrape.py maakt deze bestanden zelf, elke run
-          git add clubs.csv spelers.csv .nojekyll index.html
-          git diff --staged --quiet || git commit -m "data bijgewerkt $(date +%F)"
+          # Per bestand toevoegen, want niet elke run schrijft ze allemaal.
+          # Zonder deze bewaking brak de hele stap op een ontbrekend bestand.
+          for f in clubs.csv spelers.csv spelers_seizoen.csv afwezigen.csv \
+                   opstellingen.csv controle.md controle.json index.html .nojekyll; do
+            [ -f "$f" ] && git add "$f"
+          done
+          git diff --staged --quiet || git commit -m "data bijgewerkt $(date -u +%F\ %H:%M)"
           git push
