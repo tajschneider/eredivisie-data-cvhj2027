@@ -31,6 +31,18 @@ De data staat er nog wel, maar verspreid over vijf pagina's:
 | `spelers.csv` | productie per ronde, als verschil tussen twee opeenvolgende standen: minuten, basis, goals, assists, geel, rood, reddingen, clean sheet |
 | `afwezigen.csv` | wie geblesseerd, geschorst of vertrokken is, met reden en verwachte terugkeerdatum |
 | `opstellingen.csv` | vermoedelijke basiself per club met de basiskans per speler |
+| `prijzen.csv` | de CVHJ-spelerslijst: team, speler, positie, prijs **en speler_id** |
+
+`prijzen.csv` komt uit `/eredivisie/poule/coach-van-het-jaar/spelers/`, de
+pagina met alle spelers die je in CVHJ kunt kopen. Omdat de naam daar een link
+naar de spelerspagina is, staat het `speler_id` in het bestand en is de
+koppeling met de gescrapete spelers exact. Dat vervangt de bevroren
+CVHJ-sheet, waarin aanwinsten geen prijs hadden (bij PSV koppelde maar 21 van
+de 31 spelers) en waarin namen afwijkend geschreven stonden.
+
+Van die pagina worden alleen naam, club, positie en waarde gelezen. De
+kolommen *Verwachte punten*, *Per miljoen* en de basiskans staan er volgens de
+pagina zelf "voor leden" bij — dat is Pouletips Premium en dat blijft eraf.
 
 Productie per ronde komt dus uit een verschil, niet uit een wedstrijdverslag.
 De kolom `venster` zegt welke ronden in dat verschil zaten. Staat er meer dan
@@ -42,6 +54,7 @@ inhaalduels en midweekse ronden.
 ```bash
 python scrape_eredivisie.py --alles                  # alles
 python scrape_eredivisie.py --clubs --afwezigen      # licht, voor de deadline
+python scrape_eredivisie.py --prijzen                # alleen de CVHJ-prijslijst
 python scrape_eredivisie.py --clubs --ronde 10       # één ronde opnieuw
 python scrape_eredivisie.py --spelers --max-spelers 20   # proefrun
 python scrape_eredivisie.py --debug <url>            # wat staat er echt?
@@ -119,10 +132,12 @@ aanzetten gaat alsnog door.
 
 ## Model draaien
 
-Naast de scraperbestanden heb je `prijzen.csv` nodig: de CVHJ-spelerslijst met
-de kolommen `team, speler, positie, prijs`, waarbij `positie` Engels is
-(Goalkeeper, Defender, Midfielder, Forward). Die prijzen veranderen niet
-tijdens het seizoen.
+`prijzen.csv` komt nu uit de scraper (zie boven), dus je hoeft niets met de
+hand bij te houden. Het model koppelt op `speler_id` als dat erin staat, en
+anders op naam — dan met een voorvoegselmatch binnen dezelfde club voor
+gevallen als `Yarek Gasiorowski` tegen `Yarek Gąsiorowski Hernandis`, maar
+alleen als die precies één kandidaat oplevert. Het model meldt per run hoeveel
+prijsrijen koppelen en welke niet.
 
 ```bash
 python cvhj_model.py --ronde 10                  # opstelling + 3 transfers
