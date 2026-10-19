@@ -1,0 +1,31 @@
+{
+  "datum": "2026-10-19",
+  "fouten": 0,
+  "waarschuwingen": 3,
+  "controles": 21,
+  "uitkomst": "MET WAARSCHUWINGEN",
+  "metingen": {
+    "rijen_clubs.csv": 612,
+    "clubs_verschillend": 18,
+    "clubs_volledige_ronden": 9,
+    "clubs_rijen_met_uitslag": 162,
+    "clubs_met_kansen": 198,
+    "clubs_met_xg": 18,
+    "clubs_komend_met_xg": "18 van 36",
+    "clubs_eerstvolgende_ronde": 10,
+    "clubs_eerstvolgende_met_xg": "18 van 18",
+    "clubs_verder_vooruit_met_xg": "0 van 18",
+    "clubs_gespeeld_met_xg": "0 van 162",
+    "rijen_spelers_seizoen.csv": 504,
+    "seizoen_momentopnamen": 1,
+    "seizoen_spelers_laatste": 504,
+    "rijen_afwezigen.csv": 50,
+    "afwezigen_laatste": 50,
+    "afwezigen_clubs": 15,
+    "rijen_opstellingen.csv": 198,
+    "opstellingen_clubs": 18,
+    "nieuwste_ophaaldatum": "2026-10-19",
+    "dagen_oud": 0
+  },
+  "fout_details": []
+}
