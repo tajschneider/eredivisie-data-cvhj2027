@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
 """
-Eredivisie-data per speelronde ophalen en wegschrijven naar CSV.
+Eredivisie-data ophalen voor het CVHJ-model en wegschrijven naar CSV.
 
-Bron: pouletips.nl wedstrijdpagina's — officiele basiselftallen, bank,
-wissels met minuut, doelpuntenmakers en afwezigen met reden.
+Bron: pouletips.nl. Vijf verschillende pagina's, want sinds oktober 2026 staat
+niet alles meer op de wedstrijdpagina:
+
+  /eredivisie/uitslagen/              uitslagen van alle speelronden
+  /eredivisie/wedstrijd/<slug>/       kansen, VERWACHTE GOALS, over/under
+  /eredivisie/<club>/opstelling/      AFWEZIGEN met reden en terugkeerdatum,
+                                      plus basiskans per speler
+  /eredivisie/speler/<slug>/          minuten, basisplaatsen, goals, ASSISTS
+  /eredivisie/statistieken/           gele en rode KAARTEN
+
+Let op: de officiele basiself, de bank, de wissels en de doelpuntenmakers
+worden pas in de browser ingeladen. Met requests zijn die niet te zien. De
+basiself komt daarom uit de vermoedelijke opstelling (met basiskans), en de
+individuele productie uit de seizoenstotalen per speler, die hier wekelijks
+worden bevroren en tegen elkaar worden afgetrokken.
 
 Gebruik:
-    python scrape_eredivisie.py --ronde 1
-    python scrape_eredivisie.py --alles-tot 34
-    python scrape_eredivisie.py --debug https://pouletips.nl/eredivisie/wedstrijd/psv-fortuna-sittard/
-
-Die laatste drukt af wat er daadwerkelijk in de HTML staat. Gebruik hem zodra
-een club "0 bank" of "0 wissels" oplevert; dan hoeft er niet geraden te worden.
+    python scrape_eredivisie.py --alles
+    python scrape_eredivisie.py --clubs --ronde 10
+    python scrape_eredivisie.py --spelers --max-spelers 20
+    python scrape_eredivisie.py --afwezigen
+    python scrape_eredivisie.py --debug https://pouletips.nl/eredivisie/uitslagen/
 
 Afhankelijkheden:  pip install requests beautifulsoup4
 """
@@ -28,55 +40,142 @@ import requests
 from bs4 import BeautifulSoup
 
 BASE = "https://pouletips.nl"
-ROUND_URL = BASE + "/eredivisie/speelronde/{ronde}/"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; cvhj-model/1.0)"}
+UITSLAGEN_URL = BASE + "/eredivisie/uitslagen/"
+SPELERS_URL = BASE + "/eredivisie/spelers/"
+OPSTELLING_URL = BASE + "/eredivisie/{slug}/opstelling/"
+SPELER_URL = BASE + "/eredivisie/speler/{slug}/"
+GEEL_URL = BASE + "/eredivisie/statistieken/gele-kaarten/"
+ROOD_URL = BASE + "/eredivisie/statistieken/rode-kaarten/"
+
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; cvhj-model/2.0)"}
 OUT = Path(__file__).parent
 VANDAAG = time.strftime("%Y-%m-%d")
+SEIZOEN = "2026/27"
 
-SPELER_COLS = ["ronde", "datum", "speler", "speler_id", "club", "tegenstander",
-               "thuis_uit", "status", "basis", "minuten", "goals", "clean_sheet",
-               "ploegpunten", "afwezig_reden", "opgehaald"]
+# ----------------------------------------------------------------- clubnamen
+# De korte vorm is wat in clubs.csv en in de CVHJ-prijslijst staat. De bron
+# gebruikt op de spelersindex lange vormen ("PSV Eindhoven", "AFC Ajax") en op
+# de uitslagenpagina korte. Alles wordt via norm() op de korte vorm gebracht.
+CLUB_SLUG = {
+    "psv": "PSV", "feyenoord": "Feyenoord", "ajax": "Ajax", "az": "AZ",
+    "fc-twente": "FC Twente", "fc-utrecht": "FC Utrecht", "nec": "NEC",
+    "sc-heerenveen": "sc Heerenveen", "fc-groningen": "FC Groningen",
+    "sparta-rotterdam": "Sparta Rotterdam", "fortuna-sittard": "Fortuna Sittard",
+    "go-ahead-eagles": "Go Ahead Eagles", "pec-zwolle": "PEC Zwolle",
+    "excelsior": "Excelsior", "telstar": "Telstar", "willem-ii": "Willem II",
+    "ado-den-haag": "ADO Den Haag", "sc-cambuur": "SC Cambuur",
+}
+CLUB_ALIAS = {
+    "psv-eindhoven": "PSV", "feyenoord-rotterdam": "Feyenoord",
+    "afc-ajax": "Ajax", "az-alkmaar": "AZ", "fc-twente-enschede": "FC Twente",
+    "nec-nijmegen": "NEC", "sbv-excelsior": "Excelsior",
+    "sc-telstar": "Telstar", "willem-ii-tilburg": "Willem II",
+    "n-e-c": "NEC", "heerenveen": "sc Heerenveen", "cambuur": "SC Cambuur",
+    "zwolle": "PEC Zwolle", "groningen": "FC Groningen", "twente": "FC Twente",
+    "utrecht": "FC Utrecht", "sparta": "Sparta Rotterdam",
+    "fortuna": "Fortuna Sittard", "go-ahead": "Go Ahead Eagles",
+}
+POSITIE = {"keepers": "Goalkeeper", "verdedigers": "Defender",
+           "middenvelders": "Midfielder", "aanvallers": "Forward"}
+
+# ------------------------------------------------------------------- kolommen
 CLUB_COLS = ["ronde", "datum", "club", "tegenstander", "thuis_uit", "voor",
              "tegen", "resultaat", "ploegpunten", "clean_sheet", "formatie",
              "kans_winst", "kans_gelijk", "kans_verlies", "verwacht_voor",
-             "verwacht_tegen", "opgehaald"]
+             "verwacht_tegen", "xg_voor", "xg_tegen", "beide_scoren",
+             "over_25", "opgehaald"]
+# seizoenstotalen, een bevroren stand per ophaaldatum
+SEIZOEN_COLS = ["opgehaald", "speler_id", "speler", "club", "positie",
+                "duels", "basisplaatsen", "minuten", "goals", "assists",
+                "overtredingen", "reddingen", "nul_achter", "cijfer",
+                "geel", "rood", "status_tekst"]
+# per ronde, door twee seizoensstanden van elkaar af te trekken
+SPELER_COLS = ["ronde", "datum", "speler_id", "speler", "club", "positie",
+               "duels", "basis", "minuten", "goals", "assists", "geel",
+               "rood", "reddingen", "clean_sheet", "ploegpunten", "venster",
+               "opgehaald"]
+AFWEZIG_COLS = ["opgehaald", "club", "speler", "speler_id", "reden",
+                "verwacht_terug", "tegenstander", "datum"]
+OPSTELLING_COLS = ["opgehaald", "club", "speler", "speler_id", "kans_basis",
+                   "tegenstander", "thuis_uit", "datum", "ronde"]
 
-WISSEL_RE = re.compile(r"(\d{1,3})\s*[’']\s*[↑↓\u2191\u2193]?\s*(.+?)\s+voor\s+(.+?)\s*$")
-SPELER_HREF = re.compile(r"/eredivisie/speler/([^/\"'>\s]+)/")  # ook accenten in de slug
+MAANDEN = {"jan": 1, "feb": 2, "mrt": 3, "maart": 3, "apr": 4, "mei": 5,
+           "jun": 6, "juni": 6, "jul": 7, "juli": 7, "aug": 8, "augustus": 8,
+           "sep": 9, "september": 9, "okt": 10, "oktober": 10, "nov": 11,
+           "november": 11, "dec": 12, "december": 12, "januari": 1,
+           "februari": 2, "april": 4, "juli": 7}
 
 
-# ---------------------------------------------------------------- hulpjes
+# ------------------------------------------------------------------- hulpjes
 TRANS = str.maketrans({
-    "\u00f8": "o", "\u00d8": "O", "\u00e6": "ae", "\u00c6": "Ae",
-    "\u00e5": "a", "\u00c5": "A", "\u00f0": "d", "\u00d0": "D",
-    "\u00fe": "th", "\u00de": "Th", "\u0142": "l", "\u0141": "L",
-    "\u0111": "d", "\u0110": "D", "\u00df": "ss", "\u0131": "i",
+    "ø": "o", "Ø": "O", "æ": "ae", "Æ": "Ae",
+    "å": "a", "Å": "A", "ð": "d", "Ð": "D",
+    "þ": "th", "Þ": "Th", "ł": "l", "Ł": "L",
+    "đ": "d", "Đ": "D", "ß": "ss", "ı": "i",
 })
 
 
 def norm(s):
-    """'S\u00f8ren Tengstedt' -> 'soren-tengstedt' (zelfde vorm als de link-slug).
+    """'Soren Tengstedt' -> 'soren-tengstedt', gelijk aan de link-slug.
 
-    Let op: ASCII-normalisatie alleen is niet genoeg. \u00f8 en \u00e5 hebben geen
-    ontbinding in NFKD en zouden zonder deze tabel wegvallen.
+    ASCII-normalisatie alleen is niet genoeg: o-slash, ae en a-ring hebben geen
+    ontbinding in NFKD en zouden zonder deze tabel stilletjes wegvallen.
     """
     s = (s or "").translate(TRANS)
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
-def slug_naar_naam(slug):
-    kleine = {"van", "de", "der", "den", "het", "ter", "te", "op", "in", "'t"}
-    delen = slug.split("-")
-    return " ".join(w if w in kleine and i else w.capitalize() for i, w in enumerate(delen))
+def club_naam(s):
+    """Elke schrijfwijze van een club naar de korte vorm uit clubs.csv."""
+    k = norm(s)
+    if k in CLUB_SLUG:
+        return CLUB_SLUG[k]
+    if k in CLUB_ALIAS:
+        return CLUB_ALIAS[k]
+    return (s or "").strip()
 
 
-def get(url, pauze=1.2, pogingen=4):
-    """Haal een pagina op, met geduld. Bij een 429 of 5xx wachten we steeds
-    langer; anders knijpt de bron ons af halverwege een grote run."""
+def getal(s, komma=True):
+    """'7,06' of '95,18%' of '2.3' -> float. Leeg of onleesbaar -> None."""
+    if s is None:
+        return None
+    t = str(s).strip().replace("%", "").replace(" ", " ").strip()
+    if komma and "," in t and "." not in t:
+        t = t.replace(",", ".")
+    t = t.replace(" ", "")
+    m = re.fullmatch(r"-?\d+(?:\.\d+)?", t)
+    return float(m.group(0)) if m else None
+
+
+def heel(s):
+    g = getal(s)
+    return int(round(g)) if g is not None else None
+
+
+def datum_iso(tekst, jaar_hint=2026):
+    """'zo 18 okt, 20:00' of 'zondag 25 oktober 2026, 14:30' -> '2026-10-18'."""
+    if not tekst:
+        return ""
+    m = re.search(r"(\d{1,2})\s+([a-zA-Z]+)\.?\s*(\d{4})?", tekst)
+    if not m:
+        return ""
+    dag, maand_w, jaar = m.group(1), m.group(2).lower(), m.group(3)
+    maand = MAANDEN.get(maand_w) or MAANDEN.get(maand_w[:3])
+    if not maand:
+        return ""
+    j = int(jaar) if jaar else (jaar_hint if maand >= 7 else jaar_hint + 1)
+    return f"{j:04d}-{maand:02d}-{int(dag):02d}"
+
+
+def get(url, pauze=1.2, pogingen=4, toestaan_404=False):
+    """Haal een pagina op, met geduld. Bij 429 of 5xx wachten we steeds langer;
+    anders knijpt de bron ons halverwege een grote run af."""
     wacht = 5
     for poging in range(1, pogingen + 1):
         r = requests.get(url, headers=HEADERS, timeout=30)
+        if r.status_code == 404 and toestaan_404:
+            return None
         if r.status_code in (429, 500, 502, 503, 504) and poging < pogingen:
             print(f"      ({r.status_code}, {wacht}s wachten)")
             time.sleep(wacht)
@@ -88,286 +187,537 @@ def get(url, pauze=1.2, pogingen=4):
     raise RuntimeError(f"niet op te halen: {url}")
 
 
-def match_urls(ronde):
-    soup = get(ROUND_URL.format(ronde=ronde))
-    urls = {a["href"] for a in soup.select('a[href*="/eredivisie/wedstrijd/"]')}
-    return sorted(u if u.startswith("http") else BASE + u for u in urls)
+def vlak(soup_of_tekst):
+    """Platte tekst met enkele spaties, regels bewaard."""
+    if isinstance(soup_of_tekst, str):
+        t = soup_of_tekst
+    else:
+        t = soup_of_tekst.get_text("\n", strip=True)
+    t = t.replace(" ", " ").replace("’", "'")
+    return re.sub(r"[ \t]+", " ", t)
 
 
-# ------------------------------------------------------------ pagina delen
-def club_blokken(ruwe_html, clubs):
-    """Knip de ruwe HTML in een blok per club.
-
-    Twee valkuilen. De clubnaam staat twee keer als kop op de pagina: bij de
-    opstelling en bij "Spelers om op te letten". En een blok moet eindigen bij
-    de EERSTVOLGENDE kop van welk niveau dan ook — niet pas bij de volgende
-    clubkop, want dan slokt de uitploeg de rest van de pagina op.
-    """
-    koppen = []
-    for m in re.finditer(r"<h([1-6])[^>]*>(.*?)</h\1>", ruwe_html, re.S | re.I):
-        naam = htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(2))).strip()
-        koppen.append((m.start(), naam))
-
-    kandidaten = {}
-    for k, (pos, naam) in enumerate(koppen):
-        if naam not in clubs:
-            continue
-        eind = koppen[k + 1][0] if k + 1 < len(koppen) else len(ruwe_html)
-        kandidaten.setdefault(naam, []).append(ruwe_html[pos:eind])
-
-    blokken = {}
-    for naam, opties in kandidaten.items():
-        met_bank = [b for b in opties if "Bank" in b or "voor" in b]
-        blokken[naam] = (met_bank or opties)[0]
-    return blokken
-
-
-def parse_wissels(blok):
-    """[(minuut, speler_in, speler_uit)] uit de lijstitems van EEN clubblok."""
+def tabellen(soup):
+    """[(koppen, [rijen])] voor elke tabel, als lijsten van celteksten."""
     uit = []
-    sub = BeautifulSoup(blok, "html.parser")
-    kandidaten = sub.find_all(["li", "p", "div", "span"])
-    gezien = set()
-    for el in kandidaten:
-        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
-        if len(t) > 120 or t in gezien:
-            continue
-        m = WISSEL_RE.match(t)
-        if m:
-            gezien.add(t)
-            uit.append((int(m.group(1)), m.group(2).strip(), m.group(3).strip()))
-    # ontdubbel op (minuut, in)
-    zien, res = set(), []
-    for mi, i_, u_ in uit:
-        if (mi, norm(i_)) in zien:
-            continue
-        zien.add((mi, norm(i_)))
-        res.append((mi, i_, u_))
-    return res
-
-
-def parse_selectie(blok):
-    """[(slug, naam)] van alle spelerslinks in het clubblok, in paginavolgorde."""
-    namen, gezien = [], set()
-    for m in SPELER_HREF.finditer(blok):
-        slug = norm(m.group(1))
-        if slug not in gezien:
-            gezien.add(slug)
-            namen.append((slug, slug_naar_naam(slug)))
-    return namen
-
-
-def parse_basis(plat, club):
-    """Basiself uit de FAQ-zin. De lookahead stopt op de volgende zin, dus
-    namen met een punt ('Jeremiah St. Juste') blijven heel."""
-    pat = (r"De offici[e\u00eb]le opstelling van " + re.escape(club) +
-           r"\s*\(([\d\-]+)\)\s*:\s*(.+?)"
-           r"(?=De offici[e\u00eb]le opstelling van|Wie was de scheidsrechter|\Z)")
-    m = re.search(pat, plat, re.S)
-    if not m:
-        return "", []
-    blok = re.sub(r"\s+", " ", m.group(2)).strip()
-    blok = re.sub(r"\.\s*$", "", blok)
-    return m.group(1), [n.strip() for n in blok.split(",") if n.strip()]
-
-
-def parse_odds(soup, plat, thuis, uitc):
-    """Winstkansen en meest waarschijnlijke uitslag.
-
-    Opmaak op de pagina: "Kansen vooraf 64% 19% 17% Ajax wint Gelijkspel
-    sc Heerenveen wint" — de percentages staan dus VOOR hun label, in de
-    vaste volgorde thuis, gelijkspel, uit.
-    """
-    kans = {"thuis": "", "gelijk": "", "uit": ""}
-    m = re.search(r"Kansen vooraf\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%",
-                  plat, re.S)
-    if not m:
-        m = re.search(r"(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%", plat, re.S)
-    if m:
-        kans = {"thuis": m.group(1), "gelijk": m.group(2), "uit": m.group(3)}
-
-    vw_t = vw_u = ""
-    ms = re.search(r"Meest waarschijnlijke uitslagen(.{0,400})", plat, re.S)
-    if ms:
-        sc = re.search(r"(\d)\s*-\s*(\d)\s*\n?\s*\d+[.,]\d+\s*%", ms.group(1), re.S)
-        if sc:
-            vw_t, vw_u = sc.group(1), sc.group(2)
-    return kans, vw_t, vw_u
-
-
-def parse_afwezig(blok):
-    """[(naam, reden)] uit 'Afwezig: X (blessure), Y (schorsing)'."""
-    tekst = BeautifulSoup(blok, "html.parser").get_text(" ", strip=True)
-    m = re.search(r"Afwezig\s*:\s*(.+?)(?:$|\|)", tekst)
-    if not m:
-        return []
-    uit = []
-    for stuk in m.group(1).split(","):
-        am = re.match(r"\s*(.+?)\s*\((.+?)\)", stuk)
-        if am:
-            uit.append((am.group(1).strip(), am.group(2).strip()))
+    for tab in soup.find_all("table"):
+        koppen = [vlak(th).strip() for th in tab.find_all("th")]
+        rijen = []
+        for tr in tab.find_all("tr"):
+            cellen = [vlak(td).strip() for td in tr.find_all("td")]
+            if cellen:
+                rijen.append(cellen)
+        if rijen:
+            uit.append((koppen, rijen))
     return uit
 
 
-# ------------------------------------------------------------ een wedstrijd
-def parse_match(url, ronde):
-    soup = get(url)
-    ruw = str(soup)
-    plat = re.sub(r"[ \t]+", " ", soup.get_text("\n", strip=True))
+# --------------------------------------------------------------- uitslagen
+def parse_uitslagen(soup):
+    """Alle wedstrijden met ronde, datum, clubs, uitslag en wedstrijd-URL.
 
-    h1 = soup.find("h1")
-    m = re.search(r"(.+?)\s*-\s*(.+?)\s+uitslag:\s*(\d+)\s*-\s*(\d+)",
-                  h1.get_text(" ", strip=True) if h1 else "")
+    Een rij op de pagina ziet er zo uit:
+        zo 18 okt, 20:00 Ronde 9 FC Twente 1-2 FC Utrecht
+    De ronde staat dus in de rij zelf; de kopjes 'Speelronde N' zijn niet nodig.
+    Nog niet gespeelde duels hebben geen uitslag.
+    """
+    uit, per_slug = [], {}
+    kop_ronde = None
+    # In documentvolgorde lopen, zodat een kop "Speelronde 12" kan invullen wat
+    # een rij zelf niet zegt. Boven de lijst staat "Net gespeeld" met dezelfde
+    # wedstrijden als in de rondelijsten, dus dubbelen zijn normaal.
+    for el in soup.find_all(["h1", "h2", "h3", "h4", "a"]):
+        if el.name != "a":
+            km = re.search(r"Speelronde\s+(\d{1,2})", vlak(el))
+            if km:
+                kop_ronde = int(km.group(1))
+            continue
+        href = el.get("href", "")
+        if "/eredivisie/wedstrijd/" not in href:
+            continue
+        ouder = el.find_parent(["tr", "li", "article", "div"])
+        if ouder is None:
+            continue
+        t = re.sub(r"\s+", " ", vlak(ouder)).strip()
+        if len(t) > 220:
+            continue
+        rm = re.search(r"\bRonde\s+(\d{1,2})\b", t)
+        ronde = int(rm.group(1)) if rm else kop_ronde
+        if ronde is None:
+            continue
+        slug = href.rstrip("/").rsplit("/", 1)[-1]
+
+        # De score staat tussen de twee clubnamen. Eerst de score vinden, dan
+        # links en rechts de clubnaam. Zonder score: nog niet gespeeld.
+        na_ronde = t[rm.end():].strip() if rm else t
+        sm = re.search(r"(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)", na_ronde)
+        if sm:
+            thuis = club_naam(na_ronde[:sm.start()].strip(" -–"))
+            uitc = club_naam(na_ronde[sm.end():].strip(" -–").split("Gespeeld")[0])
+            gh, ga = int(sm.group(1)), int(sm.group(2))
+        else:
+            delen = re.split(r"\s+-\s+", na_ronde)
+            if len(delen) < 2:
+                continue
+            thuis, uitc = club_naam(delen[0]), club_naam(delen[1])
+            gh = ga = None
+
+        if thuis not in CLUB_SLUG.values() or uitc not in CLUB_SLUG.values():
+            # terugvallen op de slug, die de clubs in de juiste volgorde bevat
+            paar = slug_naar_clubs(slug)
+            if not paar:
+                continue
+            thuis, uitc = paar
+
+        rij = {
+            "ronde": ronde, "datum": datum_iso(t),
+            "datum_tekst": t.split("Ronde")[0].strip(),
+            "thuis": thuis, "uit": uitc, "thuis_goals": gh, "uit_goals": ga,
+            "url": href if href.startswith("http") else BASE + href,
+        }
+        # Bij een dubbele vermelding wint de rij MET uitslag. Anders zou de
+        # rondelijst de uitslag uit "Net gespeeld" kunnen overschrijven.
+        eerder = per_slug.get(slug)
+        if eerder is None:
+            per_slug[slug] = rij
+            uit.append(rij)
+        elif eerder["thuis_goals"] is None and gh is not None:
+            eerder.update(rij)
+    return uit
+
+
+def slug_naar_clubs(slug):
+    """'sc-heerenveen-excelsior' -> ('sc Heerenveen', 'Excelsior').
+
+    De slug is thuisclub + uitclub aan elkaar. Omdat clubslugs zelf streepjes
+    bevatten moet er gezocht worden naar de splitsing die twee geldige clubs
+    oplevert; de langste match vooraan wint.
+    """
+    s = slug.strip("-")
+    for n in sorted(CLUB_SLUG, key=len, reverse=True):
+        if s.startswith(n + "-"):
+            rest = s[len(n) + 1:]
+            if rest in CLUB_SLUG:
+                return CLUB_SLUG[n], CLUB_SLUG[rest]
+    return None
+
+
+# ------------------------------------------------------------ wedstrijdpagina
+def parse_wedstrijd(soup, thuis, uitc):
+    """Kansen, verwachte goals en de over/under-percentages.
+
+    Geverifieerd op 19-10-2026. De opmaak is:
+        50% 21% 29%            met daaronder "PSV wint Gelijkspel Feyenoord wint"
+        Verwachte goals PSV 2.3
+        Verwachte goals Feyenoord 1.73
+        Beide ploegen scoren 71%
+        Meer dan 2,5 goals 75%
+    De oude ankertekst "Kansen vooraf" bestaat niet meer.
+    """
+    plat = vlak(soup)
+    een = re.sub(r"\s+", " ", plat)
+    d = {"kans_thuis": "", "kans_gelijk": "", "kans_uit": "",
+         "xg_thuis": "", "xg_uit": "", "beide_scoren": "", "over_25": "",
+         "verwacht_thuis": "", "verwacht_uit": "", "ronde": "", "datum": ""}
+
+    # verwachte goals: per club, op naam. Komma of punt als decimaalteken.
+    for club, sleutel in ((thuis, "xg_thuis"), (uitc, "xg_uit")):
+        m = re.search(r"Verwachte goals\s+" + re.escape(club) +
+                      r"\s*:?\s*(\d+(?:[.,]\d+)?)", een)
+        if m:
+            d[sleutel] = getal(m.group(1))
+
+    m = re.search(r"Beide ploegen scoren\s*:?\s*(\d{1,3})\s*%", een)
+    if m:
+        d["beide_scoren"] = int(m.group(1))
+    m = re.search(r"Meer dan 2[.,]5 goals\s*:?\s*(\d{1,3})\s*%", een)
+    if m:
+        d["over_25"] = int(m.group(1))
+
+    # kansen: drie percentages met daarna de labels. Anker op het label, niet
+    # op de positie, want zo kan de thuiskans niet in de gelijkspelkolom
+    # belanden zoals eerder gebeurde.
+    pat = (r"(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*" +
+           re.escape(thuis) + r"\s+wint\s+Gelijkspel\s+" + re.escape(uitc) +
+           r"\s+wint")
+    m = re.search(pat, een)
     if not m:
-        print("    ! nog geen uitslag")
-        return [], []
-    thuis, uitc = m.group(1).strip(), m.group(2).strip()
-    gh, ga = int(m.group(3)), int(m.group(4))
-    dm = re.search(r"Speelronde\s+\d+\s*·\s*(.+)", plat)
-    datum = dm.group(1).strip() if dm else ""
+        # zelfde drieling, zonder de labels erachter
+        m = re.search(r"(\d{1,3})\s*%\s*(\d{1,3})\s*%\s*(\d{1,3})\s*%", een)
+    if m:
+        a, b, c = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        # De drie kansen tellen bij deze bron altijd op tot precies 100, want
+        # de marge is eruit gehaald. Een drieling die dat niet doet is iets
+        # anders op de pagina (passnauwkeurigheid, balbezit) en wordt genegeerd.
+        if 99 <= a + b + c <= 101:
+            d["kans_thuis"], d["kans_gelijk"], d["kans_uit"] = a, b, c
 
-    # doelpunten: alleen links BUITEN de clubblokken. Binnen een clubblok
-    # staan opstelling, bank en wissels, en die bevatten allemaal
-    # minuutaanduidingen die anders als treffer worden geteld. Filteren op een
-    # pijltje werkt niet: in de wissellijst is dat een teken, op de bankregel
-    # een icoon.
-    koppen = [(m.start(), htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(2))).strip())
-              for m in re.finditer(r"<h([1-6])[^>]*>(.*?)</h\1>", ruw, re.S | re.I)]
-    knip = []
-    for k, (pos, naam) in enumerate(koppen):
-        if naam in (thuis, uitc):
-            knip.append((pos, koppen[k + 1][0] if k + 1 < len(koppen) else len(ruw)))
-    rest = ruw
-    for a, b in sorted(knip, reverse=True):
-        rest = rest[:a] + rest[b:]
+    ms = re.search(r"Meest waarschijnlijke uitslagen(.{0,300})", een)
+    if ms:
+        sc = re.search(r"(\d)\s*-\s*(\d)\s*(?:\d+[.,]\d+\s*%)?", ms.group(1))
+        if sc:
+            d["verwacht_thuis"], d["verwacht_uit"] = int(sc.group(1)), int(sc.group(2))
 
-    goals = {}
-    for a in BeautifulSoup(rest, "html.parser").select('a[href*="/eredivisie/speler/"]'):
-        ouder = a.find_parent(["li", "p", "div"])
-        omg = ouder.get_text(" ", strip=True) if ouder else ""
-        sm = SPELER_HREF.search(a.get("href", ""))
-        if sm and len(omg) < 160 and re.search(r"\d{1,3}\s*[’']", omg):
-            slug = norm(sm.group(1))
-            goals[slug] = goals.get(slug, 0) + 1
-
-    kans, vw_thuis, vw_uit = parse_odds(soup, plat, thuis, uitc)
-    blokken = club_blokken(ruw, {thuis, uitc})
-    club_rows, speler_rows = [], []
-
-    for club, tegen, gf, gc in ((thuis, uitc, gh, ga), (uitc, thuis, ga, gh)):
-        blok = blokken.get(club, "")
-        res = "W" if gf > gc else ("G" if gf == gc else "V")
-        ppt = 3 if res == "W" else (1 if res == "G" else 0)
-        tu = "thuis" if club == thuis else "uit"
-        cs = int(gc == 0)
-
-        formatie, basis = parse_basis(plat, club)
-        wissels = parse_wissels(blok)
-        eruit = {norm(w[2]): w[0] for w in wissels}
-        erin = {norm(w[1]): w[0] for w in wissels}
-
-        basis_norm = {norm(n) for n in basis}
-        selectie = parse_selectie(blok)
-        bank = [(s, n) for s, n in selectie if s not in basis_norm]
-
-        club_rows.append({
-            "ronde": ronde, "datum": datum, "club": club, "tegenstander": tegen,
-            "thuis_uit": tu, "voor": gf, "tegen": gc, "resultaat": res,
-            "ploegpunten": ppt, "clean_sheet": cs, "formatie": formatie,
-            "kans_winst": kans["thuis"] if tu == "thuis" else kans["uit"],
-            "kans_gelijk": kans["gelijk"],
-            "kans_verlies": kans["uit"] if tu == "thuis" else kans["thuis"],
-            "verwacht_voor": vw_thuis if tu == "thuis" else vw_uit,
-            "verwacht_tegen": vw_uit if tu == "thuis" else vw_thuis,
-            "opgehaald": VANDAAG})
-
-        for naam in basis:
-            s = norm(naam)
-            speler_rows.append({
-                "ronde": ronde, "datum": datum, "speler": naam, "speler_id": s,
-                "club": club, "tegenstander": tegen, "thuis_uit": tu,
-                "status": "basis", "basis": 1, "minuten": eruit.get(s, 90),
-                "goals": goals.get(s, 0), "clean_sheet": cs, "ploegpunten": ppt,
-                "afwezig_reden": "", "opgehaald": VANDAAG})
-
-        for slug, naam in bank:
-            mi = erin.get(slug)
-            speler_rows.append({
-                "ronde": ronde, "datum": datum, "speler": naam, "speler_id": slug,
-                "club": club, "tegenstander": tegen, "thuis_uit": tu,
-                "status": "invaller" if mi else "bank", "basis": 0,
-                "minuten": (90 - mi) if mi else 0,
-                "goals": goals.get(slug, 0) if mi else 0,
-                "clean_sheet": cs if mi else "", "ploegpunten": ppt if mi else 0,
-                "afwezig_reden": "", "opgehaald": VANDAAG})
-
-        for naam, reden in parse_afwezig(blok):
-            speler_rows.append({
-                "ronde": ronde, "datum": datum, "speler": naam,
-                "speler_id": norm(naam), "club": club, "tegenstander": tegen,
-                "thuis_uit": tu, "status": "afwezig", "basis": 0, "minuten": 0,
-                "goals": 0, "clean_sheet": "", "ploegpunten": 0,
-                "afwezig_reden": reden, "opgehaald": VANDAAG})
-
-        vlag = "" if (basis and bank) else "   <-- CONTROLEER (draai --debug)"
-        print(f"    {club}: {len(basis)} basis, {len(bank)} bank, "
-              f"{len(wissels)} wissels{vlag}")
-    return club_rows, speler_rows
+    rm = re.search(r"Speelronde\s+(\d{1,2})", een)
+    if rm:
+        d["ronde"] = int(rm.group(1))
+    dm = re.search(r"Speelronde\s+\d{1,2}\s*[·•|-]\s*([^|\n]{6,60})", een)
+    if dm:
+        d["datum"] = datum_iso(dm.group(1))
+    return d
 
 
-# ------------------------------------------------------------------ debug
-def debug(url):
-    soup = get(url)
+# ---------------------------------------------------- opstelling + afwezigen
+def parse_opstelling(soup, club):
+    """Vermoedelijke basiself met basiskans, en de afwezigen met reden.
+
+    Geverifieerd op /eredivisie/feyenoord/opstelling/, 19-10-2026:
+        h1   "Vermoedelijke opstelling Feyenoord tegen PSV"
+        "Niet beschikbaar:"  Gijs Smal blessure
+                             Thomas Beelen schorsing - verwacht terug rond 29-01-2027
+                             Ayase Ueda vertrokken - verwacht terug rond 30-06-2027
+        per speler een percentage: hoe vaak hij begon
+    """
     ruw = str(soup)
-    print(f"=== {url}\n")
-    print("KOPPEN (h1-h4):")
-    for h in soup.find_all(["h1", "h2", "h3", "h4"]):
-        print(f"  <{h.name}> {h.get_text(' ', strip=True)[:90]}")
-    links = SPELER_HREF.findall(ruw)
-    print(f"\nSPELERSLINKS: {len(links)} totaal, {len(set(links))} uniek")
-    print("  eerste 8:", list(dict.fromkeys(links))[:8])
-    print("\nELEMENTEN DIE OP EEN WISSEL LIJKEN:")
-    n = 0
-    for el in soup.find_all(["li", "p", "div", "span"]):
-        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
-        if len(t) < 120 and re.search(r"\d{1,3}\s*[’'].{0,60}\bvoor\b", t):
-            print(f"  <{el.name}> {t}")
-            n += 1
-            if n >= 12:
-                break
-    if not n:
-        print("  GEEN gevonden — plak hieronder wat er rond 'Wissels' staat:")
-        i = ruw.find("Wissels")
-        print(ruw[max(0, i - 200): i + 1500] if i > 0 else "  'Wissels' niet gevonden")
-    print("\nELEMENTEN MET EEN PERCENTAGE:")
-    n = 0
-    for el in soup.find_all(["td", "div", "span", "li", "p", "strong"]):
-        t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
-        if "%" in t and len(t) < 90:
-            print(f"  <{el.name}> {t}")
-            n += 1
-            if n >= 15:
-                break
-    if not n:
-        print("  GEEN percentages gevonden op deze pagina")
+    plat = vlak(soup)
+    een = re.sub(r"\s+", " ", plat)
 
-    print("\nBLOK 'Bank' (eerste 900 tekens ruwe HTML):")
-    i = ruw.find("Bank")
-    print(ruw[i:i + 900] if i > 0 else "  'Bank' niet gevonden")
+    tegen = ""
+    h1 = soup.find("h1")
+    if h1:
+        m = re.search(r"tegen\s+(.+?)\s*$", vlak(h1).strip())
+        if m:
+            tegen = club_naam(m.group(1))
+    datum = ""
+    dm = re.search(r"(?:op\s+)?((?:ma|di|wo|do|vr|za|zo)[a-z]*dag\s+\d{1,2}\s+"
+                   r"[a-z]+\s+\d{4})", een, re.I)
+    if dm:
+        datum = datum_iso(dm.group(1))
+    thuis_uit = ""
+    if re.search(r"\bthuis\b", een[:1200], re.I):
+        thuis_uit = "thuis"
+    elif re.search(r"\buit\b", een[:1200], re.I):
+        thuis_uit = "uit"
+    rm = re.search(r"speelronde\s+(\d{1,2})", een, re.I)
+    ronde = int(rm.group(1)) if rm else ""
+
+    # --- afwezigen. Het blok begint bij "Niet beschikbaar:" en loopt tot de
+    # volgende kop. Elke speler is een link; reden en datum staan erachter.
+    afwezig = []
+    blok_html, blok_van, blok_tot = "", None, None
+    im = re.search(r"Niet beschikbaar", ruw)
+    if im:
+        volgend = re.search(r"<h[1-6][^>]*>", ruw[im.end():], re.I)
+        blok_van = im.end()
+        blok_tot = blok_van + (volgend.start() if volgend else 4000)
+        blok_html = ruw[blok_van:blok_tot]
+    elif "Niet beschikbaar" in een:
+        # tekst over tags verdeeld; dan zijn er hier geen links te vinden en
+        # blijft de afwezigenlijst leeg. --debug laat zien wat er wel staat.
+        print(f"    {club}: 'Niet beschikbaar' alleen in de platte tekst")
+
+    sub = BeautifulSoup(blok_html, "html.parser")
+    for a in sub.select('a[href*="/eredivisie/speler/"]'):
+        sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+        if not sm:
+            continue
+        naam = vlak(a).strip()
+        ouder = a.find_parent(["li", "tr", "p", "div"]) or a
+        t = re.sub(r"\s+", " ", vlak(ouder)).strip()
+        reden = ""
+        for r in ("blessure", "schorsing", "vertrokken", "ziek", "twijfel",
+                  "persoonlijk", "transfer"):
+            if re.search(r, t, re.I):
+                reden = r
+                break
+        tm = re.search(r"verwacht terug rond\s*(\d{2}-\d{2}-\d{4})", t, re.I)
+        terug = ""
+        if tm:
+            d_, m_, j_ = tm.group(1).split("-")
+            terug = f"{j_}-{m_}-{d_}"
+        afwezig.append({"opgehaald": VANDAAG, "club": club,
+                        "speler": naam or slug_naar_naam(sm.group(1)),
+                        "speler_id": norm(sm.group(1)), "reden": reden,
+                        "verwacht_terug": terug, "tegenstander": tegen,
+                        "datum": datum})
+
+    # geen dubbelen, eerste vermelding wint
+    gezien, uniek = set(), []
+    for r in afwezig:
+        if r["speler_id"] in gezien:
+            continue
+        gezien.add(r["speler_id"])
+        uniek.append(r)
+    afwezig = uniek
+    afwezig_ids = {r["speler_id"] for r in afwezig}
+
+    # --- vermoedelijke basiself. Alle spelerslinks BUITEN het afwezigenblok,
+    # met het percentage dat ernaast staat. Een speler die ook afwezig is,
+    # valt af: anders stond hij in augustus zowel in de basis als op nul.
+    rest = ruw
+    if blok_van is not None:
+        # exact op de blokgrenzen knippen; een marge op de gok sneed eerder
+        # zomaar een spelerslink in tweeen
+        rest = ruw[:im.start()] + ruw[blok_tot:]
+    elf, gezien2 = [], set()
+    for a in BeautifulSoup(rest, "html.parser").select(
+            'a[href*="/eredivisie/speler/"]'):
+        sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+        if not sm:
+            continue
+        sid = norm(sm.group(1))
+        if sid in gezien2 or sid in afwezig_ids:
+            continue
+        ouder = a.find_parent(["li", "tr", "td", "p", "div"]) or a
+        t = re.sub(r"\s+", " ", vlak(ouder)).strip()
+        if len(t) > 160:
+            t = re.sub(r"\s+", " ", vlak(a.parent or a)).strip()
+        pm = re.search(r"(\d{1,3})\s*%", t)
+        gezien2.add(sid)
+        elf.append({"opgehaald": VANDAAG, "club": club,
+                    "speler": vlak(a).strip() or slug_naar_naam(sm.group(1)),
+                    "speler_id": sid,
+                    "kans_basis": int(pm.group(1)) if pm else "",
+                    "tegenstander": tegen, "thuis_uit": thuis_uit,
+                    "datum": datum, "ronde": ronde})
+    return elf[:11], afwezig
+
+
+def slug_naar_naam(slug):
+    kleine = {"van", "de", "der", "den", "het", "ter", "te", "op", "in"}
+    delen = (slug or "").split("-")
+    return " ".join(w if w in kleine and i else w.capitalize()
+                    for i, w in enumerate(delen))
+
+
+# ------------------------------------------------------------- spelersindex
+def parse_spelersindex(soup):
+    """[(slug, naam, club, positie)] voor alle ~504 spelers.
+
+    Opbouw: h2 = club, h3 = Keepers / Verdedigers / Middenvelders / Aanvallers,
+    daaronder de spelerslinks. De linktekst begint met het rugnummer.
+    """
+    ruw = str(soup)
+    koppen = []
+    for m in re.finditer(r"<h([23])[^>]*>(.*?)</h\1>", ruw, re.S | re.I):
+        naam = htmllib.unescape(re.sub(r"<[^>]+>", "", m.group(2))).strip()
+        koppen.append((m.start(), m.end(), int(m.group(1)), naam))
+
+    uit, gezien = [], set()
+    for i, (pos, eind, niveau, naam) in enumerate(koppen):
+        if niveau != 3 or norm(naam) not in POSITIE:
+            continue
+        positie = POSITIE[norm(naam)]
+        club = ""
+        for j in range(i - 1, -1, -1):
+            if koppen[j][2] == 2:
+                club = club_naam(koppen[j][3])
+                break
+        blok_eind = koppen[i + 1][0] if i + 1 < len(koppen) else len(ruw)
+        blok = ruw[eind:blok_eind]
+        for a in BeautifulSoup(blok, "html.parser").select(
+                'a[href*="/eredivisie/speler/"]'):
+            sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+            if not sm:
+                continue
+            slug = norm(sm.group(1))
+            if slug in gezien:
+                continue
+            gezien.add(slug)
+            tekst = re.sub(r"^\s*\d{1,2}\s+", "", vlak(a).strip())
+            uit.append((slug, tekst or slug_naar_naam(slug), club, positie))
+    return uit
+
+
+# --------------------------------------------------------------- spelerspagina
+def parse_speler(soup, seizoen=SEIZOEN):
+    """Seizoenstotalen van een speler.
+
+    De betrouwbaarste bron op de pagina is de seizoenstabel:
+        veldspeler  Seizoen | Club | Duels | Min. | Goals | Assists | Cijfer
+        keeper      Seizoen | Club | Duels | Min. | Reddingen | Tegen |
+                    Nul achter | Cijfer
+    Daarnaast staan de labels los op de pagina ("Basisplaatsen 8",
+    "Overtredingen 3"); die worden als aanvulling gelezen.
+    """
+    d = {k: "" for k in ("duels", "basisplaatsen", "minuten", "goals",
+                         "assists", "overtredingen", "reddingen",
+                         "nul_achter", "cijfer", "status_tekst")}
+    plat = vlak(soup)
+    een = re.sub(r"\s+", " ", plat)
+
+    for koppen, rijen in tabellen(soup):
+        kop = [norm(k) for k in koppen]
+        if not any(k.startswith("seizoen") for k in kop):
+            continue
+        for rij in rijen:
+            if not rij or seizoen not in rij[0]:
+                continue
+            paar = dict(zip(kop[:len(rij)], rij)) if len(kop) >= len(rij) else {}
+            for bron, doel in (("duels", "duels"), ("min", "minuten"),
+                               ("goals", "goals"), ("assists", "assists"),
+                               ("reddingen", "reddingen"),
+                               ("nul-achter", "nul_achter"),
+                               ("cijfer", "cijfer")):
+                for k, v in paar.items():
+                    if k.startswith(bron) and d[doel] == "":
+                        g = getal(v)
+                        if g is not None:
+                            d[doel] = g if doel == "cijfer" else int(round(g))
+            break
+
+    # losse labels; alleen invullen wat de tabel niet gaf
+    for label, doel in (("Basisplaatsen", "basisplaatsen"),
+                        ("Overtredingen", "overtredingen"),
+                        ("Minuten", "minuten"), ("Duels", "duels"),
+                        ("Goals", "goals"), ("Assists", "assists"),
+                        ("Reddingen", "reddingen")):
+        if d[doel] != "":
+            continue
+        m = re.search(re.escape(label) + r"\s*:?\s*(\d+(?:[.,]\d+)?)", een)
+        if m:
+            d[doel] = heel(m.group(1))
+    if d["nul_achter"] == "":
+        m = re.search(r"(?:Nul achter|Wedstrijden zonder tegendoelpunt)"
+                      r"\s*:?\s*(\d+)", een)
+        if m:
+            d["nul_achter"] = int(m.group(1))
+    if d["cijfer"] == "":
+        m = re.search(r"Gemiddeld cijfer\s*:?\s*(\d+(?:[.,]\d+)?)", een)
+        if m:
+            d["cijfer"] = getal(m.group(1))
+
+    # "kwam in 2026/27 nog niet in actie" -> alles nul, geen leeg
+    if re.search(re.escape(seizoen) + r"\s+nog niet in actie", een):
+        for k in ("duels", "basisplaatsen", "minuten", "goals", "assists",
+                  "overtredingen", "reddingen", "nul_achter"):
+            d[k] = 0
+    sm = re.search(r"\bis\s+(geblesseerd|geschorst|niet beschikbaar)[^.]{0,60}\.",
+                   een)
+    if sm:
+        d["status_tekst"] = sm.group(0).strip()[:120]
+
+    # Welke velden werkelijk op de pagina stonden. Dit is nodig voor de
+    # broncontrole: hieronder worden lege tellers op nul gezet, en daarna is
+    # een verdwenen kolom niet meer te onderscheiden van een echte nul.
+    d["_gevonden"] = ",".join(k for k in
+                              ("duels", "basisplaatsen", "minuten", "goals",
+                               "assists", "overtredingen", "reddingen",
+                               "nul_achter", "cijfer") if d[k] != "")
+
+    # Wie gespeeld heeft, heeft nul assists als er geen assists staan — niet
+    # "onbekend". Keepers hebben geen assistkolom in hun seizoenstabel; zonder
+    # deze stap wordt hun verschil per ronde leeg en rekent het model er niet
+    # mee. Een keeper die wel een assist gaf, staat met het losse label op de
+    # pagina en is hierboven al opgepikt.
+    if d["duels"] != "":
+        for k in ("basisplaatsen", "minuten", "goals", "assists",
+                  "overtredingen", "reddingen", "nul_achter"):
+            if d[k] == "":
+                d[k] = 0
+    return d
+
+
+# ------------------------------------------------------------------- kaarten
+def parse_kaartenlijst(soup, kolom_woord):
+    """{speler_id: (naam, club, aantal)} uit een statistiekenranglijst.
+
+    Rij: '| 1 | Abdelnour Soualhia  Telstar | 3 |'. De clubnaam zit in dezelfde
+    cel als de naam; de speler is een link, de club ook, dus die zijn apart te
+    halen. Alleen de spelerstabel, niet de clubtabel: die heeft geen
+    spelerslink.
+    """
+    uit = {}
+    for tab in soup.find_all("table"):
+        koppen = [norm(vlak(th)) for th in tab.find_all("th")]
+        if not any(norm(kolom_woord) in k for k in koppen):
+            continue
+        if any(k == "club" for k in koppen):
+            continue                      # dat is de clubtabel
+        for tr in tab.find_all("tr"):
+            cellen = tr.find_all("td")
+            if len(cellen) < 2:
+                continue
+            a = tr.select_one('a[href*="/eredivisie/speler/"]')
+            if not a:
+                continue
+            sm = re.search(r"/eredivisie/speler/([^/\"'>\s]+)/", a.get("href", ""))
+            if not sm:
+                continue
+            club = ""
+            ca = tr.select_one('a[href^="/eredivisie/"]:not([href*="/speler/"])')
+            if ca:
+                cs = ca.get("href", "").strip("/").split("/")[-1]
+                club = CLUB_SLUG.get(cs, club_naam(vlak(ca)))
+            aantal = None
+            for c in reversed(cellen):
+                aantal = heel(vlak(c))
+                if aantal is not None:
+                    break
+            if aantal is None:
+                continue
+            uit[norm(sm.group(1))] = (vlak(a).strip(), club, aantal)
+        break
+    return uit
+
+
+# ----------------------------------------------------------- per ronde maken
+def ronde_uit_verschil(vorig, nu, rondes, datum):
+    """Trek twee seizoensstanden van elkaar af en maak er ronderijen van.
+
+    Een momentopname geeft seizoenstotalen. Het model wil productie per ronde.
+    Het verschil tussen de stand van vorige week en die van nu is precies wat
+    er in de tussenliggende ronde(n) gebeurde. Vallen er meer ronden in het
+    venster, dan wordt dat in de kolom 'venster' vastgelegd in plaats van
+    stilletjes aan de laatste ronde toegerekend.
+    """
+    tellers = ("duels", "basisplaatsen", "minuten", "goals", "assists",
+               "geel", "rood", "reddingen", "nul_achter")
+    oud = {r["speler_id"]: r for r in vorig}
+    ronde = rondes[-1] if rondes else ""
+    venster = ",".join(str(r) for r in rondes)
+    uit = []
+    for r in nu:
+        v = oud.get(r["speler_id"], {})
+        delta = {}
+        for k in tellers:
+            a, b = getal(r.get(k)), getal(v.get(k))
+            delta[k] = (int(a) - int(b or 0)) if a is not None else ""
+        if not any(isinstance(delta[k], int) and delta[k] > 0
+                   for k in ("duels", "minuten")):
+            continue                      # niet gespeeld in dit venster
+        uit.append({
+            "ronde": ronde, "datum": datum, "speler_id": r["speler_id"],
+            "speler": r["speler"], "club": r["club"], "positie": r["positie"],
+            "duels": delta["duels"], "basis": delta["basisplaatsen"],
+            "minuten": delta["minuten"], "goals": delta["goals"],
+            "assists": delta["assists"], "geel": delta["geel"],
+            "rood": delta["rood"], "reddingen": delta["reddingen"],
+            "clean_sheet": delta["nul_achter"], "ploegpunten": "",
+            "venster": venster, "opgehaald": VANDAAG})
+    return uit
 
 
 # ------------------------------------------------------------- wegschrijven
+def lees(pad):
+    if not pad.exists():
+        return []
+    with open(pad, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
 def schrijf(pad, cols, nieuw, sleutel):
+    """Bijwerken op sleutel; nieuwe data overschrijft oude. Als het kolomformaat
+    is veranderd begint het bestand opnieuw, anders ontstaat er een mengsel."""
     rijen, index = [], {}
-    if pad.exists():
-        with open(pad, newline="", encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                if set(r) != set(cols):          # oud kolomformaat -> opnieuw beginnen
-                    rijen, index = [], {}
-                    break
-                k = tuple(str(r.get(c, "")) for c in sleutel)
-                index[k] = len(rijen)
-                rijen.append(r)
+    bestaand = lees(pad)
+    if bestaand and set(bestaand[0]) == set(cols):
+        for r in bestaand:
+            k = tuple(str(r.get(c, "")) for c in sleutel)
+            index[k] = len(rijen)
+            rijen.append(r)
+    elif bestaand:
+        print(f"  {pad.name}: kolommen gewijzigd, bestand wordt opnieuw opgebouwd")
     bij = 0
     for r in nieuw:
         k = tuple(str(r.get(c, "")) for c in sleutel)
@@ -384,49 +734,273 @@ def schrijf(pad, cols, nieuw, sleutel):
     print(f"  {pad.name}: {bij} nieuw, {len(rijen)} totaal")
 
 
+# ------------------------------------------------------------------ taken
+def taak_clubs(rondes=None):
+    """clubs.csv: uitslagen + kansen + verwachte goals per club per ronde."""
+    print("Uitslagen ophalen")
+    soup = get(UITSLAGEN_URL)
+    duels = parse_uitslagen(soup)
+    print(f"  {len(duels)} wedstrijden gevonden, "
+          f"{sum(1 for d in duels if d['thuis_goals'] is not None)} gespeeld")
+    if not duels:
+        print("  ! geen wedstrijden gevonden — draai --debug op de uitslagenpagina")
+        return
+
+    # Twee bronnen, twee kosten. De uitslag staat op deze ene pagina en is dus
+    # gratis: die wordt voor ALLE duels bijgewerkt. De kansen en verwachte
+    # goals kosten een pagina per wedstrijd en veranderen na het duel niet
+    # meer, dus die worden eenmalig opgehaald en daarna overgenomen. Zonder
+    # die scheiding kreeg een ronde die als 'komend' was opgehaald nooit meer
+    # zijn uitslag erbij.
+    # Sleutels als tekst: uit het CSV komt de ronde als string, uit de bron als
+    # int; zonder gelijktrekken matcht niets.
+    oud = {(str(r.get("ronde")), r.get("club")): r
+           for r in lees(OUT / "clubs.csv")}
+
+    def kansen_bekend(d):
+        r = oud.get((str(d["ronde"]), d["thuis"]))
+        return r is not None and str(r.get("kans_winst", "")).strip() != ""
+
+    if rondes:
+        haal = {d["url"] for d in duels if d["ronde"] in rondes}
+    else:
+        haal = {d["url"] for d in duels if not kansen_bekend(d)}
+        # De eerstvolgende nog niet gespeelde ronde altijd opnieuw lezen: de
+        # odds scherpen naar de aftrap toe aan, en juist die ronde gaat het
+        # model in. Gespeelde ronden veranderen niet meer en blijven staan.
+        gespeeld = {d["ronde"] for d in duels if d["thuis_goals"] is not None}
+        open_ = sorted({d["ronde"] for d in duels} - gespeeld)
+        if open_:
+            haal |= {d["url"] for d in duels if d["ronde"] == open_[0]}
+    print(f"  wedstrijdpagina's op te halen: {len(haal)}")
+
+    rijen = []
+    for d in sorted(duels, key=lambda x: (x["ronde"], x["url"])):
+        if d["url"] in haal:
+            print(f"  r{d['ronde']} {d['thuis']} - {d['uit']}")
+            try:
+                w = parse_wedstrijd(get(d["url"]), d["thuis"], d["uit"])
+            except Exception as e:
+                print(f"    ! mislukt: {type(e).__name__}: {e}")
+                w = None
+        else:
+            w = None
+        if w is None:
+            # kansen uit de vorige run overnemen; de thuisrij is de bron
+            b = oud.get((str(d["ronde"]), d["thuis"]), {})
+            w = {"kans_thuis": b.get("kans_winst", ""),
+                 "kans_gelijk": b.get("kans_gelijk", ""),
+                 "kans_uit": b.get("kans_verlies", ""),
+                 "xg_thuis": b.get("xg_voor", ""), "xg_uit": b.get("xg_tegen", ""),
+                 "beide_scoren": b.get("beide_scoren", ""),
+                 "over_25": b.get("over_25", ""),
+                 "verwacht_thuis": b.get("verwacht_voor", ""),
+                 "verwacht_uit": b.get("verwacht_tegen", ""),
+                 "ronde": d["ronde"], "datum": b.get("datum", "")}
+        datum = d["datum"] or w["datum"]
+        gh, ga = d["thuis_goals"], d["uit_goals"]
+        for club, tegen, gf, gc, tu in ((d["thuis"], d["uit"], gh, ga, "thuis"),
+                                        (d["uit"], d["thuis"], ga, gh, "uit")):
+            if gf is None:
+                res, ppt, cs = "", "", ""
+            else:
+                res = "W" if gf > gc else ("G" if gf == gc else "V")
+                ppt = 3 if res == "W" else (1 if res == "G" else 0)
+                cs = int(gc == 0)
+            rijen.append({
+                "ronde": d["ronde"], "datum": datum, "club": club,
+                "tegenstander": tegen, "thuis_uit": tu,
+                "voor": "" if gf is None else gf,
+                "tegen": "" if gc is None else gc,
+                "resultaat": res, "ploegpunten": ppt, "clean_sheet": cs,
+                "formatie": "",
+                "kans_winst": w["kans_thuis"] if tu == "thuis" else w["kans_uit"],
+                "kans_gelijk": w["kans_gelijk"],
+                "kans_verlies": w["kans_uit"] if tu == "thuis" else w["kans_thuis"],
+                "verwacht_voor": w["verwacht_thuis"] if tu == "thuis" else w["verwacht_uit"],
+                "verwacht_tegen": w["verwacht_uit"] if tu == "thuis" else w["verwacht_thuis"],
+                "xg_voor": w["xg_thuis"] if tu == "thuis" else w["xg_uit"],
+                "xg_tegen": w["xg_uit"] if tu == "thuis" else w["xg_thuis"],
+                "beide_scoren": w["beide_scoren"], "over_25": w["over_25"],
+                "opgehaald": VANDAAG})
+        if d["url"] in haal:
+            xg = f"{w['xg_thuis']}-{w['xg_uit']}"
+            vlag = ("" if w["xg_thuis"] != "" and w["kans_thuis"] != ""
+                    else "   <-- CONTROLEER")
+            print(f"    kansen {w['kans_thuis']}/{w['kans_gelijk']}/"
+                  f"{w['kans_uit']}, verwachte goals {xg}{vlag}")
+    if rijen:
+        schrijf(OUT / "clubs.csv", CLUB_COLS, rijen, ["ronde", "club"])
+    return duels
+
+
+def taak_afwezigen():
+    """afwezigen.csv en opstellingen.csv uit de 18 clubpagina's."""
+    print("Afwezigen en vermoedelijke opstellingen")
+    afw, elf = [], []
+    for slug, club in CLUB_SLUG.items():
+        try:
+            soup = get(OPSTELLING_URL.format(slug=slug))
+        except Exception as e:
+            print(f"  {club}: ! {type(e).__name__}: {e}")
+            continue
+        e_, a_ = parse_opstelling(soup, club)
+        elf += e_
+        afw += a_
+        vlag = "" if e_ else "   <-- CONTROLEER"
+        print(f"  {club}: {len(e_)} basis, {len(a_)} afwezig{vlag}")
+    if afw:
+        schrijf(OUT / "afwezigen.csv", AFWEZIG_COLS, afw,
+                ["opgehaald", "club", "speler_id"])
+    if elf:
+        schrijf(OUT / "opstellingen.csv", OPSTELLING_COLS, elf,
+                ["opgehaald", "club", "speler_id"])
+    return afw, elf
+
+
+def taak_spelers(max_spelers=None, duels=None):
+    """spelers_seizoen.csv (momentopname) en spelers.csv (verschil per ronde)."""
+    print("Kaarten ophalen")
+    geel = rood = {}
+    try:
+        geel = parse_kaartenlijst(get(GEEL_URL), "gele kaarten")
+        print(f"  geel: {len(geel)} spelers")
+    except Exception as e:
+        print(f"  ! gele kaarten mislukt: {e}")
+    try:
+        rood = parse_kaartenlijst(get(ROOD_URL), "rode kaarten")
+        print(f"  rood: {len(rood)} spelers")
+    except Exception as e:
+        print(f"  ! rode kaarten mislukt: {e}")
+
+    print("Spelersindex ophalen")
+    index = parse_spelersindex(get(SPELERS_URL))
+    print(f"  {len(index)} spelers, {len({c for _, _, c, _ in index})} clubs")
+    if not index:
+        print("  ! leeg — draai --debug op de spelersindex")
+        return
+    if max_spelers:
+        index = index[:max_spelers]
+
+    nu = []
+    for n, (slug, naam, club, positie) in enumerate(index, 1):
+        try:
+            soup = get(SPELER_URL.format(slug=slug), toestaan_404=True)
+        except Exception as e:
+            print(f"  ! {slug}: {type(e).__name__}: {e}")
+            continue
+        if soup is None:
+            continue
+        d = parse_speler(soup)
+        d.update({"opgehaald": VANDAAG, "speler_id": slug, "speler": naam,
+                  "club": club, "positie": positie,
+                  "geel": geel.get(slug, ("", "", 0))[2],
+                  "rood": rood.get(slug, ("", "", 0))[2]})
+        nu.append(d)
+        if n % 50 == 0:
+            print(f"  {n}/{len(index)} ...")
+    print(f"  {len(nu)} spelers gelezen, "
+          f"{sum(1 for r in nu if getal(r.get('assists')) )} met assists")
+
+    oud_alles = lees(OUT / "spelers_seizoen.csv")
+    schrijf(OUT / "spelers_seizoen.csv", SEIZOEN_COLS, nu,
+            ["opgehaald", "speler_id"])
+
+    # verschil met de vorige momentopname
+    data = [r for r in oud_alles if r.get("opgehaald") != VANDAAG]
+    if not data:
+        print("  (eerste momentopname; volgende week zijn er ronderijen)")
+        return
+    vorige = max(r["opgehaald"] for r in data)
+    vorig = [r for r in data if r["opgehaald"] == vorige]
+    rondes, datum = rondes_in_venster(vorige, VANDAAG, duels)
+    if not rondes:
+        # Twee momentopnamen zonder speelronde ertussen. Dat gebeurt bij een
+        # extra run binnen dezelfde week. Rijen wegschrijven zou ze aan ronde
+        # "" toekennen en de vorige ronde overschrijven, dus niets doen.
+        print(f"  venster {vorige} -> {VANDAAG}: geen ronde gespeeld, "
+              f"geen ronderijen")
+        return
+    rijen = ronde_uit_verschil(vorig, nu, rondes, datum)
+    print(f"  venster {vorige} -> {VANDAAG}: ronden {rondes}, "
+          f"{len(rijen)} spelers met speeltijd")
+    if rijen:
+        schrijf(OUT / "spelers.csv", SPELER_COLS, rijen,
+                ["ronde", "speler_id", "club"])
+
+
+def rondes_in_venster(van, tot, duels):
+    """Welke ronden zijn er tussen twee ophaaldata gespeeld?"""
+    if not duels:
+        return [], tot
+    rondes, laatste = set(), ""
+    for d in duels:
+        if d["thuis_goals"] is None or not d["datum"]:
+            continue
+        if van < d["datum"] <= tot:
+            rondes.add(d["ronde"])
+            laatste = max(laatste, d["datum"])
+    return sorted(rondes), laatste or tot
+
+
+# ------------------------------------------------------------------- debug
+def debug(url):
+    soup = get(url)
+    ruw = str(soup)
+    print(f"=== {url}\n")
+    print("KOPPEN:")
+    for h in soup.find_all(["h1", "h2", "h3", "h4"]):
+        print(f"  <{h.name}> {vlak(h).strip()[:95]}")
+    print(f"\nTABELLEN: {len(soup.find_all('table'))}")
+    for i, (koppen, rijen) in enumerate(tabellen(soup)[:4]):
+        print(f"  tabel {i}: koppen {koppen}")
+        for r in rijen[:3]:
+            print(f"    {r}")
+    links = re.findall(r"/eredivisie/speler/([^/\"'>\s]+)/", ruw)
+    print(f"\nSPELERSLINKS: {len(links)} totaal, {len(set(links))} uniek")
+    print("  eerste 8:", list(dict.fromkeys(links))[:8])
+    een = re.sub(r"\s+", " ", vlak(soup))
+    for woord in ("Verwachte goals", "Beide ploegen scoren", "Meer dan 2",
+                  "Niet beschikbaar", "verwacht terug rond", "Ronde ",
+                  "Basisplaatsen", "Assists", "Overtredingen", "wint"):
+        i = een.find(woord)
+        print(f"\n'{woord}': " + (f"...{een[max(0, i - 60): i + 140]}..."
+                                  if i >= 0 else "NIET GEVONDEN"))
+    print("\nPERCENTAGES (eerste 12):")
+    for m in list(re.finditer(r"(\d{1,3})\s*%", een))[:12]:
+        print(f"  {een[max(0, m.start() - 50): m.end() + 40]}")
+
+
+# -------------------------------------------------------------------- main
 def main():
     p = argparse.ArgumentParser()
+    p.add_argument("--alles", action="store_true", help="alle taken")
+    p.add_argument("--clubs", action="store_true")
+    p.add_argument("--spelers", action="store_true")
+    p.add_argument("--afwezigen", action="store_true")
     p.add_argument("--ronde", type=int, action="append", default=[])
-    p.add_argument("--alles-tot", type=int)
+    p.add_argument("--max-spelers", type=int)
     p.add_argument("--debug", metavar="URL")
     a = p.parse_args()
 
     if a.debug:
         debug(a.debug)
         return
+    if not (a.alles or a.clubs or a.spelers or a.afwezigen):
+        sys.exit("Geef --alles, of --clubs / --spelers / --afwezigen / --debug URL")
 
-    rondes = a.ronde or (list(range(1, a.alles_tot + 1)) if a.alles_tot else [])
-    if not rondes:
-        sys.exit("Geef --ronde N, --alles-tot N of --debug URL")
-
-    leeg = 0
-    for ronde in rondes:
-        print(f"Speelronde {ronde}")
-        try:
-            urls = match_urls(ronde)
-        except Exception as e:
-            print(f"  ! ronde overgeslagen: {e}")
-            continue
-        cr, sr = [], []
-        for url in urls:
-            print(f"  {url.rstrip('/').rsplit('/', 1)[-1]}")
+    duels = None
+    if a.alles or a.clubs:
+        duels = taak_clubs(a.ronde or None)
+    if a.alles or a.afwezigen:
+        taak_afwezigen()
+    if a.alles or a.spelers:
+        if duels is None:
             try:
-                c, s = parse_match(url, ronde)
-                cr += c
-                sr += s
+                duels = parse_uitslagen(get(UITSLAGEN_URL))
             except Exception as e:
-                print(f"    ! mislukt: {type(e).__name__}: {e}")
-        if cr or sr:
-            leeg = 0
-            schrijf(OUT / "clubs.csv", CLUB_COLS, cr, ["ronde", "club"])
-            schrijf(OUT / "spelers.csv", SPELER_COLS, sr,
-                    ["ronde", "speler_id", "club", "status"])
-        else:
-            leeg += 1
-            print("  (nog niet gespeeld)")
-            if leeg >= 2:
-                print("Twee lege rondes achter elkaar — klaar.")
-                break
+                print(f"! uitslagen niet op te halen: {e}")
+        taak_spelers(a.max_spelers, duels)
 
 
 if __name__ == "__main__":
