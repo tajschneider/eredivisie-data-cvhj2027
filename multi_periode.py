@@ -54,6 +54,7 @@ algoritme voor precies dezelfde vraag, dus het antwoord moet identiek zijn.
 """
 import argparse
 import collections
+import datetime
 import importlib.util
 import sys
 from pathlib import Path
@@ -95,14 +96,30 @@ def lees_programma_per_ronde(pad, m):
 
 
 def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-                       per_ronde, start_ronde, horizon, venster, min_minuten, fbref=None):
+                       per_ronde, start_ronde, horizon, venster, min_minuten, fbref=None,
+                       afwezig=None):
     """Eén bouw_pool-aanroep per ronde in de horizon; retourneert
     {speler_id: [E_0, E_1, ...]} en de metadata-pool (van ronde 0, voor
     prijs/club/pos -- die veranderen niet binnen de horizon).
 
     `fbref` (m.lees_spelerstats()'s resultaat, of None) wordt ONGEWIJZIGD per ronde
     doorgegeven aan bouw_pool -- dezelfde xG/assist/kaart-schatting geldt voor
-    elke ronde in de horizon, er is geen ronde-specifieke fbref-data."""
+    elke ronde in de horizon, er is geen ronde-specifieke fbref-data.
+
+    `afwezig` (m.lees_afwezigen()'s eerste retourwaarde, of None) gaat om
+    dezelfde reden ongewijzigd mee, maar met een BELANGRIJKE beperking die je
+    bij het lezen van het advies moet kennen: de bron noemt geen terugkeerdatum
+    (de kolom verwacht_terug was op 19 okt. 2026 in 0 van de 50 rijen gevuld),
+    dus wie nu afwezig is, valt uit ALLE ronden in de horizon. Voor een
+    schorsing van een wedstrijd is dat te streng: die speler is over een week
+    weer speelbaar en wordt hier toch de hele horizon lang weggelaten.
+
+    Dat is een bewuste keuze tussen twee fouten, en de kosten zijn ongelijk.
+    Hem meenemen kan een transfer NAAR een speler opleveren die komende ronde
+    niet speelt -- dat kost direct punten en een transfer. Hem weglaten kan een
+    betere transfer missen -- dat kost alleen de kans op winst, en je ziet hem
+    volgende week gewoon terug. Zodra de bron terugkeerdata levert, hoort dit
+    per ronde te gaan in plaats van over de hele horizon."""
     reeksen = collections.defaultdict(list)
     metadata = None
     rondes_gebruikt = []
@@ -126,7 +143,8 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
             break
         pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                            programma, inhaal_k, laatste_ronde=start_ronde - 1,
-                           venster=venster, min_minuten=min_minuten, fbref=fbref)
+                           venster=venster, min_minuten=min_minuten, fbref=fbref,
+                           afwezig=afwezig)
         if metadata is None:
             metadata = {p["speler_id"]: p for p in pool}
         for p in pool:
@@ -449,6 +467,12 @@ def main():
     p.add_argument("--programma", default="programma.csv")
     p.add_argument("--selectie", default="selectie.csv")
     p.add_argument("--perioden", default="perioden.csv")
+    p.add_argument("--afwezigen", default="afwezigen.csv",
+                   help="geblesseerden en geschorsten van de opstellingspagina's; "
+                        "ontbreekt het, dan blijft alleen de blessurevlag uit "
+                        "prijzen.csv over")
+    p.add_argument("--afwezigen-max-dagen", type=int, default=4,
+                   help="waarschuw als afwezigen.csv ouder is dan dit")
     p.add_argument("--stats", "--xg", "--fbref", dest="xg", default="spelerstats.csv",
                    help="assists/kaarten van scrape_statistieken.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
@@ -531,6 +555,26 @@ def main():
     else:
         print(f"spelerstats geladen: {len(fbref)} spelers uit {pad_xg}")
 
+    afwezig, afw_opgehaald = m.lees_afwezigen(a.afwezigen)
+    bron_afwezigen = "bestand"
+    if afwezig is None:
+        bron_afwezigen = "ontbreekt"
+        print(f"LET OP: {a.afwezigen} niet gevonden - alleen de blessurevlag uit "
+              f"prijzen.csv sluit nog spelers uit. Schorsingen worden dan niet "
+              f"gezien. Draai scrape_eredivisie.py.")
+    else:
+        print(f"afwezigen geladen: {len({v['speler'] for v in afwezig.values()})} spelers "
+              f"uit {a.afwezigen} (opgehaald {afw_opgehaald or 'onbekend'})")
+        if afw_opgehaald:
+            try:
+                oud = (datetime.date.today() - datetime.date.fromisoformat(afw_opgehaald)).days
+            except ValueError:
+                oud = None
+            if oud is not None and oud > a.afwezigen_max_dagen:
+                bron_afwezigen = "verouderd"
+                print(f"LET OP: {a.afwezigen} is {oud} dagen oud. Spelers die sindsdien "
+                      f"hersteld zijn, worden nu onterecht uitgesloten.")
+
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
         sys.exit(f"Geen programma voor ronde {a.ronde} in {a.programma}. "
@@ -538,7 +582,8 @@ def main():
 
     reeksen, metadata, rondes_gebruikt = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-        per_ronde, a.ronde, a.horizon, a.venster, a.min_minuten, fbref=fbref)
+        per_ronde, a.ronde, a.horizon, a.venster, a.min_minuten, fbref=fbref,
+        afwezig=afwezig)
     if len(rondes_gebruikt) < a.horizon:
         print(f"LET OP: programma dekt maar {len(rondes_gebruikt)}/{a.horizon} gevraagde ronden "
               f"({rondes_gebruikt}) -- horizon wordt daartoe beperkt. "
@@ -668,7 +713,8 @@ def main():
         programma_0, inhaal_0 = per_ronde[a.ronde]
         pool_0 = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                              programma_0, inhaal_0, laatste_ronde=a.ronde - 1,
-                             venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
+                             venster=a.venster, min_minuten=a.min_minuten, fbref=fbref,
+                             afwezig=afwezig)   # zelfde uitsluiting, anders vergelijk je twee pools
         selectie_0 = []
         for naam, (club, pos, prijs) in selectie_in.items():
             x, _ = m.koppel_speler(naam, club, pool_0)   # zelfde koppeling als hierboven
@@ -691,6 +737,8 @@ def main():
             "model": "multi_periode",
             "bron_programma": "bestand",
             "bron_selectie": "bestand",
+            "bron_afwezigen": {"status": bron_afwezigen, "opgehaald": afw_opgehaald,
+                               "aantal": len({v["speler"] for v in afwezig.values()}) if afwezig else 0},
             "stats_bron": m.stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
