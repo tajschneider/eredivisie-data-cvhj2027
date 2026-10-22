@@ -634,12 +634,31 @@ def lees(pad):
         return list(csv.DictReader(f))
 
 
-def lees_programma(pad):
+def lees_programma(pad, ronde=None):
     """programma.csv -> (PROGRAMMA, INHAAL).
 
     PROGRAMMA is [(thuis, uit)] voor de komende ronde; INHAAL is
     {club: (tegenstander, is_thuis)} voor uitgestelde duels in dezelfde periode.
     Zonder bestand valt het model terug op de blokken onderin dit script.
+
+    `ronde` filtert de reguliere wedstrijden op de kolom `ronde`. Dat moet,
+    sinds scrape_eredivisie.py meerdere ronden vooruit schrijft: op 22 okt.
+    2026 stonden er 54 wedstrijden in (ronde 10 t/m 15) en laadde deze functie
+    ze alle 54 in één lijst. bouw_pool()'s lam() neemt dan de EERSTE wedstrijd
+    die hij voor een club vindt, dus het ging alleen goed omdat het bestand op
+    ronde gesorteerd staat -- een eigenschap van de scraper, niet van dit
+    formaat. De melding "54 wedstrijden, verwacht 9" stond daarbij elke run aan
+    en was dus geen melding meer.
+
+    multi_periode.py heeft hier zijn eigen lees_programma_per_ronde() voor; dit
+    pad is de terugval in wekelijks.yml en liep nog op de oude aanname.
+
+    `ronde=None` leest het bestand ongefilterd, zoals voorheen, en een bestand
+    zonder kolom `ronde` blijft ook met een opgegeven ronde werken (dan valt er
+    niets te filteren). Inhaalduels worden NIET op ronde gefilterd: `soort`
+    legt al vast of een uitgesteld duel voor of na de deadline van deze ronde
+    valt, en in welke ronde zo'n rij staat valt hier niet te controleren -- het
+    bestand bevat er op dit moment geen enkele.
     """
     if not Path(pad).exists():
         return None, None
@@ -648,6 +667,8 @@ def lees_programma(pad):
         thuis, uit = norm_club(r["thuis"]), norm_club(r["uit"])
         soort = r.get("soort", "regulier")
         if soort == "regulier":
+            if ronde is not None and r.get("ronde") and str(r["ronde"]) != str(ronde):
+                continue
             programma.append((thuis, uit))
         elif soort == "inhaal":
             inhaal[thuis] = (uit, True)
@@ -885,7 +906,7 @@ def main():
     # alleen in het log zichtbaar -- en de mail zag er daarna volstrekt
     # normaal uit. Zie notify.blokkerende_waarschuwingen().
     bron_programma, bron_selectie = "bestand", "bestand"
-    programma, inhaal = lees_programma(a.programma)
+    programma, inhaal = lees_programma(a.programma, ronde=a.ronde)
     if programma is None:
         programma, inhaal = PROGRAMMA, INHAAL
         bron_programma = "hardgecodeerd"
@@ -897,8 +918,16 @@ def main():
         bron_selectie = "hardgecodeerd"
         print(f"LET OP: {a.selectie} niet gevonden - de hardgecodeerde "
               f"SELECTIE onderin wordt gebruikt.")
+    # Nul wedstrijden is geen waarschuwing maar een stop: elke lambda wordt dan
+    # 0, elke E wordt 0, en de zoeker levert een opgewekt advies op basis van
+    # niets. multi_periode.py stopt hier al om dezelfde reden.
+    if not programma and not inhaal:
+        sys.exit(f"Geen wedstrijden voor ronde {a.ronde} in {a.programma}. Zonder "
+                 f"wedstrijden is elke verwachting 0 en zegt het advies niets. "
+                 f"Draai eerst de scraper, of controleer de kolom `ronde`.")
     if len(programma) != 9:
-        print(f"LET OP: {len(programma)} wedstrijden in het programma, verwacht 9.")
+        print(f"LET OP: {len(programma)} wedstrijden voor ronde {a.ronde} in het "
+              f"programma, verwacht 9.")
 
     perioden = lees_perioden(a.perioden)
     periode, is_start, tot_volgende = periodestand(a.ronde, perioden)
