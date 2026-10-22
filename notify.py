@@ -143,6 +143,22 @@ def blokkerende_waarschuwingen(d):
         w.append("### SELECTIE NIET GECONTROLEERD tegen coachvanhetjaar.nl "
                  "(synchronisatie mislukt) -- het advies gebruikt selectie.csv "
                  "zoals die in de repo staat. Controleer of dat nog jouw ploeg is. ###")
+    # Afwezigen: dezelfde vorm als de vier gevallen hierboven. De scrape van de
+    # opstellingspagina's valt om, het model rekent door met alleen de
+    # blessurevlag uit prijzen.csv, en de mail ziet er normaal uit -- terwijl
+    # het advies je een geschorste speler kan laten kopen. Een ONTBREKEND veld
+    # is hier bewust geen waarschuwing: een besluit.json van voor deze
+    # toevoeging weet niets van afwezigen, en dat is iets anders dan een
+    # mislukte scrape. Alleen wat het veld werkelijk zegt, telt.
+    afw = d.get("bron_afwezigen") or {}
+    if afw.get("status") == "ontbreekt":
+        w.append("### AFWEZIGEN NIET GESCRAPET -- alleen de blessurevlag uit "
+                 "prijzen.csv sluit nog spelers uit, en schorsingen staan daar "
+                 "niet in. Controleer de IN-namen zelf voordat je ze inlegt. ###")
+    elif afw.get("status") == "verouderd":
+        w.append(f"### AFWEZIGENLIJST IS VAN {afw.get('opgehaald') or 'onbekende datum'} "
+                 f"-- spelers die sindsdien hersteld zijn, zijn nu onterecht uit de "
+                 f"pool gehouden. Het advies kan daardoor een betere transfer missen. ###")
     stats = d.get("stats_bron") or {}
     if stats.get("bestand") and stats["bestand"] != "spelerstats.csv":
         w.append(f"### STATISTIEKEN uit {stats['bestand']} -- een oude bestandsnaam "

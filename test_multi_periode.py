@@ -53,9 +53,10 @@ def _horizon_opzet(m, start_ronde, horizon):
     selectie_in = m.lees_selectie("selectie.csv") or m.SELECTIE
     aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
     per_ronde = lees_programma_per_ronde("programma.csv", m)
+    afwezig, _ = m.lees_afwezigen("afwezigen.csv")
     reeksen, metadata, rondes = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-        per_ronde, start_ronde, horizon, venster=6, min_minuten=60)
+        per_ronde, start_ronde, horizon, venster=6, min_minuten=60, afwezig=afwezig)
     e_multi = bereken_multi_E(reeksen, DECAY)
     kandidaten = list(metadata.values())
     selectie_ids, _ = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
@@ -380,10 +381,17 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
               f"wedstrijden meer (al gespeeld?) -- alles E=0, niets te vergelijken")
         return True
 
+    # De afwezigenlijst gaat naar BEIDE zoekers, en wel dezelfde. Dat is niet
+    # alleen symmetrie: zo draait deze vergelijking op de configuratie die in
+    # wekelijks.yml ook echt loopt. Geeft hij hem aan een van de twee niet, dan
+    # vergelijkt hij twee verschillende pools -- precies de fout van 17
+    # september 2026, nu met een andere oorzaak.
+    afwezig, _ = m.lees_afwezigen("afwezigen.csv")
+
     # --- multi_periode.py, horizon=1 ---
     reeksen, metadata, rondes_gebruikt = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-        per_ronde, ronde, 1, venster=6, min_minuten=60)
+        per_ronde, ronde, 1, venster=6, min_minuten=60, afwezig=afwezig)
     e_multi = bereken_multi_E(reeksen, decay=0.84)  # decay is irrelevant bij horizon=1
     kandidaten = list(metadata.values())
     selectie_ids, _bijna_match = koppel_selectie(m, selectie_in, kandidaten, extra_waarde=e_multi)
@@ -392,7 +400,8 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     # --- cvhj_model.py, brute force ---
     programma_0, inhaal_0 = per_ronde[ronde]
     pool_0 = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-                         programma_0, inhaal_0, laatste_ronde=ronde - 1, venster=6, min_minuten=60)
+                         programma_0, inhaal_0, laatste_ronde=ronde - 1, venster=6,
+                         min_minuten=60, afwezig=afwezig)
     # Dezelfde koppeling als koppel_selectie() gebruikt -- via m.koppel_speler(),
     # niet een eigen kopie. Anders vergelijkt deze test twee zoekers die al bij
     # de INVOER van elkaar verschillen, en dat is precies waar hij op 17
