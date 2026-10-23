@@ -1,54 +1,48 @@
---transfers auto -> 1
 --horizon auto -> 3
 Periode 3; volgende periodestart over 3 ronden.
-Clubratings uit 81 wedstrijden (thuisvoordeel x1.23)
-LET OP: spelerstats.csv niet gevonden - het model draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.
+  verwachte goals: 18 duels uit de bron zelf, 81 teruggerekend uit de marktkansen
+Clubratings uit 99 wedstrijden (thuisvoordeel x1.23)
+LET OP: spelerstats.csv niet gevonden - assists en kaarten komen uit spelers_seizoen.csv (405 spelers). Verwachte goals zitten daar niet in, dus de doelpuntenschatting blijft op het eigen venster.
+afwezigen geladen: 66 spelers uit afwezigen.csv (opgehaald 2026-10-23)
+opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 10 (opgehaald 2026-10-23)
+  5 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+    Artem Stepanov ⚠          FC Utrecht       blessure, terug 2026-11-02
+    Devid Bouah               SC Cambuur       schorsing, terug 2026-10-25
+    Julius Dirksen            Go Ahead Eagles  blessure
+    Kasper Boogaard           Willem II        blessure
+    Ricardo Pepi              PSV              blessure
 Horizon: ronde [10, 11, 12] (decay 0.84)
 
-OPSTELLING NU (zonder transfers)  3-4-3   verwacht 42.3 punten   kosten EUR 31.30
-  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  4.12
-  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  3.20
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.53
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.73
-  Middenveld   Guus Til                  PSV              EUR 4.00  E  4.62
-  Middenveld   Oscar Gloukh              Ajax             EUR 2.80  E  3.19
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.15
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  2.51
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  4.38
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.19
-  Aanval       Artem Stepanov ⚠          FC Utrecht       EUR 2.20  E  3.78
+UIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE (de verwachting hieronder rekent hier NIET mee):
+    Mohamed Ihattaren         Fortuna Sittard  begon 5/6 recent, staat nu niet in de vermoedelijke elf
+
+OPSTELLING NU (zonder transfers)  3-4-3   verwacht 43.0 punten   kosten EUR 31.35
+  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.99
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  2.79
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.18
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.29
+  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  6.52
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  4.74
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  2.98
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  2.98
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  4.55
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.45
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.30
   ---- bank (50%) ----
-  A            Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.26
-  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.99
-  M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  1.90
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.57
+  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.88
+  M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  2.25
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.27
+  A            Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
+
+AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
+    Artem Stepanov (blessure, terug 2026-11-02)
 
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
-  0 transfer(s):  113.51
-  1 transfer(s):  120.91   +7.40 t.o.v. 0
+  0 transfer(s):  116.72
 
-MULTI-RONDE ADVIES (horizon 3, decay 0.84, 1 transfer(s))
-  ronde 10: verwacht 45.4 punten  (3-4-3)  winst +3.2
-  gedecayde som over de horizon: 120.91  (huidig team: 113.51)
-    UIT  Oscar Gloukh              Ajax             EUR 2.80  E  3.19
-    IN   Julian Brandt             Ajax             EUR 2.80  E  6.38  E(horizon) 14.56
-
-OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-4-3   verwacht 45.4 punten   kosten EUR 31.30
-  Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  4.12
-  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  3.20
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.53
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.73
-  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  6.38
-  Middenveld   Guus Til                  PSV              EUR 4.00  E  4.62
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.15
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  2.51
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  4.38
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.19
-  Aanval       Artem Stepanov ⚠          FC Utrecht       EUR 2.20  E  3.78
-  ---- bank (50%) ----
-  A            Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  3.26
-  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.99
-  M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  1.90
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.57
+MULTI-RONDE ADVIES (horizon 3, decay 0.84, 0 transfer(s))
+  ronde 10: verwacht 43.0 punten  (3-4-3)  winst +0.0
+  gedecayde som over de horizon: 116.72  (huidig team: 116.72)
+  geen transfer nodig -- de huidige selectie is al optimaal binnen de horizon.
 
 besluit -> besluit.json
