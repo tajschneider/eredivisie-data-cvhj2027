@@ -1,96 +1,79 @@
 #!/usr/bin/env python3
 """
-Vergelijkt cvhj_model.py's schatting met die van pouletips -- ijking op een
-onafhankelijke tweede mening.
+Legt de WERKELIJK behaalde punten per speler vast en rekent ze om naar punten
+per ronde -- de enige echte maatstaf die dit project heeft.
 
-WAT DIT WEL EN NIET IS
-----------------------
-Pouletips publiceert op dezelfde pagina waar prijzen.csv vandaan komt ook zijn
-eigen puntenvoorspelling per speler ('Verwacht'), en wat een speler al
-daadwerkelijk scoorde ('Behaald'). Dat zijn twee heel verschillende dingen:
+WAAROM DIT BESTAND NIET MEER VERGELIJKT
+---------------------------------------
+Dit script vergeleek cvhj_model.py met de puntenvoorspelling van pouletips
+('Verwacht' op de prijzenpagina), als onafhankelijke tweede mening. Die
+vergelijking is weg, en de kolom wordt niet meer gelezen. De reden:
 
-    verwacht  -- een TWEEDE SCHATTING van precies wat cvhj_model.py schat.
-                 Niet "het goede antwoord": een ander model, met andere fouten.
-                 Waar twee onafhankelijke schatters het eens zijn, is de kans
-                 groot dat ze allebei echt signaal oppikken. Waar ze sterk van
-                 elkaar afwijken, valt iets te leren -- meestal mist een van
-                 beide iets wat de ander wel ziet.
+    Verwachte punten, Totaal, Per miljoen en Basiskans zijn op die pagina
+    GEMASKEERD voor wie geen Premium-account heeft. Je krijgt geen afgeronde
+    of vertraagde cijfers -- je krijgt per request andere getallen.
 
-    behaald   -- WERKELIJK gescoorde punten. Dit is wel het goede antwoord,
-                 en daarmee op termijn veel waardevoller: backtest.py
-                 reconstrueert de werkelijke punten nu uit spelers.csv en kan
-                 assists, kaarten en keepersreddingen niet meenemen, dus het
-                 RMSE-getal daar is expliciet een ONDERGRENS. Met 'behaald'
-                 wordt dat een echte meting.
+Dat is ook te meten, en het is gemeten:
 
-                 Let op: 'behaald' is een SEIZOENSTOTAAL, geen ronde-score.
-                 Om er per ronde mee te kunnen rekenen heb je twee opnamen op
-                 verschillende momenten nodig en neem je het verschil. Daarom
-                 legt dit script elke run een momentopname vast in
-                 punten_historie.csv. Na twee weken is de eerste ronde-score
-                 te berekenen; daarvoor kan het nog niet.
+  - de waarden zijn uniform verdeeld over [1, 4], zonder enige piek;
+  - tussen twee scrapes op 23 oktober veranderde 'verwacht' voor ALLE 507
+    spelers, terwijl prijs, positie, club, naam, rol en nieuw voor 0 van de
+    507 veranderden. Een voorspelling die per request verandert is geen
+    voorspelling;
+  - de getallen zijn onderling inconsistent: 62,0 + 2.683 is niet 1.954, en
+    'Per miljoen' 473 past bij geen enkele combinatie van de andere twee;
+  - Pepi stond op een basiskans van 70% terwijl hij geblesseerd was.
 
-DE VERGELIJKING IS OP RANG, NIET OP SCHAAL
-------------------------------------------
-Het getalformaat op de bronpagina is niet ondubbelzinnig (zie parse_punten in
-scrape_prijzen.py), en de twee modellen hebben sowieso geen gedeelde eenheid:
-cvhj_model.py schat punten voor EEN ronde, pouletips voor de rest van het
-seizoen. Een absolute vergelijking zou dus nergens op slaan. Wat wel betekenis
-heeft is de VOLGORDE: zetten beide modellen dezelfde spelers bovenaan? Daarom
-wordt hier Spearman-rangcorrelatie gebruikt, die ongevoelig is voor schaal en
-voor een factor duizend in het getalformaat.
+Een ijking tegen willekeurige getallen is erger dan geen ijking: hij levert
+elke week een rangcorrelatie op die eruitziet als een meting. Daarom is de
+vergelijking niet verzwakt maar verwijderd, en wordt de kolom niet meer
+opgevraagd -- hij zit achter een betaalmuur en hoort daar te blijven.
+
+WAT ER WEL IS, EN WAT HET WAARD IS
+----------------------------------
+'Behaald' op dezelfde pagina is NIET gemaskeerd en wel juist: tussen die twee
+scrapes veranderde het voor 1 van de 507 spelers, en het hangt samen met het
+rapportcijfer (r = +0,67). Dat zijn werkelijk gescoorde CVHJ-punten.
+
+Het is een SEIZOENSTOTAAL. Om er per ronde mee te rekenen heb je opnamen op
+verschillende momenten nodig en trek je ze van elkaar af. Dat is precies wat
+dit script doet, en waarom het elke week meedraait: elke week die we niet
+vastleggen is grondwaarheid die we kwijt zijn.
+
+De waarde zit in het verschil met backtest.py: dat reconstrueert punten uit
+spelers.csv en kan assists, kaarten en keepersreddingen niet meenemen -- het
+RMSE-getal daar is expliciet een ONDERGRENS. Deze reeks heeft die beperking
+niet.
+
+WAT DIT SCRIPT BEWUST NIET DOET
+-------------------------------
+Het vergelijkt deze punten niet met de E van het model. Dat lijkt de logische
+volgende stap, maar de pool wordt gebouwd uit spelers.csv ZOALS DIE NU IS --
+dus met de vorm van na de ronde die je wilt voorspellen. Die vergelijking zou
+vooruitkijken en daarmee te vleiend uitvallen. Het hoort in backtest.py en
+kalibratie/, waar de stand per ronde bewaard is. Een getal dat alleen klopt
+als je niet nadenkt over de herkomst, is geen meting.
 
 Gebruik:
-    python vergelijk_tip.py --ronde 7
-    python vergelijk_tip.py --ronde 7 --top 20      # meer afwijkingen tonen
-    python vergelijk_tip.py --ronde 7 --geen-historie
-
-Vereist prijzen.csv met de kolom 'verwacht' (nieuwe scrape_prijzen.py), plus
-clubs.csv, spelers.csv en programma.csv.
+    python vergelijk_tip.py --ronde 11
+    python vergelijk_tip.py --ronde 11 --top 20
+    python vergelijk_tip.py --ronde 11 --geen-historie   # alleen rapporteren
 """
 import argparse
+import collections
 import csv
-import importlib.util
+import statistics
 import sys
 from pathlib import Path
 
 HIER = Path(__file__).parent
 HISTORIE = "punten_historie.csv"
 
-
-def laad_model():
-    spec = importlib.util.spec_from_file_location("cvhj_model", HIER / "cvhj_model.py")
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    return m
-
-
-def rangen(waarden):
-    """Rangnummers, met gedeelde rang bij gelijke waarden (nodig voor Spearman)."""
-    volgorde = sorted(range(len(waarden)), key=lambda i: waarden[i])
-    r = [0.0] * len(waarden)
-    i = 0
-    while i < len(volgorde):
-        j = i
-        while j + 1 < len(volgorde) and waarden[volgorde[j + 1]] == waarden[volgorde[i]]:
-            j += 1
-        gemiddelde_rang = (i + j) / 2 + 1
-        for k in range(i, j + 1):
-            r[volgorde[k]] = gemiddelde_rang
-        i = j + 1
-    return r
-
-
-def spearman(a, b):
-    """Rangcorrelatie zonder scipy -- Pearson over de rangen."""
-    if len(a) < 3:
-        return float("nan")
-    ra, rb = rangen(a), rangen(b)
-    n = len(ra)
-    ma, mb = sum(ra) / n, sum(rb) / n
-    teller = sum((x - ma) * (y - mb) for x, y in zip(ra, rb))
-    noemer = (sum((x - ma) ** 2 for x in ra) * sum((y - mb) ** 2 for y in rb)) ** 0.5
-    return teller / noemer if noemer else float("nan")
+# Een speler die een doelpunt maakte in een gewonnen wedstrijd zit op minstens
+# 12 punten (doelpunt 12/10/8/6 plus winst 3). Het aandeel spelers dat daarboven
+# uitkomt is daarmee een grove maat voor "hoeveel is hier gespeeld" -- bruikbaar
+# om te zien of een interval meer dan één ronde beslaat.
+TOPGRENS = 12.0
 
 
 def leg_vast(rijen, ronde, pad=HISTORIE):
@@ -124,116 +107,153 @@ def leg_vast(rijen, ronde, pad=HISTORIE):
     return len(nieuw)
 
 
-def rondes_in_historie(pad=HISTORIE):
+def lees_opnamen(pad=HISTORIE):
+    """({ronde: {speler_id: totaal}}, {speler_id: (naam, club)}).
+
+    Het label is de ronde die op het moment van opname NOG MOEST WORDEN
+    GESPEELD (de eerste regel van programma.csv). Een opname met label N bevat
+    dus het seizoenstotaal tot en met ronde N-1.
+    """
     p = Path(pad)
     if not p.exists():
-        return []
+        return {}, {}
+    opnamen, namen = collections.defaultdict(dict), {}
     with p.open(encoding="utf-8") as f:
-        return sorted({int(r["ronde"]) for r in csv.DictReader(f)})
+        for r in csv.DictReader(f):
+            try:
+                opnamen[int(r["ronde"])][r["speler_id"]] = float(r["behaald"])
+            except (ValueError, KeyError):
+                continue
+            namen[r["speler_id"]] = (r["speler"], r.get("club", ""))
+    return dict(opnamen), namen
+
+
+def per_ronde(opnamen):
+    """[(ronde, {speler_id: punten})] -- het verschil tussen twee opnamen.
+
+    Opname N bevat de stand tot en met ronde N-1, opname N-1 die tot en met
+    N-2. Het verschil is dus wat er in ronde N-1 is gescoord. Spelers die in
+    één van beide opnamen ontbreken (nieuw in de poule, of eruit) worden
+    overgeslagen: voor hen is het verschil geen rondescore.
+    """
+    uit = []
+    rondes = sorted(opnamen)
+    for vorige, huidige in zip(rondes, rondes[1:]):
+        a, b = opnamen[vorige], opnamen[huidige]
+        uit.append((vorige, {s: b[s] - a[s] for s in b if s in a}))
+    return uit
+
+
+def beschrijf(punten):
+    """Eén regel samenvatting van een rondeverdeling."""
+    v = list(punten.values())
+    if not v:
+        return None
+    return {
+        "n": len(v), "gem": statistics.mean(v), "mediaan": statistics.median(v),
+        "min": min(v), "max": max(v),
+        "top": sum(1 for x in v if x >= TOPGRENS),
+        "nul": sum(1 for x in v if x == 0),
+    }
+
+
+def rapporteer(reeks, namen, top=10):
+    """De reeks per ronde op het scherm, met de laatste ronde uitgeschreven."""
+    if not reeks:
+        print("Nog geen twee opnamen op verschillende momenten, dus nog geen "
+              "punten per ronde te berekenen. Dat lukt vanaf de volgende run.")
+        return
+
+    print("WERKELIJK BEHAALDE PUNTEN PER RONDE (uit het verschil tussen twee opnamen)")
+    print(f"  {'ronde':>6}{'spelers':>9}{'gemiddeld':>11}{'mediaan':>9}"
+          f"{'laagste':>9}{'hoogste':>9}{'>=' + str(int(TOPGRENS)):>6}{'nul':>6}")
+    samenvattingen = []
+    for ronde, punten in reeks:
+        s = beschrijf(punten)
+        if not s:
+            continue
+        samenvattingen.append((ronde, s))
+        print(f"  {ronde:>6}{s['n']:>9}{s['gem']:>11.2f}{s['mediaan']:>9.1f}"
+              f"{s['min']:>9.1f}{s['max']:>9.1f}{s['top']:>6}{s['nul']:>6}")
+
+    # Een interval kan meer dan één ronde beslaan: een gemiste week, of
+    # inhaalwedstrijden ertussen. Dat is geen fout in de data maar het maakt
+    # het label onnauwkeurig, en dat hoort zichtbaar te zijn in plaats van
+    # stilletjes in een gemiddelde te verdwijnen.
+    # Hij kijkt naar twee kanten, want ze horen bij elkaar: een opname die te
+    # vroeg is genomen laat het ene interval leeglopen in het andere. Dat zie
+    # je in de reeks hierboven terug als een lage rij naast een hoge, en de
+    # twee zijn samen één ronde te veel en één te weinig.
+    if len(samenvattingen) >= 3:
+        aandelen = [s["top"] / s["n"] for _, s in samenvattingen]
+        midden = statistics.median(aandelen)
+        if midden > 0:
+            meldingen = []
+            for (ronde, _), a in zip(samenvattingen, aandelen):
+                if a > 2 * midden:
+                    meldingen.append((ronde, a, "beslaat dit interval waarschijnlijk "
+                                                "meer dan één ronde"))
+                elif a < midden / 2:
+                    meldingen.append((ronde, a, "is de opname erna waarschijnlijk te "
+                                                "vroeg genomen, zodat punten uit deze "
+                                                "ronde in het volgende interval staan"))
+            for ronde, a, waarom in meldingen:
+                print(f"\n  LET OP ronde {ronde}: {a * 100:.1f}% van de spelers haalde "
+                      f"{int(TOPGRENS)}+ punten, tegen {midden * 100:.1f}% normaal -- "
+                      f"{waarom}.")
+
+    ronde, punten = reeks[-1]
+    hoogste = sorted(punten.items(), key=lambda t: -t[1])[:top]
+    print(f"\nHOOGSTE SCORES IN RONDE {ronde}")
+    for speler_id, p in hoogste:
+        naam, club = namen.get(speler_id, (speler_id, ""))
+        print(f"  {naam:26s}{club:18s}{p:>7.1f}")
+
+    laagste = [t for t in sorted(punten.items(), key=lambda t: t[1]) if t[1] < 0][:top]
+    if laagste:
+        print(f"\nNEGATIEF IN RONDE {ronde} (kaarten)")
+        for speler_id, p in laagste:
+            naam, club = namen.get(speler_id, (speler_id, ""))
+            print(f"  {naam:26s}{club:18s}{p:>7.1f}")
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--ronde", type=int, required=True)
-    p.add_argument("--clubs", default="clubs.csv")
-    p.add_argument("--spelers", default="spelers.csv")
+    p.add_argument("--ronde", type=int, required=True,
+                   help="de ronde die nog gespeeld moet worden (label van de opname)")
     p.add_argument("--prijzen", default="prijzen.csv")
-    p.add_argument("--programma", default="programma.csv")
-    p.add_argument("--venster", type=int, default=6)
-    p.add_argument("--min-minuten", type=int, default=60)
-    p.add_argument("--top", type=int, default=10, help="aantal afwijkingen per kant")
+    p.add_argument("--top", type=int, default=10, help="aantal spelers per lijst")
     p.add_argument("--geen-historie", action="store_true",
-                   help="geen momentopname wegschrijven in punten_historie.csv")
+                   help="niets wegschrijven, alleen rapporteren wat er al staat")
     a = p.parse_args()
 
-    m = laad_model()
-    prijsrijen = m.lees(a.prijzen)
-
-    if not prijsrijen or "verwacht" not in prijsrijen[0]:
-        sys.exit(
-            f"{a.prijzen} heeft geen kolom 'verwacht'. Draai eerst de nieuwe "
-            f"scrape_prijzen.py -- die leest de punten-kolommen van pouletips mee.")
-
-    # --- momentopname van de werkelijke punten -------------------------------
     if not a.geen_historie:
-        n = leg_vast(prijsrijen, a.ronde)
-        rondes = rondes_in_historie()
-        print(f"{HISTORIE}: {n} nieuwe regels weggeschreven; opnamen voor ronde(n) {rondes}")
-        if len(rondes) < 2:
-            print("  (nog te weinig opnamen om punten PER RONDE te berekenen -- "
-                  "dat kan zodra er twee opnamen op verschillende momenten staan)")
+        pad = Path(a.prijzen)
+        if not pad.exists():
+            sys.exit(f"{a.prijzen} bestaat niet -- draai eerst scrape_prijzen.py.")
+        with pad.open(encoding="utf-8") as f:
+            prijsrijen = list(csv.DictReader(f))
+        met_punten = [r for r in prijsrijen if r.get("behaald") not in (None, "")]
+        if not met_punten:
+            # Geen harde fout: het model werkt zonder deze kolom, en de
+            # wekelijkse stap mag hier niet op omvallen. Maar het moet wel
+            # opvallen, want dan stopt de enige grondwaarheid die we hebben.
+            print(f"LET OP: geen enkele regel in {a.prijzen} heeft een waarde in "
+                  f"'behaald'. Er is deze week dus niets vastgelegd. Controleer of "
+                  f"de kolom nog op de bronpagina staat (python scrape_prijzen.py "
+                  f"--bron).")
         else:
-            print(f"  vanaf nu is per ronde te berekenen wat een speler echt scoorde, "
-                  f"door twee opnamen af te trekken")
+            n = leg_vast(met_punten, a.ronde)
+            print(f"{HISTORIE}: {n} nieuwe regels weggeschreven "
+                  f"({len(met_punten)} spelers met punten in {a.prijzen})")
         print()
 
-    # --- de pool van het model -----------------------------------------------
-    clubrijen = m.lees(a.clubs)
-    spelerrijen = m.lees(a.spelers)
-    aanval, verdediging, thuisvoordeel, _ = m.schat_clubratings(clubrijen)
-    programma, inhaal = m.lees_programma(a.programma)
-    pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-                       programma, inhaal, laatste_ronde=a.ronde - 1,
-                       venster=a.venster, min_minuten=a.min_minuten,
-                       fbref=m.lees_spelerstats(m.stats_pad("spelerstats.csv")))
-
-    tip = {r["speler_id"] or m.norm(r["speler"]): r["verwacht"]
-           for r in prijsrijen if r.get("verwacht") not in (None, "")}
-
-    paren = []
-    for x in pool:
-        v = tip.get(x["speler_id"])
-        if v in (None, ""):
-            continue
-        paren.append((x, float(v)))
-
-    if len(paren) < 3:
-        sys.exit(f"te weinig spelers met een cijfer van pouletips ({len(paren)}) "
-                 f"om iets zinnigs te vergelijken.")
-
-    ons = [x["E"] for x, _ in paren]
-    hun = [v for _, v in paren]
-    rho = spearman(ons, hun)
-
-    print(f"VERGELIJKING met pouletips (ronde {a.ronde})")
-    print(f"  {len(paren)} spelers in beide bronnen, van {len(pool)} in de pool")
-    print(f"  Spearman-rangcorrelatie: {rho:.3f}")
-    print(f"    1,0 = exact dezelfde volgorde; 0,0 = geen verband.")
-    if rho > 0.6:
-        print(f"    Beide modellen zetten grotendeels dezelfde spelers bovenaan.")
-    elif rho > 0.3:
-        print(f"    Enige overeenstemming, maar de modellen verschillen wezenlijk.")
-    else:
-        print(f"    Weinig verband -- de moeite waard om uit te zoeken waarom.")
-
-    # Afwijkingen op RANG, niet op waarde: de eenheden verschillen.
-    r_ons, r_hun = rangen(ons), rangen(hun)
-    n = len(paren)
-    verschil = []
-    for i, (x, v) in enumerate(paren):
-        # rang 1 = laagste; omrekenen naar "plaats van boven" leest prettiger
-        plaats_ons, plaats_hun = n - r_ons[i] + 1, n - r_hun[i] + 1
-        verschil.append((plaats_hun - plaats_ons, x, plaats_ons, plaats_hun, v))
-
-    # Lage plaats = hoog gewaardeerd (plaats 1 is de beste). Het verschil is
-    # hun plaats min de onze, dus sterk NEGATIEF = zij zetten hem veel hoger.
-    verschil.sort(key=lambda t: t[0])
-    kop = f"  {'speler':26s}{'club':17s}{'onze plaats':>12s}{'hun plaats':>12s}{'onze E':>9s}"
-
-    print(f"\nPOULETIPS ZET VEEL HOGER DAN WIJ (zien zij iets dat het model mist?)")
-    print(kop)
-    for _, x, po, ph, v in verschil[:a.top]:
-        print(f"  {x['speler']:26s}{x['club']:17s}{po:>12.0f}{ph:>12.0f}{x['E']:>9.2f}")
-
-    print(f"\nWIJ ZETTEN VEEL HOGER DAN POULETIPS (onze voorsprong, of onze fout)")
-    print(kop)
-    for _, x, po, ph, v in verschil[-a.top:][::-1]:
-        print(f"  {x['speler']:26s}{x['club']:17s}{po:>12.0f}{ph:>12.0f}{x['E']:>9.2f}")
-
-    print(f"\nLees dit niet als 'zij hebben gelijk'. Het is een tweede mening met "
-          f"eigen fouten;\nde rijen hierboven zijn de plekken waar het de moeite "
-          f"waard is om zelf te kijken.")
+    opnamen, namen = lees_opnamen()
+    if not opnamen:
+        sys.exit(f"{HISTORIE} is leeg of bestaat niet.")
+    print(f"Opnamen aanwezig voor ronde(n) {sorted(opnamen)}\n")
+    rapporteer(per_ronde(opnamen), namen, a.top)
 
 
 if __name__ == "__main__":
