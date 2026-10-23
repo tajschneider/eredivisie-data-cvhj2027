@@ -464,6 +464,96 @@ def test_terugkeerdatum():
     return ok
 
 
+# ------------------------------------- seizoensstand als terugval voor stats
+def test_stats_uit_seizoen():
+    """spelers_seizoen.csv als terugval voor een ontbrekende spelerstats.csv.
+
+    Zonder dat bestand droegen assists en kaarten EXACT NUL bij aan elke
+    verwachting, terwijl een assist 5/4/3/2 punten waard is en een gele kaart
+    -3. De seizoensmomentopname heeft die getallen gewoon -- maar geen xG, en
+    daar zat de valkuil: met xg_per90 op 0 en een gematchte speler trok de
+    doelpuntenbreuk IEDERE verwachting naar nul (som over de pool 648 -> 580,
+    de topspelers het hardst). Daarom hangt het gewicht van die term nu aan de
+    vraag of er werkelijk een xG-waarde is.
+    """
+    import csv, tempfile
+    from pathlib import Path
+    import cvhj_model as m
+
+    ok = True
+    map_ = Path(tempfile.mkdtemp())
+    pad = map_ / "spelers_seizoen.csv"
+    kolommen = ["opgehaald", "speler_id", "speler", "club", "positie", "duels",
+                "basisplaatsen", "minuten", "goals", "assists", "overtredingen",
+                "reddingen", "nul_achter", "cijfer", "geel", "rood", "status_tekst"]
+
+    def rij(opgehaald, sid, minuten, goals=0, assists=0, geel=0, rood=0):
+        return {**{k: "" for k in kolommen}, "opgehaald": opgehaald,
+                "speler_id": sid, "speler": sid.replace("-", " ").title(),
+                "club": "Ajax", "positie": "Midfielder", "minuten": str(minuten),
+                "goals": str(goals), "assists": str(assists),
+                "geel": str(geel), "rood": str(rood)}
+
+    # Twee momentopnamen naast elkaar: alleen de nieuwste mag meedoen, anders
+    # telt een speler dubbel en verdubbelt zijn seizoenstotaal.
+    rijen = [rij("2026-10-19", "speler-een", 450, goals=2, assists=1),
+             rij("2026-10-23", "speler-een", 810, goals=4, assists=3, geel=2),
+             rij("2026-10-23", "speler-nul", 0, goals=0, assists=0)]
+    with open(pad, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=kolommen)
+        w.writeheader(); w.writerows(rijen)
+
+    stats = m.stats_uit_seizoen(pad)
+    sleutel = f"{m.norm('Speler Een')}|{m.norm('Ajax')}"
+    e = (stats or {}).get(sleutel, {})
+    gevallen = [
+        (stats is not None and len(stats) == 1, f"alleen de nieuwste stand, "
+         f"en niemand zonder minuten: {len(stats or {})} speler(s)"),
+        (abs(e.get("minuten_90s", 0) - 9.0) < 1e-9, f"minuten_90s = 810/90 = "
+         f"{e.get('minuten_90s')}"),
+        (abs(e.get("assists_per90", 0) - 3/9) < 1e-9, f"assists_per90 = 3/9 = "
+         f"{e.get('assists_per90')}"),
+        (e.get("gele_kaarten") == 2.0, f"gele kaarten als TOTAAL, niet per 90: "
+         f"{e.get('gele_kaarten')}"),
+        (e.get("xg_per90") == 0.0 and e.get("xag_per90") == 0.0,
+         "xg en xag blijven leeg -- de bron heeft ze niet"),
+    ]
+    for goed, tekst in gevallen:
+        print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")
+        ok = ok and goed
+
+    goed = m.stats_uit_seizoen(map_ / "bestaat-niet.csv") is None
+    print(f"  {'OK  ' if goed else 'FOUT'} ontbrekend bestand -> None")
+    ok = ok and goed
+
+    # De kern: een bron ZONDER xG mag de doelpuntenschatting niet aanraken.
+    prijs = [{"team": "Ajax", "speler": "Speler Een", "positie": "Midfielder",
+              "prijs": "2.0", "speler_id": "speler-een"}]
+    spelerrijen = [{"ronde": str(ro), "speler": "Speler Een", "speler_id": "speler-een",
+                    "club": "Ajax", "minuten": "90", "goals": "1", "basis": "1",
+                    "status": "basis"} for ro in range(4, 10)]
+    aanval, verdediging = {"Ajax": 0.1, "PSV": 0.1}, {"Ajax": 0.0, "PSV": 0.0}
+
+    def e_van(fb):
+        p = m.bouw_pool(prijs, spelerrijen, aanval, verdediging, 0.1,
+                        [("Ajax", "PSV")], {}, laatste_ronde=9, fbref=fb, meld=False)
+        return p[0]["E"] if p else None
+
+    zonder = e_van(None)
+    met_seizoen = e_van(stats)
+    # xg kunstmatig gevuld: dan MOET de doelpuntenterm wel meebewegen, anders
+    # is de schakelaar te grof en doet echte xG ook niets meer.
+    met_xg = e_van({sleutel: {**stats[sleutel], "xg_per90": 0.9}})
+    goed = met_seizoen > zonder
+    print(f"  {'OK  ' if goed else 'FOUT'} assists tellen mee: E {zonder:.3f} -> "
+          f"{met_seizoen:.3f} (hoger verwacht)")
+    ok = ok and goed
+    goed = abs(met_xg - met_seizoen) > 1e-6
+    print(f"  {'OK  ' if goed else 'FOUT'} met echte xG beweegt de doelpuntenterm "
+          f"wel: E {met_seizoen:.3f} -> {met_xg:.3f}")
+    return ok and goed
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -481,8 +571,11 @@ def main():
     print("\nterugkeerdatum per ronde\n")
     ok6 = test_terugkeerdatum()
 
+    print("\nseizoensstand als terugval voor assists en kaarten\n")
+    ok7 = test_stats_uit_seizoen()
+
     print()
-    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6:
+    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7:
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser en het\n"
               "    kolomformaat van spelers.csv gedragen zich zoals verwacht.")
     else:

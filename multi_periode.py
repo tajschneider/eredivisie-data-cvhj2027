@@ -480,6 +480,9 @@ def main():
                         "prijzen.csv over")
     p.add_argument("--afwezigen-max-dagen", type=int, default=4,
                    help="waarschuw als afwezigen.csv ouder is dan dit")
+    p.add_argument("--seizoen", default="spelers_seizoen.csv",
+                   help="seizoensmomentopname; terugval voor assists en kaarten als "
+                        "spelerstats.csv ontbreekt (bevat geen verwachte goals)")
     p.add_argument("--opstellingen", default="opstellingen.csv",
                    help="vermoedelijke opstellingen; wordt gebruikt om te MELDEN wie "
                         "zijn basisplaats lijkt te zijn verloren, niet om te rekenen")
@@ -559,9 +562,20 @@ def main():
 
     pad_xg = m.stats_pad(a.xg)
     fbref = m.lees_spelerstats(pad_xg)
+    stats_soort = "spelerstats"
     if fbref is None:
-        print(f"LET OP: {pad_xg} niet gevonden - het model "
-              f"draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
+        # Zelfde terugval als in cvhj_model.py: de seizoensmomentopname levert
+        # assists en kaarten, geen verwachte goals. Zie m.stats_uit_seizoen().
+        fbref = m.stats_uit_seizoen(a.seizoen)
+        if fbref is not None:
+            stats_soort = "seizoen"
+            print(f"LET OP: {pad_xg} niet gevonden - assists en kaarten komen uit "
+                  f"{a.seizoen} ({len(fbref)} spelers). Verwachte goals zitten daar "
+                  f"niet in, dus de doelpuntenschatting blijft op het eigen venster.")
+        else:
+            stats_soort = "geen"
+            print(f"LET OP: {pad_xg} niet gevonden en {a.seizoen} ook niet bruikbaar - "
+                  f"het model draait zonder assists en kaarten.")
     else:
         print(f"spelerstats geladen: {len(fbref)} spelers uit {pad_xg}")
 
@@ -815,7 +829,8 @@ def main():
                                          for n_e, c_e, b_e, d_e in eigen_buiten_elf],
             "afwezig_in_selectie": [{"speler": n_a, "reden": r_a, "terug": t_a}
                                     for n_a, r_a, t_a in eigen_afwezig],
-            "stats_bron": m.stats_herkomst(pad_xg),
+            "stats_bron": {**m.stats_herkomst(pad_xg), "soort": stats_soort,
+                           "spelers": len(fbref) if fbref else 0},
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
             "transfers_beschikbaar": transfers_beschikbaar,
