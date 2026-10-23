@@ -64,6 +64,7 @@ from __future__ import annotations
 import argparse
 import collections
 import csv
+import datetime
 import itertools
 import math
 import time
@@ -366,8 +367,27 @@ def rol_kenmerken(rijen, decay):
 
 
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
-              programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None):
+              programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None,
+              afwezig=None):
     """Verwachte CVHJ-punten per speler voor de komende ronde.
+
+    `afwezig` is het resultaat van lees_afwezigen(), of None. Het is een
+    AANVULLING op de blessurevlag in prijzen.csv, geen vervanging: de twee
+    bronnen zijn gemeten en overlappen maar gedeeltelijk (19 okt. 2026: 7
+    spelers staan op de opstellingspagina als afwezig zonder vlag in
+    prijzen.csv, en 1 speler heeft een vlag in prijzen.csv zonder op een
+    opstellingspagina te staan). Wie in EEN van de twee staat, valt uit de
+    pool. afwezig=None laat uitsluitend de oude prijzen.csv-vlag over, dus
+    identiek gedrag aan de versie hiervoor.
+
+    Let op de asymmetrie van de twee fouten. Een afwezige speler die in de
+    pool blijft, kan GEKOCHT worden -- dat kost een transfer en een ronde.
+    Een aanwezige speler die onterecht wordt uitgesloten, kan niet gekocht
+    worden -- dat kost alleen de kans op winst. Daarom is de uitsluiting
+    ruim (elke bron volstaat) en wordt elke uitsluiting met naam en reden
+    geprint: dat is het enige punt waarop jij een verkeerde uitsluiting kunt
+    zien. Een verouderd afwezigen.csv sluit herstelde spelers uit, dus
+    main() waarschuwt bij een oude `opgehaald`-datum.
 
     `fbref` is het resultaat van lees_spelerstats(), of None. Achterwaartse
     compatibiliteit is hier bewust getoetst, niet aangenomen:
@@ -423,6 +443,7 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
 
     pool = []
     via_naam = 0
+    uitgesloten = []
     for r in prijsrijen:
         club, positie = norm_club(r["team"]), r["positie"]
         if club not in aanval or positie not in GOALWAARDE:
@@ -440,6 +461,31 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             # betekent dat de zoeker hem kan KOPEN; dat wil je nooit.
             continue
         if not v or v["min"] < min_minuten:   # uitgestelde duels drukken de teller
+            continue
+        # Afwezig volgens de opstellingspagina (blessure of schorsing). Eerst
+        # op slug, dan op naam+club -- dezelfde twee ingangen als de join
+        # hierboven, om dezelfde reden: de slug is stabiel waar hij bestaat,
+        # en 1 van de 50 rijen had er op 19 okt. geen die in spelers.csv
+        # voorkwam. De naam uit prijzen.csv kan een statusteken bevatten
+        # ("Artem Stepanov !"); norm() haalt dat eraf, dus de sleutel klopt.
+        #
+        # Deze controle staat BEWUST hier, achter de speeltijddrempel en de
+        # blessurevlag, en niet bovenaan de lus. Bovenaan onderschepte hij op
+        # 22 okt. 2026 47 van de 50 afwezigen, terwijl er maar 2 van die 47
+        # werkelijk uit de pool verdwenen: de andere 45 vielen toch al af op
+        # te weinig minuten of op de vlag uit prijzen.csv. Dan meldt hij 47
+        # uitsluitingen die 45 keer niets doen -- en een melding die vooral
+        # ruis is, lees je na twee weken niet meer. Hier noemt hij precies de
+        # spelers die anders KOOPBAAR waren geweest, en dat is ook de enige
+        # groep waar een onterechte uitsluiting je iets kost.
+        bron_afw = None
+        if afwezig:
+            sid_prijs = r.get("speler_id")
+            bron_afw = ((afwezig.get(sid_prijs) if sid_prijs else None)
+                        or afwezig.get(f"{norm(r['speler'])}|{norm(club)}"))
+        if bron_afw:
+            uitgesloten.append((r["speler"], club, bron_afw["reden"],
+                                bron_afw.get("verwacht_terug", "")))
             continue
         rol = rol_kenmerken(v["rijen"], ROL_DECAY)
         n90 = rol["n90"]           # recency-gewogen i.p.v. het vlakke seizoenstotaal
@@ -516,6 +562,12 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
     if via_naam:
         print(f"  {via_naam} speler(s) gekoppeld op naam+club omdat de slug uit "
               f"prijzen.csv niet in spelers.csv voorkomt")
+    if uitgesloten:
+        print(f"  {len(uitgesloten)} speler(s) met voldoende speeltijd uitgesloten op "
+              f"afwezigen.csv (waren anders koopbaar):")
+        for naam, club_u, reden, terug in sorted(uitgesloten):
+            staart = f", terug {terug}" if terug else ""
+            print(f"    {naam:26s}{club_u:17s}{reden}{staart}")
     return pool
 
 
@@ -582,12 +634,31 @@ def lees(pad):
         return list(csv.DictReader(f))
 
 
-def lees_programma(pad):
+def lees_programma(pad, ronde=None):
     """programma.csv -> (PROGRAMMA, INHAAL).
 
     PROGRAMMA is [(thuis, uit)] voor de komende ronde; INHAAL is
     {club: (tegenstander, is_thuis)} voor uitgestelde duels in dezelfde periode.
     Zonder bestand valt het model terug op de blokken onderin dit script.
+
+    `ronde` filtert de reguliere wedstrijden op de kolom `ronde`. Dat moet,
+    sinds scrape_eredivisie.py meerdere ronden vooruit schrijft: op 22 okt.
+    2026 stonden er 54 wedstrijden in (ronde 10 t/m 15) en laadde deze functie
+    ze alle 54 in één lijst. bouw_pool()'s lam() neemt dan de EERSTE wedstrijd
+    die hij voor een club vindt, dus het ging alleen goed omdat het bestand op
+    ronde gesorteerd staat -- een eigenschap van de scraper, niet van dit
+    formaat. De melding "54 wedstrijden, verwacht 9" stond daarbij elke run aan
+    en was dus geen melding meer.
+
+    multi_periode.py heeft hier zijn eigen lees_programma_per_ronde() voor; dit
+    pad is de terugval in wekelijks.yml en liep nog op de oude aanname.
+
+    `ronde=None` leest het bestand ongefilterd, zoals voorheen, en een bestand
+    zonder kolom `ronde` blijft ook met een opgegeven ronde werken (dan valt er
+    niets te filteren). Inhaalduels worden NIET op ronde gefilterd: `soort`
+    legt al vast of een uitgesteld duel voor of na de deadline van deze ronde
+    valt, en in welke ronde zo'n rij staat valt hier niet te controleren -- het
+    bestand bevat er op dit moment geen enkele.
     """
     if not Path(pad).exists():
         return None, None
@@ -596,6 +667,8 @@ def lees_programma(pad):
         thuis, uit = norm_club(r["thuis"]), norm_club(r["uit"])
         soort = r.get("soort", "regulier")
         if soort == "regulier":
+            if ronde is not None and r.get("ronde") and str(r["ronde"]) != str(ronde):
+                continue
             programma.append((thuis, uit))
         elif soort == "inhaal":
             inhaal[thuis] = (uit, True)
@@ -605,6 +678,50 @@ def lees_programma(pad):
         # betrokken spelers een dubbele wedstrijd toedichten die ze deze ronde
         # niet spelen.
     return programma, inhaal
+
+
+def lees_afwezigen(pad):
+    """afwezigen.csv -> ({sleutel: {...}}, opgehaald) of (None, None).
+
+    De sleutels zijn speler_id EN norm(speler)|norm(club), zodat bouw_pool()
+    op beide kan opzoeken. `opgehaald` is de nieuwste ophaaldatum in het
+    bestand; die bepaalt of de lijst nog bruikbaar is.
+
+    Waarom dit bestand bestaat naast de blessurevlag in prijzen.csv: het komt
+    van de opstellingspagina per club, met een reden (blessure of schorsing)
+    en soms een terugkeerdatum. Schorsingen staan niet als blessure in
+    prijzen.csv. De kolom `verwacht_terug` was op 19 okt. 2026 in 0 van de 50
+    rijen gevuld, dus er hangt hier bewust GEEN logica aan: hij wordt alleen
+    doorgegeven en geprint. Een leeg bestand (alleen een kopregel) levert een
+    lege dict op en geen None -- dat is "niemand afwezig", een geldig antwoord,
+    en dat is iets anders dan "niet gescrapet".
+    """
+    if not Path(pad).exists():
+        return None, None
+    afwezig, opgehaald = {}, None
+    rijen = lees(pad)
+    # Een kolomnaam die wegvalt, is in dit project twee keer eerder de oorzaak
+    # geweest van uren zoeken. Hier zegt hij wat er mist in plaats van een
+    # KeyError op de eerste rij -- en belangrijker: hij stopt, want stil
+    # doorgaan met een onleesbare afwezigenlijst betekent dat er niemand wordt
+    # uitgesloten terwijl het bestand er wel staat.
+    if rijen:
+        mist = {"speler", "club", "reden"} - set(rijen[0])
+        if mist:
+            raise SystemExit(f"{pad}: kolom(men) {sorted(mist)} ontbreken "
+                             f"(gevonden: {sorted(rijen[0])}). Draai scrape_eredivisie.py "
+                             f"opnieuw, of verwijder het bestand om zonder te rekenen.")
+    for r in rijen:
+        club = norm_club(r.get("club", ""))
+        post = {"speler": r["speler"], "club": club, "reden": r.get("reden", ""),
+                "verwacht_terug": r.get("verwacht_terug", "")}
+        if r.get("speler_id"):
+            afwezig[r["speler_id"]] = post
+        afwezig[f"{norm(r['speler'])}|{norm(club)}"] = post
+        d = r.get("opgehaald") or ""
+        if d and (opgehaald is None or d > opgehaald):
+            opgehaald = d
+    return afwezig, opgehaald
 
 
 def lees_perioden(pad):
@@ -767,6 +884,13 @@ def main():
                    help="programma van de komende ronde (scrape_programma.py)")
     p.add_argument("--selectie", default="selectie.csv",
                    help="huidige vijftien; valt terug op het blok onderin")
+    p.add_argument("--afwezigen", default="afwezigen.csv",
+                   help="geblesseerden en geschorsten van de opstellingspagina's "
+                        "(scrape_eredivisie.py); ontbreekt het, dan blijft alleen "
+                        "de blessurevlag uit prijzen.csv over")
+    p.add_argument("--afwezigen-max-dagen", type=int, default=4,
+                   help="waarschuw als afwezigen.csv ouder is dan dit; een oude "
+                        "lijst sluit herstelde spelers uit")
     # --xg en --fbref blijven als alias werken: het bestand heette eerder zo.
     # Het BESTANDSFORMAAT is nooit veranderd, alleen de naam -- stats_pad()
     # vindt een oude xg.csv of fbref.csv vanzelf nog.
@@ -782,7 +906,7 @@ def main():
     # alleen in het log zichtbaar -- en de mail zag er daarna volstrekt
     # normaal uit. Zie notify.blokkerende_waarschuwingen().
     bron_programma, bron_selectie = "bestand", "bestand"
-    programma, inhaal = lees_programma(a.programma)
+    programma, inhaal = lees_programma(a.programma, ronde=a.ronde)
     if programma is None:
         programma, inhaal = PROGRAMMA, INHAAL
         bron_programma = "hardgecodeerd"
@@ -794,8 +918,16 @@ def main():
         bron_selectie = "hardgecodeerd"
         print(f"LET OP: {a.selectie} niet gevonden - de hardgecodeerde "
               f"SELECTIE onderin wordt gebruikt.")
+    # Nul wedstrijden is geen waarschuwing maar een stop: elke lambda wordt dan
+    # 0, elke E wordt 0, en de zoeker levert een opgewekt advies op basis van
+    # niets. multi_periode.py stopt hier al om dezelfde reden.
+    if not programma and not inhaal:
+        sys.exit(f"Geen wedstrijden voor ronde {a.ronde} in {a.programma}. Zonder "
+                 f"wedstrijden is elke verwachting 0 en zegt het advies niets. "
+                 f"Draai eerst de scraper, of controleer de kolom `ronde`.")
     if len(programma) != 9:
-        print(f"LET OP: {len(programma)} wedstrijden in het programma, verwacht 9.")
+        print(f"LET OP: {len(programma)} wedstrijden voor ronde {a.ronde} in het "
+              f"programma, verwacht 9.")
 
     perioden = lees_perioden(a.perioden)
     periode, is_start, tot_volgende = periodestand(a.ronde, perioden)
@@ -829,9 +961,28 @@ def main():
         print(f"LET OP: {pad_xg} niet gevonden - het model "
               f"draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
 
+    afwezig, afw_opgehaald = lees_afwezigen(a.afwezigen)
+    bron_afwezigen = "bestand"
+    if afwezig is None:
+        bron_afwezigen = "ontbreekt"
+        print(f"LET OP: {a.afwezigen} niet gevonden - alleen de blessurevlag uit "
+              f"prijzen.csv sluit nog spelers uit. Schorsingen worden dan niet "
+              f"gezien. Draai scrape_eredivisie.py.")
+    elif afw_opgehaald:
+        try:
+            oud = (datetime.date.today() - datetime.date.fromisoformat(afw_opgehaald)).days
+        except ValueError:
+            oud = None
+        if oud is not None and oud > a.afwezigen_max_dagen:
+            bron_afwezigen = "verouderd"
+            print(f"LET OP: {a.afwezigen} is van {afw_opgehaald} ({oud} dagen oud). "
+                  f"Spelers die sindsdien hersteld zijn, worden nu onterecht "
+                  f"uitgesloten.")
+
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
-                     venster=a.venster, min_minuten=a.min_minuten, fbref=fbref)
+                     venster=a.venster, min_minuten=a.min_minuten, fbref=fbref,
+                     afwezig=afwezig)
     print(f"{len(pool)} spelers met voldoende speeltijd in de pool")
     controleer_markt(prijsrijen, pool)
     if fbref is not None:
@@ -842,17 +993,24 @@ def main():
 
     geblesseerd = {norm(r["speler"]): r.get("blessure", "")
                    for r in prijsrijen if r.get("blessure")}
-    selectie, ontbreekt, bijna_match = [], [], []
+    selectie, ontbreekt, bijna_match, eigen_afwezig = [], [], [], []
     for naam, (club, pos, prijs) in selectie_in.items():
         x, was_bijna = koppel_speler(naam, club, pool)
         if x:
             selectie.append(x)
             if was_bijna:   # vermoedelijk dezelfde speler, vervuilde naam in prijzen.csv
                 bijna_match.append((naam, x["speler"]))
-        else:  # te weinig speeltijd of niet in de pool: dood slot, E = 0
+        else:  # niet in de pool: dood slot, E = 0
             selectie.append({"speler": naam, "club": club, "pos": pos, "prijs": prijs,
                              "E": 0.0, "min": 0, "goals": 0, "basis": 0, "duels": 0})
-            ontbreekt.append(naam)
+            # Twee heel verschillende redenen om buiten de pool te vallen, en
+            # ze onder een kop zetten geeft een misleidende melding: een
+            # geschorste spits heeft juist WEL recente speeltijd. Apart dus.
+            bron_afw = afwezig.get(f"{norm(naam)}|{norm(club)}") if afwezig else None
+            if bron_afw:
+                eigen_afwezig.append((naam, bron_afw["reden"], bron_afw["verwacht_terug"]))
+            else:
+                ontbreekt.append(naam)
     if bijna_match:
         print("LET OP MOGELIJKE NAAM-BUG IN prijzen.csv (automatisch gerepareerd, "
               "maar controleer de brondata):")
@@ -860,11 +1018,16 @@ def main():
             print(f"    '{naam}' (jouw selectie) <-> '{gevonden}' (marktdata, zelfde club)")
     if ontbreekt:
         print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
+    if eigen_afwezig:
+        print("\nAFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):")
+        for naam, reden, terug in eigen_afwezig:
+            staart = f", terug {terug}" if terug else ""
+            print(f"    {naam} ({reden}{staart})")
     eigen_bless = [(n, geblesseerd[norm(n)]) for n in selectie_in if norm(n) in geblesseerd]
     if eigen_bless:
-        print("\nGEBLESSEERD IN JE SELECTIE:")
+        print("\nGEBLESSEERD IN JE SELECTIE (vlag in prijzen.csv):")
         for naam, duur in eigen_bless:
-            print(f"    {naam} ({duur})")
+            print(f"    {naam} ({duur or 'geen duur gemeld'})")
 
     basis, bank, totaal = opstelling(selectie)
     toon_selectie(basis, bank, totaal, sum(s["prijs"] for s in selectie),
@@ -932,6 +1095,8 @@ def main():
             "model": "cvhj_model (eenronde-terugval)",
             "bron_programma": bron_programma,
             "bron_selectie": bron_selectie,
+            "bron_afwezigen": {"status": bron_afwezigen, "opgehaald": afw_opgehaald,
+                               "aantal": len({v["speler"] for v in afwezig.values()}) if afwezig else 0},
             "stats_bron": stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
@@ -946,6 +1111,8 @@ def main():
                 "bank": [{"speler": x["speler"], "club": x["club"], "pos": x["pos"],
                           "E": round(x["E"], 3)} for x in bank]},
             "zonder_speeltijd": ontbreekt,
+            "afwezig_in_selectie": [{"speler": n, "reden": rd, "terug": t}
+                                    for n, rd, t in eigen_afwezig],
             "bijna_match": [{"selectie": naam, "marktdata": gevonden} for naam, gevonden in bijna_match],
             "geblesseerd_in_selectie": [{"speler": n, "duur": d} for n, d in eigen_bless],
             "programma": [{"thuis": h, "uit": u} for h, u in programma],

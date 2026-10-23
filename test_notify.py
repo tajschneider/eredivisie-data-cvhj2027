@@ -149,6 +149,38 @@ def test_zonder_advies():
     return goed
 
 
+def test_afwezigen_bron():
+    """Een mislukte of verouderde afwezigenscrape moet bovenaan de mail staan.
+
+    En even belangrijk: een besluit.json van VOOR die toevoeging mag er niet
+    van piepen. Dat veld bestond toen niet, en "ik weet het niet" is geen
+    mislukte scrape -- zie test_normaal_geen_valse_alarmen().
+    """
+    gevallen = [
+        ({"status": "bestand", "opgehaald": "2026-10-22", "aantal": 50}, False, "normale scrape"),
+        ({"status": "ontbreekt", "opgehaald": None, "aantal": 0}, True, "scrape mislukt"),
+        ({"status": "verouderd", "opgehaald": "2026-10-01", "aantal": 50}, True, "lijst verouderd"),
+    ]
+    ok = True
+    for veld, verwacht_vlag, wat in gevallen:
+        w = notify.blokkerende_waarschuwingen(met(bron_afwezigen=veld))
+        heeft = any("AFWEZIGEN" in x for x in w)
+        goed = heeft == verwacht_vlag
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat:18s} -> "
+              f"{'waarschuwing' if heeft else 'geen waarschuwing'}")
+        ok = ok and goed
+    # Het oude schema: veld afwezig. GOED bevat bron_afwezigen niet.
+    w = notify.blokkerende_waarschuwingen(GOED)
+    goed = not any("AFWEZIGEN" in x for x in w)
+    print(f"  {'OK  ' if goed else 'FOUT'} besluit zonder veld bron_afwezigen -> geen vals alarm")
+    ok = ok and goed
+    # De waarschuwing moet ook werkelijk in de mailtekst terechtkomen.
+    tekst = notify.bouw_tekst(met(bron_afwezigen={"status": "ontbreekt", "aantal": 0}))
+    goed = "AFWEZIGEN NIET GESCRAPET" in tekst
+    print(f"  {'OK  ' if goed else 'FOUT'} de waarschuwing haalt de mailtekst")
+    return ok and goed
+
+
 def main():
     print("geen vals alarm bij normale invoer\n")
     ok1 = test_normaal_geen_valse_alarmen()
@@ -162,8 +194,11 @@ def main():
     ok5 = test_blessures_in_de_mail()
     ok6 = test_zonder_advies()
 
+    print("\nherkomst van de afwezigenlijst\n")
+    ok7 = test_afwezigen_bron()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7]):
         print("OK: alles wat het model weet over onbetrouwbare invoer, bereikt de mail.")
     else:
         sys.exit("MISLUKT: zie hierboven -- een waarschuwing die jou niet bereikt, "
