@@ -387,6 +387,83 @@ def test_spelers_formaat():
     return ok and goed
 
 
+# --------------------------------------------- terugkeerdatum per ronde
+def test_terugkeerdatum():
+    """Een afwezige met een terugkeerdatum binnen de horizon doet vanaf die
+    ronde weer mee -- en een datum die al verstreken is, telt niet.
+
+    De bron levert deze datums sinds 23-10-2026, bij 18 van de 59 afwezigen.
+    Ze zijn GROF: blessuredatums staan op de eerste van de maand, en zes
+    schorsingen bij vier clubs delen twee datums twee dagen na elkaar. Een te
+    late datum houdt iemand onnodig buiten de pool (dezelfde kant op als de
+    oude blinde uitsluiting), een te vroege laat iemand toe die niet mag
+    spelen. Daarom staan hier beide grenzen vast.
+    """
+    import datetime
+    import cvhj_model as m
+
+    morgen = (datetime.date.today() + datetime.timedelta(days=7)).isoformat()
+    gisteren = (datetime.date.today() - datetime.timedelta(days=7)).isoformat()
+
+    ok = True
+    clubrijen = [{"ronde": "10", "datum": "2026-10-23"},
+                 {"ronde": "10", "datum": "2026-10-25"},
+                 {"ronde": "11", "datum": "2026-10-31"},
+                 {"ronde": "12", "datum": ""},
+                 {"ronde": "x", "datum": "2026-11-06"}]
+    datums = m.ronde_datums(clubrijen)
+    goed = datums == {"10": "2026-10-23", "11": "2026-10-31"} or datums == {10: "2026-10-23", 11: "2026-10-31"}
+    print(f"  {'OK  ' if goed else 'FOUT'} ronde_datums: de EERSTE speeldag per "
+          f"ronde, lege en onleesbare rijen overgeslagen -> {datums}")
+    ok = ok and goed
+
+    prijs = [{"team": "Ajax", "speler": "Speler Een", "positie": "Midfielder",
+              "prijs": "2.0", "speler_id": "speler-een"}]
+    spelerrijen = [{"ronde": str(ro), "speler": "Speler Een", "speler_id": "speler-een",
+                    "club": "Ajax", "minuten": "90", "goals": "0", "basis": "1",
+                    "status": "basis"} for ro in range(4, 10)]
+    aanval, verdediging = {"Ajax": 0.1, "PSV": 0.1}, {"Ajax": 0.0, "PSV": 0.0}
+
+    def pool(afwezig, peildatum):
+        return m.bouw_pool(prijs, spelerrijen, aanval, verdediging, 0.1,
+                           [("Ajax", "PSV")], {}, laatste_ronde=9,
+                           afwezig=afwezig, peildatum=peildatum, meld=False)
+
+    afw = {"speler-een": {"speler": "Speler Een", "club": "Ajax",
+                          "reden": "schorsing", "verwacht_terug": morgen}}
+    gevallen = [
+        (None, None, 1, "geen afwezigenlijst: in de pool"),
+        (afw, None, 0, "afwezig, geen peildatum: uitgesloten (oud gedrag)"),
+        (afw, "2026-10-23", 0, "peildatum VOOR de terugkeerdatum: uitgesloten"),
+        (afw, morgen, 1, "peildatum OP de terugkeerdatum: weer in de pool"),
+        (afw, "2099-01-01", 1, "peildatum na de terugkeerdatum: in de pool"),
+    ]
+    for a, peil, verwacht, waarom in gevallen:
+        n = len(pool(a, peil))
+        goed = n == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} {waarom} -> {n} speler(s)")
+        ok = ok and goed
+
+    # Een verstreken datum telt niet: staat hij nog op de lijst, dan is de
+    # lijst betrouwbaarder dan de datum.
+    verstreken = {"speler-een": {**afw["speler-een"], "verwacht_terug": gisteren}}
+    n = len(pool(verstreken, "2099-01-01"))
+    goed = n == 0
+    print(f"  {'OK  ' if goed else 'FOUT'} terugkeerdatum in het verleden -> "
+          f"{n} speler(s), blijft uitgesloten")
+    ok = ok and goed
+
+    # Een onleesbare datum mag niemand vrijgeven.
+    for rommel in ("binnenkort", "02-11-2026", "2026-11", ""):
+        stuk = {"speler-een": {**afw["speler-een"], "verwacht_terug": rommel}}
+        n = len(pool(stuk, "2099-01-01"))
+        goed = n == 0
+        print(f"  {'OK  ' if goed else 'FOUT'} onleesbare datum {rommel!r} -> "
+              f"{n} speler(s), blijft uitgesloten")
+        ok = ok and goed
+    return ok
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -401,8 +478,11 @@ def main():
     print("\nkolomformaat van spelers.csv\n")
     ok5 = test_spelers_formaat()
 
+    print("\nterugkeerdatum per ronde\n")
+    ok6 = test_terugkeerdatum()
+
     print()
-    if ok1 and ok2 and ok3 and ok4 and ok5:
+    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6:
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser en het\n"
               "    kolomformaat van spelers.csv gedragen zich zoals verwacht.")
     else:

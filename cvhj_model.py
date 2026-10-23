@@ -413,6 +413,33 @@ def rol_kenmerken(rijen, decay):
     }
 
 
+def ronde_datums(clubrijen):
+    """{ronde: eerste speeldag als ISO-tekst} uit clubs.csv.
+
+    Uit clubs.csv en niet uit programma.csv, om een domme maar echte reden: de
+    datum staat daar al in ISO ("2026-10-23"), terwijl programma.csv de lange
+    Nederlandse vorm heeft ("vrijdag 23 oktober 2026, 20:00"). Een maandnamen-
+    tabel onderhouden om aan een datum te komen die elders kant-en-klaar staat,
+    is werk dat alleen fout kan gaan.
+
+    De EERSTE speeldag van de ronde, niet de laatste. Een speler die halverwege
+    het weekend terugkeert, heeft de wedstrijd van vrijdag al gemist, en de
+    verwachting hoort niet te doen alsof hij meespeelt.
+    """
+    uit = {}
+    for r in clubrijen:
+        d = (r.get("datum") or "").strip()[:10]
+        if len(d) != 10 or d[4] != "-":
+            continue
+        try:
+            ronde = int(r["ronde"])
+        except (TypeError, ValueError):
+            continue
+        if ronde not in uit or d < uit[ronde]:
+            uit[ronde] = d
+    return uit
+
+
 def rijstatus(r):
     """De rol van een speler in één rij van spelers.csv: basis/invaller/bank/afwezig.
 
@@ -463,7 +490,7 @@ def rijstatus(r):
 
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
               programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None,
-              afwezig=None, meld=True):
+              afwezig=None, meld=True, peildatum=None):
     """Verwachte CVHJ-punten per speler voor de komende ronde.
 
     `afwezig` is het resultaat van lees_afwezigen(), of None. Het is een
@@ -474,6 +501,33 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
     opstellingspagina te staan). Wie in EEN van de twee staat, valt uit de
     pool. afwezig=None laat uitsluitend de oude prijzen.csv-vlag over, dus
     identiek gedrag aan de versie hiervoor.
+
+    `peildatum` is de eerste speeldag van de ronde waarvoor deze pool wordt
+    gebouwd, als ISO-tekst, of None. Met een peildatum valt een afwezige speler
+    WEER IN de pool zodra zijn `verwacht_terug` op of voor die dag ligt. Zonder
+    peildatum geldt de uitsluiting onverkort -- het gedrag van hiervoor.
+
+    Dat die kolom bruikbaar is, is gemeten en niet aangenomen. Op 23-10-2026 was
+    hij bij 18 van de 59 afwezigen gevuld, in ISO-vorm, en worden er daarvan 3
+    binnen een horizon van drie ronden weer speelbaar. De overige 41 hebben geen
+    datum en blijven dus precies zo uitgesloten als voorheen.
+
+    LEES DIE DATUMS NIET NAUWKEURIGER DAN ZE ZIJN. De blessuredatums staan op
+    de eerste van de maand (2027-01-01, 2027-03-01, 2027-05-01, 2027-07-01):
+    dat zijn emmers, geen afspraken. En zes schorsingen bij vier verschillende
+    clubs delen twee datums twee dagen na elkaar (2027-01-28 en 2027-01-29),
+    wat niet is hoe echte schorsingen verlopen -- dat lijkt een standaardwaarde
+    van de bron. Een te LATE datum houdt een speler onnodig uit de pool, en dat
+    is dezelfde kant op als de oude blinde uitsluiting: het kost een kans, geen
+    punten. Een te VROEGE datum laat iemand toe die nog niet mag spelen, en dat
+    is de gevaarlijke kant. Daarom twee grenzen:
+
+    - een datum die al VERSTREKEN is, telt niet. Staat een speler nog op de
+      afwezigenlijst terwijl zijn terugkeerdatum voorbij is, dan is die datum
+      stil blijven staan of is hij alsnog langer uit; de lijst is dan de
+      betrouwbaarste van de twee en hij blijft uitgesloten.
+    - vrijgeven gebeurt alleen per ronde, op de EERSTE speeldag van die ronde.
+      Een speler die zaterdag terugkeert, heeft de vrijdagwedstrijd gemist.
 
     Let op de asymmetrie van de twee fouten. Een afwezige speler die in de
     pool blijft, kan GEKOCHT worden -- dat kost een transfer en een ronde.
@@ -551,7 +605,7 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
 
     pool = []
     via_naam = 0
-    uitgesloten = []
+    uitgesloten, hervat = [], []
     for r in prijsrijen:
         club, positie = norm_club(r["team"]), r["positie"]
         if club not in aanval or positie not in GOALWAARDE:
@@ -591,6 +645,14 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             sid_prijs = r.get("speler_id")
             bron_afw = ((afwezig.get(sid_prijs) if sid_prijs else None)
                         or afwezig.get(f"{norm(r['speler'])}|{norm(club)}"))
+        if bron_afw and peildatum:
+            # Terug op of voor de eerste speeldag van deze ronde? Dan hoort hij
+            # erin. Een verstreken datum telt niet -- zie de docstring.
+            terug = (bron_afw.get("verwacht_terug") or "").strip()[:10]
+            vandaag = datetime.date.today().isoformat()
+            if len(terug) == 10 and terug >= vandaag and terug <= peildatum:
+                hervat.append((r["speler"], club, bron_afw["reden"], terug))
+                bron_afw = None
         if bron_afw:
             uitgesloten.append((r["speler"], club, bron_afw["reden"],
                                 bron_afw.get("verwacht_terug", "")))
@@ -676,6 +738,11 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
     # keer woordelijk af -- een keer per ronde in de horizon. Een melding die
     # je drie keer achter elkaar ziet, lees je de derde keer niet meer, en
     # daarmee ook de eerste niet.
+    if hervat and meld:
+        print(f"  {len(hervat)} afwezige(n) weer in de pool: terug op of voor "
+              f"{peildatum}, de eerste speeldag van deze ronde:")
+        for naam, club_h, reden, terug in sorted(hervat):
+            print(f"    {naam:26s}{club_h:17s}{reden}, terug {terug}")
     if uitgesloten and meld:
         print(f"  {len(uitgesloten)} speler(s) met voldoende speeltijd uitgesloten op "
               f"afwezigen.csv (waren anders koopbaar):")
@@ -1197,10 +1264,19 @@ def main():
                   f"Spelers die sindsdien hersteld zijn, worden nu onterecht "
                   f"uitgesloten.")
 
+    # De eerste speeldag van DEZE ronde, zodat een afwezige met een
+    # terugkeerdatum op of voor die dag weer meedoet. Ontbreekt de datum, dan
+    # blijft de uitsluiting blind -- precies zoals voorheen.
+    datums = ronde_datums(clubrijen)
+    peildatum = datums.get(a.ronde)
+    if afwezig and not peildatum:
+        print(f"LET OP: geen datum voor ronde {a.ronde} in {a.clubs} - afwezigen "
+              f"worden uitgesloten zonder naar hun terugkeerdatum te kijken.")
+
     pool = bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      programma, inhaal, laatste_ronde=a.ronde - 1,
                      venster=a.venster, min_minuten=a.min_minuten, fbref=fbref,
-                     afwezig=afwezig)
+                     afwezig=afwezig, peildatum=peildatum)
     print(f"{len(pool)} spelers met voldoende speeltijd in de pool")
     controleer_markt(prijsrijen, pool)
     if fbref is not None:
