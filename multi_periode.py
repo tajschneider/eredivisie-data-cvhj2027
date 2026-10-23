@@ -97,7 +97,7 @@ def lees_programma_per_ronde(pad, m):
 
 def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                        per_ronde, start_ronde, horizon, venster, min_minuten, fbref=None,
-                       afwezig=None):
+                       afwezig=None, ronde_datum=None):
     """Eén bouw_pool-aanroep per ronde in de horizon; retourneert
     {speler_id: [E_0, E_1, ...]} en de metadata-pool (van ronde 0, voor
     prijs/club/pos -- die veranderen niet binnen de horizon).
@@ -114,12 +114,18 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
     schorsing van een wedstrijd is dat te streng: die speler is over een week
     weer speelbaar en wordt hier toch de hele horizon lang weggelaten.
 
-    Dat is een bewuste keuze tussen twee fouten, en de kosten zijn ongelijk.
-    Hem meenemen kan een transfer NAAR een speler opleveren die komende ronde
-    niet speelt -- dat kost direct punten en een transfer. Hem weglaten kan een
-    betere transfer missen -- dat kost alleen de kans op winst, en je ziet hem
-    volgende week gewoon terug. Zodra de bron terugkeerdata levert, hoort dit
-    per ronde te gaan in plaats van over de hele horizon."""
+    `ronde_datum` ({ronde: eerste speeldag in ISO}, uit m.ronde_datums()) maakt
+    die uitsluiting PER RONDE in plaats van over de hele horizon: een speler
+    met een terugkeerdatum binnen de horizon doet vanaf die ronde weer mee. Dat
+    was precies de voorwaarde die hier stond -- de bron levert die datums sinds
+    23-10-2026, in ISO-vorm, bij 18 van de 59 afwezigen.
+
+    Zonder `ronde_datum` blijft de uitsluiting over de hele horizon gelden, en
+    dat is ook wat er gebeurt voor de 41 afwezigen zonder datum. De afweging
+    daarachter staat nog steeds: hem meenemen kan een transfer NAAR een speler
+    opleveren die komende ronde niet speelt -- dat kost direct punten en een
+    transfer. Hem weglaten kan een betere transfer missen -- dat kost alleen de
+    kans op winst."""
     reeksen = collections.defaultdict(list)
     metadata = None
     rondes_gebruikt = []
@@ -144,7 +150,8 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
         pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                            programma, inhaal_k, laatste_ronde=start_ronde - 1,
                            venster=venster, min_minuten=min_minuten, fbref=fbref,
-                           afwezig=afwezig, meld=(k == 0))
+                           afwezig=afwezig, meld=(k == 0),
+                           peildatum=(ronde_datum or {}).get(ronde))
         if metadata is None:
             metadata = {p["speler_id"]: p for p in pool}
         for p in pool:
@@ -594,6 +601,15 @@ def main():
         print(f"opstellingen geladen: vermoedelijke elf van {len(elf)} clubs voor "
               f"ronde {a.ronde} (opgehaald {opst_opgehaald or 'onbekend'})")
 
+    # Eerste speeldag per ronde, zodat een afwezige met een terugkeerdatum
+    # binnen de horizon vanaf die ronde weer meedoet in plaats van alle drie
+    # de ronden uitgesloten te blijven.
+    ronde_datum = m.ronde_datums(clubrijen)
+    if afwezig and not ronde_datum.get(a.ronde):
+        print(f"LET OP: geen datum voor ronde {a.ronde} in {a.clubs} - afwezigen "
+              f"worden over de hele horizon uitgesloten zonder naar hun "
+              f"terugkeerdatum te kijken.")
+
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
         sys.exit(f"Geen programma voor ronde {a.ronde} in {a.programma}. "
@@ -602,7 +618,7 @@ def main():
     reeksen, metadata, rondes_gebruikt = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         per_ronde, a.ronde, a.horizon, a.venster, a.min_minuten, fbref=fbref,
-        afwezig=afwezig)
+        afwezig=afwezig, ronde_datum=ronde_datum)
     if len(rondes_gebruikt) < a.horizon:
         print(f"LET OP: programma dekt maar {len(rondes_gebruikt)}/{a.horizon} gevraagde ronden "
               f"({rondes_gebruikt}) -- horizon wordt daartoe beperkt. "
@@ -768,7 +784,7 @@ def main():
         pool_0 = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                              programma_0, inhaal_0, laatste_ronde=a.ronde - 1,
                              venster=a.venster, min_minuten=a.min_minuten, fbref=fbref,
-                             afwezig=afwezig)   # zelfde uitsluiting, anders vergelijk je twee pools
+                             afwezig=afwezig, peildatum=ronde_datum.get(a.ronde))   # zelfde uitsluiting, anders vergelijk je twee pools
         selectie_0 = []
         for naam, (club, pos, prijs) in selectie_in.items():
             x, _ = m.koppel_speler(naam, club, pool_0)   # zelfde koppeling als hierboven
