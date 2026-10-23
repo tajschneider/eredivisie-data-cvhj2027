@@ -275,6 +275,118 @@ def test_vermoedelijke_elf():
             ok = ok and goed
     return ok
 
+# ------------------------------------------------- kolomformaat van spelers.csv
+def test_spelers_formaat():
+    """De afspraak tussen de scraper en het model over spelers.csv.
+
+    Hier zat een stille tijdbom. De scraper schrijft sinds de ombouw naar
+    momentopnamen een nieuw kolomformaat ZONDER de kolom `status`, en
+    bouw_pool() las die zonder terugval. Dat is nooit opgevallen omdat het
+    nieuwe formaat tot 23-10-2026 niet is weggeschreven: de eerste
+    momentopname levert geen ronderijen op, en tussen de eerste en de tweede
+    was geen ronde gespeeld. De eerste echte productierun zou een KeyError
+    hebben gegeven op het model EN op zijn terugval.
+
+    Twee dingen worden hier vastgelegd: dat het model beide formaten leest, en
+    dat een formaatwissel de bestaande rijen niet weggooit.
+    """
+    import csv, tempfile
+    from pathlib import Path
+    import cvhj_model as m
+    import scrape_eredivisie as s
+
+    ok = True
+
+    # 1. rijstatus(): de kolom wint als hij er is, anders afleiden.
+    gevallen = [
+        ({"status": "bank", "basis": 1, "minuten": 90}, "bank", "kolom wint van afleiding"),
+        ({"basis": "1", "minuten": "90"}, "basis", "begon -> basis"),
+        ({"basis": "0", "minuten": "23"}, "invaller", "speelde zonder te beginnen"),
+        ({"basis": "0", "minuten": "0"}, "bank", "geen minuten -> bank, niet afwezig"),
+        ({"basis": "", "minuten": ""}, "bank", "lege velden"),
+        ({"basis": "2", "minuten": "170", "duels": "2"}, "basis", "vensterrij met twee basisplaatsen"),
+    ]
+    for rij, verwacht, waarom in gevallen:
+        uit = m.rijstatus(rij)
+        goed = uit == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} rijstatus: {waarom} -> {uit!r}")
+        ok = ok and goed
+
+    # "afwezig" mag NOOIT worden afgeleid: bouw_pool() slaat zo'n rij helemaal
+    # over, en een rij met nul minuten hoort juist mee te tellen als een duel
+    # waarin hij niet speelde.
+    nooit = [m.rijstatus({"basis": b, "minuten": mi})
+             for b in ("0", "", "1") for mi in ("0", "", "90")]
+    goed = "afwezig" not in nooit
+    print(f"  {'OK  ' if goed else 'FOUT'} rijstatus leidt nooit 'afwezig' af")
+    ok = ok and goed
+
+    # 2. bouw_pool() op BEIDE formaten, met dezelfde data.
+    def rij(ronde, sid, oud):
+        kern = {"ronde": str(ronde), "speler": sid.replace("-", " ").title(),
+                "speler_id": sid, "club": "Ajax", "minuten": "90", "goals": "0",
+                "basis": "1"}
+        if oud:
+            return {**kern, "status": "basis", "tegenstander": "PSV",
+                    "thuis_uit": "thuis", "clean_sheet": "0", "ploegpunten": "3",
+                    "datum": "", "afwezig_reden": "", "opgehaald": "2026-10-23"}
+        return {**{c: "" for c in s.SPELER_COLS}, **kern,
+                "duels": "1", "venster": str(ronde)}
+
+    prijs = [{"team": "Ajax", "speler": "Speler Een", "positie": "Midfielder",
+              "prijs": "2.0", "speler_id": "speler-een"}]
+    # norm_club() verlaagt geen kapitalen, dus de sleutels zijn de clubnamen
+    # zoals ze in de CSV's staan -- niet de kleine-letterversie.
+    aanval = {"Ajax": 0.1, "PSV": 0.1}
+    verdediging = {"Ajax": 0.0, "PSV": 0.0}
+    uitkomst = {}
+    for naam, oud in (("oud", True), ("nieuw", False)):
+        rijen = [rij(ro, "speler-een", oud) for ro in range(4, 10)]
+        try:
+            pool = m.bouw_pool(prijs, rijen, aanval, verdediging, 0.1,
+                               [("Ajax", "PSV")], {}, laatste_ronde=9)
+            uitkomst[naam] = round(pool[0]["E"], 6) if pool else None
+        except Exception as e:                                   # noqa: BLE001
+            uitkomst[naam] = f"{type(e).__name__}: {e}"
+    goed = (uitkomst["oud"] is not None and uitkomst["oud"] == uitkomst["nieuw"])
+    print(f"  {'OK  ' if goed else 'FOUT'} bouw_pool: oud {uitkomst['oud']} == "
+          f"nieuw {uitkomst['nieuw']}")
+    ok = ok and goed
+
+    # 3. schrijf(): een formaatwissel mag de bestaande rijen niet weggooien.
+    map_ = Path(tempfile.mkdtemp())
+    pad = map_ / "spelers.csv"
+    oude_rijen = [rij(ro, f"speler-{i}", True) for ro in (7, 8, 9) for i in range(4)]
+    with open(pad, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(oude_rijen[0]))
+        w.writeheader(); w.writerows(oude_rijen)
+    s.schrijf(pad, s.SPELER_COLS, [rij(10, "speler-0", False)],
+              ["ronde", "speler_id", "club"])
+    na = s.lees(pad)
+    goed = (len(na) == len(oude_rijen) + 1
+            and sorted({int(r["ronde"]) for r in na}) == [7, 8, 9, 10]
+            and set(na[0]) == set(s.SPELER_COLS))
+    print(f"  {'OK  ' if goed else 'FOUT'} schrijf: {len(oude_rijen)} oude rijen "
+          f"-> {len(na)} totaal, ronden {sorted({int(r['ronde']) for r in na})}")
+    ok = ok and goed
+
+    # En het model moet dat geconverteerde bestand nog kunnen lezen. De
+    # prijslijst moet wel over DEZE spelers gaan: speler-0 heeft rijen in de
+    # ronden 7 t/m 9 (oud formaat) en een in ronde 10 (nieuw), dus hij komt uit
+    # het geconverteerde bestand met beide soorten rijen tegelijk.
+    prijs_na = [{"team": "Ajax", "speler": "Speler 0", "positie": "Midfielder",
+                 "prijs": "2.0", "speler_id": "speler-0"}]
+    try:
+        pool = m.bouw_pool(prijs_na, na, aanval, verdediging, 0.1,
+                           [("Ajax", "PSV")], {}, laatste_ronde=9)
+        goed = len(pool) == 1 and pool[0]["duels"] == 3
+    except Exception as e:                                       # noqa: BLE001
+        goed, pool = False, f"{type(e).__name__}: {e}"
+    print(f"  {'OK  ' if goed else 'FOUT'} model leest het geconverteerde bestand "
+          f"({len(pool) if goed else pool})")
+    return ok and goed
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -286,10 +398,13 @@ def main():
     print("\nvermoedelijke basiself (opstellingspagina)\n")
     ok4 = test_vermoedelijke_elf()
 
+    print("\nkolomformaat van spelers.csv\n")
+    ok5 = test_spelers_formaat()
+
     print()
-    if ok1 and ok2 and ok3 and ok4:
-        print("OK: splits_status(), vind_bijna_match() en de opstellingsparser\n"
-              "    gedragen zich zoals verwacht.")
+    if ok1 and ok2 and ok3 and ok4 and ok5:
+        print("OK: splits_status(), vind_bijna_match(), de opstellingsparser en het\n"
+              "    kolomformaat van spelers.csv gedragen zich zoals verwacht.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
 
