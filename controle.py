@@ -199,24 +199,53 @@ def controleer_bron(r):
               f"meer dan 2,5 goals {w.get('over_25')}%",
               "'Meer dan 2,5 goals' niet gevonden")
 
-    # --- opstellingspagina van een club
-    slug, club = next(iter(s.CLUB_SLUG.items()))
-    try:
-        elf, afw = s.parse_opstelling(s.get(s.OPSTELLING_URL.format(slug=slug)),
-                                     club)
-    except Exception as e:
-        r.fout("opstelling", "pagina niet te lezen", f"{type(e).__name__}: {e}")
-        elf, afw = [], []
-    r.meet("bron_basis", len(elf))
-    r.meet("bron_afwezig", len(afw))
-    r.eis(len(elf) == BASIS_PER_CLUB, "opstelling",
-          f"{club}: {len(elf)} spelers in de vermoedelijke basiself",
-          f"verwacht {BASIS_PER_CLUB}. De scraper levert niets af als het aantal "
-          f"afwijkt, dus opstellingen.csv blijft leeg voor deze club. Draai de "
-          f"debug op {s.OPSTELLING_URL.format(slug=slug)} en kijk naar KOPPEN "
-          f"(staat 'Verwachte opstelling' er nog?) en SPELERSLINKS (hoeveel "
-          f"uniek?). Bij 0: de kop is weg of de namen zijn geen links meer. Bij "
-          f"meer dan 11: het blok loopt door in een ander deel van de pagina")
+    # --- opstellingspagina's van ALLE clubs
+    #
+    # Eerst stond hier een steekproef van een: next(iter(CLUB_SLUG)). Dat is
+    # te weinig voor deze pagina. De opstellingsparser is drie keer omgevallen
+    # op een gewijzigde bron, en een steekproef van een club zegt niets over de
+    # andere zeventien -- een club die als enige afwijkt, levert geen
+    # opstelling op en dat zie je dan nergens. Achttien pagina's kosten met de
+    # verplichte pauze van 1,2 seconde ongeveer 22 seconden extra, drie keer
+    # per week. Dat is de prijs van weten.
+    #
+    # Gerapporteerd wordt een SAMENVATTING en niet achttien keer hetzelfde
+    # blok. Vier eisen over achttien clubs, met per eis alleen de clubs die
+    # afwijken erbij. Negentig regels waarvan er tweeentachtig "ok" zeggen is
+    # geen rapport maar ruis, en dan lees je ook de acht die ertoe doen niet.
+    per_club, stuk = {}, {}
+    for slug, club in s.CLUB_SLUG.items():
+        try:
+            per_club[club] = s.parse_opstelling(
+                s.get(s.OPSTELLING_URL.format(slug=slug)), club)
+        except Exception as e:
+            stuk[club] = f"{type(e).__name__}: {e}"
+            per_club[club] = ([], [])
+    r.meet("bron_clubs_bekeken", len(per_club))
+
+    # Een onbereikbare pagina is iets anders dan een pagina die anders is
+    # geworden: de eerste kan aan het netwerk liggen, de tweede is werk.
+    r.eis(not stuk, "opstelling",
+          f"alle {len(per_club)} opstellingspagina's opgehaald",
+          f"niet te lezen: {', '.join(f'{c} ({f})' for c, f in list(stuk.items())[:4])}")
+
+    goed_elf = [c for c, (elf, _) in per_club.items() if len(elf) == BASIS_PER_CLUB]
+    mis_elf = {c: len(elf) for c, (elf, _) in per_club.items()
+               if len(elf) != BASIS_PER_CLUB}
+    r.meet("bron_basis_clubs", len(goed_elf))
+    eerste = next(iter(s.CLUB_SLUG))
+    r.eis(not mis_elf, "opstelling",
+          f"{len(goed_elf)} van {len(per_club)} clubs met {BASIS_PER_CLUB} spelers "
+          f"in de vermoedelijke basiself",
+          f"afwijkend: {', '.join(f'{c} ({n})' for c, n in sorted(mis_elf.items()))}. "
+          f"De scraper levert voor zo'n club NIETS af, dus opstellingen.csv blijft "
+          f"er leeg voor. Draai de debug op "
+          f"{s.OPSTELLING_URL.format(slug=eerste)} (of op de club hierboven) en "
+          f"kijk naar KOPPEN (staat 'Verwachte opstelling' er nog?) en "
+          f"SPELERSLINKS (hoeveel uniek?). Bij 0: de kop is weg of de namen zijn "
+          f"geen links meer. Bij meer dan {BASIS_PER_CLUB}: het blok loopt door "
+          f"in een ander deel van de pagina")
+
     # De basiskans is een METING en geen eis. Op 23-10-2026 heeft de bron de
     # percentages per speler van de opstellingspagina gehaald: de elf staat er
     # nog, als veldopstelling met avatars, maar zonder enig getal per speler.
@@ -231,38 +260,64 @@ def controleer_bron(r):
     # maximaal 0,92), dus alleen het LIDMAATSCHAP van de elf weegt mee, en dat
     # staat er nog. Zet de bron de percentages terug, dan ziet deze meting dat
     # en pakt de scraper ze weer op.
-    met_kans = [e for e in elf if e["kans_basis"] != ""]
-    r.meet("bron_basiskans", len(met_kans))
-    if elf and not met_kans:
-        r.ok("opstelling", f"geen basiskans per speler op de pagina (0 van {len(elf)})",
+    #
+    # Een GEDEELTELIJKE vulling blijft wel een fout, en per club: de ene helft
+    # met en de andere zonder percentage betekent dat je niet weet welke helft
+    # je ziet.
+    met_kans = {c: len([e for e in elf if e["kans_basis"] != ""])
+                for c, (elf, _) in per_club.items() if elf}
+    r.meet("bron_basiskans_clubs", sum(1 for n in met_kans.values() if n))
+    half = {c: n for c, n in met_kans.items()
+            if 0 < n < BASIS_PER_CLUB - 2}
+    if met_kans and not any(met_kans.values()):
+        r.ok("opstelling",
+             f"geen basiskans per speler, bij alle {len(met_kans)} clubs",
              "de bron publiceert het percentage niet meer; het model rekent er niet "
              "mee, alleen met wie er in de elf staat")
     else:
-        r.eis(len(met_kans) == 0 or len(met_kans) >= BASIS_PER_CLUB - 2, "opstelling",
-              f"{len(met_kans)} van {len(elf)} met een basiskans",
-              "sommige spelers hebben een percentage en andere niet -- dan is het "
-              "onduidelijk welke helft je ziet")
-    # Zowel een onder- als een bovengrens. Alleen "minstens een" eisen was te
-    # zwak: PSV kwam op 15 afwezigen omdat het blok doorliep in de FAQ, die
-    # dezelfde spelers nog eens in gewone tekst noemt. Een speler die onterecht
-    # als afwezig wordt gemerkt valt volledig uit de pool, dus dit moet opvallen.
-    r.eis(1 <= len(afw) <= 12, "opstelling",
-          f"{len(afw)} afwezigen met reden",
-          f"geen afwezigen op {s.OPSTELLING_URL.format(slug=slug)}. Een naam "
-          f"telt alleen als er een reden achter staat ({', '.join(s.REDEN_WOORDEN[:3])}"
-          f", ...). Draai de debug erop en kijk wat er na 'Niet beschikbaar' staat"
-          if not afw else
-          f"{len(afw)} is te veel voor een selectie — het afwezigenblok loopt "
-          f"waarschijnlijk door in de rest van de pagina")
-    if afw:
-        r.eis(all(a["reden"] in REDENEN - {""} for a in afw), "opstelling",
-              "elke afwezige heeft een bekende reden",
-              f"zonder of met onbekende reden: "
-              f"{[a['speler_id'] for a in afw if a['reden'] not in REDENEN - {''}][:5]}")
-        overlap = {a["speler_id"] for a in afw} & {e["speler_id"] for e in elf}
-        r.eis(not overlap, "opstelling",
-              "geen speler zowel afwezig als in de basis",
-              f"beide: {sorted(overlap)[:5]}")
+        # De kopregel moet zelf zeggen wat er mis is. "basiskans aanwezig bij
+        # 18 van 18 clubs" naast een FOUT leest als een geslaagde controle, en
+        # dan sla je het detail over waar het probleem in staat.
+        r.eis(not half, "opstelling",
+              (f"basiskans bij {len(half)} club(s) maar gedeeltelijk gevuld"
+               if half else
+               f"basiskans aanwezig bij {sum(1 for n in met_kans.values() if n)} van "
+               f"{len(met_kans)} clubs"),
+              f"gedeeltelijk gevuld: {', '.join(f'{c} ({n})' for c, n in sorted(half.items()))}"
+              f" -- dan is onduidelijk welke helft je ziet")
+
+    # Zowel een onder- als een bovengrens, en per club. Alleen "minstens een"
+    # eisen was te zwak: PSV kwam op 15 afwezigen omdat het blok doorliep in de
+    # FAQ, die dezelfde spelers nog eens in gewone tekst noemt. Een speler die
+    # onterecht als afwezig wordt gemerkt valt volledig uit de pool, dus dit
+    # moet opvallen. Een club ZONDER afwezigen is overigens niet vreemd -- een
+    # fitte selectie bestaat -- dus de ondergrens geldt over het geheel en niet
+    # per club.
+    tel_afw = {c: len(afw) for c, (_, afw) in per_club.items()}
+    teveel = {c: n for c, n in tel_afw.items() if n > 12}
+    r.meet("bron_afwezig_totaal", sum(tel_afw.values()))
+    r.eis(sum(tel_afw.values()) > 0 and not teveel, "opstelling",
+          f"{sum(tel_afw.values())} afwezigen met reden over {len(tel_afw)} clubs "
+          f"({sum(1 for n in tel_afw.values() if n)} clubs met minstens een)",
+          f"meer dan 12 bij: {', '.join(f'{c} ({n})' for c, n in sorted(teveel.items()))}"
+          f" -- het afwezigenblok loopt daar door in de rest van de pagina"
+          if teveel else
+          f"nul afwezigen over alle {len(tel_afw)} clubs. Een naam telt alleen als "
+          f"er een reden achter staat ({', '.join(s.REDEN_WOORDEN[:3])}, ...). Draai "
+          f"de debug op {s.OPSTELLING_URL.format(slug=eerste)} en kijk onder welke "
+          f"kop de blessures nu staan")
+
+    vreemd = {c: sorted({a["reden"] for a in afw} - REDENEN)
+              for c, (_, afw) in per_club.items()
+              if {a["reden"] for a in afw} - REDENEN}
+    r.eis(not vreemd, "opstelling", "elke afwezige heeft een bekende reden",
+          f"onbekende reden bij: {', '.join(f'{c} {v}' for c, v in sorted(vreemd.items())[:4])}")
+
+    dubbel = {c: sorted({a["speler_id"] for a in afw} & {e["speler_id"] for e in elf})
+              for c, (elf, afw) in per_club.items()
+              if {a["speler_id"] for a in afw} & {e["speler_id"] for e in elf}}
+    r.eis(not dubbel, "opstelling", "geen speler zowel afwezig als in de basis",
+          f"beide bij: {', '.join(f'{c} {v[:3]}' for c, v in sorted(dubbel.items())[:4])}")
 
     # --- spelersindex
     try:
