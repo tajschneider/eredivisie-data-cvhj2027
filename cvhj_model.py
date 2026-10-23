@@ -415,7 +415,7 @@ def rol_kenmerken(rijen, decay):
 
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
               programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None,
-              afwezig=None):
+              afwezig=None, meld=True):
     """Verwachte CVHJ-punten per speler voor de komende ronde.
 
     `afwezig` is het resultaat van lees_afwezigen(), of None. Het is een
@@ -606,10 +606,16 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                      "prijs": float(r["prijs"]), "E": E,
                      "min": v["min"], "goals": v["goals"], "basis": v["basis"],
                      "duels": v["duels"]})
-    if via_naam:
+    if via_naam and meld:
         print(f"  {via_naam} speler(s) gekoppeld op naam+club omdat de slug uit "
               f"prijzen.csv niet in spelers.csv voorkomt")
-    if uitgesloten:
+    # `meld` staat uit bij de tweede en latere ronde van een horizon. De
+    # uitsluiting is voor elke ronde dezelfde (de bron geeft geen
+    # terugkeerdatum), dus multi_periode.py drukte dit blok op 23 oktober drie
+    # keer woordelijk af -- een keer per ronde in de horizon. Een melding die
+    # je drie keer achter elkaar ziet, lees je de derde keer niet meer, en
+    # daarmee ook de eerste niet.
+    if uitgesloten and meld:
         print(f"  {len(uitgesloten)} speler(s) met voldoende speeltijd uitgesloten op "
               f"afwezigen.csv (waren anders koopbaar):")
         for naam, club_u, reden, terug in sorted(uitgesloten):
