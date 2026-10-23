@@ -14,7 +14,10 @@ Gebruik:
     python scrape_prijzen.py --dump ruw.html    # bewaar HTML om te debuggen
 
 Uitvoer (kolomvolgorde zoals cvhj_model.py verwacht):
-    team, speler, positie, prijs, speler_id
+    team, speler, positie, prijs, speler_id, rol, nieuw, blessure, behaald
+
+De kolommen `Verwachte punten`, `Totaal` en `Per miljoen` op de bronpagina
+worden BEWUST NIET gelezen -- zie de uitleg bij kies_tabel().
 
 `positie` is Engels (Goalkeeper/Defender/Midfielder/Forward), zoals het model eist.
 
@@ -171,10 +174,14 @@ def parse_punten(tekst):
     en main() drukt een paar ruwe-naar-verwerkte voorbeelden af zodat je in de
     log in één oogopslag ziet welke het is.
 
-    Voor het gebruik dat er nu van gemaakt wordt (rangcorrelatie in
-    vergelijk_tip.py) maakt die factor niets uit: zolang de omzetting
-    monotoon is, blijft de volgorde van spelers dezelfde.
-    """
+Voor de enige kolom die hier nog door deze functie gaat speelt dat in de
+    praktijk niet: 'behaald' is een CVHJ-seizoenstotaal en dus een klein heel
+    getal (gemeten op 23 oktober: 445 spelers, -13 tot 69, allemaal heel).
+    Een punt komt daar niet in voor. Mocht dat ooit veranderen, dan is het
+    geen schoonheidsfoutje meer: vergelijk_tip.py trekt twee opnamen van
+    elkaar af, en twee verschillend gelezen notaties leveren onzin op.
+    Daarom waarschuwt main() zodra een waarde buiten het plausibele bereik
+    valt."""
     t = (tekst or "").replace("\xa0", " ").strip()
     t = re.sub(r"[^\d,.\-]", "", t)
     if not t:
@@ -197,6 +204,32 @@ def kies_tabel(soup):
 
     Bewust niet op class of id gezocht: die veranderen bij elke redesign,
     kopteksten niet. Levert (tabel, {kolomnaam: index}).
+
+    DRIE KOLOMMEN WORDEN HIER NIET OPGEZOCHT, EN DAT IS OPZET
+    ---------------------------------------------------------
+    `Verwachte punten`, `Totaal` en `Per miljoen` zitten achter Pouletips
+    Premium. Wie geen account heeft krijgt geen afgeronde of vertraagde
+    cijfers, maar per request andere getallen. Gemeten op 23 oktober:
+
+      - uniform verdeeld over [1, 4], zonder enige piek;
+      - tussen twee scrapes veranderde 'Verwachte punten' voor ALLE 507
+        spelers, terwijl prijs, positie, club, naam, rol en nieuw voor 0 van
+        de 507 veranderden;
+      - onderling inconsistent: 62,0 + 2.683 is niet 1.954, en 'Per miljoen'
+        473 past bij geen enkele combinatie van de andere twee.
+
+    Die kolommen zijn betaalde inhoud en horen daar te blijven. Ze worden
+    niet opgezocht, niet gelezen en niet weggeschreven. Wie ze hier weer
+    toevoegt haalt een betaalmuur omlaag en voert tegelijk ruis het model in;
+    test_scrape_prijzen.py houdt dat tegen.
+
+    `Basiskans` is een ander geval: die is NIET gemaskeerd. Hij hangt samen
+    met hoe vaak een speler werkelijk begon (r = +0,61 op 19 oktober,
+    klokvormig met een piek bij 80-89), maar is samengeperst in het bereik
+    42-92 -- wie elke wedstrijd begon staat gemiddeld op 83, wie vrijwel
+    nooit begon nog op 63. Echt signaal, verkeerde schaal. Ruw als kans
+    inlezen kromp iedere verwachting met 8%, dus hij wordt hier voorlopig
+    ook niet gelezen; dat vraagt eerst een herschaling.
     """
     for tabel in soup.find_all("table"):
         koppen = [re.sub(r"\s+", " ", th.get_text(" ", strip=True)).lower()
@@ -213,19 +246,22 @@ def kies_tabel(soup):
                 idx.setdefault("positie", i)
             elif k.startswith("waarde") or k.startswith("prijs"):
                 idx.setdefault("prijs", i)
-            # Pouletips publiceert per speler ook zijn eigen cijfers. Die zijn
-            # OPTIONEEL: ontbreken ze, dan werkt alles zoals voorheen. Ze zijn
-            # om twee redenen waardevol:
-            #   behaald  -- daadwerkelijk gescoorde CVHJ-punten. De enige echte
-            #               maatstaf; backtest.py reconstrueert die nu uit
-            #               spelers.csv en mist daarbij assists/kaarten/reddingen.
-            #   verwacht -- hun eigen puntenvoorspelling. Een onafhankelijke
-            #               tweede schatting van precies wat cvhj_model.py schat,
-            #               dus bruikbaar als ijking (zie vergelijk_tip.py).
+            # Pouletips publiceert per speler ook zijn eigen cijfers, maar
+            # alleen 'behaald' wordt gelezen. Dat is OPTIONEEL: ontbreekt de
+            # kolom, dan werkt alles zoals voorheen.
+            #
+            #   behaald -- daadwerkelijk gescoorde CVHJ-punten, een
+            #              seizoenstotaal. De enige echte maatstaf die dit
+            #              project heeft: backtest.py reconstrueert punten uit
+            #              spelers.csv en mist daarbij assists, kaarten en
+            #              keepersreddingen, dus het RMSE-getal daar is een
+            #              ondergrens. vergelijk_tip.py legt deze kolom elke
+            #              week vast in punten_historie.csv en rekent hem via
+            #              het verschil tussen twee opnamen om naar punten per
+            #              ronde. Niet gemaskeerd: tussen twee scrapes op 23
+            #              oktober veranderde hij voor 1 van de 507 spelers.
             elif k.startswith("behaald"):
                 idx.setdefault("behaald", i)
-            elif k.startswith("verwacht"):
-                idx.setdefault("verwacht", i)
         if {"speler", "club", "positie", "prijs"} <= set(idx):
             return tabel, idx
     return None, None
@@ -272,14 +308,12 @@ def parse_rijen(html):
             "nieuw": status["nieuw"],
             "blessure": status["blessure"],
             "behaald": "",
-            "verwacht": "",
         }
-        for veld in ("behaald", "verwacht"):
-            if veld in idx:
-                tekst = cellen[idx[veld]].get_text(" ", strip=True)
-                rij[veld] = parse_punten(tekst)
-                if len(ruw_punten) < 5 and tekst:
-                    ruw_punten.append((veld, naam, tekst, rij[veld]))
+        if "behaald" in idx:
+            tekst = cellen[idx["behaald"]].get_text(" ", strip=True)
+            rij["behaald"] = parse_punten(tekst)
+            if len(ruw_punten) < 5 and tekst:
+                ruw_punten.append(("behaald", naam, tekst, rij["behaald"]))
         rijen.append(rij)
     return rijen, overgeslagen, ruw_punten
 
@@ -349,7 +383,7 @@ def main():
     with pad.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["team", "speler", "positie", "prijs",
                                           "speler_id", "rol", "nieuw", "blessure",
-                                          "behaald", "verwacht"])
+                                          "behaald"])
         w.writeheader()
         w.writerows(rijen)
 
@@ -409,26 +443,38 @@ def main():
     else:
         print(f"  namen:   schoon (geen statuswoord blijven plakken)")
 
-    # Pouletips' eigen cijfers. Het getalformaat op die pagina is niet
+    # De werkelijk behaalde punten. Het getalformaat op die pagina is niet
     # ondubbelzinnig ('2.268' kan 2268 of 2,268 zijn), dus in plaats van te
     # gokken tonen we ruw naast verwerkt: één blik op deze regels zegt welke
     # het is. Zie parse_punten().
-    met_punten = [r for r in rijen if r["behaald"] != "" or r["verwacht"] != ""]
-    if met_punten:
-        b = [r["behaald"] for r in met_punten if r["behaald"] != ""]
-        v = [r["verwacht"] for r in met_punten if r["verwacht"] != ""]
-        print(f"\n  punten:  {len(met_punten)} spelers met cijfers van pouletips")
-        if b:
-            print(f"    behaald   {min(b):>10.3f} tot {max(b):>10.3f}  (gemiddeld {sum(b)/len(b):.3f})")
-        if v:
-            print(f"    verwacht  {min(v):>10.3f} tot {max(v):>10.3f}  (gemiddeld {sum(v)/len(v):.3f})")
+    b = [r["behaald"] for r in rijen if r["behaald"] != ""]
+    if b:
+        print(f"\n  behaald: {len(b)} spelers met werkelijk gescoorde punten")
+        print(f"    bereik    {min(b):>10.3f} tot {max(b):>10.3f}  "
+              f"(gemiddeld {sum(b)/len(b):.3f})")
         if ruw_punten:
             print(f"    ruw -> verwerkt, controleer of dit klopt:")
             for veld, naam, tekst, waarde in ruw_punten:
                 print(f"      {veld:9s} {naam:24s} {tekst!r:>12} -> {waarde}")
+        # Een CVHJ-seizoenstotaal is een klein heel getal. Staat er iets van
+        # duizenden, dan is de notatie verkeerd gelezen, en dat is hier geen
+        # schoonheidsfout: vergelijk_tip.py trekt twee opnamen van elkaar af
+        # om punten per ronde te krijgen, en twee verschillend gelezen
+        # notaties leveren onzin op die er plausibel uitziet.
+        buiten = [x for x in b if not -100 <= x <= 500]
+        if buiten:
+            print(f"    LET OP: {len(buiten)} waarde(n) buiten het plausibele bereik "
+                  f"(-100 tot 500), bijvoorbeeld {buiten[:3]}. Een seizoenstotaal "
+                  f"hoort een klein heel getal te zijn; controleer parse_punten() "
+                  f"met --dump ruw.html voordat deze week wordt vastgelegd.")
     else:
-        print(f"\n  punten:  geen kolommen 'Behaald'/'Verwacht' op de pagina gevonden "
-              f"(niet erg -- het model werkt zonder)")
+        print(f"\n  behaald: kolom 'Behaald' niet op de pagina gevonden. Het model "
+              f"werkt zonder, maar dit is wel de enige grondwaarheid die er is -- "
+              f"vergelijk_tip.py kan deze week niets vastleggen.")
+
+    # 'Verwachte punten', 'Totaal' en 'Per miljoen' worden niet gelezen: zie
+    # kies_tabel(). Ze staan hier ook niet in het rapport, want een getal dat
+    # je laat zien ga je vroeg of laat gebruiken.
 
 
 if __name__ == "__main__":
