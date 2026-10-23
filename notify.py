@@ -279,6 +279,19 @@ def bouw_tekst(d):
     for x in d.get("geblesseerd_in_selectie", []):
         duur = f" ({x['duur']})" if x.get("duur") else ""
         aandacht.append(f"GEBLESSEERD in je ploeg: {x['speler']}{duur}")
+    for x in d.get("afwezig_in_selectie", []):
+        terug = f", terug {x['terug']}" if x.get("terug") else ""
+        aandacht.append(f"AFWEZIG in je ploeg: {x['speler']} ({x.get('reden') or 'reden onbekend'}"
+                        f"{terug}) -- hij staat op E=0, dus de zoeker wil hem eruit.")
+    # Wie zijn basisplaats lijkt te zijn verloren. Dit is het ENIGE wat de
+    # opstellingsbron doet: de verwachte punten rekenen er niet mee, omdat het
+    # percentage van die bron geen kans is (zie cvhj_model.lees_opstellingen()).
+    # Juist daarom moet het hier staan -- een signaal dat niet in een getal zit,
+    # bestaat alleen als jij het leest.
+    for x in d.get("buiten_vermoedelijke_elf", []):
+        aandacht.append(f"NIET IN DE VERMOEDELIJKE ELF: {x['speler']} ({x.get('club', '?')}) "
+                        f"begon {x.get('basis', '?')}/{x.get('duels', '?')} recent. "
+                        f"De verwachting rekent hier NIET mee.")
     # Geen statistiekenbestand is geen storing (het model draait dan zoals vóór
     # stap 5), maar je hoort te weten dat assists en kaarten ontbreken -- niet
     # alleen in het log.

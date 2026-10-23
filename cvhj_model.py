@@ -281,16 +281,63 @@ def lambdas_uit_kansen(p_winst: float, p_gelijk: float):
     return float(_GRID[lh]), float(_GRID[la])
 
 
+def lambdas_uit_rij(r):
+    """(lambda_thuis, lambda_uit, herkomst) voor een thuisrij uit clubs.csv.
+
+    De bron publiceert op de wedstrijdpagina zelf verwachte goals per ploeg.
+    Stonden die er, dan werden ze genegeerd en werd hetzelfde getal uit de
+    marktkansen teruggerekend met lambdas_uit_kansen(). Dat is een omweg langs
+    een Poisson-aanname om uit te komen bij een getal dat er al staat.
+
+    Dat de twee hetzelfde meten, is nagegaan voordat ze gemengd werden. Over
+    de 9 duels van ronde 10 waar beide bestonden (22 okt. 2026):
+
+        xg_voor  - lambda_thuis:  gemiddeld +0,058, sd 0,056, uiterste +0,14
+        xg_tegen - lambda_uit:    gemiddeld +0,057, sd 0,058, uiterste +0,16
+
+    Dezelfde schaal dus, met de bron consequent ~0,06 goal (3 a 4%) hoger.
+    Die richting is in beide kolommen gelijk, wat past bij de omweg zelf:
+    lambdas_uit_kansen() legt alleen winst- en gelijkspelkans vast en kan
+    daarom op een paar lambdas uitkomen dat die kansen reproduceert met iets
+    minder doelpunten in totaal.
+
+    De ondergrens is een crashbeveiliging en geen modelkeuze: schat_clubratings()
+    neemt log(lambda / GEM_DOELPUNTEN), en een 0 of een lege string die als 0
+    binnenkomt laat de hele run omvallen met een domeinfout. Een waarde die
+    geen lambda kan zijn, valt daarom terug op de marktkansen in plaats van de
+    run mee te nemen.
+
+    Een rij MET xG maar ZONDER marktkansen wordt door de aanroeper nog steeds
+    overgeslagen. Dat zou nu extra waarnemingen opleveren, maar het verandert
+    welke rijen in de regressie komen, en daarvan kan ik het effect vandaag
+    niet nagaan -- op 22 okt. hadden alle 18 xG-rijen ook marktkansen, dus het
+    zou een onbeproefde wijziging zijn zonder zichtbaar gevolg.
+    """
+    try:
+        xv, xt = float(r.get("xg_voor") or 0), float(r.get("xg_tegen") or 0)
+    except (TypeError, ValueError):
+        xv = xt = 0.0
+    if 0.05 < xv < 8 and 0.05 < xt < 8:
+        return xv, xt, "xg"
+    lh, la = lambdas_uit_kansen(int(r["kans_winst"]) / 100, int(r["kans_gelijk"]) / 100)
+    return lh, la, "kansen"
+
+
 def schat_clubratings(clubrijen):
     """Ridge-regressie op log-schaal, gekrompen naar de prior van vorig seizoen."""
     waarnemingen, gezien = [], set()
+    herkomst = collections.Counter()
     for r in clubrijen:
         sleutel = (r["ronde"], r["club"])
         if sleutel in gezien or r["thuis_uit"] != "thuis" or not r.get("kans_winst"):
             continue
         gezien.add(sleutel)
-        lh, la = lambdas_uit_kansen(int(r["kans_winst"]) / 100, int(r["kans_gelijk"]) / 100)
+        lh, la, bron = lambdas_uit_rij(r)
+        herkomst[bron] += 1
         waarnemingen.append((norm_club(r["club"]), norm_club(r["tegenstander"]), lh, la))
+    if herkomst["xg"]:
+        print(f"  verwachte goals: {herkomst['xg']} duels uit de bron zelf, "
+              f"{herkomst['kansen']} teruggerekend uit de marktkansen")
 
     clubs = sorted({c for h, a, _, _ in waarnemingen for c in (h, a)})
     ix = {c: i for i, c in enumerate(clubs)}
@@ -724,6 +771,107 @@ def lees_afwezigen(pad):
     return afwezig, opgehaald
 
 
+def lees_opstellingen(pad, ronde):
+    """opstellingen.csv -> ({club: {sleutel: basiskans 0..1}}, opgehaald), of (None, None).
+
+    De vermoedelijke opstelling per club voor `ronde`. Per club de elf namen
+    die de bron verwacht, met het percentage dat hij eraan hangt. Sleutels als
+    bij lees_afwezigen(): speler_id EN norm(speler)|norm(club).
+
+    Per CLUB, en niet als een platte spelerslijst, omdat de twee vragen die je
+    eraan stelt verschillend zijn. "Staat deze speler in de elf van zijn club?"
+    heeft alleen betekenis als die club in het bestand staat; ontbreekt de club,
+    dan is afwezigheid geen uitspraak. Die twee gevallen door elkaar halen levert
+    precies het soort stille fout op waar dit project al een paar keer op is
+    vastgelopen.
+
+    Alleen de rijen van `ronde`. Dat is geen nette-code-kwestie maar de
+    beveiliging zelf: dit bestand geldt voor EEN wedstrijd. Staat er nog de
+    opstelling van vorige week in, dan levert het filter nul rijen en gebeurt
+    er niets -- zichtbaar afwezig in plaats van stil fout.
+
+    DE PERCENTAGES WORDEN NIET ALS KANS GEBRUIKT, en dat is een meting en geen
+    voorzichtigheid. Op 22 okt. 2026 gaven 129 spelers die alle zes ronden van
+    het venster begonnen (historische basisfrequentie 1,00) gemiddeld 0,83 en
+    maximaal 0,92 -- de bron zegt nooit 100%, ook niet over een onbetwiste
+    basisspeler. Rechtstreeks als kans invullen kromp de som van de verwachte
+    punten over de pool met 8% (652 -> 601) en drukte vaste basisspelers naar
+    rotatiespelers toe. IJken kan niet met een momentopname van een ronde die
+    nog niet gespeeld is, dus wordt het percentage bewaard en niet gebruikt.
+
+    Wat WEL zonder ijking bruikbaar is, is het lidmaatschap van de elf: dat is
+    een binair gegeven waar de kalibratie van het percentage niet aan raakt.
+    Zie niet_in_vermoedelijke_elf().
+    """
+    if not Path(pad).exists():
+        return None, None
+    elf, opgehaald = {}, None
+    rijen = lees(pad)
+    if rijen:
+        mist = {"speler", "club", "kans_basis", "ronde"} - set(rijen[0])
+        if mist:
+            raise SystemExit(f"{pad}: kolom(men) {sorted(mist)} ontbreken "
+                             f"(gevonden: {sorted(rijen[0])}). Draai scrape_eredivisie.py "
+                             f"opnieuw, of verwijder het bestand om zonder te rekenen.")
+    for r in rijen:
+        if str(r.get("ronde")) != str(ronde):
+            continue
+        try:
+            p = float(r["kans_basis"]) / 100.0
+        except (TypeError, ValueError):
+            p = None
+        club = norm_club(r.get("club", ""))
+        per_club = elf.setdefault(club, {})
+        if r.get("speler_id"):
+            per_club[r["speler_id"]] = p
+        per_club[f"{norm(r['speler'])}|{norm(club)}"] = p
+        d = r.get("opgehaald") or ""
+        if d and (opgehaald is None or d > opgehaald):
+            opgehaald = d
+    return elf, opgehaald
+
+
+def niet_in_vermoedelijke_elf(spelers, elf, min_duels=3, min_basisdeel=0.5):
+    """Welke van `spelers` ontbreken in de vermoedelijke elf van hun eigen club.
+
+    Dit is de enige manier waarop de opstellingsbron hier meeweegt, en ze
+    verandert geen enkel getal: ze levert een lijst namen op om bovenaan het
+    advies te zetten. De reden staat in lees_opstellingen(): het percentage
+    van de bron is geen kans, maar wie er wel of niet in de elf staat is een
+    feit waar die kalibratie niet aan raakt.
+
+    Gemeld wordt alleen een speler die volgens de eigen data recent GEWOON
+    speelde -- anders meld je elke bankzitter en is de melding binnen twee
+    weken weg. `min_duels` en `min_basisdeel` staan daarom als argument en niet
+    als constante in de code: het zijn afkapgrenzen die je wilt kunnen zien en
+    verschuiven, niet aannames die ergens verstopt zitten. Op 22 okt. 2026
+    leverde 0,5 over minstens 3 duels 8 namen op over de hele markt.
+
+    Een speler wiens club NIET in het bestand staat, wordt overgeslagen: dan is
+    ontbreken geen uitspraak. Dat is ook waarom `elf` per club is ingedeeld.
+
+    Retourneert [(speler, club, basis, duels)], gesorteerd op basisdeel
+    aflopend. Zonder `elf` (bestand ontbreekt) een lege lijst.
+    """
+    if not elf:
+        return []
+    uit = []
+    for x in spelers:
+        club = norm_club(x.get("club", ""))
+        if club not in elf:
+            continue
+        sid = x.get("speler_id")
+        sleutel_naam = f"{norm(x['speler'])}|{norm(club)}"
+        if (sid and sid in elf[club]) or sleutel_naam in elf[club]:
+            continue
+        duels, basis = int(x.get("duels") or 0), int(x.get("basis") or 0)
+        if duels < min_duels or basis / duels < min_basisdeel:
+            continue
+        uit.append((x["speler"], club, basis, duels))
+    uit.sort(key=lambda t: (-(t[2] / t[3]), t[0]))
+    return uit
+
+
 def lees_perioden(pad):
     """perioden.csv -> [(periode, start_ronde)], oplopend.
 
@@ -891,6 +1039,9 @@ def main():
     p.add_argument("--afwezigen-max-dagen", type=int, default=4,
                    help="waarschuw als afwezigen.csv ouder is dan dit; een oude "
                         "lijst sluit herstelde spelers uit")
+    p.add_argument("--opstellingen", default="opstellingen.csv",
+                   help="vermoedelijke opstellingen; wordt gebruikt om te MELDEN wie "
+                        "zijn basisplaats lijkt te zijn verloren, niet om te rekenen")
     # --xg en --fbref blijven als alias werken: het bestand heette eerder zo.
     # Het BESTANDSFORMAAT is nooit veranderd, alleen de naam -- stats_pad()
     # vindt een oude xg.csv of fbref.csv vanzelf nog.
@@ -1029,6 +1180,26 @@ def main():
         for naam, duur in eigen_bless:
             print(f"    {naam} ({duur or 'geen duur gemeld'})")
 
+    # Vermoedelijke opstelling: alleen melden, geen getal aanraken. Zie
+    # lees_opstellingen() voor waarom het percentage niet als kans meerekent.
+    elf, opst_opgehaald = lees_opstellingen(a.opstellingen, a.ronde)
+    bron_opstellingen = "bestand"
+    if elf is None:
+        bron_opstellingen = "ontbreekt"
+        print(f"LET OP: {a.opstellingen} niet gevonden - er wordt niet gemeld wie "
+              f"zijn basisplaats lijkt te zijn verloren. Draai scrape_eredivisie.py.")
+    elif not elf:
+        bron_opstellingen = "andere_ronde"
+        print(f"LET OP: {a.opstellingen} bevat geen rijen voor ronde {a.ronde} - het "
+              f"bestand gaat over een andere ronde en wordt niet gebruikt.")
+    eigen_buiten_elf = niet_in_vermoedelijke_elf(selectie, elf)
+    if eigen_buiten_elf:
+        print(f"\nUIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE "
+              f"(de verwachting hieronder rekent hier NIET mee):")
+        for naam, club_e, b, n in eigen_buiten_elf:
+            print(f"    {naam:26s}{club_e:17s}begon {b}/{n} recent, staat nu niet in "
+                  f"de vermoedelijke elf")
+
     basis, bank, totaal = opstelling(selectie)
     toon_selectie(basis, bank, totaal, sum(s["prijs"] for s in selectie),
                   kop="OPSTELLING NU (zonder transfers)")
@@ -1052,8 +1223,16 @@ def main():
                   f"   winst {score - totaal:+.1f}")
             for x in uit:
                 print(f"    UIT  {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  E {x['E']:5.2f}")
+            # Bij een speler die je GAAT KOPEN telt zijn speelhistorie niet als
+            # drempel: dat hij nu niet in de vermoedelijke elf staat, wil je
+            # weten of hij vorige maand veel begon of niet. Vandaar de
+            # drempels op 0 hier, in plaats van de standaard uit de selectie.
+            koop_buiten = {n for n, _, _, _ in niet_in_vermoedelijke_elf(
+                inn, elf, min_duels=0, min_basisdeel=0.0)}
             for x in inn:
-                print(f"    IN   {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  E {x['E']:5.2f}")
+                vlag = "  << niet in de vermoedelijke elf" if x["speler"] in koop_buiten else ""
+                print(f"    IN   {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  "
+                      f"E {x['E']:5.2f}{vlag}")
             # `score` IS opstelling(nieuw_sel)[2] (zie beste_transfers), dus
             # basis/bank hieronder horen bij exact dat getal.
             basis_sel, bank_sel, _ = opstelling(nieuw_sel)
@@ -1097,6 +1276,10 @@ def main():
             "bron_selectie": bron_selectie,
             "bron_afwezigen": {"status": bron_afwezigen, "opgehaald": afw_opgehaald,
                                "aantal": len({v["speler"] for v in afwezig.values()}) if afwezig else 0},
+            "bron_opstellingen": {"status": bron_opstellingen, "opgehaald": opst_opgehaald,
+                                  "clubs": len(elf) if elf else 0},
+            "buiten_vermoedelijke_elf": [{"speler": n, "club": c, "basis": b, "duels": d}
+                                         for n, c, b, d in eigen_buiten_elf],
             "stats_bron": stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
