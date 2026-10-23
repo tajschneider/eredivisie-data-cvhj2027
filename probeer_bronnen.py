@@ -217,6 +217,55 @@ BRONNEN = [
         "sleutel_header": "X-Auth-Token",
         "toelichting": "Gratis laag. Heeft assists bij de topscorers, geen xG.",
     },
+
+    # --- xG per speler, toegevoegd 23-10-2026 ------------------------------
+    # Het enige dat nog ontbreekt is xG en xAG PER SPELER. Doelpunten,
+    # assists, kaarten, minuten en reddingen komen inmiddels uit
+    # spelers_seizoen.csv; zie cvhj_model.stats_uit_seizoen(). Deze drie
+    # kandidaten stonden nog niet in de lijst.
+    #
+    # Van elke kandidaat is de robots.txt op 23-10-2026 zelf nagelezen, en
+    # dat leverde bij de eerste meteen de belangrijkste grens op.
+    {
+        "naam": "fotmob-eredivisie-xg-per90",
+        "url": "https://www.fotmob.com/leagues/57/stats/season/36577/players/"
+               "expected_goals_per_90/eredivisie-players",
+        "toelichting": "HTML-ranglijst xG per 90 voor de Eredivisie 2026/27. "
+                       "LET OP, en dit is de hele reden dat deze URL er zo uitziet: "
+                       "fotmob's robots.txt staat /leagues/ toe en verbiedt /api/* "
+                       "voor iedereen behalve een handvol zoekmachines. De nette "
+                       "JSON-API is dus juist de verboden route; gebruik die niet, "
+                       "ook niet als hij werkt. Verder te verifieren: of deze pagina "
+                       "ALLE spelers geeft of een top-N -- de ranglijsten van "
+                       "pouletips kappen op 40 af, en dat kostte eerder een ronde.",
+    },
+    {
+        "naam": "playerstats-eredivisie-xg",
+        "url": "https://playerstats.football/eredivisie/stats/xg",
+        "toelichting": "xG per speler, Eredivisie. robots.txt verbiedt alleen "
+                       "/referees?, dus dit pad is toegestaan. Onbekend wie erachter "
+                       "zit en waar de data vandaan komt -- bij een 200 is de eerste "
+                       "vraag niet of het werkt maar of de cijfers kloppen. Leg ze "
+                       "naast de doelpunten uit spelers_seizoen.csv voordat je ze "
+                       "vertrouwt.",
+    },
+    {
+        "naam": "sportmonks-xg",
+        "url": "https://api.sportmonks.com/v3/football/fixtures?include=lineups.xgLineup"
+               "&filters=fixtureLeagues:88&per_page=1",
+        "sleutel_env": "SPORTMONKS_TOKEN",
+        "sleutel_param": "api_token",
+        "toelichting": "De GELICENTIEERDE route, en hier staat hij niet toevallig: de "
+                       "spelersfotos op pouletips komen van cdn.sportmonks.com, dus "
+                       "pouletips is zelf klant. xG per speler loopt via "
+                       "lineups.xgLineup. Niet gratis: de xG-uitbreiding kost EUR 15 "
+                       "per maand bij jaarbetaling (xG Basic, data na de wedstrijd), "
+                       "bovenop een basisplan waarvan de prijs niet op die pagina "
+                       "staat. Of de Eredivisie onder de xG-dekking valt, staat er "
+                       "OOK niet -- dat is de eerste vraag aan hun support, nog voor "
+                       "de prijs. Zonder SPORTMONKS_TOKEN wordt deze bron netjes "
+                       "overgeslagen, net als de twee andere sleutelbronnen.",
+    },
 ]
 
 
@@ -273,11 +322,19 @@ def probeer(bron, dump=None):
         return uitslag
 
     headers = dict(HEADERS)
-    if env:
+    url = bron["url"]
+    if env and bron.get("sleutel_header"):
         headers[bron["sleutel_header"]] = os.environ[env]
+    elif env and bron.get("sleutel_param"):
+        # Sommige API's willen de sleutel als queryparameter en niet als header
+        # (Sportmonks: ?api_token=...). Hij blijft daarmee uit het log, want
+        # vat_samen() drukt de URL niet af -- en die van de headers deed hij
+        # ook niet. Een sleutel in een Actions-log is een gelekte sleutel.
+        scheiding = "&" if "?" in url else "?"
+        url = f"{url}{scheiding}{bron['sleutel_param']}={os.environ[env]}"
 
     try:
-        r = requests.get(bron["url"], headers=headers, timeout=30)
+        r = requests.get(url, headers=headers, timeout=30)
     except requests.RequestException as e:
         uitslag["status"] = "fout"
         uitslag["opmerking"] = str(e)[:120]
