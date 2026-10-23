@@ -134,17 +134,40 @@ def test_vind_bijna_match():
 # .github/workflows/ aanraakt -- een nieuw bestand zou dus nooit draaien, en
 # een test die niet draait is geen test. Wil je ze apart, voeg dan met de hand
 # "python test_opstelling.py" toe aan tests.yml.
-_ELF = [("matej-kovar", "Matej Kovar"), ("filip-kostic", "Filip Kostic"),
-        ("armando-obispo", "Armando Obispo"), ("lutsharel-geertruida", "Lutsharel Geertruida"),
-        ("sergino-dest", "Sergino Dest"), ("kodai-sano", "Kodai Sano"),
-        ("mauro-junior", "Mauro Junior"), ("ayoni-santos", "Ayoni Santos"),
-        ("dennis-man", "Dennis Man"), ("ivan-perisic", "Ivan Perisic"),
-        ("mikkel-bro-hansen", "Mikkel Bro Hansen")]
-_AFWEZIG = [("paul-wanner", "Paul Wanner", "blessure", ""),
-            ("sam-lammers", "Sam Lammers", "blessure", ""),
-            ("jerdy-schouten", "Jerdy Schouten", "blessure", "01-05-2027"),
-            ("adamo-nagalo", "Adamo Nagalo", "schorsing", "28-01-2027"),
-            ("alassane-plea", "Alassane Plea", "schorsing", "28-01-2027")]
+# Twee clubs, want een reparatie die alleen op PSV werkt is geen reparatie.
+# Ajax voegt drie dingen toe die PSV niet heeft: het is de UITPLOEG (de
+# kansenregel staat omgekeerd), er zijn VIER afwezigen in plaats van vijf (dus
+# 15 spelerslinks op de pagina in plaats van 16, wat de terugval anders laat
+# rekenen), en er staat een naam met een tussenvoegsel in ("Marc ter Stegen").
+# Beide koppenreeksen komen letterlijk uit de --debug van 23-10-2026 en zijn
+# identiek van opbouw, en dat is wat de kopanker-aanpak hier draagt.
+_PSV = {
+    "club": "PSV", "tegen": "Feyenoord", "thuis": True,
+    "elf": [("matej-kovar", "Matej Kovar"), ("filip-kostic", "Filip Kostic"),
+            ("armando-obispo", "Armando Obispo"), ("lutsharel-geertruida", "Lutsharel Geertruida"),
+            ("sergino-dest", "Sergino Dest"), ("kodai-sano", "Kodai Sano"),
+            ("mauro-junior", "Mauro Junior"), ("ayoni-santos", "Ayoni Santos"),
+            ("dennis-man", "Dennis Man"), ("ivan-perisic", "Ivan Perisic"),
+            ("mikkel-bro-hansen", "Mikkel Bro Hansen")],
+    "afwezig": [("paul-wanner", "Paul Wanner", "blessure", ""),
+                ("sam-lammers", "Sam Lammers", "blessure", ""),
+                ("jerdy-schouten", "Jerdy Schouten", "blessure", "01-05-2027"),
+                ("adamo-nagalo", "Adamo Nagalo", "schorsing", "28-01-2027"),
+                ("alassane-plea", "Alassane Plea", "schorsing", "28-01-2027")],
+}
+_AJAX = {
+    "club": "Ajax", "tegen": "Sparta Rotterdam", "thuis": False,
+    "elf": [("marc-ter-stegen", "Marc ter Stegen"), ("owen-wijndal", "Owen Wijndal"),
+            ("dies-janse", "Dies Janse"), ("aaron-bouwman", "Aaron Bouwman"),
+            ("lucas-rosa", "Lucas Rosa"), ("sofyan-amrabat", "Sofyan Amrabat"),
+            ("jorthy-mokio", "Jorthy Mokio"), ("oscar-gloukh", "Oscar Gloukh"),
+            ("wout-weghorst", "Wout Weghorst"), ("mika-godts", "Mika Godts"),
+            ("raul-moro", "Raul Moro")],
+    "afwezig": [("oliver-valaker-edvardsen", "Oliver Valaker Edvardsen", "blessure", ""),
+                ("kasper-dolberg", "Kasper Dolberg", "blessure", "01-07-2027"),
+                ("steven-berghuis", "Steven Berghuis", "blessure", ""),
+                ("daley-blind", "Daley Blind", "blessure", "")],
+}
 
 
 def _kaart(slug, naam, percentage=None):
@@ -157,29 +180,36 @@ def _kaart(slug, naam, percentage=None):
             f'<span class="text-[11px]">{naam}</span>{pct}</a>')
 
 
-def _pagina(met_percentage=False, faq_met_links=False, extra_links=0):
+def _pagina(d, met_percentage=False, faq_met_links=False, extra_links=0):
+    club, tegen = d["club"], d["tegen"]
     rijen = "".join(_kaart(s, n, (90 - i) if met_percentage else None)
-                    for i, (s, n) in enumerate(_ELF))
+                    for i, (s, n) in enumerate(d["elf"]))
     afw = "".join(f'<div><a href="/eredivisie/speler/{s}/">{n}</a> {reden}'
                   + (f' &middot; verwacht terug rond {t}' if t else "") + '</div>'
-                  for s, n, reden, t in _AFWEZIG)
-    faq = ("".join(f'<a href="/eredivisie/speler/{s}/">{n}</a>' for s, n in _ELF[:4])
+                  for s, n, reden, t in d["afwezig"])
+    faq = ("".join(f'<a href="/eredivisie/speler/{s}/">{n}</a>' for s, n in d["elf"][:4])
            if faq_met_links else "")
     rommel = "".join(f'<a href="/eredivisie/speler/vreemd-{i}/">Vreemd {i}</a>'
                      for i in range(extra_links))
+    # De kansenregel staat in de volgorde thuis - uit, dus omgekeerd voor een
+    # uitploeg. Alleen deze percentages staan nog op de pagina; als de parser
+    # ze per ongeluk als basiskans oppikt, valt dat hier op.
+    links, rechts = (club, tegen) if d["thuis"] else (tegen, club)
     return f"""<!doctype html><html><body>
-<h1>Vermoedelijke opstelling PSV tegen Feyenoord</h1>
-<p>Kansen op PSV - Feyenoord 48% PSV 21% gelijk Feyenoord 31%</p>
+<h1>Vermoedelijke opstelling {club} tegen {tegen}</h1>
+<p>Kansen op {links} - {rechts} 48% {links} 21% gelijk {rechts} 31%</p>
 <h2>Live: de officiele opstelling zodra die bekend is</h2>
-<h2>Verwachte opstelling PSV tegen Feyenoord</h2>
-<h3>PSV</h3>
+<h2>Verwachte opstelling {club} tegen {tegen}</h2>
+<h3>{club}</h3>
 <div class="relative flex flex-col-reverse">{rijen}{rommel}</div>
 <h2>Wat deze opstelling betekent</h2>
-<h2>Blessures en schorsingen PSV</h2>
+<h2>Blessures en schorsingen {club}</h2>
 <div>{afw}</div>
 <h2>Veelgestelde vragen</h2>
-<h3>Wat is de vermoedelijke opstelling van PSV?</h3>
+<h3>Wat is de vermoedelijke opstelling van {club}?</h3>
 <p>{faq} De vermoedelijke opstelling staat hierboven.</p>
+<h3>Welke spelers van {club} zijn geblesseerd of geschorst?</h3>
+<p>Zie het blok hierboven.</p>
 </body></html>"""
 
 
@@ -187,53 +217,63 @@ def test_vermoedelijke_elf():
     from bs4 import BeautifulSoup
     import scrape_eredivisie as s
 
-    def draai(html):
-        return s.parse_opstelling(BeautifulSoup(html, "html.parser"), "PSV")
-
     ok = True
-    gevallen = []
+    for d in (_PSV, _AJAX):
+        club, n_elf, n_afw = d["club"], len(d["elf"]), len(d["afwezig"])
+        print(f"  --- {club} ({'thuis' if d['thuis'] else 'uit'}, "
+              f"{n_elf} starters, {n_afw} afwezigen) ---")
 
-    # 1. De pagina van vandaag: elf starters, vijf afwezigen, GEEN percentages.
-    #    Een lege kans_basis is geldig -- cvhj_model.lees_opstellingen() houdt
-    #    de speler dan in de elf, en alleen dat lidmaatschap weegt mee.
-    elf, afw = draai(_pagina())
-    gevallen.append((len(elf) == 11 and len(afw) == 5
-                     and all(e["kans_basis"] == "" for e in elf)
-                     and not ({e["speler_id"] for e in elf} & {a["speler_id"] for a in afw}),
-                     f"zonder percentages: {len(elf)} starters, {len(afw)} afwezigen, "
-                     f"kans leeg, geen overlap"))
+        def draai(html):
+            return s.parse_opstelling(BeautifulSoup(html, "html.parser"), club)
 
-    # 2. Zet de bron de percentages terug, dan worden ze weer opgepikt zonder
-    #    dat hier iemand aan te pas komt.
-    elf2, _ = draai(_pagina(met_percentage=True))
-    gevallen.append((len(elf2) == 11 and [e["kans_basis"] for e in elf2][:3] == [90, 89, 88],
-                     f"met percentages: {[e['kans_basis'] for e in elf2][:3]}"))
+        gevallen = []
 
-    # 3. De FAQ die dezelfde spelers nog eens linkt -- de vervuiling die de
-    #    afwezigenparser eerder op 15 namen bracht. Het blok moet erbuiten
-    #    eindigen.
-    elf3, _ = draai(_pagina(faq_met_links=True))
-    gevallen.append((len(elf3) == 11, f"FAQ met dezelfde links: {len(elf3)} starters"))
+        # 1. De pagina van vandaag: de elf, de afwezigen, GEEN percentages. Een
+        #    lege kans_basis is geldig -- cvhj_model.lees_opstellingen() houdt
+        #    de speler dan in de elf, en alleen dat lidmaatschap weegt mee. De
+        #    namen moeten uit het alt-attribuut komen, dus met tussenvoegsel
+        #    ("Marc ter Stegen") en niet uit de slug met hoofdletters.
+        elf, afw = draai(_pagina(d))
+        namen_goed = [e["speler"] for e in elf] == [n for _, n in d["elf"]]
+        gevallen.append((len(elf) == n_elf and len(afw) == n_afw
+                         and all(e["kans_basis"] == "" for e in elf) and namen_goed
+                         and not ({e["speler_id"] for e in elf} & {a["speler_id"] for a in afw}),
+                         f"zonder percentages: {len(elf)} starters, {len(afw)} afwezigen, "
+                         f"kans leeg, namen letterlijk, geen overlap"))
 
-    # 4. Vervuiling BINNEN het blok: dan niets afleveren. Afkappen op elf zou
-    #    de fout verbergen, en vijftien namen in een CSV zien er volwaardig uit.
-    elf4, afw4 = draai(_pagina(extra_links=4))
-    gevallen.append((elf4 == [] and len(afw4) == 5,
-                     f"vier vreemde links in het blok: {len(elf4)} starters "
-                     f"(0 verwacht), afwezigen blijven {len(afw4)}"))
+        # 2. Zet de bron de percentages terug, dan worden ze weer opgepikt
+        #    zonder dat hier iemand aan te pas komt.
+        elf2, _ = draai(_pagina(d, met_percentage=True))
+        gevallen.append((len(elf2) == n_elf and [e["kans_basis"] for e in elf2][:3] == [90, 89, 88],
+                         f"met percentages: {[e['kans_basis'] for e in elf2][:3]}"))
 
-    # 5. Kop weg: terugval op de hele pagina. Die rust erop dat alle
-    #    spelerslinks minus de afwezigen de elf zijn, en werkt alleen zolang
-    #    het afwezigenblok ook gelezen wordt.
-    elf5, _ = draai(_pagina().replace(
-        "<h2>Verwachte opstelling PSV tegen Feyenoord</h2>", "<h2>Elftal</h2>"))
-    gevallen.append((len(elf5) == 11, f"zonder de kop: {len(elf5)} starters via de terugval"))
+        # 3. De FAQ die dezelfde spelers nog eens linkt -- de vervuiling die de
+        #    afwezigenparser eerder op 15 namen bracht. Het blok moet erbuiten
+        #    eindigen.
+        elf3, _ = draai(_pagina(d, faq_met_links=True))
+        gevallen.append((len(elf3) == n_elf, f"FAQ met dezelfde links: {len(elf3)} starters"))
 
-    for goed, tekst in gevallen:
-        print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")
-        ok = ok and goed
+        # 4. Vervuiling BINNEN het blok: dan niets afleveren. Afkappen op elf
+        #    zou de fout verbergen, en vijftien namen in een CSV zien er
+        #    volwaardig uit.
+        elf4, afw4 = draai(_pagina(d, extra_links=4))
+        gevallen.append((elf4 == [] and len(afw4) == n_afw,
+                         f"vier vreemde links in het blok: {len(elf4)} starters "
+                         f"(0 verwacht), afwezigen blijven {len(afw4)}"))
+
+        # 5. Kop weg: terugval op de hele pagina. Die rust erop dat alle
+        #    spelerslinks minus de afwezigen de elf zijn -- bij PSV 16-5, bij
+        #    Ajax 15-4 -- en werkt alleen zolang het afwezigenblok gelezen wordt.
+        elf5, _ = draai(_pagina(d).replace(
+            f"<h2>Verwachte opstelling {club} tegen {d['tegen']}</h2>", "<h2>Elftal</h2>"))
+        gevallen.append((len(elf5) == n_elf,
+                         f"zonder de kop: {len(elf5)} starters via de terugval "
+                         f"({n_elf + n_afw} links min {n_afw} afwezigen)"))
+
+        for goed, tekst in gevallen:
+            print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")
+            ok = ok and goed
     return ok
-
 
 def main():
     print("splits_status()\n")
