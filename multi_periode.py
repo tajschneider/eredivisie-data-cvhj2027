@@ -144,7 +144,7 @@ def bouw_horizon_pools(m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoo
         pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                            programma, inhaal_k, laatste_ronde=start_ronde - 1,
                            venster=venster, min_minuten=min_minuten, fbref=fbref,
-                           afwezig=afwezig)
+                           afwezig=afwezig, meld=(k == 0))
         if metadata is None:
             metadata = {p["speler_id"]: p for p in pool}
         for p in pool:
@@ -645,10 +645,31 @@ def main():
         print("\nGEBLESSEERD IN JE SELECTIE:")
         for naam, duur in eigen_bless:
             print(f"    {naam} ({duur})")
-    ontbreekt = [naam for naam in selectie_in
+    # Een dood slot heeft twee heel verschillende oorzaken, en ze onder één kop
+    # zetten geeft een misleidende melding. Dit stond hier wel goed in
+    # cvhj_model.py en niet in dit bestand, en dit bestand is juist het model
+    # dat het advies maakt: op 23 oktober meldde de mail "Zonder recente
+    # speeltijd (E=0): Artem Stepanov" over een speler met ruim voldoende
+    # recente minuten die simpelweg geblesseerd is. Dat leest als een
+    # vormprobleem, terwijl het een blessure is -- precies de verwarring die
+    # de afwezigenbron moest wegnemen.
+    doodslot = [naam for naam in selectie_in
                 if f"__huidig__{m.norm(naam)}" in selectie_ids]
+    ontbreekt, eigen_afwezig = [], []
+    for naam in doodslot:
+        club = m.norm_club(selectie_in[naam][0])
+        bron_afw = afwezig.get(f"{m.norm(naam)}|{m.norm(club)}") if afwezig else None
+        if bron_afw:
+            eigen_afwezig.append((naam, bron_afw["reden"], bron_afw["verwacht_terug"]))
+        else:
+            ontbreekt.append(naam)
     if ontbreekt:
         print(f"Zonder recente speeltijd (E=0): {', '.join(ontbreekt)}")
+    if eigen_afwezig:
+        print("\nAFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):")
+        for naam, reden, terug in eigen_afwezig:
+            staart = f", terug {terug}" if terug else ""
+            print(f"    {naam} ({reden}{staart})")
     if bijna_match:
         print("LET OP MOGELIJKE NAAM-BUG IN prijzen.csv (automatisch gerepareerd, "
               "maar controleer de brondata):")
@@ -776,6 +797,8 @@ def main():
                                   "clubs": len(elf) if elf else 0},
             "buiten_vermoedelijke_elf": [{"speler": n_e, "club": c_e, "basis": b_e, "duels": d_e}
                                          for n_e, c_e, b_e, d_e in eigen_buiten_elf],
+            "afwezig_in_selectie": [{"speler": n_a, "reden": r_a, "terug": t_a}
+                                    for n_a, r_a, t_a in eigen_afwezig],
             "stats_bron": m.stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
