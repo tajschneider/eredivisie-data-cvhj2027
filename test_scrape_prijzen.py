@@ -119,6 +119,122 @@ def test_vind_bijna_match():
     return ok
 
 
+# --------------------------------------------------------- vermoedelijke elf
+# De opstellingsparser is drie keer omgevallen op een gewijzigde bron, en elke
+# keer bleek dat pas uit een live run. Deze test bouwt de pagina na zoals de
+# --debug van 23-10-2026 hem laat zien, zodat de LOGICA hier faalt in plaats
+# van zaterdag in de scrape. Wat hieruit is overgenomen en dus gemeten is:
+# de koppenreeks met hun niveaus, de elf starters als spelerslinks in het blok
+# onder de h2 "Verwachte opstelling" met een h3 "PSV" erbinnen, geen enkel
+# percentage naast een speler, en een FAQ die de spelers niet opnieuw linkt
+# (16 links op de pagina, 16 uniek).
+#
+# Deze cases horen in een eigen bestand. Ze staan hier omdat tests.yml elk
+# testbestand bij naam aanroept en grenzen.py een voorstel verbiedt dat
+# .github/workflows/ aanraakt -- een nieuw bestand zou dus nooit draaien, en
+# een test die niet draait is geen test. Wil je ze apart, voeg dan met de hand
+# "python test_opstelling.py" toe aan tests.yml.
+_ELF = [("matej-kovar", "Matej Kovar"), ("filip-kostic", "Filip Kostic"),
+        ("armando-obispo", "Armando Obispo"), ("lutsharel-geertruida", "Lutsharel Geertruida"),
+        ("sergino-dest", "Sergino Dest"), ("kodai-sano", "Kodai Sano"),
+        ("mauro-junior", "Mauro Junior"), ("ayoni-santos", "Ayoni Santos"),
+        ("dennis-man", "Dennis Man"), ("ivan-perisic", "Ivan Perisic"),
+        ("mikkel-bro-hansen", "Mikkel Bro Hansen")]
+_AFWEZIG = [("paul-wanner", "Paul Wanner", "blessure", ""),
+            ("sam-lammers", "Sam Lammers", "blessure", ""),
+            ("jerdy-schouten", "Jerdy Schouten", "blessure", "01-05-2027"),
+            ("adamo-nagalo", "Adamo Nagalo", "schorsing", "28-01-2027"),
+            ("alassane-plea", "Alassane Plea", "schorsing", "28-01-2027")]
+
+
+def _kaart(slug, naam, percentage=None):
+    """Een starter zoals de bron hem neerzet: een link met avatar en naam."""
+    pct = f"<span>{percentage}%</span>" if percentage is not None else ""
+    return (f'<a class="flex flex-col items-center" href="/eredivisie/speler/{slug}/">'
+            f'<div class="relative">'
+            f'<img alt="{naam}" src="https://cdn.example/1.png"/>'
+            f'<span class="absolute -bottom-1 -right-1">9</span></div>'
+            f'<span class="text-[11px]">{naam}</span>{pct}</a>')
+
+
+def _pagina(met_percentage=False, faq_met_links=False, extra_links=0):
+    rijen = "".join(_kaart(s, n, (90 - i) if met_percentage else None)
+                    for i, (s, n) in enumerate(_ELF))
+    afw = "".join(f'<div><a href="/eredivisie/speler/{s}/">{n}</a> {reden}'
+                  + (f' &middot; verwacht terug rond {t}' if t else "") + '</div>'
+                  for s, n, reden, t in _AFWEZIG)
+    faq = ("".join(f'<a href="/eredivisie/speler/{s}/">{n}</a>' for s, n in _ELF[:4])
+           if faq_met_links else "")
+    rommel = "".join(f'<a href="/eredivisie/speler/vreemd-{i}/">Vreemd {i}</a>'
+                     for i in range(extra_links))
+    return f"""<!doctype html><html><body>
+<h1>Vermoedelijke opstelling PSV tegen Feyenoord</h1>
+<p>Kansen op PSV - Feyenoord 48% PSV 21% gelijk Feyenoord 31%</p>
+<h2>Live: de officiele opstelling zodra die bekend is</h2>
+<h2>Verwachte opstelling PSV tegen Feyenoord</h2>
+<h3>PSV</h3>
+<div class="relative flex flex-col-reverse">{rijen}{rommel}</div>
+<h2>Wat deze opstelling betekent</h2>
+<h2>Blessures en schorsingen PSV</h2>
+<div>{afw}</div>
+<h2>Veelgestelde vragen</h2>
+<h3>Wat is de vermoedelijke opstelling van PSV?</h3>
+<p>{faq} De vermoedelijke opstelling staat hierboven.</p>
+</body></html>"""
+
+
+def test_vermoedelijke_elf():
+    from bs4 import BeautifulSoup
+    import scrape_eredivisie as s
+
+    def draai(html):
+        return s.parse_opstelling(BeautifulSoup(html, "html.parser"), "PSV")
+
+    ok = True
+    gevallen = []
+
+    # 1. De pagina van vandaag: elf starters, vijf afwezigen, GEEN percentages.
+    #    Een lege kans_basis is geldig -- cvhj_model.lees_opstellingen() houdt
+    #    de speler dan in de elf, en alleen dat lidmaatschap weegt mee.
+    elf, afw = draai(_pagina())
+    gevallen.append((len(elf) == 11 and len(afw) == 5
+                     and all(e["kans_basis"] == "" for e in elf)
+                     and not ({e["speler_id"] for e in elf} & {a["speler_id"] for a in afw}),
+                     f"zonder percentages: {len(elf)} starters, {len(afw)} afwezigen, "
+                     f"kans leeg, geen overlap"))
+
+    # 2. Zet de bron de percentages terug, dan worden ze weer opgepikt zonder
+    #    dat hier iemand aan te pas komt.
+    elf2, _ = draai(_pagina(met_percentage=True))
+    gevallen.append((len(elf2) == 11 and [e["kans_basis"] for e in elf2][:3] == [90, 89, 88],
+                     f"met percentages: {[e['kans_basis'] for e in elf2][:3]}"))
+
+    # 3. De FAQ die dezelfde spelers nog eens linkt -- de vervuiling die de
+    #    afwezigenparser eerder op 15 namen bracht. Het blok moet erbuiten
+    #    eindigen.
+    elf3, _ = draai(_pagina(faq_met_links=True))
+    gevallen.append((len(elf3) == 11, f"FAQ met dezelfde links: {len(elf3)} starters"))
+
+    # 4. Vervuiling BINNEN het blok: dan niets afleveren. Afkappen op elf zou
+    #    de fout verbergen, en vijftien namen in een CSV zien er volwaardig uit.
+    elf4, afw4 = draai(_pagina(extra_links=4))
+    gevallen.append((elf4 == [] and len(afw4) == 5,
+                     f"vier vreemde links in het blok: {len(elf4)} starters "
+                     f"(0 verwacht), afwezigen blijven {len(afw4)}"))
+
+    # 5. Kop weg: terugval op de hele pagina. Die rust erop dat alle
+    #    spelerslinks minus de afwezigen de elf zijn, en werkt alleen zolang
+    #    het afwezigenblok ook gelezen wordt.
+    elf5, _ = draai(_pagina().replace(
+        "<h2>Verwachte opstelling PSV tegen Feyenoord</h2>", "<h2>Elftal</h2>"))
+    gevallen.append((len(elf5) == 11, f"zonder de kop: {len(elf5)} starters via de terugval"))
+
+    for goed, tekst in gevallen:
+        print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")
+        ok = ok and goed
+    return ok
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -127,9 +243,13 @@ def main():
     print("\nvind_bijna_match()\n")
     ok2 = test_vind_bijna_match()
 
+    print("\nvermoedelijke basiself (opstellingspagina)\n")
+    ok4 = test_vermoedelijke_elf()
+
     print()
-    if ok1 and ok2 and ok3:
-        print("OK: splits_status() en vind_bijna_match() gedragen zich zoals verwacht.")
+    if ok1 and ok2 and ok3 and ok4:
+        print("OK: splits_status(), vind_bijna_match() en de opstellingsparser\n"
+              "    gedragen zich zoals verwacht.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
 

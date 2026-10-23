@@ -211,12 +211,37 @@ def controleer_bron(r):
     r.meet("bron_afwezig", len(afw))
     r.eis(len(elf) == BASIS_PER_CLUB, "opstelling",
           f"{club}: {len(elf)} spelers in de vermoedelijke basiself",
-          f"verwacht {BASIS_PER_CLUB}; de spelerslinks of het afwezigenblok "
-          f"worden niet goed afgebakend")
+          f"verwacht {BASIS_PER_CLUB}. De scraper levert niets af als het aantal "
+          f"afwijkt, dus opstellingen.csv blijft leeg voor deze club. Draai de "
+          f"debug op {s.OPSTELLING_URL.format(slug=slug)} en kijk naar KOPPEN "
+          f"(staat 'Verwachte opstelling' er nog?) en SPELERSLINKS (hoeveel "
+          f"uniek?). Bij 0: de kop is weg of de namen zijn geen links meer. Bij "
+          f"meer dan 11: het blok loopt door in een ander deel van de pagina")
+    # De basiskans is een METING en geen eis. Op 23-10-2026 heeft de bron de
+    # percentages per speler van de opstellingspagina gehaald: de elf staat er
+    # nog, als veldopstelling met avatars, maar zonder enig getal per speler.
+    # Dit als fout blijven melden zou een controle opleveren die nooit meer
+    # groen kan worden, en zo'n controle leert je het hele rapport te negeren --
+    # dezelfde fout als de twee permanent brandende waarschuwingen van vorige
+    # week.
+    #
+    # Dat dit niets blokkeert, is geen berusting maar het gevolg van een keuze:
+    # het model gebruikt het percentage niet als kans. Het bleek er geen te
+    # zijn (129 spelers die alle zes ronden begonnen kregen gemiddeld 0,83 en
+    # maximaal 0,92), dus alleen het LIDMAATSCHAP van de elf weegt mee, en dat
+    # staat er nog. Zet de bron de percentages terug, dan ziet deze meting dat
+    # en pakt de scraper ze weer op.
     met_kans = [e for e in elf if e["kans_basis"] != ""]
-    r.eis(len(met_kans) >= BASIS_PER_CLUB - 2, "opstelling",
-          f"{len(met_kans)} van {len(elf)} met een basiskans",
-          "het percentage naast de speler is niet meer te vinden")
+    r.meet("bron_basiskans", len(met_kans))
+    if elf and not met_kans:
+        r.ok("opstelling", f"geen basiskans per speler op de pagina (0 van {len(elf)})",
+             "de bron publiceert het percentage niet meer; het model rekent er niet "
+             "mee, alleen met wie er in de elf staat")
+    else:
+        r.eis(len(met_kans) == 0 or len(met_kans) >= BASIS_PER_CLUB - 2, "opstelling",
+              f"{len(met_kans)} van {len(elf)} met een basiskans",
+              "sommige spelers hebben een percentage en andere niet -- dan is het "
+              "onduidelijk welke helft je ziet")
     # Zowel een onder- als een bovengrens. Alleen "minstens een" eisen was te
     # zwak: PSV kwam op 15 afwezigen omdat het blok doorliep in de FAQ, die
     # dezelfde spelers nog eens in gewone tekst noemt. Een speler die onterecht

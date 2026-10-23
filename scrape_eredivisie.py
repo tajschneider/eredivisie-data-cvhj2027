@@ -644,39 +644,82 @@ def parse_opstelling(soup, club):
     afwezig = uniek
     afwezig_ids = {r["speler_id"] for r in afwezig}
 
-    # --- vermoedelijke basiself. NIET op een kop ankeren en niet op de eerste
-    # vermelding van een naam. Beide heb ik geprobeerd en beide gingen mis: de
-    # pagina heeft twee koppen met "opstelling" erin, noemt starters ook in een
-    # tipblok en nog eens in de FAQ, en de linielabels ("Keeper 4-5-1",
-    # "Verdediging") zijn geen koppen maar gewone tekst.
+    # --- vermoedelijke basiself.
     #
-    # Wat een opstellingsregel wél onderscheidt, is het PERCENTAGE achter de
-    # naam. Daarop selecteren werkt ongeacht onder welke kop de lijst staat.
-    # Daarom elke vermelding langsgaan (uniek=False) en de eerste nemen die
-    # een percentage heeft.
+    # DERDE SELECTIEMANIER, en de reden staat in de bron en niet in mijn code:
+    # het percentage achter de naam is er op 23-10-2026 niet meer. De pagina
+    # toont de elf nu als een veldopstelling met avatars, zonder enig getal per
+    # speler; de enige percentages die er nog staan zijn de wedstrijdkansen
+    # (48/21/31). Selecteren op dat percentage -- wat hier stond -- matcht dan
+    # nergens, en dat is precies wat er gebeurde: nul van elf, bij elke club.
+    #
+    # Wat er volgens de --debug van die dag WEL staat, en waar dit nu op rust:
+    #   <h1> Vermoedelijke opstelling PSV tegen Feyenoord
+    #   <h2> Live: de officiele opstelling zodra die bekend is
+    #   <h2> Verwachte opstelling PSV tegen Feyenoord      <- de elf
+    #   <h3> PSV
+    #   <h2> Wat deze opstelling betekent                  <- einde van het blok
+    #   <h2> Blessures en schorsingen PSV
+    #   <h2> Veelgestelde vragen
+    # en: 16 spelerslinks op de pagina, 16 UNIEK -- elf starters plus vijf
+    # gelinkte afwezigen, geen enkele naam twee keer. De FAQ herhaalt de
+    # spelers dus niet als link, en dat was eerder juist de vervuiling.
+    #
+    # Daarom: ankeren op de h2 "Verwachte opstelling" en de spelerslinks in dat
+    # blok nemen, in documentvolgorde. blok_na_kop() eindigt bij de volgende kop
+    # van hetzelfde of hoger niveau, dus de h3 "PSV" erbinnen breekt het blok
+    # niet af en de h2 erna wel. Op de kop ankeren kon eerder niet omdat er twee
+    # koppen met "opstelling" in stonden; "Verwachte opstelling" is nu specifiek
+    # genoeg, en de h1 ("Vermoedelijke opstelling") matcht er niet op.
+    _, _, elf_html = blok_na_kop(ruw, r"Verwachte\s+opstelling")
+    bron_blok = "kop"
+    if not elf_html:
+        # Terugval op de hele pagina. Die rust op de meting hierboven: alle
+        # spelerslinks minus de afwezigen IS de elf, want er staat geen enkele
+        # naam dubbel. Zwakker dan het blok -- een nieuw linkblok elders op de
+        # pagina vervuilt dit -- maar beter dan niets, en de plausibiliteits-
+        # controle verderop vangt het als het misgaat.
+        elf_html, bron_blok = ruw, "hele pagina"
+
     elf, gezien2 = [], set()
-    for sid, naam, span in stukken_per_speler(
-            BeautifulSoup(ruw, "html.parser"), marge=40, uniek=False):
+    for m in SPELER_HREF.finditer(elf_html):
+        sid = m.group(1)
         if sid in afwezig_ids or sid in gezien2:
             continue
-        pm = re.match(r"[^%]{0,40}?(\d{1,3})\s*%", span)
-        if not pm:
-            continue
-        kans = int(pm.group(1))
-        if not 0 <= kans <= 100:
-            continue
         gezien2.add(sid)
-        elf.append({"opgehaald": VANDAAG, "club": club, "speler": naam,
+        # Het percentage blijft OPTIONEEL meegenomen. Nu levert het niets op,
+        # maar als de bron het terugzet, staat het er weer in zonder dat hier
+        # iemand aan te pas komt. Leeg is geldig: cvhj_model.lees_opstellingen()
+        # verdraagt een lege kans_basis en houdt de speler in de elf.
+        # Het venster loopt tot het EINDE VAN DE LINK van deze speler, niet
+        # tot een zelfgekozen aantal tekens: een percentage daarbuiten hoort
+        # bij de volgende speler of bij de wedstrijdkansen.
+        staart = elf_html[m.end():]
+        eind_a = staart.find("</a>")
+        venster = staart[:eind_a] if eind_a != -1 else staart[:400]
+        pm = re.search(r"(\d{1,3})\s*%", venster)
+        kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
+        naam = None
+        am = re.search(r'alt="([^"]{2,60})"', staart)
+        if am:
+            naam = htmllib.unescape(am.group(1)).strip()
+        elf.append({"opgehaald": VANDAAG, "club": club,
+                    "speler": naam or slug_naar_naam(sid),
                     "speler_id": sid, "kans_basis": kans,
                     "tegenstander": tegen, "thuis_uit": thuis_uit,
                     "datum": datum, "ronde": ronde})
-        if len(elf) >= 11:
-            break
-    if not elf:
-        # Geen enkele speler met een percentage: dan is de basiself niet te
-        # bepalen en is het beter dat te zeggen dan elf namen zonder kans af
-        # te leveren, want die zien er in het CSV volwaardig uit.
-        print(f"    {club}: geen enkel basispercentage gevonden")
+
+    # Plausibiliteit vóór aflevering. Elf namen is een opstelling; twintig
+    # namen is een pagina die ergens doorloopt, en die mogen er niet uit als
+    # een nette CSV, want dan ziet vervuiling eruit als data. Te weinig is net
+    # zo verdacht. Afkappen op elf zou de fout juist verbergen.
+    if len(elf) != 11:
+        print(f"    {club}: {len(elf)} spelerslinks in het opstellingsblok "
+              f"({bron_blok}), verwacht 11 — niet weggeschreven")
+        return [], afwezig
+    if bron_blok != "kop":
+        print(f"    {club}: elf gevonden via de terugval op de {bron_blok}; "
+              f"de kop 'Verwachte opstelling' is niet gevonden")
     return elf, afwezig
 
 
