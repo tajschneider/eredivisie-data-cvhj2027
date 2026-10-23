@@ -554,6 +554,86 @@ def test_stats_uit_seizoen():
     return ok and goed
 
 
+def test_reddingspunten():
+    """De reddingsterm moet aan de constanten hangen, en alleen bij keepers.
+
+    De constante stond op 1.6 zonder dat er ooit aan gerekend was. Gemeten op
+    20 keepers met >=270 minuten (510 reddingen in 155 hele wedstrijden) komt
+    er 2.4 uit: 3.257 reddingen per 90 tegen 1.353 verwachte tegengoals per
+    90. De oude waarde gaf 0.433 punt per 90 waar 0.651 +/- 0.041 werd
+    gemeten, een gat van 5.3 standaardfouten.
+
+    Deze test controleert niet of 2.4 het juiste getal is -- dat is een
+    meting, geen eigenschap van de code. Hij controleert dat de term
+    daadwerkelijk aan de constanten hangt en lineair meebeweegt, zodat een
+    volgende herijking ook echt doorwerkt, en dat hij veldspelers niet raakt.
+    """
+    import cvhj_model as m
+
+    ok = True
+    prijs = [{"team": "Ajax", "speler": "De Keeper", "positie": "Goalkeeper",
+              "prijs": "2.0", "speler_id": "de-keeper"},
+             {"team": "Ajax", "speler": "De Spits", "positie": "Forward",
+              "prijs": "2.0", "speler_id": "de-spits"}]
+    spelerrijen = [{"ronde": str(ro), "speler": naam, "speler_id": sid,
+                    "club": "Ajax", "minuten": "90", "goals": "0", "basis": "1",
+                    "status": "basis"}
+                   for ro in range(4, 10)
+                   for naam, sid in (("De Keeper", "de-keeper"), ("De Spits", "de-spits"))]
+    # PSV een flinke aanval geven, zodat er werkelijk tegendoelpunten verwacht
+    # worden -- met lt = 0 zou de hele term 0 zijn en zou de test niets zeggen.
+    aanval, verdediging = {"Ajax": 0.1, "PSV": 0.6}, {"Ajax": 0.0, "PSV": 0.0}
+
+    def e_van(k):
+        bewaard = m.REDDINGEN_PER_TEGENGOAL
+        m.REDDINGEN_PER_TEGENGOAL = k
+        try:
+            pool = m.bouw_pool(prijs, spelerrijen, aanval, verdediging, 0.1,
+                               [("Ajax", "PSV")], {}, laatste_ronde=9, meld=False)
+            return {p["speler_id"]: p["E"] for p in pool}
+        finally:
+            m.REDDINGEN_PER_TEGENGOAL = bewaard
+
+    uit0, uit1, uit2 = e_van(0.0), e_van(2.4), e_van(4.8)
+    term1 = uit1["de-keeper"] - uit0["de-keeper"]
+    term2 = uit2["de-keeper"] - uit0["de-keeper"]
+
+    gevallen = [
+        (m.REDDINGEN_PER_PUNT == 5,
+         f"1 punt per 5 reddingen is een spelregel: REDDINGEN_PER_PUNT = "
+         f"{m.REDDINGEN_PER_PUNT}"),
+        (abs(m.REDDINGEN_PER_TEGENGOAL - 2.4) < 1e-9,
+         f"de gemeten constante staat op 2.4 (nu {m.REDDINGEN_PER_TEGENGOAL}) -- "
+         f"wijzig je die, werk dan de meting in cvhj_model.py bij"),
+        (term1 > 0.01,
+         f"de keeper krijgt werkelijk reddingspunten: {term1:.3f}"),
+        (abs(term2 - 2 * term1) < 1e-9,
+         f"de term is lineair in de constante: {term1:.3f} -> {term2:.3f} "
+         f"(tweemaal verwacht)"),
+        (abs(uit0["de-spits"] - uit1["de-spits"]) < 1e-9,
+         f"de spits blijft onaangeroerd: {uit0['de-spits']:.3f} vs "
+         f"{uit1['de-spits']:.3f}"),
+    ]
+    for goed, tekst in gevallen:
+        print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")
+        ok = ok and goed
+
+    # En de richting van het bedrag: met de oude 1.6 lag de keeper lager. Hoe
+    # veel precies hangt af van de tegenstander in de fixture -- PSV heeft hier
+    # bewust een zware aanval, dus het is meer dan de ~0.22 punt die bij een
+    # competitiegemiddelde tegenstander hoort. De grens is daarom ruim: de test
+    # hoort te vallen als de term niet meer meebeweegt, niet als iemand de
+    # fixture bijstelt.
+    oud = e_van(1.6)["de-keeper"]
+    winst = uit1["de-keeper"] - oud
+    verwacht = term1 * (2.4 - 1.6) / 2.4
+    goed = abs(winst - verwacht) < 1e-9 and winst > 0
+    print(f"  {'OK  ' if goed else 'FOUT'} herijking levert de keeper "
+          f"{winst:+.3f} punt op, precies (2.4-1.6)/2.4 van de hele term "
+          f"({verwacht:+.3f})")
+    return ok and goed
+
+
 def test_premiumkolommen_worden_niet_gelezen():
     """De betaalde kolommen mogen ook niet gelezen worden als ze ER STAAN.
 
@@ -638,8 +718,11 @@ def main():
     print("\nbetaalde kolommen blijven ongelezen\n")
     ok8 = test_premiumkolommen_worden_niet_gelezen()
 
+    print("\nreddingspunten voor keepers\n")
+    ok9 = test_reddingspunten()
+
     print()
-    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7 and ok8:
+    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7 and ok8 and ok9:
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
