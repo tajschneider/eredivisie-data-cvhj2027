@@ -181,6 +181,34 @@ def test_afwezigen_bron():
     return ok and goed
 
 
+def test_signalen_zonder_getal():
+    """Twee signalen die in GEEN ENKEL getal zitten, moeten de mail halen.
+
+    Een afwezige speler in je ploeg staat op E=0 -- dat is zichtbaar. Maar wie
+    zijn basisplaats lijkt te zijn verloren, verandert niets aan de verwachte
+    punten (het percentage van de opstellingsbron is geen kans, zie
+    cvhj_model.lees_opstellingen()). Dat signaal bestaat dus alleen als het in
+    deze mail staat. Verdwijnt het hier, dan verdwijnt het helemaal.
+    """
+    d = met(afwezig_in_selectie=[{"speler": "Artem Stepanov", "reden": "blessure", "terug": ""}],
+            buiten_vermoedelijke_elf=[{"speler": "Mohamed Ihattaren", "club": "Fortuna Sittard",
+                                       "basis": 5, "duels": 6}])
+    tekst = notify.bouw_tekst(d)
+    ok = True
+    for fragment, wat in (("AFWEZIG in je ploeg: Artem Stepanov", "afwezige speler"),
+                          ("NIET IN DE VERMOEDELIJKE ELF: Mohamed Ihattaren",
+                           "verloren basisplaats"),
+                          ("begon 5/6", "de onderbouwing erbij")):
+        goed = fragment in tekst
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat} haalt de mail")
+        ok = ok and goed
+    # En zonder die velden geen lege regels of valse meldingen.
+    schoon = notify.bouw_tekst(GOED)
+    goed = "VERMOEDELIJKE ELF" not in schoon and "AFWEZIG in je ploeg" not in schoon
+    print(f"  {'OK  ' if goed else 'FOUT'} zonder die velden geen melding")
+    return ok and goed
+
+
 def main():
     print("geen vals alarm bij normale invoer\n")
     ok1 = test_normaal_geen_valse_alarmen()
@@ -196,9 +224,10 @@ def main():
 
     print("\nherkomst van de afwezigenlijst\n")
     ok7 = test_afwezigen_bron()
+    ok8 = test_signalen_zonder_getal()
 
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8]):
         print("OK: alles wat het model weet over onbetrouwbare invoer, bereikt de mail.")
     else:
         sys.exit("MISLUKT: zie hierboven -- een waarschuwing die jou niet bereikt, "
