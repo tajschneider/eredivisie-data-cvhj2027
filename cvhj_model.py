@@ -48,6 +48,16 @@ Beperkingen die je moet kennen
   overweeg dan de waarde bij te stellen.
 - CLEANSHEET_MINUTEN_DREMPEL=60 is een AANNAME (de gangbare conventie in
   de meeste fantasy-competities), niet bevestigd bij CVHJ zelf.
+- REDDINGEN_PER_TEGENGOAL is op 23-10-2026 gemeten en bijgesteld van 1.6
+  naar 2.4; de oude waarde onderschatte elke keeper met ~0.22 punt per
+  ronde. Wat daar NIET bij hoort is het eigen reddingstempo van de keeper:
+  de spreiding die na herijking overblijft is bij 9 duels niet te
+  onderscheiden van Poisson-ruis. Zie de constante zelf.
+- Het rapportcijfer uit spelers_seizoen.csv is GEMETEN en bewust NIET
+  toegevoegd. Tegen het seizoenstotaal lijkt het sterk (r = +0.71), maar dat
+  loopt mee met speelminuten; tegen punten PER RONDE is het +0.34, en na
+  correctie voor wat het model al gebruikt (minuten, doelpunten/90,
+  assists/90, kaarten) blijft er r = +0.011 over. Het zit er dus al in.
 - Assists en kaarten kunnen worden meegewogen via spelerstats.csv
   (scrape_statistieken.py, stap 5) -- optioneel: zonder dat bestand draait dit
   script exact als voorheen. LET OP: dat bestand bevat GEEN expected goals,
@@ -141,6 +151,40 @@ PRIOR_ASSIST_RATE = {"Goalkeeper": 0.01, "Defender": 0.08, "Midfielder": 0.20, "
 # maken de meeste overtredingen, keepers vrijwel nooit.
 PRIOR_GEEL_RATE = {"K": 0.05, "V": 0.22, "M": 0.20, "A": 0.12}
 PRIOR_ROOD_RATE = {"K": 0.005, "V": 0.015, "M": 0.012, "A": 0.008}
+
+# ------------------------------------------------- keepersreddingen
+# CVHJ geeft 1 punt per 5 reddingen. Dat is een SPELREGEL en staat vast.
+REDDINGEN_PER_PUNT = 5
+
+# Hoeveel reddingen een keeper maakt per verwacht tegendoelpunt. Dit is geen
+# spelregel maar een SCHATTING, en stond tot 23-10-2026 op 1.6 zonder dat er
+# ooit aan gerekend was. Gemeten op spelers_seizoen.csv van 23-10-2026, over
+# 20 keepers met minstens 270 minuten -- samen 510 reddingen in 155 hele
+# wedstrijden:
+#
+#   reddingen per 90          3.257
+#   verwacht tegen per 90     1.353
+#   reddingen per tegengoal   2.408   <- deze constante
+#
+# Drie manieren om hem te bepalen geven hetzelfde: verhouding van gemiddelden
+# 2.408, gemiddelde van verhoudingen 2.412, kleinste kwadraten door de
+# oorsprong 2.398. De oude 1.6 leverde 0.433 punt per 90 op waar 0.651 +/-
+# 0.041 werd gemeten -- een verschil van 5.3 standaardfouten, dus geen ruis.
+# Per keeper per ronde scheelt de herijking ongeveer +0.22 punt.
+#
+# De schaling met de tegenstander blijft staan: de werkelijke reddingspunten
+# hangen samen met het verwachte aantal tegendoelpunten van de club
+# (r = +0.68), dus de VORM van de formule was goed en alleen het niveau niet.
+#
+# WAT ER BEWUST NIET BIJ KOMT: de reddingen van de keeper zelf. Na herijking
+# blijft er spreiding over (sd residu 0.136 punt per 90), maar bij 9 duels
+# per keeper is de Poisson-ruis op ~29 reddingen al sqrt(29)/9/5 = 0.12. Die
+# twee zijn niet te onderscheiden, dus "deze keeper maakt meer reddingen dan
+# zijn club verklaart" is met deze hoeveelheid data niet vast te stellen. Voor
+# die toets zijn momentopnamen van spelers_seizoen.csv over meer weken nodig
+# (er staan er nu twee, 19 en 23 oktober); scrape_statistieken.py legt ze elke
+# week vast, dus de data groeit er vanzelf naartoe.
+REDDINGEN_PER_TEGENGOAL = 2.4
 
 
 def norm_club(c: str) -> str:
@@ -742,7 +786,11 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
             e += speelfractie * e_assist90 * (lv / gem_lambda)   # assists volgen de aanval, net als doelpunten
             e += speelfractie * e_kaart90                        # kaartrisico schaalt met speelminuten
             if pos == "K":
-                e += speelfractie * 1.6 * lt / 5     # ruwe schatting reddingspunten
+                # reddingspunten: 1 punt per REDDINGEN_PER_PUNT reddingen
+                # (spelregel), en het aantal reddingen geschat uit de
+                # verwachte tegendoelpunten (gemeten, zie de constante)
+                e += (speelfractie * REDDINGEN_PER_TEGENGOAL * lt
+                      / REDDINGEN_PER_PUNT)
             return weging * e
 
         E = punten(programma)
