@@ -55,6 +55,7 @@ BASE = "https://pouletips.nl"
 ROUND_URL = BASE + "/eredivisie/speelronde/{ronde}/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; cvhj-model/1.0)"}
 LAATSTE_RONDE = 34
+MAX_INHAAL = 12        # meer uitgestelde duels dan dit is een foute startronde
 WEDSTRIJDEN_PER_RONDE = 9   # 18 clubs
 
 MAANDEN = {"januari": 1, "februari": 2, "maart": 3, "april": 4, "mei": 5,
@@ -100,14 +101,30 @@ def lees_clubs(pad):
     if not Path(pad).exists():
         sys.exit(f"FOUT: {pad} niet gevonden. Wijs met --clubs naar clubs.csv "
                  f"uit de data-repo; zonder exacte clubnamen sluit de join niet aan.")
-    namen, gespeeld, max_ronde = {}, set(), 0
+    namen, gespeeld, max_ronde, aanwezig = {}, set(), 0, 0
     with open(pad, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             namen[norm(r["club"])] = r["club"]
             ronde = int(r["ronde"])
-            max_ronde = max(max_ronde, ronde)
+            aanwezig = max(aanwezig, ronde)
             if r["thuis_uit"] == "thuis" and r.get("resultaat"):
                 gespeeld.add((ronde, r["club"], r["tegenstander"]))
+                # max_ronde is de laatste GESPEELDE ronde, niet de hoogste die
+                # in het bestand staat. Dat was hetzelfde zolang clubs.csv
+                # alleen uitslagen bevatte, maar scrape_eredivisie.py schrijft
+                # sinds de ombouw het HELE seizoen vooruit -- 34 ronden, 612
+                # rijen, waarvan er op 23-10-2026 negen een uitslag hadden.
+                #
+                # Met de oude telling werd max_ronde 34, begon volgende_ronde()
+                # haar zoektocht bij ronde 34, vond die ongespeeld met een
+                # datum in mei, en leverde ronde 34 op. Daarna merkte
+                # zoek_inhaal() de ronden 10 t/m 33 allemaal als inhaalduel
+                # (216 wedstrijden) en liep de horizon door naar ronde 35, die
+                # niet bestaat. Dat is de fout waar de run van 23 oktober op
+                # omviel, en niet een dode bronpagina.
+                max_ronde = max(max_ronde, ronde)
+    if aanwezig > max_ronde:
+        print(f"  {pad}: ronden t/m {aanwezig} bekend, uitslagen t/m {max_ronde}")
     return namen, gespeeld, max_ronde
 
 
@@ -389,6 +406,17 @@ def main():
         inhaal = zoek_inhaal(namen, gespeeld, ronde)
         if not inhaal:
             print("    geen")
+        # Een realistische speelronde heeft een handvol uitgestelde duels, geen
+        # tientallen. Op 23-10-2026 kwamen er 216 uit, omdat de startronde op
+        # 34 stond en alles van ronde 10 t/m 33 dus "ontbrak". Die rijen
+        # wegschrijven zou het model spelers laten meetellen die je niet bezit,
+        # bij elke wedstrijd van een half seizoen. Liever niets dan dat.
+        elif len(inhaal) > MAX_INHAAL:
+            print(f"    {len(inhaal)} inhaalduels gevonden, en dat kan niet: "
+                  f"meer dan {MAX_INHAAL} betekent dat de startronde verkeerd "
+                  f"is gekozen of dat clubs.csv geen uitslagen bevat. Ze worden "
+                  f"NIET weggeschreven.")
+            inhaal = []
         rijen.extend(inhaal)
 
     # Telt een inhaalduel mee voor DEZE beslissing?
@@ -420,11 +448,26 @@ def main():
     verder = []
     if args.horizon > 1 and not via_clubs:
         print(f"\nprogramma horizon (ronde {ronde + 1} t/m {ronde + args.horizon - 1}):")
-        for latere_ronde in range(ronde + 1, ronde + args.horizon):
+        # Niet verder dan LAATSTE_RONDE vragen, en een ronde die de bron niet
+        # kent BEEINDIGT de horizon in plaats van de run te slopen. get() gooit
+        # op een HTTP 404, en dat kwam hieronder nooit aan: op 23-10-2026 viel
+        # de hele stap om op "niet op te halen: .../speelronde/35/ (HTTP 404)",
+        # nadat ronde 34 als startronde was gekozen. Het einde van het seizoen
+        # is geen storing.
+        for latere_ronde in range(ronde + 1, min(ronde + args.horizon, LAATSTE_RONDE + 1)):
             print(f"  ronde {latere_ronde}:")
             gevonden = 0
-            for url in match_urls(latere_ronde):
-                rij = parse_wedstrijd(url, latere_ronde, namen)
+            try:
+                urls = match_urls(latere_ronde)
+            except Exception as e:                                # noqa: BLE001
+                print(f"    niet op te halen ({e}) -- horizon stopt hier")
+                break
+            for url in urls:
+                try:
+                    rij = parse_wedstrijd(url, latere_ronde, namen)
+                except Exception as e:                            # noqa: BLE001
+                    print(f"    {url} niet op te halen ({e}) -- overgeslagen")
+                    continue
                 if rij:
                     verder.append(rij)
                     gevonden += 1
