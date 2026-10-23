@@ -9,9 +9,9 @@ Dit script vergeleek cvhj_model.py met de puntenvoorspelling van pouletips
 ('Verwacht' op de prijzenpagina), als onafhankelijke tweede mening. Die
 vergelijking is weg, en de kolom wordt niet meer gelezen. De reden:
 
-    Verwachte punten, Totaal, Per miljoen en Basiskans zijn op die pagina
-    GEMASKEERD voor wie geen Premium-account heeft. Je krijgt geen afgeronde
-    of vertraagde cijfers -- je krijgt per request andere getallen.
+    Verwachte punten, Totaal en Per miljoen zijn op die pagina GEMASKEERD
+    voor wie geen Premium-account heeft. Je krijgt geen afgeronde of
+    vertraagde cijfers -- je krijgt per request andere getallen.
 
 Dat is ook te meten, en het is gemeten:
 
@@ -21,8 +21,15 @@ Dat is ook te meten, en het is gemeten:
     507 veranderden. Een voorspelling die per request verandert is geen
     voorspelling;
   - de getallen zijn onderling inconsistent: 62,0 + 2.683 is niet 1.954, en
-    'Per miljoen' 473 past bij geen enkele combinatie van de andere twee;
-  - Pepi stond op een basiskans van 70% terwijl hij geblesseerd was.
+    'Per miljoen' 473 past bij geen enkele combinatie van de andere twee.
+
+Drie kolommen dus, en NIET de kolom Basiskans -- die is wel echt. Dat is ook
+gemeten: de basiskans op de opstellingspagina's hing op 19 oktober samen met
+hoe vaak een speler werkelijk begon (r = +0,61, klokvorm met een piek bij
+80-89). Hij is alleen samengeperst in het bereik 42-92: wie elke wedstrijd
+begon stond gemiddeld op 83, wie vrijwel nooit begon nog altijd op 63. Echt
+signaal, verkeerde schaal -- daarom wordt er wel op gewaarschuwd en worden er
+geen getallen mee aangepast.
 
 Een ijking tegen willekeurige getallen is erger dan geen ijking: hij levert
 elke week een rangcorrelatie op die eruitziet als een meting. Daarom is de
