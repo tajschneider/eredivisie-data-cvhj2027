@@ -197,3 +197,201 @@ opgehaald,club,speler,speler_id,kans_basis,tegenstander,thuis_uit,datum,ronde
 2026-10-19,SC Cambuur,Mathieu Maertens,mathieu-maertens,70,Willem II,,2026-10-24,10
 2026-10-19,SC Cambuur,Fabian Kvam,f-kvam,46,Willem II,,2026-10-24,10
 2026-10-19,SC Cambuur,Nicolas Binder,nicolas-binder,45,Willem II,,2026-10-24,10
+2026-10-23,PSV,Matej Kovar,matej-kovar,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Filip Kostic,filip-kostic,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Armando Obispo,armando-obispo,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Lutsharel Geertruida,lutsharel-geertruida,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Sergiño Dest,sergino-dest,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Kodai Sano,kodai-sano,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Mauro Júnior,mauro-junior,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Ayoni Santos,ayoni-santos,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Dennis Man,dennis-man,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Ivan Perisic,ivan-perisic,,Feyenoord,,2026-10-25,10
+2026-10-23,PSV,Mikkel Bro Hansen,mikkel-bro-hansen,,Feyenoord,,2026-10-25,10
+2026-10-23,Feyenoord,Tjark Ernst,tjark-ernst,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Mika Mármol,mika-marmol,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Thijs Kraaijeveld,thijs-kraaijeveld,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Tsuyoshi Watanabe,tsuyoshi-watanabe,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Givairo Read,givairo-read,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Charles Vanhoutte,charles-vanhoutte,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Gjivai Zechiël,gjivai-zechiel,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Gaoussou Diarra,gaoussou-diarra,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Sem Steijn,sem-steijn,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Anis Hadj Moussa,anis-hadj-moussa,,PSV,,2026-10-25,10
+2026-10-23,Feyenoord,Nacho Ferri,nacho-ferri,,PSV,,2026-10-25,10
+2026-10-23,Ajax,Marc ter Stegen,marc-ter-stegen,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Owen Wijndal,owen-wijndal,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Dies Janse,dies-janse,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Aaron Bouwman,aaron-bouwman,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Lucas Rosa,lucas-rosa,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Sofyan Amrabat,sofyan-amrabat,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Jorthy Mokio,jorthy-mokio,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Oscar Gloukh,oscar-gloukh,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Julian Brandt,julian-brandt,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Davy Klaassen,davy-klaassen,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,Ajax,Marcos Leonardo,marcos-leonardo,,Sparta Rotterdam,,2026-10-25,10
+2026-10-23,AZ,Jari De Busser,jari-de-busser,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Mateo Chávez,mateo-chavez,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Lewis Schouten,lewis-schouten,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Wouter Goes,wouter-goes,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Elijah Dijkstra,elijah-dijkstra,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Peer Koopmeiners,peer-koopmeiners,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Jordy Clasie,jordy-clasie,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Ro-Zangelo Daal,ro-zangelo-daal,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Calvin Stengs,calvin-stengs,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Ayoub Oufkir,ayoub-oufkir,,FC Twente,,2026-10-25,10
+2026-10-23,AZ,Mexx Meerdink,mexx-meerdink,,FC Twente,,2026-10-25,10
+2026-10-23,FC Twente,Joël Drommel,joel-drommel,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Aske Adelgaard,aske-adelgaard,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Ruud Nijstad,ruud-nijstad,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Robin Pröpper,robin-propper,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Bart van Rooij,bart-van-rooij,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Daouda Weidmann,daouda-weidmann,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Ramiz Zerrouki,ramiz-zerrouki,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Sondre Ørjasæter,sondre-rjaster,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Kristian Hlynsson,kristian-hlynsson,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Daan Rots,daan-rots,,AZ,,2026-10-25,10
+2026-10-23,FC Twente,Wout Weghorst,wout-weghorst,,AZ,,2026-10-25,10
+2026-10-23,FC Utrecht,Sergio Padt,sergio-padt,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Nikolas Panagiotou,nikolas-panagiotou,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Matisse Didden,matisse-didden,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Siebe Horemans,siebe-horemans,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Arthur Zagré,arthur-zagre,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Oualid Agougil,oualid-agougil,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Joris van Overeem,joris-van-overeem,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Niklas Vesterlund,niklas-vesterlund,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Ángel Alarcón,angel-alarcon,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Dani de Wit,dani-de-wit,,PEC Zwolle,,2026-10-24,10
+2026-10-23,FC Utrecht,Yoann Cathline,yoann-cathline,,PEC Zwolle,,2026-10-24,10
+2026-10-23,NEC,Gonzalo Crettaz,gonzalo-crettaz,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Deveron Fonville,deveron-fonville,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Ahmetcan Kaplan,ahmetcan-kaplan,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Tobias Storm,t-storm,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Clement Mutahi Bischoff,clement-bischoff,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Dennis Geiger,dennis-geiger,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Darko Nejasmic,darko-nejasmic,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Kevin Kers,kevin-kers,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Jamiro Monteiro,jamiro-monteiro,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Noé Lebreton,noe-lebreton,,FC Groningen,,2026-10-25,10
+2026-10-23,NEC,Bryan Linssen,bryan-linssen,,FC Groningen,,2026-10-25,10
+2026-10-23,sc Heerenveen,Bernt Klaverboer,bernt-klaverboer,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Vasilios Zagaritis,vasilios-zagaritis,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Maas Willemsen,maas-willemsen,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Sam Kersten,sam-kersten,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Oliver Braude,oliver-braude,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Nolhan Courtens,nolhan-courtens,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Marcus Linday,marcus-linday,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Maxence Rivera,maxence-rivera,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Levi Smans,levi-smans,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Jacob Trenskow,jacob-trenskow,,ADO Den Haag,,2026-10-24,10
+2026-10-23,sc Heerenveen,Dylan Vente,dylan-vente,,ADO Den Haag,,2026-10-24,10
+2026-10-23,FC Groningen,Etienne Vaessen,etienne-vaessen,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Hans Hateboer,hans-hateboer,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Marco Rente,marco-rente,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Thijmen Blokzijl,thijmen-blokzijl,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Jorg Schreuders,jorg-schreuders,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Pelle Clement,pelle-clement,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Tika de Jonge,tika-de-jonge,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Jacob Ondrejka,jacob-ondrejka,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Thom van Bergen,thom-van-bergen,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,David van der Werff,david-van-der-werff,,NEC,,2026-10-25,10
+2026-10-23,FC Groningen,Brynjólfur Willumsson,brynjolfur-willumsson,,NEC,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Michael Brouwer,michael-brouwer,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Bas Kuipers,bas-kuipers,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Bruno Martins Indi,bruno-martins-indi,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Nick Verschuren,nick-verschuren,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Marvin Young,marvin-young,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Lushendry Martes,lushendry-edward-martes,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Isaac Babadi,isaac-babadi,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Cedric Hatenboer,cedric-hatenboer,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Jens Toornstra,jens-toornstra,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Robin van Cruijsen,robin-van-cruijsen,,Ajax,,2026-10-25,10
+2026-10-23,Sparta Rotterdam,Milan Zonneveld,milan-zonneveld,,Ajax,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Mattijs Branderhorst,mattijs-branderhorst,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Justin Hubner,justin-hubner,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Philip Brittijn,philip-brittijn,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Rodrigo Guth,rodrigo-guth,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Syb van Ottele,syb-van-ottele,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Ivo Pinto,ivo-pinto,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Shiloh 't Zand,shiloh-t-zand,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Edouard Michut,edouard-michut,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Sven Simons,sven-simons,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Lequincio Zeefuik,lequincio-zeefuik,,Excelsior,,2026-10-25,10
+2026-10-23,Fortuna Sittard,Anthony Descotte,anthony-descotte,,Excelsior,,2026-10-25,10
+2026-10-23,Go Ahead Eagles,Kjetil Haug,kjetil-haug,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Dean James,dean-james,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Joris Kramer,joris-kramer,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Giovanni van Zwam,giovanni-van-zwam,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Alfons Sampsted,alfons-sampsted,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Evert Linthorst,evert-linthorst,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Melle Meulensteen,melle-meulensteen,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Mathis Suray,mathis-suray,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Søren Tengstedt,sren-tengstedt,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Victor Edvardsen,victor-edvardsen,,Telstar,,2026-10-23,10
+2026-10-23,Go Ahead Eagles,Stefán Ingi Sigurdarson,stefan-ingi-sigurdarson,,Telstar,,2026-10-23,10
+2026-10-23,PEC Zwolle,Jasper Schendelaar,jasper-schendelaar,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Sherel Floranus,sherel-floranus,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Nick Viergever,nick-viergever,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Simon Graves,simon-graves,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Olivier Aertssen,olivier-aertssen,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Tobias Sommer,t-sommer,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Ryan Thomas,ryan-thomas,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Dylan Mbayo,dylan-mbayo,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Thijs Oosting,thijs-oosting,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Gilles van der Wal,gilles-van-der-wal,,FC Utrecht,,2026-10-24,10
+2026-10-23,PEC Zwolle,Sydney van Hooijdonk,sydney-van-hooijdonk,,FC Utrecht,,2026-10-24,10
+2026-10-23,Excelsior,Stijn van Gassel,stijn-van-gassel,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Simon Janssen,simon-janssen,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Jan Plug,jan-plug,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Casper Widell,casper-widell,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Eric da Silva Moreira,eric-da-silva-moreira,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Lennard Hartjes,lennard-hartjes,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Rick Meissen,rick-meissen,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Irakli Yegoian,irakli-yegoian,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Ágúst Orri Thorsteinsson,agust-orri-thorsteinsson,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,David Garden,david-garden,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Excelsior,Aymen Sliti,aymen-sliti,,Fortuna Sittard,,2026-10-25,10
+2026-10-23,Telstar,Ronald Koeman Jr.,ronald-koeman-jr,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Marvin Peersman,marvin-peersman,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Abdelnour Soualhia,abdelnour-soualhia,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Sem Valk,sem-valk,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Gerald Alders,gerald-alders,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Nils Rossen,nils-rossen,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Tyrone Owusu,tyrone-owusu,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Noach Shenkman,noach-shenkman,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Patrick Brouwer,patrick-brouwer,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Nökkvi Thórisson,nokkvi-thorisson,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Telstar,Ar'jany Martha,ar-jany-martha,,Go Ahead Eagles,,2026-10-23,10
+2026-10-23,Willem II,Maxime Delanghe,maxime-delanghe,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Nathan Tjoe-A-On,nathan-tjoe-a-on,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Maxim Dekker,maxim-dekker,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Finn Stam,finn-stam,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Hidde ter Avest,hidde-ter-avest,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Tonny Vilhena,tonny-vilhena,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Anass Zarrouk,anass-zarrouk,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Vito van Crooij,vito-van-crooij,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Uriël van Aalst,uriel-van-aalst,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Jaden Slory,jaden-slory,,SC Cambuur,,2026-10-24,10
+2026-10-23,Willem II,Devin Haen,devin-haen,,SC Cambuur,,2026-10-24,10
+2026-10-23,ADO Den Haag,Kilian Nikièma,kilian-nikiema,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Sekou Sylla,sekou-sylla,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Matteo Waem,matteo-waem,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Pascal Mulder,pascal-mulder,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Lasse Wilhelm,lasse-wilhelm,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Jonas Jensen-Abbew,jonas-jensen-abbew,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Evan Rottier,evan-rottier,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Juho Kilo,juho-kilo,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Jan Zamburek,jan-zamburek,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Yannick Ferreira Eduardo,yannick-eduardo,,sc Heerenveen,,2026-10-24,10
+2026-10-23,ADO Den Haag,Jesse Bal,jesse-bal,,sc Heerenveen,,2026-10-24,10
+2026-10-23,SC Cambuur,Thijs Jansen,thijs-jansen,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Morgan Costarelli,morgan-costarelli,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Billy van Duijl,billy-van-duijl,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Ismaël Baouf,ismael-baouf,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Jorn Berkhout,jorn-berkhout,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Nicky Souren,nicky-souren,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Mathieu Maertens,mathieu-maertens,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Ilyes Hamache,ilyes-hamache,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Rafik El Arguioui,rafik-el-arguioui,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Nicolas Binder,jason-ceka,,Willem II,,2026-10-24,10
+2026-10-23,SC Cambuur,Nicolas Binder,nicolas-binder,,Willem II,,2026-10-24,10
