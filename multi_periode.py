@@ -473,6 +473,9 @@ def main():
                         "prijzen.csv over")
     p.add_argument("--afwezigen-max-dagen", type=int, default=4,
                    help="waarschuw als afwezigen.csv ouder is dan dit")
+    p.add_argument("--opstellingen", default="opstellingen.csv",
+                   help="vermoedelijke opstellingen; wordt gebruikt om te MELDEN wie "
+                        "zijn basisplaats lijkt te zijn verloren, niet om te rekenen")
     p.add_argument("--stats", "--xg", "--fbref", dest="xg", default="spelerstats.csv",
                    help="assists/kaarten van scrape_statistieken.py; ontbreekt het, dan "
                         "draait dit script zoals vóór stap 5")
@@ -575,6 +578,22 @@ def main():
                 print(f"LET OP: {a.afwezigen} is {oud} dagen oud. Spelers die sindsdien "
                       f"hersteld zijn, worden nu onterecht uitgesloten.")
 
+    # Vermoedelijke opstelling: alleen melden, geen getal aanraken. De reden
+    # staat in m.lees_opstellingen() -- het percentage van de bron is geen kans.
+    elf, opst_opgehaald = m.lees_opstellingen(a.opstellingen, a.ronde)
+    bron_opstellingen = "bestand"
+    if elf is None:
+        bron_opstellingen = "ontbreekt"
+        print(f"LET OP: {a.opstellingen} niet gevonden - er wordt niet gemeld wie "
+              f"zijn basisplaats lijkt te zijn verloren. Draai scrape_eredivisie.py.")
+    elif not elf:
+        bron_opstellingen = "andere_ronde"
+        print(f"LET OP: {a.opstellingen} bevat geen rijen voor ronde {a.ronde} - het "
+              f"bestand gaat over een andere ronde en wordt niet gebruikt.")
+    else:
+        print(f"opstellingen geladen: vermoedelijke elf van {len(elf)} clubs voor "
+              f"ronde {a.ronde} (opgehaald {opst_opgehaald or 'onbekend'})")
+
     per_ronde = lees_programma_per_ronde(a.programma, m)
     if a.ronde not in per_ronde:
         sys.exit(f"Geen programma voor ronde {a.ronde} in {a.programma}. "
@@ -608,6 +627,14 @@ def main():
     # Huidig team (VOOR een eventuele transfer), met ronde-0-E -- exact wat
     # cvhj_model.py's "huidig" in besluit.json ook laat zien.
     selectie_huidig = [op_speler_id[sid] for sid in selectie_ids]
+    eigen_buiten_elf = m.niet_in_vermoedelijke_elf(selectie_huidig, elf)
+    if eigen_buiten_elf:
+        print(f"\nUIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE "
+              f"(de verwachting hieronder rekent hier NIET mee):")
+        for naam_e, club_e, b_e, n_e in eigen_buiten_elf:
+            print(f"    {naam_e:26s}{club_e:17s}begon {b_e}/{n_e} recent, staat nu niet "
+                  f"in de vermoedelijke elf")
+
     basis_h, bank_h, totaal_h = m.opstelling(selectie_huidig)
     m.toon_selectie(basis_h, bank_h, totaal_h, sum(s["prijs"] for s in selectie_huidig),
                     kop="OPSTELLING NU (zonder transfers)")
@@ -686,10 +713,16 @@ def main():
         print("  geen transfer nodig -- de huidige selectie is al optimaal binnen de horizon.")
     for x in uit:
         print(f"    UIT  {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  E {x['E']:5.2f}")
+    # Bij een speler die je GAAT KOPEN telt zijn speelhistorie niet als drempel:
+    # dat hij nu niet in de vermoedelijke elf staat, wil je weten of hij vorige
+    # maand veel begon of niet. Vandaar de drempels op 0.
+    koop_buiten = {t[0] for t in m.niet_in_vermoedelijke_elf(
+        inn, elf, min_duels=0, min_basisdeel=0.0)}
     for x in inn:
         e_m = e_multi.get(x["speler_id"], 0.0)
+        vlag = "  << niet in de vermoedelijke elf" if x["speler"] in koop_buiten else ""
         print(f"    IN   {x['speler']:26s}{x['club']:17s}EUR {x['prijs']:.2f}  "
-              f"E {x['E']:5.2f}  E(horizon) {e_m:5.2f}")
+              f"E {x['E']:5.2f}  E(horizon) {e_m:5.2f}{vlag}")
     if winst < 1.0 and uit:
         print("  LET OP: winst < 1,0 punt -- dat is binnen de ruis van het model; "
               "niets doen is hier even verdedigbaar.")
@@ -739,6 +772,10 @@ def main():
             "bron_selectie": "bestand",
             "bron_afwezigen": {"status": bron_afwezigen, "opgehaald": afw_opgehaald,
                                "aantal": len({v["speler"] for v in afwezig.values()}) if afwezig else 0},
+            "bron_opstellingen": {"status": bron_opstellingen, "opgehaald": opst_opgehaald,
+                                  "clubs": len(elf) if elf else 0},
+            "buiten_vermoedelijke_elf": [{"speler": n_e, "club": c_e, "basis": b_e, "duels": d_e}
+                                         for n_e, c_e, b_e, d_e in eigen_buiten_elf],
             "stats_bron": m.stats_herkomst(pad_xg),
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
