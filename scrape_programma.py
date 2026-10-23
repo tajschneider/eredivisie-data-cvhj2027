@@ -263,6 +263,67 @@ def zoek_inhaal(namen, gespeeld, tot_ronde):
     return rijen
 
 
+def uit_clubs_csv(pad_clubs, pad_programma, ronde, horizon):
+    """Het programma afleiden uit clubs.csv, als terugval wanneer de bron faalt.
+
+    Waarom dit bestaat. Op 22-10-2026 is de wekelijkse run afgebroken bij deze
+    scraper, vóór "Model draaien", en er is dus geen advies verstuurd. De
+    oorzaak zit in de bron: deze scraper leest /eredivisie/speelronde/<n>/ per
+    ronde, en dat pad levert niets meer. Zonder terugval sloopt één dode
+    bronpagina de hele keten, terwijl alles wat programma.csv nodig heeft
+    ELDERS AL IN DE REPO STAAT -- clubs.csv bevat alle 34 ronden met datum,
+    clubs en marktkansen, opgehaald door scrape_eredivisie.py.
+
+    Nagerekend op de stand van 23-10-2026: de 54 wedstrijden van ronde 10 t/m
+    15 komen exact overeen met het bestaande programma.csv, en de kansen zijn
+    VERSER (clubs.csv is van vandaag, programma.csv van 19 oktober).
+
+    De AFTRAPTIJD is het enige dat clubs.csv niet heeft: daar staat alleen een
+    ISO-datum. Die tijd is niet cosmetisch -- deadline.py berekent er het
+    inlegvenster mee, en inleggen.py is het enige script dat iets
+    onomkeerbaars doet. Daarom wordt de lange datum met tijd uit het BESTAANDE
+    programma.csv overgenomen voor elke wedstrijd die daar al in stond; op
+    23-10-2026 was dat 54 van de 54, en de berekende deadline bleef
+    bit-voor-bit dezelfde (2026-10-23 20:00). Voor een wedstrijd die er nog
+    niet in stond, komt de ISO-datum te staan en wordt dat GEMELD: deadline.py
+    leest die wel, maar zonder tijd, en gaat dan van middernacht uit.
+
+    Inhaalduels worden hier NIET gedetecteerd. Dat vraagt een vergelijking van
+    gespeelde en ongespeelde ronden met datums, en clubs.csv had op 23-10-2026
+    geen enkele openstaande wedstrijd in een eerdere ronde -- er is dus niets
+    om de detectie op te toetsen. Een ongetoetste inhaaldetectie die een duel
+    verkeerd indeelt, telt spelers mee die je niet bezit, en dat is erger dan
+    geen detectie. Alles komt hier als `regulier` uit, en dat wordt gemeld.
+    """
+    clubrijen = list(csv.DictReader(open(pad_clubs, newline="", encoding="utf-8-sig")))
+    ronden = {str(r) for r in range(ronde, ronde + max(1, horizon))}
+
+    tijden = {}
+    if Path(pad_programma).exists():
+        for r in csv.DictReader(open(pad_programma, newline="", encoding="utf-8-sig")):
+            if datum_naar_dt(r.get("datum", "")):
+                tijden[(r["ronde"], r["thuis"], r["uit"])] = r["datum"]
+
+    rijen, zonder_tijd = [], []
+    for r in clubrijen:
+        if r.get("thuis_uit") != "thuis" or str(r.get("ronde")) not in ronden:
+            continue
+        k = (str(r["ronde"]), r["club"], r["tegenstander"])
+        datum = tijden.get(k) or (r.get("datum") or "")
+        if not datum_naar_dt(datum) or ":" not in datum:
+            zonder_tijd.append(f"{r['club']} - {r['tegenstander']} (ronde {r['ronde']})")
+        rijen.append({"ronde": str(r["ronde"]), "datum": datum,
+                      "thuis": r["club"], "uit": r["tegenstander"],
+                      "kans_thuis": r.get("kans_winst", ""),
+                      "kans_gelijk": r.get("kans_gelijk", ""),
+                      "kans_uit": r.get("kans_verlies", ""),
+                      "verwacht_thuis": r.get("verwacht_voor", ""),
+                      "verwacht_uit": r.get("verwacht_tegen", ""),
+                      "soort": "regulier"})
+    rijen.sort(key=lambda r: (int(r["ronde"]), r["thuis"]))
+    return rijen, zonder_tijd
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -292,8 +353,35 @@ def main():
             rijen.append(rij)
 
     if not rijen:
-        sys.exit(f"FOUT: geen openstaande wedstrijden in ronde {ronde}. "
-                 f"Is de ronde al gespeeld? Probeer --ronde {ronde + 1}.")
+        # Bron leeg: afleiden uit clubs.csv in plaats van de hele keten slopen.
+        # Zie uit_clubs_csv() voor wat dat wel en niet oplevert.
+        print(f"\nGEEN WEDSTRIJDEN uit de bron voor ronde {ronde} "
+              f"({ROUND_URL.format(ronde=ronde)}).")
+        print("Terugvallen op clubs.csv, dat dezelfde wedstrijden bevat.")
+        pad_pg = Path(args.uit) / "programma.csv"
+        afgeleid, zonder_tijd = uit_clubs_csv(args.clubs, pad_pg, ronde, args.horizon)
+        if not afgeleid:
+            sys.exit(f"FOUT: geen wedstrijden in ronde {ronde}, niet uit de bron "
+                     f"en niet uit {args.clubs}. Is de ronde al gespeeld? Probeer "
+                     f"--ronde {ronde + 1}, of draai eerst scrape_eredivisie.py "
+                     f"zodat clubs.csv de komende ronden bevat.")
+        print(f"  {len(afgeleid)} wedstrijden afgeleid uit {args.clubs} "
+              f"(ronde {ronde} t/m {ronde + max(1, args.horizon) - 1})")
+        if zonder_tijd:
+            print(f"  LET OP: {len(zonder_tijd)} wedstrijd(en) zonder aftraptijd. "
+                  f"deadline.py rekent daar met middernacht, dus het inlegvenster "
+                  f"schuift naar de avond ervoor:")
+            for w in zonder_tijd[:6]:
+                print(f"    {w}")
+        print("  LET OP: inhaalduels zijn NIET gedetecteerd op dit pad -- alles "
+              "staat als `regulier`. Controleer dat zelf bij een uitgesteld duel.")
+        print("  Dit is een terugval. De bronpagina hoort gerepareerd te worden; "
+              "zolang dat niet gebeurt, loopt het programma op clubs.csv.")
+        rijen = afgeleid
+        args.geen_inhaal = True
+        via_clubs = True
+    else:
+        via_clubs = False
 
     inhaal = []
     if not args.geen_inhaal:
@@ -330,7 +418,7 @@ def main():
             r["soort"] = "inhaal_later"
 
     verder = []
-    if args.horizon > 1:
+    if args.horizon > 1 and not via_clubs:
         print(f"\nprogramma horizon (ronde {ronde + 1} t/m {ronde + args.horizon - 1}):")
         for latere_ronde in range(ronde + 1, ronde + args.horizon):
             print(f"  ronde {latere_ronde}:")
