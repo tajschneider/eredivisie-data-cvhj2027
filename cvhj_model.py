@@ -671,8 +671,24 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         # 1. doelpunten: drieweg-menging lokaal venster (nu recency-gewogen) /
         #    fbref-xG / prior. fb_n90=0 (fbref ontbreekt of speler niet
         #    gematcht) elimineert de fbref-term volledig uit teller EN noemer.
-        fb_gewicht = fb_n90 * XG_GEWICHT
-        fb_doel_punten = (fb["xg_per90"] * GOALWAARDE[positie]) if fb else 0.0
+        # Het gewicht van de fbref-term hangt af van of er WERKELIJK een
+        # xG-waarde is, niet alleen van of de speler gematcht is. Dat scheelt
+        # een stille ramp zodra de statistieken van een bron komen die geen xG
+        # heeft -- zoals spelers_seizoen.csv, dat alleen waargenomen goals,
+        # assists en kaarten bevat. Met xg_per90 = 0 en fb_n90 > 0 trok deze
+        # breuk de doelpuntenschatting van IEDERE gematchte speler naar nul;
+        # gemeten op de stand van 23-10-2026 kromp de som van de verwachte
+        # punten over de pool daardoor van 648 naar 580, en juist de
+        # topspelers het hardst (Julian Brandt -1,09).
+        #
+        # Zonder xG blijft de doelpuntenschatting nu precies wat ze zonder
+        # bron zou zijn, en dragen alleen assists en kaarten bij. Dat is ook
+        # het enige eerlijke: waargenomen goals in een veld stoppen dat xG
+        # heet, geeft de doelpuntenterm een tweede portie van dezelfde
+        # waarneming onder een naam die liegt.
+        heeft_xg = bool(fb and fb.get("xg_per90"))
+        fb_gewicht = fb_n90 * XG_GEWICHT if heeft_xg else 0.0
+        fb_doel_punten = (fb["xg_per90"] * GOALWAARDE[positie]) if heeft_xg else 0.0
         ind90 = (rol["goals"] * GOALWAARDE[positie]
                  + fb_gewicht * fb_doel_punten
                  + PRIOR_P90[positie] * KRIMP_SPELER) / (n90 + fb_gewicht + KRIMP_SPELER)
@@ -684,7 +700,17 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         #    (fbref is None) is dit exact 0.0 -- de "poort" uit de docstring.
         e_assist90 = 0.0
         if fbref is not None:
-            assist_obs = ((fb["assists_per90"] + fb["xag_per90"]) / 2) if fb else 0.0
+            # Het gemiddelde van assists en xAG dempt de ruis van een klein
+            # aantal assists. Heeft de bron geen xAG, dan is er niets om mee
+            # te dempen en wordt het de assistvoet alleen. Dat expliciet
+            # opschrijven in plaats van xag_per90 met assists_per90 vullen:
+            # dat laatste geeft hetzelfde getal, maar dan staat er in het
+            # bestand een xAG die geen xAG is, en daar komt later iemand op
+            # terug met een verkeerde conclusie.
+            if fb and fb.get("xag_per90"):
+                assist_obs = (fb["assists_per90"] + fb["xag_per90"]) / 2
+            else:
+                assist_obs = fb["assists_per90"] if fb else 0.0
             e_assist90 = ((fb_n90 * assist_obs + KRIMP_ASSIST * PRIOR_ASSIST_RATE[positie])
                           * ASSISTWAARDE[positie] / (fb_n90 + KRIMP_ASSIST))
 
@@ -1124,6 +1150,75 @@ def lees_spelerstats(pad):
     return uit
 
 
+def stats_uit_seizoen(pad):
+    """spelers_seizoen.csv -> dezelfde vorm als lees_spelerstats(), of None.
+
+    Terugval voor een ontbrekende spelerstats.csv. Dat bestand stond op
+    23-10-2026 niet in de repo, en daarmee droegen assists en kaarten EXACT
+    NUL bij aan elke verwachting -- terwijl een assist 5/4/3/2 punten waard is
+    en een gele kaart -3. De seizoensmomentopname die de scraper wel bijwerkt
+    bevat die getallen gewoon: 405 van de 505 spelers met minuten, 136 met
+    assists, 40 met een gele kaart.
+
+    Alleen de NIEUWSTE momentopname. Het bestand bewaart elke ophaaldatum
+    naast elkaar; door alle rijen lezen zou een speler twee keer meedoen en
+    zijn seizoenstotaal verdubbelen.
+
+    WAT HIER NIET IN ZIT, en met opzet leeg blijft: xg_per90 en xag_per90. De
+    bron heeft ze niet. Leeglaten is geen slordigheid maar het signaal waarop
+    bouw_pool() de doelpuntenterm ongemoeid laat -- zie daar. De gemeten
+    gevolgen van de alternatieven, op de stand van 23-10-2026:
+
+      niets (nu):                     som E over de pool 648,1
+      xg gevuld met waargenomen goals:                   644,1
+      xg op 0 met het OUDE gewicht:                      579,5  <- stil kapot
+      xg leeg met het nieuwe gewicht:                    637,0  <- dit
+
+    Die laatste schuift midvelders omhoog op assists (Gloukh +1,05, Yegoian
+    +0,73) en verdedigers omlaag op kaarten (Floranus -0,77, Alders -0,58).
+    Dat is de richting die de spelregels voorschrijven, en de
+    doelpuntenschatting blijft er bit voor bit buiten.
+
+    De sleutel wordt met EIGEN norm() opgebouwd uit speler en club, net als in
+    lees_spelerstats(), zodat beide bronnen op dezelfde manier matchen.
+    """
+    if not Path(pad).exists():
+        return None
+    rijen = lees(pad)
+    if not rijen or "minuten" not in rijen[0]:
+        return None
+    laatste = max((r.get("opgehaald") or "") for r in rijen)
+    uit = {}
+    for r in rijen:
+        if (r.get("opgehaald") or "") != laatste:
+            continue
+        try:
+            minuten = float(r.get("minuten") or 0)
+        except (TypeError, ValueError):
+            continue
+        if minuten <= 0:
+            continue          # zonder speeltijd is elke voet per 90 zinloos
+        n90 = minuten / 90.0
+
+        def getal(kolom):
+            try:
+                return float(r.get(kolom) or 0)
+            except (TypeError, ValueError):
+                return 0.0
+
+        club = norm_club(r.get("club", ""))
+        uit[f"{norm(r.get('speler', ''))}|{norm(club)}"] = {
+            "minuten_90s": n90,
+            "goals_per90": getal("goals") / n90,
+            "xg_per90": 0.0,
+            "assists_per90": getal("assists") / n90,
+            "xag_per90": 0.0,
+            "gele_kaarten": getal("geel"),
+            "rode_kaarten": getal("rood"),
+        }
+    return uit or None
+
+
 def toon_selectie(basis, bank, totaal, kosten, kop="OPSTELLING"):
     """Print een opstelling onder een EXPLICIETE kop.
 
@@ -1173,6 +1268,9 @@ def main():
     p.add_argument("--afwezigen-max-dagen", type=int, default=4,
                    help="waarschuw als afwezigen.csv ouder is dan dit; een oude "
                         "lijst sluit herstelde spelers uit")
+    p.add_argument("--seizoen", default="spelers_seizoen.csv",
+                   help="seizoensmomentopname; terugval voor assists en kaarten als "
+                        "spelerstats.csv ontbreekt (bevat geen verwachte goals)")
     p.add_argument("--opstellingen", default="opstellingen.csv",
                    help="vermoedelijke opstellingen; wordt gebruikt om te MELDEN wie "
                         "zijn basisplaats lijkt te zijn verloren, niet om te rekenen")
@@ -1242,9 +1340,23 @@ def main():
 
     pad_xg = stats_pad(a.xg)
     fbref = lees_spelerstats(pad_xg)
+    stats_soort = "spelerstats"
     if fbref is None:
-        print(f"LET OP: {pad_xg} niet gevonden - het model "
-              f"draaien zonder assists en kaarten (zoals vóór stap 5). Draai scrape_statistieken.py.")
+        # Terugval op de seizoensmomentopname, die de scraper wel bijwerkt.
+        # Die heeft geen xG, dus de doelpuntenschatting blijft ongemoeid --
+        # alleen assists en kaarten komen erbij, en die droegen zonder dit
+        # bestand exact nul bij. Zie stats_uit_seizoen().
+        fbref = stats_uit_seizoen(a.seizoen)
+        if fbref is not None:
+            stats_soort = "seizoen"
+            print(f"LET OP: {pad_xg} niet gevonden - assists en kaarten komen uit "
+                  f"{a.seizoen} ({len(fbref)} spelers). Verwachte goals zitten daar "
+                  f"niet in, dus de doelpuntenschatting blijft op het eigen venster.")
+        else:
+            stats_soort = "geen"
+            print(f"LET OP: {pad_xg} niet gevonden en {a.seizoen} ook niet bruikbaar - "
+                  f"het model draait zonder assists en kaarten. Draai "
+                  f"scrape_statistieken.py of scrape_eredivisie.py.")
 
     afwezig, afw_opgehaald = lees_afwezigen(a.afwezigen)
     bron_afwezigen = "bestand"
@@ -1423,7 +1535,8 @@ def main():
                                   "clubs": len(elf) if elf else 0},
             "buiten_vermoedelijke_elf": [{"speler": n, "club": c, "basis": b, "duels": d}
                                          for n, c, b, d in eigen_buiten_elf],
-            "stats_bron": stats_herkomst(pad_xg),
+            "stats_bron": {**stats_herkomst(pad_xg), "soort": stats_soort,
+                           "spelers": len(fbref) if fbref else 0},
             "gegenereerd": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
             "transfers_toegestaan": a.transfers,
             "periode": periode,

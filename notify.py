@@ -295,7 +295,17 @@ def bouw_tekst(d):
     # Geen statistiekenbestand is geen storing (het model draait dan zoals vóór
     # stap 5), maar je hoort te weten dat assists en kaarten ontbreken -- niet
     # alleen in het log.
-    if (d.get("stats_bron") or {}).get("bestand") is None:
+    # Drie uitkomsten, drie meldingen. "Geen spelerstats.csv" alleen is sinds
+    # de seizoensterugval niet meer genoeg: assists en kaarten KUNNEN er nu wel
+    # in zitten terwijl dat bestand ontbreekt, en dan is de oude regel
+    # onwaar -- en een onware melding is erger dan geen.
+    _stats = d.get("stats_bron") or {}
+    if _stats.get("soort") == "seizoen":
+        aandacht.append(f"Assists en kaarten komen uit de seizoensstand "
+                        f"({_stats.get('spelers', '?')} spelers), niet uit "
+                        f"spelerstats.csv. Verwachte goals zitten daar niet in, dus "
+                        f"de doelpuntenschatting rust alleen op de laatste ronden.")
+    elif _stats.get("soort") == "geen" or _stats.get("bestand") is None:
         aandacht.append("Geen spelerstats.csv: assists en kaarten zitten NIET in deze "
                         "schatting.")
     if d.get("zonder_speeltijd"):
