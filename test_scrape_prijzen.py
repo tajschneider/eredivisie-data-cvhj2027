@@ -554,6 +554,67 @@ def test_stats_uit_seizoen():
     return ok and goed
 
 
+def test_premiumkolommen_worden_niet_gelezen():
+    """De betaalde kolommen mogen ook niet gelezen worden als ze ER STAAN.
+
+    Dit is het hek om een betaalmuur. `Verwachte punten`, `Totaal` en
+    `Per miljoen` zijn gemaskeerd voor bezoekers zonder Premium: je krijgt per
+    request andere getallen (gemeten 23 oktober: uniform over [1,4], veranderd
+    voor ALLE 507 spelers tussen twee scrapes terwijl prijs/positie/club/naam
+    voor 0 van de 507 veranderden). Ze hier weer inlezen haalt een betaalmuur
+    omlaag EN voert ruis het model in -- vandaar een test en niet alleen een
+    opmerking in de code.
+
+    De fixture zet die kolommen bewust wél op de pagina. Een test met een
+    pagina zonder die kolommen zou altijd slagen en dus niets bewaken.
+    """
+    from scrape_prijzen import parse_rijen
+
+    html = """<table>
+      <tr><th>Speler</th><th>Club</th><th>Positie</th><th>Waarde</th>
+          <th>Behaald</th><th>Verwachte punten</th><th>Totaal</th>
+          <th>Per miljoen</th><th>Basiskans</th></tr>
+      <tr><td><a href="/speler/jan-jansen">Jan Jansen</a></td><td>Ajax</td>
+          <td>Middenvelder</td><td>2,5 mln</td>
+          <td>41,0</td><td>3,17</td><td>2.683</td><td>473</td><td>82%</td></tr>
+      <tr><td><a href="/speler/piet-pieters">Piet Pieters</a></td><td>PSV</td>
+          <td>Verdediger</td><td>1,5 mln</td>
+          <td>-7,0</td><td>1,04</td><td>1.954</td><td>488</td><td>61%</td></tr>
+    </table>"""
+    rijen, _, _ = parse_rijen(html)
+
+    ok = True
+    goed = len(rijen) == 2
+    print(f"  {'OK  ' if goed else 'FOUT'} twee spelers gelezen ({len(rijen)})")
+    ok = ok and goed
+    if not goed:
+        return False
+
+    # 1. De betaalde kolommen komen in geen enkele rij voor, onder geen naam.
+    verboden = ("verwacht", "totaal", "per_miljoen", "per miljoen", "basiskans")
+    for r in rijen:
+        gevonden = [k for k in r if any(v in k.lower() for v in verboden)]
+        goed = not gevonden
+        print(f"  {'OK  ' if goed else 'FOUT'} {r['speler']:14s} geen betaalde kolom "
+              f"in de uitvoer{'' if goed else f': {gevonden}'}")
+        ok = ok and goed
+
+    # 2. 'behaald' wordt wel gelezen, en met het juiste teken -- die kolom is
+    #    niet gemaskeerd en is de enige grondwaarheid die het project heeft.
+    verw = {"Jan Jansen": 41.0, "Piet Pieters": -7.0}
+    for r in rijen:
+        goed = r["behaald"] == verw[r["speler"]]
+        print(f"  {'OK  ' if goed else 'FOUT'} {r['speler']:14s} behaald = "
+              f"{r['behaald']!r} (verwacht {verw[r['speler']]})")
+        ok = ok and goed
+
+    # 3. De prijs is niet per ongeluk uit een van de puntenkolommen gehaald.
+    prijzen = {r["speler"]: r["prijs"] for r in rijen}
+    goed = prijzen == {"Jan Jansen": "2.50", "Piet Pieters": "1.50"}
+    print(f"  {'OK  ' if goed else 'FOUT'} prijzen ongemoeid: {prijzen}")
+    return ok and goed
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -574,10 +635,14 @@ def main():
     print("\nseizoensstand als terugval voor assists en kaarten\n")
     ok7 = test_stats_uit_seizoen()
 
+    print("\nbetaalde kolommen blijven ongelezen\n")
+    ok8 = test_premiumkolommen_worden_niet_gelezen()
+
     print()
-    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7:
-        print("OK: splits_status(), vind_bijna_match(), de opstellingsparser en het\n"
-              "    kolomformaat van spelers.csv gedragen zich zoals verwacht.")
+    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7 and ok8:
+        print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
+              "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
+              "    zoals verwacht.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
 
