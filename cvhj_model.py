@@ -281,16 +281,63 @@ def lambdas_uit_kansen(p_winst: float, p_gelijk: float):
     return float(_GRID[lh]), float(_GRID[la])
 
 
+def lambdas_uit_rij(r):
+    """(lambda_thuis, lambda_uit, herkomst) voor een thuisrij uit clubs.csv.
+
+    De bron publiceert op de wedstrijdpagina zelf verwachte goals per ploeg.
+    Stonden die er, dan werden ze genegeerd en werd hetzelfde getal uit de
+    marktkansen teruggerekend met lambdas_uit_kansen(). Dat is een omweg langs
+    een Poisson-aanname om uit te komen bij een getal dat er al staat.
+
+    Dat de twee hetzelfde meten, is nagegaan voordat ze gemengd werden. Over
+    de 9 duels van ronde 10 waar beide bestonden (22 okt. 2026):
+
+        xg_voor  - lambda_thuis:  gemiddeld +0,058, sd 0,056, uiterste +0,14
+        xg_tegen - lambda_uit:    gemiddeld +0,057, sd 0,058, uiterste +0,16
+
+    Dezelfde schaal dus, met de bron consequent ~0,06 goal (3 a 4%) hoger.
+    Die richting is in beide kolommen gelijk, wat past bij de omweg zelf:
+    lambdas_uit_kansen() legt alleen winst- en gelijkspelkans vast en kan
+    daarom op een paar lambdas uitkomen dat die kansen reproduceert met iets
+    minder doelpunten in totaal.
+
+    De ondergrens is een crashbeveiliging en geen modelkeuze: schat_clubratings()
+    neemt log(lambda / GEM_DOELPUNTEN), en een 0 of een lege string die als 0
+    binnenkomt laat de hele run omvallen met een domeinfout. Een waarde die
+    geen lambda kan zijn, valt daarom terug op de marktkansen in plaats van de
+    run mee te nemen.
+
+    Een rij MET xG maar ZONDER marktkansen wordt door de aanroeper nog steeds
+    overgeslagen. Dat zou nu extra waarnemingen opleveren, maar het verandert
+    welke rijen in de regressie komen, en daarvan kan ik het effect vandaag
+    niet nagaan -- op 22 okt. hadden alle 18 xG-rijen ook marktkansen, dus het
+    zou een onbeproefde wijziging zijn zonder zichtbaar gevolg.
+    """
+    try:
+        xv, xt = float(r.get("xg_voor") or 0), float(r.get("xg_tegen") or 0)
+    except (TypeError, ValueError):
+        xv = xt = 0.0
+    if 0.05 < xv < 8 and 0.05 < xt < 8:
+        return xv, xt, "xg"
+    lh, la = lambdas_uit_kansen(int(r["kans_winst"]) / 100, int(r["kans_gelijk"]) / 100)
+    return lh, la, "kansen"
+
+
 def schat_clubratings(clubrijen):
     """Ridge-regressie op log-schaal, gekrompen naar de prior van vorig seizoen."""
     waarnemingen, gezien = [], set()
+    herkomst = collections.Counter()
     for r in clubrijen:
         sleutel = (r["ronde"], r["club"])
         if sleutel in gezien or r["thuis_uit"] != "thuis" or not r.get("kans_winst"):
             continue
         gezien.add(sleutel)
-        lh, la = lambdas_uit_kansen(int(r["kans_winst"]) / 100, int(r["kans_gelijk"]) / 100)
+        lh, la, bron = lambdas_uit_rij(r)
+        herkomst[bron] += 1
         waarnemingen.append((norm_club(r["club"]), norm_club(r["tegenstander"]), lh, la))
+    if herkomst["xg"]:
+        print(f"  verwachte goals: {herkomst['xg']} duels uit de bron zelf, "
+              f"{herkomst['kansen']} teruggerekend uit de marktkansen")
 
     clubs = sorted({c for h, a, _, _ in waarnemingen for c in (h, a)})
     ix = {c: i for i, c in enumerate(clubs)}
