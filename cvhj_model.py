@@ -413,6 +413,54 @@ def rol_kenmerken(rijen, decay):
     }
 
 
+def rijstatus(r):
+    """De rol van een speler in één rij van spelers.csv: basis/invaller/bank/afwezig.
+
+    Het OUDE kolomformaat heeft een kolom `status` met precies die waarde. Het
+    nieuwe, dat de scraper schrijft sinds de ombouw naar momentopnamen, heeft
+    die kolom niet: daar staan `basis` en `duels` als GETALLEN, omdat één rij
+    over meer dan één ronde kan gaan.
+
+    Dat verschil was een stille tijdbom. bouw_pool() las r["status"] zonder
+    terugval, en het nieuwe formaat is tot 23-10-2026 nooit weggeschreven --
+    de eerste momentopname leverde geen ronderijen op en de tweede ook niet,
+    want er was geen ronde tussen de twee gespeeld. De eerste keer dat er wél
+    productie uit het verschil zou komen, was de maandag erna, en dan was dit
+    een KeyError geweest op zowel multi_periode.py als zijn terugval. Gemeten
+    op dezelfde data in beide formaten: oud 275 spelers in de pool, nieuw
+    KeyError.
+
+    Afleiden kan exact voor een rij over één ronde, en dat is wat beide
+    formaten in de praktijk bevatten: begon hij, dan is het basis; speelde hij
+    zonder te beginnen, dan invaller; stond hij erbij zonder minuten, dan bank.
+    Voor een rij over MEER ronden met zowel een basisplaats als een bankzitting
+    is één label per definitie een vereenvoudiging -- dan wint basis, want de
+    kans dat hij komende ronde begint is dan hoger dan die van een pure
+    bankzitter. Dat is een aanname; de nette oplossing is rol_kenmerken() per
+    ronde laten rekenen in plaats van per rij, en dat is een grotere ingreep
+    dan het weghalen van deze valkuil.
+
+    "afwezig" wordt NIET afgeleid. bouw_pool() slaat zo'n rij helemaal over, en
+    dat is iets anders dan een rij met nul minuten: die laatste hoort mee te
+    tellen als een duel waarin hij niet speelde, want dat drukt de kans dat hij
+    komende ronde aan het spel komt. Alleen de expliciete kolom mag die rij
+    laten verdwijnen.
+    """
+    if r.get("status"):
+        return r["status"]
+    try:
+        basis = float(r.get("basis") or 0)
+    except (TypeError, ValueError):
+        basis = 0
+    try:
+        minuten = float(r.get("minuten") or 0)
+    except (TypeError, ValueError):
+        minuten = 0
+    if basis > 0:
+        return "basis"
+    return "invaller" if minuten > 0 else "bank"
+
+
 def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
               programma, inhaal, laatste_ronde, venster=6, min_minuten=60, fbref=None,
               afwezig=None, meld=True):
@@ -460,7 +508,10 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
     # anders koppel je twee naamgenoten aan elkaar en dat is erger dan niets.
     op_naam_club = collections.defaultdict(list)
     for r in spelerrijen:
-        if r["ronde"] not in recent or r["status"] == "afwezig":
+        # rijstatus() i.p.v. r["status"]: het nieuwe kolomformaat van
+        # spelers.csv heeft die kolom niet. Zie de docstring daar.
+        status = rijstatus(r)
+        if r["ronde"] not in recent or status == "afwezig":
             continue
         sid = r.get("speler_id") or norm(r["speler"])
         sleutel = f"{norm(r['speler'])}|{norm_club(r.get('club', ''))}"
@@ -470,11 +521,21 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         minuten, goals = int(r["minuten"] or 0), int(r["goals"] or 0)
         v["min"] += minuten
         v["goals"] += goals
-        v["basis"] += 1 if r["status"] == "basis" else 0
-        v["duels"] += 1
+        # Tellen met het GETAL als het er staat. In het oude formaat is `basis`
+        # 0 of 1 en bestaat `duels` niet, dus dit komt daar op precies hetzelfde
+        # uit als "+1 als status basis is". In het nieuwe formaat kan een rij
+        # over twee ronden gaan met twee basisplaatsen, en die moeten dan ook
+        # voor twee tellen -- anders onderschat je iedereen met een vensterrij.
+        try:
+            v["basis"] += int(float(r.get("basis") or 0)) if "basis" in r else (
+                1 if status == "basis" else 0)
+            v["duels"] += max(1, int(float(r.get("duels") or 1)))
+        except (TypeError, ValueError):
+            v["basis"] += 1 if status == "basis" else 0
+            v["duels"] += 1
         # offset 0 = meest recente ronde in het venster, groter = ouder --
         # invoer voor rol_kenmerken()'s recency-weging (stap 1+2).
-        v["rijen"].append((laatste_ronde - int(r["ronde"]), minuten, goals, r["status"]))
+        v["rijen"].append((laatste_ronde - int(r["ronde"]), minuten, goals, status))
 
     gem_lambda = sum(GEM_DOELPUNTEN * math.exp(a) for a in aanval.values()) / len(aanval)
 

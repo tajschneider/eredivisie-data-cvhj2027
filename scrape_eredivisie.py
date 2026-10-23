@@ -1055,8 +1055,37 @@ def schrijf(pad, cols, nieuw, sleutel):
             k = tuple(str(r.get(c, "")) for c in sleutel)
             index[k] = len(rijen)
             rijen.append(r)
+    elif bestaand and all(c in bestaand[0] for c in sleutel):
+        # Kolomformaat gewijzigd: de bestaande rijen MEEVERHUIZEN en niet
+        # weggooien. Hier stond "bestand wordt opnieuw opgebouwd", en dat was
+        # geen opmerking maar dataverlies met een aankondiging: spelers.csv had
+        # negen ronden geschiedenis en de volgende volledige run zou daar één
+        # ronde van maken. Gemeten gevolg voor de pool: 273 spelers terug naar
+        # 175, en erger dan dat getal is dat rol_kenmerken() dan één waarneming
+        # per speler krijgt, waardoor p_speelt en p_60plus nul of één worden
+        # zonder enige demping.
+        #
+        # De nieuwe kolommen blijven leeg. Dat is eerlijk: die data bestaat voor
+        # die ronden niet meer en valt niet te reconstrueren. Voor het model
+        # maakt het niets uit -- bouw_pool() leest ronde, speler_id, club,
+        # minuten, goals, basis en de rol, en die staan er allemaal in.
+        #
+        # Voorwaarde is dat de SLEUTELKOLOMMEN er zijn; zonder die krijgt elke
+        # oude rij dezelfde lege sleutel en overschrijven ze elkaar. Mist er
+        # een, dan valt dit terug op het oude gedrag -- met de melding erbij.
+        nieuw_in = sorted(set(cols) - set(bestaand[0]))
+        for r in bestaand:
+            rij = {c: r.get(c, "") for c in cols}
+            k = tuple(str(rij.get(c, "")) for c in sleutel)
+            index[k] = len(rijen)
+            rijen.append(rij)
+        print(f"  {pad.name}: kolommen gewijzigd, {len(rijen)} bestaande rijen "
+              f"meegenomen; nieuw en leeg: {', '.join(nieuw_in) or '(geen)'}")
     elif bestaand:
-        print(f"  {pad.name}: kolommen gewijzigd, bestand wordt opnieuw opgebouwd")
+        ontbreekt = sorted(set(sleutel) - set(bestaand[0]))
+        print(f"  {pad.name}: kolommen gewijzigd EN de sleutelkolom(men) "
+              f"{ontbreekt} ontbreken — de bestaande {len(bestaand)} rijen zijn "
+              f"niet over te nemen en het bestand wordt opnieuw opgebouwd")
     bij = 0
     for r in nieuw:
         k = tuple(str(r.get(c, "")) for c in sleutel)
@@ -1250,17 +1279,18 @@ def taak_spelers(max_spelers=None, duels=None):
     print(f"  {len(nu)} spelers gelezen, "
           f"{sum(1 for r in nu if getal(r.get('assists')) )} met assists")
 
-    # Een spelers.csv uit de vorige opzet blijft anders ongemoeid staan: de
-    # ronderijen komen pas bij de tweede momentopname, dus schrijf() wordt nu
-    # niet aangeroepen en het oude bestand blijft met oude kolommen liggen.
-    # Apart zetten in plaats van weggooien; de data blijft bewaard.
-    pad_sp = OUT / "spelers.csv"
-    bestaand_sp = lees(pad_sp)
-    if bestaand_sp and set(bestaand_sp[0]) != set(SPELER_COLS):
-        doel = OUT / "spelers_vorig_formaat.csv"
-        pad_sp.replace(doel)
-        print(f"  spelers.csv had het oude kolomformaat -> {doel.name}")
-
+    # Hier stond dat een spelers.csv met het oude kolomformaat apart werd gezet
+    # als spelers_vorig_formaat.csv, met "de data blijft bewaard" erbij. Dat
+    # gebeurde ook -- maar op de runner, en die wordt na de run weggegooid. De
+    # vastlegstap in scrape.yml doet `[ -f "$f" ] && git add "$f"`, dus een
+    # VERDWENEN bestand slaat hij stil over, en spelers_vorig_formaat.csv staat
+    # niet in zijn lijst. Op 23-10-2026 overleefden negen ronden geschiedenis
+    # dus bij toeval: de verplaatsing is nooit vastgelegd.
+    #
+    # De verplaatsing is er daarom uit. schrijf() neemt de bestaande rijen nu
+    # mee bij een gewijzigd kolomformaat, dus er valt niets apart te zetten, en
+    # een kopie die niet wordt vastgelegd is geen reservekopie. De echte
+    # reservekopie is de git-geschiedenis van dit bestand.
     oud_alles = lees(OUT / "spelers_seizoen.csv")
     schrijf(OUT / "spelers_seizoen.csv", SEIZOEN_COLS, nu,
             ["opgehaald", "speler_id"])

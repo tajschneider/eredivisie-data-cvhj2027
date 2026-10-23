@@ -699,9 +699,25 @@ def controleer_rondes(r, momentopnamen=1):
             r.ok("spelers.csv", "nog geen ronderijen, en dat hoort zo",
                  "")
         else:
-            r.waarschuw("spelers.csv", "geen ronderijen terwijl er wel twee "
-                        "seizoensstanden zijn",
-                        "het verschil tussen de twee standen leverde niets op")
+            # FOUT en geen waarschuwing. Zonder dit bestand bouwt bouw_pool()
+            # een LEGE pool -- geen enkele speler haalt de speeltijddrempel --
+            # en dan is er geen advies, alleen een nette lege uitvoer. Op
+            # 23-10-2026 stond hier een waarschuwing, en de scrape legde
+            # vrolijk vast terwijl het bestand van de runner verdwenen was.
+            # Een waarschuwing laat de run doorgaan; dat hoort hier niet.
+            #
+            # Twee momentopnamen zonder ronde ertussen is een geldige reden dat
+            # het verschil niets oplevert -- maar dan hoort het BESTAAND
+            # bestand te blijven staan, niet te verdwijnen. Dat het er niet is
+            # terwijl er twee standen zijn, betekent dat er iets is weggehaald.
+            r.fout("spelers.csv", "geen ronderijen terwijl er wel twee "
+                   "seizoensstanden zijn",
+                   "zonder dit bestand is de pool leeg en is er geen advies. "
+                   "Het verschil tussen de twee standen leverde niets op, of het "
+                   "bestand is tijdens de run verplaatst of verwijderd. Kijk in "
+                   "de scrape-uitvoer bij 'venster ... -> ...' of er een ronde "
+                   "tussen de twee standen gespeeld is, en of spelers.csv nog "
+                   "in de repo staat")
         return
     # Eerst het kolomformaat. Een bestand uit de vorige opzet levert anders een
     # onbegrijpelijke lijst dubbelen op, terwijl het echte probleem is dat het
