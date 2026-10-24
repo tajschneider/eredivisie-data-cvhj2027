@@ -1,0 +1,1432 @@
+{
+  "ronde": 11,
+  "model": "cvhj_model (eenronde-terugval)",
+  "bron_programma": "bestand",
+  "bron_selectie": "bestand",
+  "bron_afwezigen": {
+    "status": "bestand",
+    "opgehaald": "2026-10-23",
+    "aantal": 66
+  },
+  "bron_opstellingen": {
+    "status": "andere_ronde",
+    "opgehaald": null,
+    "clubs": 0
+  },
+  "buiten_vermoedelijke_elf": [],
+  "stats_bron": {
+    "bestand": null,
+    "leeftijd_dagen": null,
+    "soort": "seizoen",
+    "spelers": 405
+  },
+  "gegenereerd": "2026-10-24T06:25:35",
+  "transfers_toegestaan": 1,
+  "periode": 3,
+  "periodestart": false,
+  "ronden_tot_volgende_periode": 2,
+  "huidig": {
+    "verwacht": 48.08,
+    "kosten": 31.35,
+    "basis": [
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "E": 3.887
+      },
+      {
+        "speler": "Ruud Nijstad",
+        "club": "FC Twente",
+        "pos": "V",
+        "E": 3.595
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 2.052
+      },
+      {
+        "speler": "Marvin Young",
+        "club": "Sparta Rotterdam",
+        "pos": "V",
+        "E": 1.579
+      },
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "E": 7.342
+      },
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "E": 6.485
+      },
+      {
+        "speler": "Julian Brandt",
+        "club": "Ajax",
+        "pos": "M",
+        "E": 5.15
+      },
+      {
+        "speler": "Tyrone Owusu",
+        "club": "Telstar",
+        "pos": "M",
+        "E": 3.4
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "E": 4.622
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "E": 4.378
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "E": 3.323
+      }
+    ],
+    "bank": [
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "E": 2.536
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "E": 1.248
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 0.759
+      },
+      {
+        "speler": "Artem Stepanov",
+        "club": "FC Utrecht",
+        "pos": "A",
+        "E": 0.0
+      }
+    ]
+  },
+  "zonder_speeltijd": [],
+  "afwezig_in_selectie": [
+    {
+      "speler": "Artem Stepanov",
+      "reden": "blessure",
+      "terug": "2026-11-02"
+    }
+  ],
+  "bijna_match": [],
+  "geblesseerd_in_selectie": [],
+  "programma": [
+    {
+      "thuis": "Ajax",
+      "uit": "AZ"
+    },
+    {
+      "thuis": "Excelsior",
+      "uit": "FC Twente"
+    },
+    {
+      "thuis": "FC Groningen",
+      "uit": "Sparta Rotterdam"
+    },
+    {
+      "thuis": "Feyenoord",
+      "uit": "Fortuna Sittard"
+    },
+    {
+      "thuis": "PEC Zwolle",
+      "uit": "ADO Den Haag"
+    },
+    {
+      "thuis": "PSV",
+      "uit": "Willem II"
+    },
+    {
+      "thuis": "SC Cambuur",
+      "uit": "Go Ahead Eagles"
+    },
+    {
+      "thuis": "sc Heerenveen",
+      "uit": "NEC"
+    },
+    {
+      "thuis": "Telstar",
+      "uit": "FC Utrecht"
+    }
+  ],
+  "inhaal": [],
+  "pool_grootte": 258,
+  "opties": [
+    {
+      "verwacht": 50.18,
+      "winst": 2.1,
+      "formatie": "3-5-2",
+      "uit": [
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "prijs": 2.25,
+          "E": 0.0
+        }
+      ],
+      "in": [
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "prijs": 2.0,
+          "E": 3.759
+        }
+      ],
+      "basis": [
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "E": 3.887
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "E": 3.595
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "E": 2.052
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "E": 1.579
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "E": 7.342
+        },
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "E": 6.485
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "E": 5.15
+        },
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "E": 3.759
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "E": 3.4
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "E": 4.622
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "E": 4.378
+        }
+      ],
+      "bank": [
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "E": 2.536
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "E": 1.248
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "E": 0.759
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "E": 3.323
+        }
+      ],
+      "selectie": [
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "prijs": 2.8
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 4.0
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "prijs": 2.5
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "prijs": 2.2
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "prijs": 1.2
+        },
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "prijs": 2.0
+        }
+      ]
+    },
+    {
+      "verwacht": 49.82,
+      "winst": 1.74,
+      "formatie": "3-4-3",
+      "uit": [
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 4.0,
+          "E": 7.342
+        }
+      ],
+      "in": [
+        {
+          "speler": "Sven Mijnans",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 3.8,
+          "E": 9.08
+        }
+      ],
+      "basis": [
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "E": 3.887
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "E": 3.595
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "E": 2.052
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "E": 1.579
+        },
+        {
+          "speler": "Sven Mijnans",
+          "club": "PSV",
+          "pos": "M",
+          "E": 9.08
+        },
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "E": 6.485
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "E": 5.15
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "E": 3.4
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "E": 4.622
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "E": 4.378
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "E": 3.323
+        }
+      ],
+      "bank": [
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "E": 2.536
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "E": 1.248
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "E": 0.759
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "E": 0.0
+        }
+      ],
+      "selectie": [
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "prijs": 2.8
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "prijs": 2.5
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "prijs": 2.2
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "prijs": 1.2
+        },
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "prijs": 2.25
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Sven Mijnans",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 3.8
+        }
+      ]
+    },
+    {
+      "verwacht": 49.76,
+      "winst": 1.68,
+      "formatie": "3-4-3",
+      "uit": [
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "prijs": 2.0,
+          "E": 0.759
+        }
+      ],
+      "in": [
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "prijs": 2.0,
+          "E": 3.759
+        }
+      ],
+      "basis": [
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "E": 3.887
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "E": 3.595
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "E": 2.052
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "E": 1.579
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "E": 7.342
+        },
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "E": 6.485
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "E": 5.15
+        },
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "E": 3.759
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "E": 4.622
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "E": 4.378
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "E": 3.323
+        }
+      ],
+      "bank": [
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "E": 2.536
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "E": 1.248
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "E": 3.4
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "E": 0.0
+        }
+      ],
+      "selectie": [
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "prijs": 2.8
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 4.0
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "prijs": 2.5
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "prijs": 2.2
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "prijs": 1.2
+        },
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "prijs": 2.25
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Thijs Oosting",
+          "club": "PEC Zwolle",
+          "pos": "M",
+          "prijs": 2.0
+        }
+      ]
+    },
+    {
+      "verwacht": 49.4,
+      "winst": 1.32,
+      "formatie": "3-4-3",
+      "uit": [
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "prijs": 1.5,
+          "E": 1.248
+        }
+      ],
+      "in": [
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "prijs": 1.5,
+          "E": 2.733
+        }
+      ],
+      "basis": [
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "E": 3.887
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "E": 3.595
+        },
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "E": 2.733
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "E": 2.052
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "E": 7.342
+        },
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "E": 6.485
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "E": 5.15
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "E": 3.4
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "E": 4.622
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "E": 4.378
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "E": 3.323
+        }
+      ],
+      "bank": [
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "E": 2.536
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "E": 1.579
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "E": 0.759
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "E": 0.0
+        }
+      ],
+      "selectie": [
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "prijs": 2.8
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 4.0
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "prijs": 2.5
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "prijs": 2.2
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "prijs": 1.2
+        },
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "prijs": 2.25
+        },
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "prijs": 1.5
+        }
+      ]
+    },
+    {
+      "verwacht": 49.24,
+      "winst": 1.15,
+      "formatie": "3-4-3",
+      "uit": [
+        {
+          "speler": "Marvin Young",
+          "club": "Sparta Rotterdam",
+          "pos": "V",
+          "prijs": 1.8,
+          "E": 1.579
+        }
+      ],
+      "in": [
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "prijs": 1.5,
+          "E": 2.733
+        }
+      ],
+      "basis": [
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "E": 3.887
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "E": 3.595
+        },
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "E": 2.733
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "E": 2.052
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "E": 7.342
+        },
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "E": 6.485
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "E": 5.15
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "E": 3.4
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "E": 4.622
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "E": 4.378
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "E": 3.323
+        }
+      ],
+      "bank": [
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "E": 2.536
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "E": 1.248
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "E": 0.759
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "E": 0.0
+        }
+      ],
+      "selectie": [
+        {
+          "speler": "Gjivai Zechiël",
+          "club": "Feyenoord",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Julian Brandt",
+          "club": "Ajax",
+          "pos": "M",
+          "prijs": 2.8
+        },
+        {
+          "speler": "Guus Til",
+          "club": "PSV",
+          "pos": "M",
+          "prijs": 4.0
+        },
+        {
+          "speler": "Brynjólfur Willumsson",
+          "club": "FC Groningen",
+          "pos": "A",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Mohamed Ihattaren",
+          "club": "Fortuna Sittard",
+          "pos": "M",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Mexx Meerdink",
+          "club": "AZ",
+          "pos": "A",
+          "prijs": 2.5
+        },
+        {
+          "speler": "Jacob Trenskow",
+          "club": "sc Heerenveen",
+          "pos": "A",
+          "prijs": 2.2
+        },
+        {
+          "speler": "Ruud Nijstad",
+          "club": "FC Twente",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Tyrone Owusu",
+          "club": "Telstar",
+          "pos": "M",
+          "prijs": 1.2
+        },
+        {
+          "speler": "Stijn van Gassel",
+          "club": "Excelsior",
+          "pos": "K",
+          "prijs": 1.8
+        },
+        {
+          "speler": "Artem Stepanov",
+          "club": "FC Utrecht",
+          "pos": "A",
+          "prijs": 2.25
+        },
+        {
+          "speler": "Kjetil Haug",
+          "club": "Go Ahead Eagles",
+          "pos": "K",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Deveron Fonville",
+          "club": "NEC",
+          "pos": "V",
+          "prijs": 2.0
+        },
+        {
+          "speler": "Sekou Sylla",
+          "club": "ADO Den Haag",
+          "pos": "V",
+          "prijs": 1.5
+        },
+        {
+          "speler": "Olivier Aertssen",
+          "club": "PEC Zwolle",
+          "pos": "V",
+          "prijs": 1.5
+        }
+      ]
+    }
+  ],
+  "advies": {
+    "verwacht": 50.18,
+    "winst": 2.1,
+    "formatie": "3-5-2",
+    "uit": [
+      {
+        "speler": "Artem Stepanov",
+        "club": "FC Utrecht",
+        "pos": "A",
+        "prijs": 2.25,
+        "E": 0.0
+      }
+    ],
+    "in": [
+      {
+        "speler": "Thijs Oosting",
+        "club": "PEC Zwolle",
+        "pos": "M",
+        "prijs": 2.0,
+        "E": 3.759
+      }
+    ],
+    "basis": [
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "E": 3.887
+      },
+      {
+        "speler": "Ruud Nijstad",
+        "club": "FC Twente",
+        "pos": "V",
+        "E": 3.595
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 2.052
+      },
+      {
+        "speler": "Marvin Young",
+        "club": "Sparta Rotterdam",
+        "pos": "V",
+        "E": 1.579
+      },
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "E": 7.342
+      },
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "E": 6.485
+      },
+      {
+        "speler": "Julian Brandt",
+        "club": "Ajax",
+        "pos": "M",
+        "E": 5.15
+      },
+      {
+        "speler": "Thijs Oosting",
+        "club": "PEC Zwolle",
+        "pos": "M",
+        "E": 3.759
+      },
+      {
+        "speler": "Tyrone Owusu",
+        "club": "Telstar",
+        "pos": "M",
+        "E": 3.4
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "E": 4.622
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "E": 4.378
+      }
+    ],
+    "bank": [
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "E": 2.536
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "E": 1.248
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "E": 0.759
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "E": 3.323
+      }
+    ],
+    "selectie": [
+      {
+        "speler": "Gjivai Zechiël",
+        "club": "Feyenoord",
+        "pos": "M",
+        "prijs": 2.0
+      },
+      {
+        "speler": "Julian Brandt",
+        "club": "Ajax",
+        "pos": "M",
+        "prijs": 2.8
+      },
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "prijs": 4.0
+      },
+      {
+        "speler": "Brynjólfur Willumsson",
+        "club": "FC Groningen",
+        "pos": "A",
+        "prijs": 1.8
+      },
+      {
+        "speler": "Mohamed Ihattaren",
+        "club": "Fortuna Sittard",
+        "pos": "M",
+        "prijs": 2.0
+      },
+      {
+        "speler": "Mexx Meerdink",
+        "club": "AZ",
+        "pos": "A",
+        "prijs": 2.5
+      },
+      {
+        "speler": "Jacob Trenskow",
+        "club": "sc Heerenveen",
+        "pos": "A",
+        "prijs": 2.2
+      },
+      {
+        "speler": "Ruud Nijstad",
+        "club": "FC Twente",
+        "pos": "V",
+        "prijs": 2.0
+      },
+      {
+        "speler": "Tyrone Owusu",
+        "club": "Telstar",
+        "pos": "M",
+        "prijs": 1.2
+      },
+      {
+        "speler": "Stijn van Gassel",
+        "club": "Excelsior",
+        "pos": "K",
+        "prijs": 1.8
+      },
+      {
+        "speler": "Marvin Young",
+        "club": "Sparta Rotterdam",
+        "pos": "V",
+        "prijs": 1.8
+      },
+      {
+        "speler": "Kjetil Haug",
+        "club": "Go Ahead Eagles",
+        "pos": "K",
+        "prijs": 1.5
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "prijs": 2.0
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "prijs": 1.5
+      },
+      {
+        "speler": "Thijs Oosting",
+        "club": "PEC Zwolle",
+        "pos": "M",
+        "prijs": 2.0
+      }
+    ]
+  }
+}
