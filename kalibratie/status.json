@@ -1,5 +1,5 @@
 {
-  "laatst_gecontroleerd_tot_ronde": 8,
+  "laatst_gecontroleerd_tot_ronde": 34,
   "geschiedenis": [
     {
       "tijdstip": "2026-09-07T17:17:13.905721+00:00",
@@ -98,6 +98,25 @@
       "n_evalueerbaar": 7,
       "besluit": "geen aanpassing",
       "reden": "slechts 7 evalueerbare ronde(s), minimaal 8 vereist"
+    },
+    {
+      "tijdstip": "2026-10-24T06:19:31.501489+00:00",
+      "tot_ronde": 34,
+      "n_evalueerbaar": 33,
+      "huidig": {
+        "KRIMP_SPELER": 8.0,
+        "KRIMP_CLUB": 1.0,
+        "rmse": 3.4172661773901423
+      },
+      "kandidaat": {
+        "KRIMP_SPELER": 20,
+        "KRIMP_CLUB": 8.0,
+        "rmse": 3.4089197663505355
+      },
+      "relatieve_verbetering": 0.0024424234479683226,
+      "max_haalbare_verbetering": 0.0024424234479683226,
+      "besluit": "geen aanpassing",
+      "reden": "verbetering 0.2% onder de drempel van 3% -- binnen de ruis van dit aantal rondes. LET OP: de best haalbare winst in het HELE raster is 0.24%, nog steeds onder de drempel van 3%. Deze kalibratie kan dus niets aanpassen, wat je ook meet -- de drempel past niet bij de schaal van deze maatstaf. Overweeg te ijken op de werkelijk behaalde punten van de gekozen vijftien in plaats van op RMSE over de hele pool: daar zijn de verschillen een orde van grootte groter."
     }
   ]
 }
