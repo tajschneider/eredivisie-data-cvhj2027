@@ -695,6 +695,90 @@ def test_premiumkolommen_worden_niet_gelezen():
     return ok and goed
 
 
+def test_eerste_wissels_vervuilt_de_elf_niet():
+    """Op 26-10-2026 zette de bron "Eerste wissels:" in het opstellingsblok.
+
+    Zeven extra spelerslinks, binnen dezelfde h2 als de elf. De teller kwam op
+    18 en de aannemelijkheidscontrole weigerde weg te schrijven -- bij ALLE 18
+    clubs tegelijk. Dat was het juiste gedrag (18 spelers wegschrijven als een
+    basiself is erger), maar het betekende wel een week zonder opstellingsdata.
+
+    De afwezigen werden al op speler_id weggefilterd; invallers zijn niet
+    afwezig, dus daar hielp dat niet.
+
+    De oplossing ankert op STRUCTUUR: de elf staan in <li> binnen <ul>, de
+    andere spelers in <p>. Filteren op de tekst "Eerste wissels" zou werken tot
+    de bron die zin anders formuleert, en precies dat gebeurde op 19-10-2026
+    met "Niet beschikbaar:".
+
+    In dezelfde wijziging kwamen de percentages terug, nu in een <span> NA
+    </a> binnen dezelfde <li>. Het oude venster liep tot </a> en miste ze dus.
+    """
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+
+    def speler(nr, slug, naam, pct=None):
+        extra = f'<span class="ml-auto font-mono">{pct}%</span>' if pct is not None else ""
+        return (f'<li><span class="w-6">{nr}</span>'
+                f'<a href="/eredivisie/speler/{slug}/">{naam}</a>{extra}</li>')
+
+    elf = [("32", "matej-kovar", "Matej Kovar", 91), ("8", "sergino-dest", "Sergino Dest", 85),
+           ("4", "armando-obispo", "Armando Obispo", 80), ("18", "filip-kostic", "Filip Kostic", 68),
+           ("2", "lutsharel-geertruida", "L Geertruida", 68), ("20", "guus-til", "Guus Til", 88),
+           ("17", "mauro-junior", "Mauro Junior", 88), ("24", "kodai-sano", "Kodai Sano", 87),
+           ("5", "ivan-perisic", "Ivan Perisic", 58), ("19", "esmir-b", "Esmir B", 51),
+           ("7", "ruben-van-bommel", "Ruben van Bommel", 62)]
+    afwezig = ["paul-wanner", "ricardo-pepi", "alassane-plea"]
+    wissels = ["sven-mijnans", "ayoni-santos", "dennis-man", "ryan-flamingo",
+               "sami-ouaissa", "noah-fernandez", "yarek-gasiorowski"]
+
+    def links(slugs):
+        return ", ".join(f'<a href="/eredivisie/speler/{x}/">{x}</a>' for x in slugs)
+
+    def pagina(met_percentage, met_wissels):
+        r = [speler(*x) if met_percentage else speler(x[0], x[1], x[2]) for x in elf]
+        w = f'<p><span>Eerste wissels:</span> {links(wissels)}.</p>' if met_wissels else ""
+        return (f'<html><body><h1>Vermoedelijke opstelling PSV tegen Willem II</h1>'
+                f'<h2>Live: de officiele opstelling</h2>'
+                f'<h2>Verwachte opstelling PSV tegen Willem II</h2>'
+                f'<div><p>Keeper</p><ul>{r[0]}</ul></div>'
+                f'<div><p>Verdediging</p><ul>{"".join(r[1:5])}</ul></div>'
+                f'<div><p>Middenveld</p><ul>{"".join(r[5:10])}</ul></div>'
+                f'<div><p>Aanval</p><ul>{r[10]}</ul></div>'
+                f'<p><span>Niet beschikbaar:</span> {links(afwezig)} (blessure).</p>'
+                f'{w}'
+                f'<h2>Wat deze opstelling betekent</h2>'
+                f'<h2>Blessures en schorsingen PSV</h2>'
+                f'<p><a href="/eredivisie/speler/paul-wanner/">Paul Wanner</a> blessure</p>'
+                f'</body></html>')
+
+    ok = True
+    gevallen = [
+        ("met wissels en percentages (de pagina van 26-10)", True, True, 11),
+        ("met wissels, zonder percentages", False, True, 0),
+        ("zonder wissels, zonder percentages (zoals 23-10)", False, False, 0),
+        ("zonder wissels, met percentages", True, False, 11),
+    ]
+    for wat, pct, wis, verw_kansen in gevallen:
+        rij, _ = s.parse_opstelling(BeautifulSoup(pagina(pct, wis), "html.parser"), "PSV")
+        kansen = sum(1 for x in rij if x["kans_basis"] != "")
+        goed = len(rij) == 11 and kansen == verw_kansen
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {len(rij)} spelers, "
+              f"{kansen} kansen (verwacht 11 en {verw_kansen})")
+        ok = ok and goed
+
+    # De percentages horen bij de JUISTE speler: het venster mag niet
+    # doorlopen naar de volgende <li>.
+    rij, _ = s.parse_opstelling(BeautifulSoup(pagina(True, True), "html.parser"), "PSV")
+    paren = {x["speler_id"]: x["kans_basis"] for x in rij}
+    verwacht = {x[1]: x[3] for x in elf}
+    fout = {k: (paren.get(k), v) for k, v in verwacht.items() if paren.get(k) != v}
+    goed = not fout
+    print(f"  {'OK  ' if goed else 'FOUT'} elk percentage bij de juiste speler"
+          f"{'' if goed else f': {fout}'}")
+    return ok and goed
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -721,8 +805,11 @@ def main():
     print("\nreddingspunten voor keepers\n")
     ok9 = test_reddingspunten()
 
+    print("\nde elf blijft schoon bij 'Eerste wissels'\n")
+    ok10 = test_eerste_wissels_vervuilt_de_elf_niet()
+
     print()
-    if ok1 and ok2 and ok3 and ok4 and ok5 and ok6 and ok7 and ok8 and ok9:
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
