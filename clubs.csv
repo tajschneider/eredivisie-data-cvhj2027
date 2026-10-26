@@ -1,613 +1,613 @@
 ronde,datum,club,tegenstander,thuis_uit,voor,tegen,resultaat,ploegpunten,clean_sheet,formatie,kans_winst,kans_gelijk,kans_verlies,verwacht_voor,verwacht_tegen,xg_voor,xg_tegen,beide_scoren,over_25,opgehaald
-1,2026-08-08,AZ,ADO Den Haag,thuis,2,0,W,3,1,,68,18,14,2,0,,,,,2026-10-23
-1,2026-08-08,ADO Den Haag,AZ,uit,0,2,V,0,0,,14,18,68,0,2,,,,,2026-10-23
-1,2026-08-09,FC Groningen,FC Utrecht,thuis,2,1,W,3,0,,42,26,32,1,1,,,,,2026-10-23
-1,2026-08-09,FC Utrecht,FC Groningen,uit,1,2,V,0,0,,32,26,42,1,1,,,,,2026-10-23
-1,2026-08-08,Go Ahead Eagles,Willem II,thuis,4,1,W,3,0,,61,21,18,2,1,,,,,2026-10-23
-1,2026-08-08,Willem II,Go Ahead Eagles,uit,1,4,V,0,0,,18,21,61,1,2,,,,,2026-10-23
-1,2026-08-08,NEC,Telstar,thuis,1,2,V,0,0,,64,19,17,2,1,,,,,2026-10-23
-1,2026-08-08,Telstar,NEC,uit,2,1,W,3,0,,17,19,64,1,2,,,,,2026-10-23
-1,2026-08-09,PEC Zwolle,Ajax,thuis,0,2,V,0,0,,17,20,63,1,2,,,,,2026-10-23
-1,2026-08-09,Ajax,PEC Zwolle,uit,2,0,W,3,1,,63,20,17,2,1,,,,,2026-10-23
-1,2026-08-08,PSV,Fortuna Sittard,thuis,2,2,G,1,0,,81,11,8,3,0,,,,,2026-10-23
-1,2026-08-08,Fortuna Sittard,PSV,uit,2,2,G,1,0,,8,11,81,0,3,,,,,2026-10-23
-1,2026-08-07,SC Cambuur,Excelsior,thuis,0,4,V,0,0,,38,25,37,1,1,,,,,2026-10-23
-1,2026-08-07,Excelsior,SC Cambuur,uit,4,0,W,3,1,,37,25,38,1,1,,,,,2026-10-23
-1,2026-08-09,sc Heerenveen,FC Twente,thuis,1,0,W,3,1,,32,23,45,1,1,,,,,2026-10-23
-1,2026-08-09,FC Twente,sc Heerenveen,uit,0,1,V,0,0,,45,23,32,1,1,,,,,2026-10-23
-1,2026-08-09,Sparta Rotterdam,Feyenoord,thuis,0,1,V,0,0,,21,21,58,1,2,,,,,2026-10-23
-1,2026-08-09,Feyenoord,Sparta Rotterdam,uit,1,0,W,3,1,,58,21,21,2,1,,,,,2026-10-23
-2,2026-08-16,ADO Den Haag,FC Groningen,thuis,1,4,V,0,0,,36,25,39,1,1,,,,,2026-10-23
-2,2026-08-16,FC Groningen,ADO Den Haag,uit,4,1,W,3,0,,39,25,36,1,1,,,,,2026-10-23
-2,2026-08-16,Ajax,sc Heerenveen,thuis,2,2,G,1,0,,64,19,17,2,1,,,,,2026-10-23
-2,2026-08-16,sc Heerenveen,Ajax,uit,2,2,G,1,0,,17,19,64,1,2,,,,,2026-10-23
-2,2026-08-15,Excelsior,PSV,thuis,1,2,V,0,0,,17,19,64,1,2,,,,,2026-10-23
-2,2026-08-15,PSV,Excelsior,uit,2,1,W,3,0,,64,19,17,2,1,,,,,2026-10-23
-2,2026-08-16,FC Twente,PEC Zwolle,thuis,3,1,W,3,0,,74,15,11,2,0,,,,,2026-10-23
-2,2026-08-16,PEC Zwolle,FC Twente,uit,1,3,V,0,0,,11,15,74,0,2,,,,,2026-10-23
-2,2026-08-15,FC Utrecht,AZ,thuis,1,4,V,0,0,,36,25,39,1,1,,,,,2026-10-23
-2,2026-08-15,AZ,FC Utrecht,uit,4,1,W,3,0,,39,25,36,1,1,,,,,2026-10-23
-2,2026-08-16,Feyenoord,Go Ahead Eagles,thuis,2,2,G,1,0,,71,16,13,2,1,,,,,2026-10-23
-2,2026-08-16,Go Ahead Eagles,Feyenoord,uit,2,2,G,1,0,,13,16,71,1,2,,,,,2026-10-23
-2,2026-08-15,Fortuna Sittard,SC Cambuur,thuis,3,1,W,3,0,,58,21,21,2,1,,,,,2026-10-23
-2,2026-08-15,SC Cambuur,Fortuna Sittard,uit,1,3,V,0,0,,21,21,58,1,2,,,,,2026-10-23
-2,2026-08-14,Telstar,Sparta Rotterdam,thuis,1,3,V,0,0,,45,24,31,1,1,,,,,2026-10-23
-2,2026-08-14,Sparta Rotterdam,Telstar,uit,3,1,W,3,0,,31,24,45,1,1,,,,,2026-10-23
-2,2026-08-15,Willem II,NEC,thuis,1,4,V,0,0,,21,20,59,1,2,,,,,2026-10-23
-2,2026-08-15,NEC,Willem II,uit,4,1,W,3,0,,59,20,21,2,1,,,,,2026-10-23
-3,2026-09-15,Ajax,Willem II,thuis,5,1,W,3,0,,83,10,7,3,0,,,,,2026-10-23
-3,2026-09-15,Willem II,Ajax,uit,1,5,V,0,0,,7,10,83,0,3,,,,,2026-10-23
-3,2026-09-09,FC Twente,Telstar,thuis,1,0,W,3,1,,75,14,11,2,1,,,,,2026-10-23
-3,2026-09-09,Telstar,FC Twente,uit,0,1,V,0,0,,11,14,75,1,2,,,,,2026-10-23
-3,2026-08-22,Fortuna Sittard,AZ,thuis,0,2,V,0,0,,21,21,58,1,2,,,,,2026-10-23
-3,2026-08-22,AZ,Fortuna Sittard,uit,2,0,W,3,1,,58,21,21,2,1,,,,,2026-10-23
-3,2026-08-23,Go Ahead Eagles,ADO Den Haag,thuis,3,1,W,3,0,,56,22,22,1,1,,,,,2026-10-23
-3,2026-08-23,ADO Den Haag,Go Ahead Eagles,uit,1,3,V,0,0,,22,22,56,1,1,,,,,2026-10-23
-3,2026-09-08,NEC,Excelsior,thuis,2,2,G,1,0,,59,21,20,2,1,,,,,2026-10-23
-3,2026-09-08,Excelsior,NEC,uit,2,2,G,1,0,,20,21,59,1,2,,,,,2026-10-23
-3,2026-08-23,PSV,FC Groningen,thuis,5,1,W,3,0,,72,15,13,2,1,,,,,2026-10-23
-3,2026-08-23,FC Groningen,PSV,uit,1,5,V,0,0,,13,15,72,1,2,,,,,2026-10-23
-3,2026-08-23,SC Cambuur,Feyenoord,thuis,2,5,V,0,0,,10,15,75,0,2,,,,,2026-10-23
-3,2026-08-23,Feyenoord,SC Cambuur,uit,5,2,W,3,0,,75,15,10,2,0,,,,,2026-10-23
-3,2026-08-22,sc Heerenveen,PEC Zwolle,thuis,0,2,V,0,0,,61,20,19,2,1,,,,,2026-10-23
-3,2026-08-22,PEC Zwolle,sc Heerenveen,uit,2,0,W,3,1,,19,20,61,1,2,,,,,2026-10-23
-3,2026-08-22,Sparta Rotterdam,FC Utrecht,thuis,3,3,G,1,0,,37,26,37,1,1,,,,,2026-10-23
-3,2026-08-22,FC Utrecht,Sparta Rotterdam,uit,3,3,G,1,0,,37,26,37,1,1,,,,,2026-10-23
-4,2026-08-29,AZ,Go Ahead Eagles,thuis,5,2,W,3,0,,69,17,14,2,1,,,,,2026-10-23
-4,2026-08-29,Go Ahead Eagles,AZ,uit,2,5,V,0,0,,14,17,69,1,2,,,,,2026-10-23
-4,2026-08-29,Excelsior,Sparta Rotterdam,thuis,2,1,W,3,0,,43,24,33,1,1,,,,,2026-10-23
-4,2026-08-29,Sparta Rotterdam,Excelsior,uit,1,2,V,0,0,,33,24,43,1,1,,,,,2026-10-23
-4,2026-08-28,FC Groningen,Fortuna Sittard,thuis,2,3,V,0,0,,63,19,18,2,1,,,,,2026-10-23
-4,2026-08-28,Fortuna Sittard,FC Groningen,uit,3,2,W,3,0,,18,19,63,1,2,,,,,2026-10-23
-4,2026-08-30,FC Utrecht,PSV,thuis,1,6,V,0,0,,19,18,63,1,2,,,,,2026-10-23
-4,2026-08-30,PSV,FC Utrecht,uit,6,1,W,3,0,,63,18,19,2,1,,,,,2026-10-23
-4,2026-08-30,Feyenoord,ADO Den Haag,thuis,2,2,G,1,0,,80,12,8,3,0,,,,,2026-10-23
-4,2026-08-30,ADO Den Haag,Feyenoord,uit,2,2,G,1,0,,8,12,80,0,3,,,,,2026-10-23
-4,2026-08-29,PEC Zwolle,NEC,thuis,1,3,V,0,0,,26,22,52,1,2,,,,,2026-10-23
-4,2026-08-29,NEC,PEC Zwolle,uit,3,1,W,3,0,,52,22,26,2,1,,,,,2026-10-23
-4,2026-08-30,SC Cambuur,FC Twente,thuis,1,4,V,0,0,,13,16,71,0,2,,,,,2026-10-23
-4,2026-08-30,FC Twente,SC Cambuur,uit,4,1,W,3,0,,71,16,13,2,0,,,,,2026-10-23
-4,2026-08-30,Telstar,Ajax,thuis,0,4,V,0,0,,16,17,67,1,2,,,,,2026-10-23
-4,2026-08-30,Ajax,Telstar,uit,4,0,W,3,1,,67,17,16,2,1,,,,,2026-10-23
-4,2026-08-30,Willem II,sc Heerenveen,thuis,2,2,G,1,0,,25,22,53,1,2,,,,,2026-10-23
-4,2026-08-30,sc Heerenveen,Willem II,uit,2,2,G,1,0,,53,22,25,2,1,,,,,2026-10-23
-5,2026-09-06,ADO Den Haag,Fortuna Sittard,thuis,2,3,V,0,0,,48,22,30,1,1,,,,,2026-10-23
-5,2026-09-06,Fortuna Sittard,ADO Den Haag,uit,3,2,W,3,0,,30,22,48,1,1,,,,,2026-10-23
-5,2026-09-05,Ajax,PSV,thuis,1,3,V,0,0,,38,22,40,1,1,,,,,2026-10-23
-5,2026-09-05,PSV,Ajax,uit,3,1,W,3,0,,40,22,38,1,1,,,,,2026-10-23
-5,2026-09-06,FC Groningen,FC Twente,thuis,2,2,G,1,0,,29,23,48,1,1,,,,,2026-10-23
-5,2026-09-06,FC Twente,FC Groningen,uit,2,2,G,1,0,,48,23,29,1,1,,,,,2026-10-23
-5,2026-09-08,FC Utrecht,Go Ahead Eagles,thuis,3,3,G,1,0,,46,24,30,1,1,,,,,2026-10-23
-5,2026-09-08,Go Ahead Eagles,FC Utrecht,uit,3,3,G,1,0,,30,24,46,1,1,,,,,2026-10-23
-5,2026-09-05,NEC,Feyenoord,thuis,1,3,V,0,0,,34,22,44,1,1,,,,,2026-10-23
-5,2026-09-05,Feyenoord,NEC,uit,3,1,W,3,0,,44,22,34,1,1,,,,,2026-10-23
-5,2026-09-06,sc Heerenveen,AZ,thuis,2,3,V,0,0,,26,22,52,1,1,,,,,2026-10-23
-5,2026-09-06,AZ,sc Heerenveen,uit,3,2,W,3,0,,52,22,26,1,1,,,,,2026-10-23
-5,2026-09-04,Sparta Rotterdam,PEC Zwolle,thuis,2,2,G,1,0,,49,24,27,1,1,,,,,2026-10-23
-5,2026-09-04,PEC Zwolle,Sparta Rotterdam,uit,2,2,G,1,0,,27,24,49,1,1,,,,,2026-10-23
-5,2026-09-06,Telstar,SC Cambuur,thuis,2,2,G,1,0,,58,21,21,2,1,,,,,2026-10-23
-5,2026-09-06,SC Cambuur,Telstar,uit,2,2,G,1,0,,21,21,58,1,2,,,,,2026-10-23
-5,2026-09-05,Willem II,Excelsior,thuis,0,3,V,0,0,,33,25,42,1,1,,,,,2026-10-23
-5,2026-09-05,Excelsior,Willem II,uit,3,0,W,3,1,,42,25,33,1,1,,,,,2026-10-23
-6,2026-09-11,AZ,Willem II,thuis,1,1,G,1,0,,82,11,7,3,0,,,,,2026-10-23
-6,2026-09-11,Willem II,AZ,uit,1,1,G,1,0,,7,11,82,0,3,,,,,2026-10-23
-6,2026-09-13,Excelsior,FC Utrecht,thuis,1,2,V,0,0,,43,24,33,1,1,,,,,2026-10-23
-6,2026-09-13,FC Utrecht,Excelsior,uit,2,1,W,3,0,,33,24,43,1,1,,,,,2026-10-23
-6,2026-09-12,FC Twente,ADO Den Haag,thuis,2,0,W,3,1,,75,14,11,2,0,,,,,2026-10-23
-6,2026-09-12,ADO Den Haag,FC Twente,uit,0,2,V,0,0,,11,14,75,0,2,,,,,2026-10-23
-6,2026-09-12,Fortuna Sittard,Ajax,thuis,1,5,V,0,0,,15,18,67,1,2,,,,,2026-10-23
-6,2026-09-12,Ajax,Fortuna Sittard,uit,5,1,W,3,0,,67,18,15,2,1,,,,,2026-10-23
-6,2026-09-12,Go Ahead Eagles,FC Groningen,thuis,1,1,G,1,0,,42,23,35,1,1,,,,,2026-10-23
-6,2026-09-12,FC Groningen,Go Ahead Eagles,uit,1,1,G,1,0,,35,23,42,1,1,,,,,2026-10-23
-6,2026-09-13,PEC Zwolle,Feyenoord,thuis,0,7,V,0,0,,16,17,67,1,2,,,,,2026-10-23
-6,2026-09-13,Feyenoord,PEC Zwolle,uit,7,0,W,3,1,,67,17,16,2,1,,,,,2026-10-23
-6,2026-09-13,PSV,Sparta Rotterdam,thuis,4,1,W,3,0,,80,11,9,3,1,,,,,2026-10-23
-6,2026-09-13,Sparta Rotterdam,PSV,uit,1,4,V,0,0,,9,11,80,1,3,,,,,2026-10-23
-6,2026-09-12,SC Cambuur,NEC,thuis,3,0,W,3,1,,20,19,61,1,2,,,,,2026-10-23
-6,2026-09-12,NEC,SC Cambuur,uit,0,3,V,0,0,,61,19,20,2,1,,,,,2026-10-23
-6,2026-09-13,sc Heerenveen,Telstar,thuis,0,0,G,1,1,,58,20,22,2,1,,,,,2026-10-23
-6,2026-09-13,Telstar,sc Heerenveen,uit,0,0,G,1,1,,22,20,58,1,2,,,,,2026-10-23
-7,2026-09-19,ADO Den Haag,SC Cambuur,thuis,1,1,G,1,0,,50,23,27,1,1,,,,,2026-10-23
-7,2026-09-19,SC Cambuur,ADO Den Haag,uit,1,1,G,1,0,,27,23,50,1,1,,,,,2026-10-23
-7,2026-09-19,Ajax,Excelsior,thuis,2,2,G,1,0,,75,13,12,2,0,,,,,2026-10-23
-7,2026-09-19,Excelsior,Ajax,uit,2,2,G,1,0,,12,13,75,0,2,,,,,2026-10-23
-7,2026-09-20,AZ,Telstar,thuis,1,0,W,3,1,,75,14,11,2,1,,,,,2026-10-23
-7,2026-09-20,Telstar,AZ,uit,0,1,V,0,0,,11,14,75,1,2,,,,,2026-10-23
-7,2026-09-18,FC Groningen,PEC Zwolle,thuis,3,0,W,3,1,,62,20,18,2,1,,,,,2026-10-23
-7,2026-09-18,PEC Zwolle,FC Groningen,uit,0,3,V,0,0,,18,20,62,1,2,,,,,2026-10-23
-7,2026-09-20,FC Twente,PSV,thuis,3,2,W,3,0,,34,22,44,2,2,,,,,2026-10-23
-7,2026-09-20,PSV,FC Twente,uit,2,3,V,0,0,,44,22,34,2,2,,,,,2026-10-23
-7,2026-09-20,Feyenoord,FC Utrecht,thuis,5,0,W,3,1,,72,16,12,2,1,,,,,2026-10-23
-7,2026-09-20,FC Utrecht,Feyenoord,uit,0,5,V,0,0,,12,16,72,1,2,,,,,2026-10-23
-7,2026-09-20,NEC,Go Ahead Eagles,thuis,1,1,G,1,0,,45,23,32,1,1,,,,,2026-10-23
-7,2026-09-20,Go Ahead Eagles,NEC,uit,1,1,G,1,0,,32,23,45,1,1,,,,,2026-10-23
-7,2026-09-19,Sparta Rotterdam,sc Heerenveen,thuis,0,4,V,0,0,,39,24,37,1,1,,,,,2026-10-23
-7,2026-09-19,sc Heerenveen,Sparta Rotterdam,uit,4,0,W,3,1,,37,24,39,1,1,,,,,2026-10-23
-7,2026-09-19,Willem II,Fortuna Sittard,thuis,0,1,V,0,0,,38,24,38,1,1,,,,,2026-10-23
-7,2026-09-19,Fortuna Sittard,Willem II,uit,1,0,W,3,1,,38,24,38,1,1,,,,,2026-10-23
-8,2026-10-10,Ajax,NEC,thuis,1,1,G,1,0,,72,15,13,2,1,,,,,2026-10-23
-8,2026-10-10,NEC,Ajax,uit,1,1,G,1,0,,13,15,72,1,2,,,,,2026-10-23
-8,2026-10-11,Excelsior,FC Groningen,thuis,1,5,V,0,0,,37,25,38,1,1,,,,,2026-10-23
-8,2026-10-11,FC Groningen,Excelsior,uit,5,1,W,3,0,,38,25,37,1,1,,,,,2026-10-23
-8,2026-10-11,FC Utrecht,Willem II,thuis,3,1,W,3,0,,62,20,18,2,1,,,,,2026-10-23
-8,2026-10-11,Willem II,FC Utrecht,uit,1,3,V,0,0,,18,20,62,1,2,,,,,2026-10-23
-8,2026-10-10,Feyenoord,AZ,thuis,2,0,W,3,1,,55,22,23,2,1,,,,,2026-10-23
-8,2026-10-10,AZ,Feyenoord,uit,0,2,V,0,0,,23,22,55,1,2,,,,,2026-10-23
-8,2026-10-10,Fortuna Sittard,FC Twente,thuis,1,1,G,1,0,,16,18,66,1,2,,,,,2026-10-23
-8,2026-10-10,FC Twente,Fortuna Sittard,uit,1,1,G,1,0,,66,18,16,2,1,,,,,2026-10-23
-8,2026-10-10,Go Ahead Eagles,Sparta Rotterdam,thuis,3,3,G,1,0,,58,21,21,2,1,,,,,2026-10-23
-8,2026-10-10,Sparta Rotterdam,Go Ahead Eagles,uit,3,3,G,1,0,,21,21,58,1,2,,,,,2026-10-23
-8,2026-10-11,PEC Zwolle,SC Cambuur,thuis,0,1,V,0,0,,48,23,29,1,1,,,,,2026-10-23
-8,2026-10-11,SC Cambuur,PEC Zwolle,uit,1,0,W,3,1,,29,23,48,1,1,,,,,2026-10-23
-8,2026-10-09,PSV,sc Heerenveen,thuis,2,0,W,3,1,,71,15,14,2,1,,,,,2026-10-23
-8,2026-10-09,sc Heerenveen,PSV,uit,0,2,V,0,0,,14,15,71,1,2,,,,,2026-10-23
-8,2026-10-11,Telstar,ADO Den Haag,thuis,2,2,G,1,0,,43,25,32,1,1,,,,,2026-10-23
-8,2026-10-11,ADO Den Haag,Telstar,uit,2,2,G,1,0,,32,25,43,1,1,,,,,2026-10-23
-9,2026-10-17,ADO Den Haag,PSV,thuis,2,1,W,3,0,,12,15,73,1,2,,,,,2026-10-23
-9,2026-10-17,PSV,ADO Den Haag,uit,1,2,V,0,0,,73,15,12,2,1,,,,,2026-10-23
-9,2026-10-18,FC Groningen,Ajax,thuis,2,5,V,0,0,,27,22,51,1,1,,,,,2026-10-23
-9,2026-10-18,Ajax,FC Groningen,uit,5,2,W,3,0,,51,22,27,1,1,,,,,2026-10-23
-9,2026-10-18,FC Twente,FC Utrecht,thuis,1,2,V,0,0,,70,17,13,2,1,,,,,2026-10-23
-9,2026-10-18,FC Utrecht,FC Twente,uit,2,1,W,3,0,,13,17,70,1,2,,,,,2026-10-23
-9,2026-10-18,NEC,Fortuna Sittard,thuis,2,2,G,1,0,,56,22,22,1,1,,,,,2026-10-23
-9,2026-10-18,Fortuna Sittard,NEC,uit,2,2,G,1,0,,22,22,56,1,1,,,,,2026-10-23
-9,2026-10-18,PEC Zwolle,Go Ahead Eagles,thuis,4,1,W,3,0,,28,23,49,1,1,,,,,2026-10-23
-9,2026-10-18,Go Ahead Eagles,PEC Zwolle,uit,1,4,V,0,0,,49,23,28,1,1,,,,,2026-10-23
-9,2026-10-18,SC Cambuur,AZ,thuis,2,2,G,1,0,,16,19,65,1,2,,,,,2026-10-23
-9,2026-10-18,AZ,SC Cambuur,uit,2,2,G,1,0,,65,19,16,2,1,,,,,2026-10-23
-9,2026-10-16,sc Heerenveen,Excelsior,thuis,4,0,W,3,1,,59,21,20,2,1,,,,,2026-10-23
-9,2026-10-16,Excelsior,sc Heerenveen,uit,0,4,V,0,0,,20,21,59,1,2,,,,,2026-10-23
-9,2026-10-17,Sparta Rotterdam,Willem II,thuis,3,2,W,3,0,,60,21,19,2,1,,,,,2026-10-23
-9,2026-10-17,Willem II,Sparta Rotterdam,uit,2,3,V,0,0,,19,21,60,1,2,,,,,2026-10-23
-9,2026-10-17,Telstar,Feyenoord,thuis,3,4,V,0,0,,12,17,71,1,2,,,,,2026-10-23
-9,2026-10-17,Feyenoord,Telstar,uit,4,3,W,3,0,,71,17,12,2,1,,,,,2026-10-23
-10,2026-10-24,ADO Den Haag,sc Heerenveen,thuis,,,,,,,30,23,47,1,1,1.51,1.91,66,66,2026-10-23
-10,2026-10-24,sc Heerenveen,ADO Den Haag,uit,,,,,,,47,23,30,1,1,1.91,1.51,66,66,2026-10-23
-10,2026-10-25,AZ,FC Twente,thuis,,,,,,,43,23,34,1,1,1.85,1.62,66,67,2026-10-23
-10,2026-10-25,FC Twente,AZ,uit,,,,,,,34,23,43,1,1,1.62,1.85,66,67,2026-10-23
-10,2026-10-24,FC Utrecht,PEC Zwolle,thuis,,,,,,,58,21,21,2,1,2.19,1.25,63,67,2026-10-23
-10,2026-10-24,PEC Zwolle,FC Utrecht,uit,,,,,,,21,21,58,1,2,1.25,2.19,63,67,2026-10-23
-10,2026-10-25,Fortuna Sittard,Excelsior,thuis,,,,,,,40,25,35,1,1,1.69,1.56,63,62,2026-10-23
-10,2026-10-25,Excelsior,Fortuna Sittard,uit,,,,,,,35,25,40,1,1,1.56,1.69,63,62,2026-10-23
-10,2026-10-23,Go Ahead Eagles,Telstar,thuis,,,,,,,60,21,19,2,1,2.36,1.29,65,70,2026-10-23
-10,2026-10-23,Telstar,Go Ahead Eagles,uit,,,,,,,19,21,60,1,2,1.29,2.36,65,70,2026-10-23
-10,2026-10-25,NEC,FC Groningen,thuis,,,,,,,42,23,35,1,1,1.85,1.68,68,68,2026-10-23
-10,2026-10-25,FC Groningen,NEC,uit,,,,,,,35,23,42,1,1,1.68,1.85,68,68,2026-10-23
-10,2026-10-25,PSV,Feyenoord,thuis,,,,,,,48,21,31,2,1,2.17,1.74,72,74,2026-10-23
-10,2026-10-25,Feyenoord,PSV,uit,,,,,,,31,21,48,1,2,1.74,2.17,72,74,2026-10-23
-10,2026-10-25,Sparta Rotterdam,Ajax,thuis,,,,,,,19,19,62,1,2,1.28,2.42,65,71,2026-10-23
-10,2026-10-25,Ajax,Sparta Rotterdam,uit,,,,,,,62,19,19,2,1,2.42,1.28,65,71,2026-10-23
-10,2026-10-24,Willem II,SC Cambuur,thuis,,,,,,,38,24,38,1,1,1.72,1.7,66,66,2026-10-23
-10,2026-10-24,SC Cambuur,Willem II,uit,,,,,,,38,24,38,1,1,1.7,1.72,66,66,2026-10-23
-11,2026-10-31,Ajax,AZ,thuis,,,,,,,51,21,28,1,1,2.19,1.6,68,71,2026-10-23
-11,2026-10-31,AZ,Ajax,uit,,,,,,,28,21,51,1,1,1.6,2.19,68,71,2026-10-23
-11,2026-11-01,Excelsior,FC Twente,thuis,,,,,,,19,20,61,1,2,1.32,2.43,64,70,2026-10-23
-11,2026-11-01,FC Twente,Excelsior,uit,,,,,,,61,20,19,2,1,2.43,1.32,64,70,2026-10-23
-11,2026-11-01,FC Groningen,Sparta Rotterdam,thuis,,,,,,,60,20,20,2,1,2.42,1.33,64,70,2026-10-23
-11,2026-11-01,Sparta Rotterdam,FC Groningen,uit,,,,,,,20,20,60,1,2,1.33,2.42,64,70,2026-10-23
-11,2026-10-31,Feyenoord,Fortuna Sittard,thuis,,,,,,,80,12,8,3,0,3.23,0.94,56,78,2026-10-23
-11,2026-10-31,Fortuna Sittard,Feyenoord,uit,,,,,,,8,12,80,0,3,0.94,3.23,56,78,2026-10-23
-11,2026-11-01,PEC Zwolle,ADO Den Haag,thuis,,,,,,,42,24,34,1,1,1.79,1.6,63,64,2026-10-23
-11,2026-11-01,ADO Den Haag,PEC Zwolle,uit,,,,,,,34,24,42,1,1,1.6,1.79,63,64,2026-10-23
-11,2026-10-31,PSV,Willem II,thuis,,,,,,,86,9,5,4,0,3.66,0.83,52,82,2026-10-23
-11,2026-10-31,Willem II,PSV,uit,,,,,,,5,9,86,0,4,0.83,3.66,52,82,2026-10-23
-11,2026-10-31,SC Cambuur,Go Ahead Eagles,thuis,,,,,,,32,22,46,1,1,1.65,2.03,67,69,2026-10-23
-11,2026-10-31,Go Ahead Eagles,SC Cambuur,uit,,,,,,,46,22,32,1,1,2.03,1.65,67,69,2026-10-23
-11,2026-10-31,sc Heerenveen,NEC,thuis,,,,,,,51,21,28,1,1,2.2,1.57,68,71,2026-10-23
-11,2026-10-31,NEC,sc Heerenveen,uit,,,,,,,28,21,51,1,1,1.57,2.2,68,71,2026-10-23
-11,2026-11-01,Telstar,FC Utrecht,thuis,,,,,,,36,23,41,1,1,1.7,1.85,66,67,2026-10-23
-11,2026-11-01,FC Utrecht,Telstar,uit,,,,,,,41,23,36,1,1,1.85,1.7,66,67,2026-10-23
-12,2026-11-07,ADO Den Haag,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-07,Sparta Rotterdam,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,AZ,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,FC Groningen,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-07,Excelsior,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-07,Go Ahead Eagles,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,FC Twente,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,Ajax,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,FC Utrecht,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,NEC,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-07,Fortuna Sittard,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-07,Telstar,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,SC Cambuur,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,PSV,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,sc Heerenveen,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-08,Feyenoord,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-06,Willem II,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-12,2026-11-06,PEC Zwolle,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,Ajax,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,ADO Den Haag,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,FC Groningen,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,sc Heerenveen,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,FC Twente,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,Willem II,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,FC Utrecht,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,SC Cambuur,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,Feyenoord,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,Excelsior,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,Go Ahead Eagles,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,Fortuna Sittard,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,NEC,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,PSV,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,Sparta Rotterdam,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-22,AZ,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,Telstar,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-13,2026-11-21,PEC Zwolle,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,ADO Den Haag,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,FC Utrecht,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,Excelsior,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,Telstar,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-27,FC Groningen,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-27,Willem II,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,Feyenoord,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,Ajax,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,Fortuna Sittard,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,sc Heerenveen,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,NEC,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,FC Twente,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,PEC Zwolle,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-29,AZ,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,PSV,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,Go Ahead Eagles,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,SC Cambuur,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-14,2026-11-28,Sparta Rotterdam,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,ADO Den Haag,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,Excelsior,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,Ajax,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,FC Utrecht,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,AZ,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,PSV,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,Fortuna Sittard,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,PEC Zwolle,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,Go Ahead Eagles,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,FC Twente,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,sc Heerenveen,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-06,SC Cambuur,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,Sparta Rotterdam,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,NEC,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-04,Telstar,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-04,FC Groningen,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,Willem II,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-15,2026-12-05,Feyenoord,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,Ajax,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,SC Cambuur,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,AZ,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,NEC,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,FC Groningen,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,Feyenoord,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2027-02-07,FC Twente,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2027-02-07,Sparta Rotterdam,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,FC Utrecht,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,Fortuna Sittard,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,PEC Zwolle,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,Excelsior,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,PSV,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,Telstar,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,sc Heerenveen,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-12,Go Ahead Eagles,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,Willem II,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-16,2026-12-13,ADO Den Haag,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,Excelsior,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,AZ,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,FC Utrecht,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,sc Heerenveen,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,Feyenoord,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,FC Twente,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,Fortuna Sittard,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-19,Sparta Rotterdam,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,Go Ahead Eagles,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,Ajax,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,NEC,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,ADO Den Haag,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,PSV,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,PEC Zwolle,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,SC Cambuur,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-20,FC Groningen,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-18,Telstar,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-17,2026-12-18,Willem II,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,ADO Den Haag,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,Telstar,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,AZ,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,sc Heerenveen,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,FC Groningen,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,Go Ahead Eagles,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-08,FC Twente,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-08,Fortuna Sittard,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,Feyenoord,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,PSV,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,NEC,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-10,SC Cambuur,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,PEC Zwolle,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,FC Utrecht,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,Sparta Rotterdam,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,Excelsior,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,Willem II,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-18,2027-01-09,Ajax,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,ADO Den Haag,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,PEC Zwolle,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,Ajax,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,FC Groningen,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,Excelsior,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,Feyenoord,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,FC Utrecht,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,FC Twente,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,Fortuna Sittard,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,PSV,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,Go Ahead Eagles,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,AZ,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,SC Cambuur,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-17,Willem II,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-15,sc Heerenveen,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-15,Sparta Rotterdam,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,Telstar,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-19,2027-01-16,NEC,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,Ajax,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,Telstar,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,AZ,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,FC Utrecht,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-22,Excelsior,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-22,Fortuna Sittard,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,FC Twente,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,sc Heerenveen,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,Feyenoord,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,PEC Zwolle,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,Go Ahead Eagles,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,SC Cambuur,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,NEC,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,Willem II,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,PSV,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-23,ADO Den Haag,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,Sparta Rotterdam,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-20,2027-01-24,FC Groningen,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,ADO Den Haag,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,Go Ahead Eagles,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,AZ,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,Feyenoord,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,FC Groningen,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,NEC,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,FC Twente,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,SC Cambuur,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-29,FC Utrecht,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-29,Excelsior,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,PEC Zwolle,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,Fortuna Sittard,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,sc Heerenveen,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-31,Ajax,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,Sparta Rotterdam,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,Telstar,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,Willem II,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-21,2027-01-30,PSV,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Excelsior,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Ajax,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,FC Groningen,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,AZ,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Feyenoord,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,NEC,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Fortuna Sittard,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,ADO Den Haag,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Go Ahead Eagles,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,PEC Zwolle,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,PSV,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,FC Twente,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,SC Cambuur,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,FC Utrecht,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Telstar,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,sc Heerenveen,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Willem II,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-22,2027-02-14,Sparta Rotterdam,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Ajax,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Go Ahead Eagles,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,AZ,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Fortuna Sittard,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,FC Twente,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Excelsior,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,FC Utrecht,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,ADO Den Haag,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Feyenoord,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Telstar,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,NEC,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Sparta Rotterdam,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,PEC Zwolle,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,FC Groningen,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,PSV,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,SC Cambuur,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,sc Heerenveen,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-23,2027-02-21,Willem II,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,ADO Den Haag,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,FC Twente,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Ajax,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Feyenoord,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Excelsior,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,sc Heerenveen,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Fortuna Sittard,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,FC Utrecht,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,NEC,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,AZ,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,SC Cambuur,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,PEC Zwolle,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Sparta Rotterdam,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,PSV,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Telstar,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Go Ahead Eagles,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,Willem II,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-24,2027-02-28,FC Groningen,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,ADO Den Haag,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Ajax,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,FC Groningen,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Telstar,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,FC Twente,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,AZ,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Feyenoord,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,sc Heerenveen,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Fortuna Sittard,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,NEC,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Go Ahead Eagles,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Excelsior,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,PEC Zwolle,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Willem II,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,PSV,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,FC Utrecht,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,Sparta Rotterdam,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-25,2027-03-07,SC Cambuur,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Ajax,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,PEC Zwolle,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,AZ,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Sparta Rotterdam,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Excelsior,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,NEC,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,FC Utrecht,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,FC Groningen,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Go Ahead Eagles,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Feyenoord,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,SC Cambuur,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,ADO Den Haag,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,sc Heerenveen,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Fortuna Sittard,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Telstar,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,PSV,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,Willem II,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-26,2027-03-14,FC Twente,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,ADO Den Haag,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Willem II,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,AZ,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Excelsior,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,FC Groningen,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,PSV,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,FC Twente,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Go Ahead Eagles,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,FC Utrecht,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Sparta Rotterdam,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Feyenoord,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,SC Cambuur,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,NEC,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Ajax,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,PEC Zwolle,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,sc Heerenveen,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Telstar,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-27,2027-03-21,Fortuna Sittard,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Ajax,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,FC Twente,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Excelsior,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,PEC Zwolle,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Fortuna Sittard,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Feyenoord,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Go Ahead Eagles,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,NEC,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,PSV,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,AZ,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,SC Cambuur,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Telstar,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,sc Heerenveen,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,FC Groningen,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Sparta Rotterdam,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,ADO Den Haag,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,Willem II,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-28,2027-04-04,FC Utrecht,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,ADO Den Haag,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Feyenoord,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,FC Groningen,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Excelsior,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,FC Utrecht,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Ajax,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,NEC,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,sc Heerenveen,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,PEC Zwolle,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,PSV,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,SC Cambuur,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Fortuna Sittard,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Sparta Rotterdam,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Go Ahead Eagles,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Telstar,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,FC Twente,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,Willem II,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-29,2027-04-11,AZ,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,AZ,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,SC Cambuur,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Excelsior,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Willem II,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,FC Twente,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,NEC,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Feyenoord,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Sparta Rotterdam,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Fortuna Sittard,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,FC Groningen,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Go Ahead Eagles,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,FC Utrecht,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,PEC Zwolle,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Telstar,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,PSV,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,Ajax,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,sc Heerenveen,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-30,2027-04-25,ADO Den Haag,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Ajax,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Fortuna Sittard,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Excelsior,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,SC Cambuur,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,FC Groningen,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,ADO Den Haag,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Feyenoord,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Willem II,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Go Ahead Eagles,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,PSV,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,NEC,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,PEC Zwolle,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,sc Heerenveen,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,FC Utrecht,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Sparta Rotterdam,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,FC Twente,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,Telstar,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-31,2027-04-30,AZ,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,ADO Den Haag,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,NEC,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,AZ,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Ajax,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,FC Twente,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,FC Groningen,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,FC Utrecht,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Feyenoord,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Fortuna Sittard,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Go Ahead Eagles,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,PEC Zwolle,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Sparta Rotterdam,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,PSV,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Excelsior,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,SC Cambuur,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,sc Heerenveen,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Willem II,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-32,2027-05-09,Telstar,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Ajax,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Sparta Rotterdam,Ajax,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,AZ,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,PEC Zwolle,AZ,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Excelsior,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,ADO Den Haag,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,FC Groningen,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,SC Cambuur,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,FC Twente,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Feyenoord,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,FC Utrecht,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Telstar,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Fortuna Sittard,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Willem II,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,Go Ahead Eagles,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,sc Heerenveen,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,PSV,NEC,thuis,,,,,,,,,,,,,,,,2026-10-23
-33,2027-05-16,NEC,PSV,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,ADO Den Haag,AZ,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,AZ,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Feyenoord,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,FC Groningen,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,NEC,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,FC Utrecht,NEC,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,PEC Zwolle,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,FC Twente,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,SC Cambuur,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Ajax,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,sc Heerenveen,PSV,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,PSV,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Sparta Rotterdam,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Fortuna Sittard,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Telstar,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Excelsior,Telstar,uit,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Willem II,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-23
-34,2027-05-23,Go Ahead Eagles,Willem II,uit,,,,,,,,,,,,,,,,2026-10-23
+1,2026-08-08,AZ,ADO Den Haag,thuis,2,0,W,3,1,,68,18,14,2,0,,,,,2026-10-26
+1,2026-08-08,ADO Den Haag,AZ,uit,0,2,V,0,0,,14,18,68,0,2,,,,,2026-10-26
+1,2026-08-09,FC Groningen,FC Utrecht,thuis,2,1,W,3,0,,42,26,32,1,1,,,,,2026-10-26
+1,2026-08-09,FC Utrecht,FC Groningen,uit,1,2,V,0,0,,32,26,42,1,1,,,,,2026-10-26
+1,2026-08-08,Go Ahead Eagles,Willem II,thuis,4,1,W,3,0,,61,21,18,2,1,,,,,2026-10-26
+1,2026-08-08,Willem II,Go Ahead Eagles,uit,1,4,V,0,0,,18,21,61,1,2,,,,,2026-10-26
+1,2026-08-08,NEC,Telstar,thuis,1,2,V,0,0,,64,19,17,2,1,,,,,2026-10-26
+1,2026-08-08,Telstar,NEC,uit,2,1,W,3,0,,17,19,64,1,2,,,,,2026-10-26
+1,2026-08-09,PEC Zwolle,Ajax,thuis,0,2,V,0,0,,17,20,63,1,2,,,,,2026-10-26
+1,2026-08-09,Ajax,PEC Zwolle,uit,2,0,W,3,1,,63,20,17,2,1,,,,,2026-10-26
+1,2026-08-08,PSV,Fortuna Sittard,thuis,2,2,G,1,0,,81,11,8,3,0,,,,,2026-10-26
+1,2026-08-08,Fortuna Sittard,PSV,uit,2,2,G,1,0,,8,11,81,0,3,,,,,2026-10-26
+1,2026-08-07,SC Cambuur,Excelsior,thuis,0,4,V,0,0,,38,25,37,1,1,,,,,2026-10-26
+1,2026-08-07,Excelsior,SC Cambuur,uit,4,0,W,3,1,,37,25,38,1,1,,,,,2026-10-26
+1,2026-08-09,sc Heerenveen,FC Twente,thuis,1,0,W,3,1,,32,23,45,1,1,,,,,2026-10-26
+1,2026-08-09,FC Twente,sc Heerenveen,uit,0,1,V,0,0,,45,23,32,1,1,,,,,2026-10-26
+1,2026-08-09,Sparta Rotterdam,Feyenoord,thuis,0,1,V,0,0,,21,21,58,1,2,,,,,2026-10-26
+1,2026-08-09,Feyenoord,Sparta Rotterdam,uit,1,0,W,3,1,,58,21,21,2,1,,,,,2026-10-26
+2,2026-08-16,ADO Den Haag,FC Groningen,thuis,1,4,V,0,0,,36,25,39,1,1,,,,,2026-10-26
+2,2026-08-16,FC Groningen,ADO Den Haag,uit,4,1,W,3,0,,39,25,36,1,1,,,,,2026-10-26
+2,2026-08-16,Ajax,sc Heerenveen,thuis,2,2,G,1,0,,64,19,17,2,1,,,,,2026-10-26
+2,2026-08-16,sc Heerenveen,Ajax,uit,2,2,G,1,0,,17,19,64,1,2,,,,,2026-10-26
+2,2026-08-15,Excelsior,PSV,thuis,1,2,V,0,0,,17,19,64,1,2,,,,,2026-10-26
+2,2026-08-15,PSV,Excelsior,uit,2,1,W,3,0,,64,19,17,2,1,,,,,2026-10-26
+2,2026-08-16,FC Twente,PEC Zwolle,thuis,3,1,W,3,0,,74,15,11,2,0,,,,,2026-10-26
+2,2026-08-16,PEC Zwolle,FC Twente,uit,1,3,V,0,0,,11,15,74,0,2,,,,,2026-10-26
+2,2026-08-15,FC Utrecht,AZ,thuis,1,4,V,0,0,,36,25,39,1,1,,,,,2026-10-26
+2,2026-08-15,AZ,FC Utrecht,uit,4,1,W,3,0,,39,25,36,1,1,,,,,2026-10-26
+2,2026-08-16,Feyenoord,Go Ahead Eagles,thuis,2,2,G,1,0,,71,16,13,2,1,,,,,2026-10-26
+2,2026-08-16,Go Ahead Eagles,Feyenoord,uit,2,2,G,1,0,,13,16,71,1,2,,,,,2026-10-26
+2,2026-08-15,Fortuna Sittard,SC Cambuur,thuis,3,1,W,3,0,,58,21,21,2,1,,,,,2026-10-26
+2,2026-08-15,SC Cambuur,Fortuna Sittard,uit,1,3,V,0,0,,21,21,58,1,2,,,,,2026-10-26
+2,2026-08-14,Telstar,Sparta Rotterdam,thuis,1,3,V,0,0,,45,24,31,1,1,,,,,2026-10-26
+2,2026-08-14,Sparta Rotterdam,Telstar,uit,3,1,W,3,0,,31,24,45,1,1,,,,,2026-10-26
+2,2026-08-15,Willem II,NEC,thuis,1,4,V,0,0,,21,20,59,1,2,,,,,2026-10-26
+2,2026-08-15,NEC,Willem II,uit,4,1,W,3,0,,59,20,21,2,1,,,,,2026-10-26
+3,2026-09-15,Ajax,Willem II,thuis,5,1,W,3,0,,83,10,7,3,0,,,,,2026-10-26
+3,2026-09-15,Willem II,Ajax,uit,1,5,V,0,0,,7,10,83,0,3,,,,,2026-10-26
+3,2026-09-09,FC Twente,Telstar,thuis,1,0,W,3,1,,75,14,11,2,1,,,,,2026-10-26
+3,2026-09-09,Telstar,FC Twente,uit,0,1,V,0,0,,11,14,75,1,2,,,,,2026-10-26
+3,2026-08-22,Fortuna Sittard,AZ,thuis,0,2,V,0,0,,21,21,58,1,2,,,,,2026-10-26
+3,2026-08-22,AZ,Fortuna Sittard,uit,2,0,W,3,1,,58,21,21,2,1,,,,,2026-10-26
+3,2026-08-23,Go Ahead Eagles,ADO Den Haag,thuis,3,1,W,3,0,,56,22,22,1,1,,,,,2026-10-26
+3,2026-08-23,ADO Den Haag,Go Ahead Eagles,uit,1,3,V,0,0,,22,22,56,1,1,,,,,2026-10-26
+3,2026-09-08,NEC,Excelsior,thuis,2,2,G,1,0,,59,21,20,2,1,,,,,2026-10-26
+3,2026-09-08,Excelsior,NEC,uit,2,2,G,1,0,,20,21,59,1,2,,,,,2026-10-26
+3,2026-08-23,PSV,FC Groningen,thuis,5,1,W,3,0,,72,15,13,2,1,,,,,2026-10-26
+3,2026-08-23,FC Groningen,PSV,uit,1,5,V,0,0,,13,15,72,1,2,,,,,2026-10-26
+3,2026-08-23,SC Cambuur,Feyenoord,thuis,2,5,V,0,0,,10,15,75,0,2,,,,,2026-10-26
+3,2026-08-23,Feyenoord,SC Cambuur,uit,5,2,W,3,0,,75,15,10,2,0,,,,,2026-10-26
+3,2026-08-22,sc Heerenveen,PEC Zwolle,thuis,0,2,V,0,0,,61,20,19,2,1,,,,,2026-10-26
+3,2026-08-22,PEC Zwolle,sc Heerenveen,uit,2,0,W,3,1,,19,20,61,1,2,,,,,2026-10-26
+3,2026-08-22,Sparta Rotterdam,FC Utrecht,thuis,3,3,G,1,0,,37,26,37,1,1,,,,,2026-10-26
+3,2026-08-22,FC Utrecht,Sparta Rotterdam,uit,3,3,G,1,0,,37,26,37,1,1,,,,,2026-10-26
+4,2026-08-29,AZ,Go Ahead Eagles,thuis,5,2,W,3,0,,69,17,14,2,1,,,,,2026-10-26
+4,2026-08-29,Go Ahead Eagles,AZ,uit,2,5,V,0,0,,14,17,69,1,2,,,,,2026-10-26
+4,2026-08-29,Excelsior,Sparta Rotterdam,thuis,2,1,W,3,0,,43,24,33,1,1,,,,,2026-10-26
+4,2026-08-29,Sparta Rotterdam,Excelsior,uit,1,2,V,0,0,,33,24,43,1,1,,,,,2026-10-26
+4,2026-08-28,FC Groningen,Fortuna Sittard,thuis,2,3,V,0,0,,63,19,18,2,1,,,,,2026-10-26
+4,2026-08-28,Fortuna Sittard,FC Groningen,uit,3,2,W,3,0,,18,19,63,1,2,,,,,2026-10-26
+4,2026-08-30,FC Utrecht,PSV,thuis,1,6,V,0,0,,19,18,63,1,2,,,,,2026-10-26
+4,2026-08-30,PSV,FC Utrecht,uit,6,1,W,3,0,,63,18,19,2,1,,,,,2026-10-26
+4,2026-08-30,Feyenoord,ADO Den Haag,thuis,2,2,G,1,0,,80,12,8,3,0,,,,,2026-10-26
+4,2026-08-30,ADO Den Haag,Feyenoord,uit,2,2,G,1,0,,8,12,80,0,3,,,,,2026-10-26
+4,2026-08-29,PEC Zwolle,NEC,thuis,1,3,V,0,0,,26,22,52,1,2,,,,,2026-10-26
+4,2026-08-29,NEC,PEC Zwolle,uit,3,1,W,3,0,,52,22,26,2,1,,,,,2026-10-26
+4,2026-08-30,SC Cambuur,FC Twente,thuis,1,4,V,0,0,,13,16,71,0,2,,,,,2026-10-26
+4,2026-08-30,FC Twente,SC Cambuur,uit,4,1,W,3,0,,71,16,13,2,0,,,,,2026-10-26
+4,2026-08-30,Telstar,Ajax,thuis,0,4,V,0,0,,16,17,67,1,2,,,,,2026-10-26
+4,2026-08-30,Ajax,Telstar,uit,4,0,W,3,1,,67,17,16,2,1,,,,,2026-10-26
+4,2026-08-30,Willem II,sc Heerenveen,thuis,2,2,G,1,0,,25,22,53,1,2,,,,,2026-10-26
+4,2026-08-30,sc Heerenveen,Willem II,uit,2,2,G,1,0,,53,22,25,2,1,,,,,2026-10-26
+5,2026-09-06,ADO Den Haag,Fortuna Sittard,thuis,2,3,V,0,0,,48,22,30,1,1,,,,,2026-10-26
+5,2026-09-06,Fortuna Sittard,ADO Den Haag,uit,3,2,W,3,0,,30,22,48,1,1,,,,,2026-10-26
+5,2026-09-05,Ajax,PSV,thuis,1,3,V,0,0,,38,22,40,1,1,,,,,2026-10-26
+5,2026-09-05,PSV,Ajax,uit,3,1,W,3,0,,40,22,38,1,1,,,,,2026-10-26
+5,2026-09-06,FC Groningen,FC Twente,thuis,2,2,G,1,0,,29,23,48,1,1,,,,,2026-10-26
+5,2026-09-06,FC Twente,FC Groningen,uit,2,2,G,1,0,,48,23,29,1,1,,,,,2026-10-26
+5,2026-09-08,FC Utrecht,Go Ahead Eagles,thuis,3,3,G,1,0,,46,24,30,1,1,,,,,2026-10-26
+5,2026-09-08,Go Ahead Eagles,FC Utrecht,uit,3,3,G,1,0,,30,24,46,1,1,,,,,2026-10-26
+5,2026-09-05,NEC,Feyenoord,thuis,1,3,V,0,0,,34,22,44,1,1,,,,,2026-10-26
+5,2026-09-05,Feyenoord,NEC,uit,3,1,W,3,0,,44,22,34,1,1,,,,,2026-10-26
+5,2026-09-06,sc Heerenveen,AZ,thuis,2,3,V,0,0,,26,22,52,1,1,,,,,2026-10-26
+5,2026-09-06,AZ,sc Heerenveen,uit,3,2,W,3,0,,52,22,26,1,1,,,,,2026-10-26
+5,2026-09-04,Sparta Rotterdam,PEC Zwolle,thuis,2,2,G,1,0,,49,24,27,1,1,,,,,2026-10-26
+5,2026-09-04,PEC Zwolle,Sparta Rotterdam,uit,2,2,G,1,0,,27,24,49,1,1,,,,,2026-10-26
+5,2026-09-06,Telstar,SC Cambuur,thuis,2,2,G,1,0,,58,21,21,2,1,,,,,2026-10-26
+5,2026-09-06,SC Cambuur,Telstar,uit,2,2,G,1,0,,21,21,58,1,2,,,,,2026-10-26
+5,2026-09-05,Willem II,Excelsior,thuis,0,3,V,0,0,,33,25,42,1,1,,,,,2026-10-26
+5,2026-09-05,Excelsior,Willem II,uit,3,0,W,3,1,,42,25,33,1,1,,,,,2026-10-26
+6,2026-09-11,AZ,Willem II,thuis,1,1,G,1,0,,82,11,7,3,0,,,,,2026-10-26
+6,2026-09-11,Willem II,AZ,uit,1,1,G,1,0,,7,11,82,0,3,,,,,2026-10-26
+6,2026-09-13,Excelsior,FC Utrecht,thuis,1,2,V,0,0,,43,24,33,1,1,,,,,2026-10-26
+6,2026-09-13,FC Utrecht,Excelsior,uit,2,1,W,3,0,,33,24,43,1,1,,,,,2026-10-26
+6,2026-09-12,FC Twente,ADO Den Haag,thuis,2,0,W,3,1,,75,14,11,2,0,,,,,2026-10-26
+6,2026-09-12,ADO Den Haag,FC Twente,uit,0,2,V,0,0,,11,14,75,0,2,,,,,2026-10-26
+6,2026-09-12,Fortuna Sittard,Ajax,thuis,1,5,V,0,0,,15,18,67,1,2,,,,,2026-10-26
+6,2026-09-12,Ajax,Fortuna Sittard,uit,5,1,W,3,0,,67,18,15,2,1,,,,,2026-10-26
+6,2026-09-12,Go Ahead Eagles,FC Groningen,thuis,1,1,G,1,0,,42,23,35,1,1,,,,,2026-10-26
+6,2026-09-12,FC Groningen,Go Ahead Eagles,uit,1,1,G,1,0,,35,23,42,1,1,,,,,2026-10-26
+6,2026-09-13,PEC Zwolle,Feyenoord,thuis,0,7,V,0,0,,16,17,67,1,2,,,,,2026-10-26
+6,2026-09-13,Feyenoord,PEC Zwolle,uit,7,0,W,3,1,,67,17,16,2,1,,,,,2026-10-26
+6,2026-09-13,PSV,Sparta Rotterdam,thuis,4,1,W,3,0,,80,11,9,3,1,,,,,2026-10-26
+6,2026-09-13,Sparta Rotterdam,PSV,uit,1,4,V,0,0,,9,11,80,1,3,,,,,2026-10-26
+6,2026-09-12,SC Cambuur,NEC,thuis,3,0,W,3,1,,20,19,61,1,2,,,,,2026-10-26
+6,2026-09-12,NEC,SC Cambuur,uit,0,3,V,0,0,,61,19,20,2,1,,,,,2026-10-26
+6,2026-09-13,sc Heerenveen,Telstar,thuis,0,0,G,1,1,,58,20,22,2,1,,,,,2026-10-26
+6,2026-09-13,Telstar,sc Heerenveen,uit,0,0,G,1,1,,22,20,58,1,2,,,,,2026-10-26
+7,2026-09-19,ADO Den Haag,SC Cambuur,thuis,1,1,G,1,0,,50,23,27,1,1,,,,,2026-10-26
+7,2026-09-19,SC Cambuur,ADO Den Haag,uit,1,1,G,1,0,,27,23,50,1,1,,,,,2026-10-26
+7,2026-09-19,Ajax,Excelsior,thuis,2,2,G,1,0,,75,13,12,2,0,,,,,2026-10-26
+7,2026-09-19,Excelsior,Ajax,uit,2,2,G,1,0,,12,13,75,0,2,,,,,2026-10-26
+7,2026-09-20,AZ,Telstar,thuis,1,0,W,3,1,,75,14,11,2,1,,,,,2026-10-26
+7,2026-09-20,Telstar,AZ,uit,0,1,V,0,0,,11,14,75,1,2,,,,,2026-10-26
+7,2026-09-18,FC Groningen,PEC Zwolle,thuis,3,0,W,3,1,,62,20,18,2,1,,,,,2026-10-26
+7,2026-09-18,PEC Zwolle,FC Groningen,uit,0,3,V,0,0,,18,20,62,1,2,,,,,2026-10-26
+7,2026-09-20,FC Twente,PSV,thuis,3,2,W,3,0,,34,22,44,2,2,,,,,2026-10-26
+7,2026-09-20,PSV,FC Twente,uit,2,3,V,0,0,,44,22,34,2,2,,,,,2026-10-26
+7,2026-09-20,Feyenoord,FC Utrecht,thuis,5,0,W,3,1,,72,16,12,2,1,,,,,2026-10-26
+7,2026-09-20,FC Utrecht,Feyenoord,uit,0,5,V,0,0,,12,16,72,1,2,,,,,2026-10-26
+7,2026-09-20,NEC,Go Ahead Eagles,thuis,1,1,G,1,0,,45,23,32,1,1,,,,,2026-10-26
+7,2026-09-20,Go Ahead Eagles,NEC,uit,1,1,G,1,0,,32,23,45,1,1,,,,,2026-10-26
+7,2026-09-19,Sparta Rotterdam,sc Heerenveen,thuis,0,4,V,0,0,,39,24,37,1,1,,,,,2026-10-26
+7,2026-09-19,sc Heerenveen,Sparta Rotterdam,uit,4,0,W,3,1,,37,24,39,1,1,,,,,2026-10-26
+7,2026-09-19,Willem II,Fortuna Sittard,thuis,0,1,V,0,0,,38,24,38,1,1,,,,,2026-10-26
+7,2026-09-19,Fortuna Sittard,Willem II,uit,1,0,W,3,1,,38,24,38,1,1,,,,,2026-10-26
+8,2026-10-10,Ajax,NEC,thuis,1,1,G,1,0,,72,15,13,2,1,,,,,2026-10-26
+8,2026-10-10,NEC,Ajax,uit,1,1,G,1,0,,13,15,72,1,2,,,,,2026-10-26
+8,2026-10-11,Excelsior,FC Groningen,thuis,1,5,V,0,0,,37,25,38,1,1,,,,,2026-10-26
+8,2026-10-11,FC Groningen,Excelsior,uit,5,1,W,3,0,,38,25,37,1,1,,,,,2026-10-26
+8,2026-10-11,FC Utrecht,Willem II,thuis,3,1,W,3,0,,62,20,18,2,1,,,,,2026-10-26
+8,2026-10-11,Willem II,FC Utrecht,uit,1,3,V,0,0,,18,20,62,1,2,,,,,2026-10-26
+8,2026-10-10,Feyenoord,AZ,thuis,2,0,W,3,1,,55,22,23,2,1,,,,,2026-10-26
+8,2026-10-10,AZ,Feyenoord,uit,0,2,V,0,0,,23,22,55,1,2,,,,,2026-10-26
+8,2026-10-10,Fortuna Sittard,FC Twente,thuis,1,1,G,1,0,,16,18,66,1,2,,,,,2026-10-26
+8,2026-10-10,FC Twente,Fortuna Sittard,uit,1,1,G,1,0,,66,18,16,2,1,,,,,2026-10-26
+8,2026-10-10,Go Ahead Eagles,Sparta Rotterdam,thuis,3,3,G,1,0,,58,21,21,2,1,,,,,2026-10-26
+8,2026-10-10,Sparta Rotterdam,Go Ahead Eagles,uit,3,3,G,1,0,,21,21,58,1,2,,,,,2026-10-26
+8,2026-10-11,PEC Zwolle,SC Cambuur,thuis,0,1,V,0,0,,48,23,29,1,1,,,,,2026-10-26
+8,2026-10-11,SC Cambuur,PEC Zwolle,uit,1,0,W,3,1,,29,23,48,1,1,,,,,2026-10-26
+8,2026-10-09,PSV,sc Heerenveen,thuis,2,0,W,3,1,,71,15,14,2,1,,,,,2026-10-26
+8,2026-10-09,sc Heerenveen,PSV,uit,0,2,V,0,0,,14,15,71,1,2,,,,,2026-10-26
+8,2026-10-11,Telstar,ADO Den Haag,thuis,2,2,G,1,0,,43,25,32,1,1,,,,,2026-10-26
+8,2026-10-11,ADO Den Haag,Telstar,uit,2,2,G,1,0,,32,25,43,1,1,,,,,2026-10-26
+9,2026-10-17,ADO Den Haag,PSV,thuis,2,1,W,3,0,,12,15,73,1,2,,,,,2026-10-26
+9,2026-10-17,PSV,ADO Den Haag,uit,1,2,V,0,0,,73,15,12,2,1,,,,,2026-10-26
+9,2026-10-18,FC Groningen,Ajax,thuis,2,5,V,0,0,,27,22,51,1,1,,,,,2026-10-26
+9,2026-10-18,Ajax,FC Groningen,uit,5,2,W,3,0,,51,22,27,1,1,,,,,2026-10-26
+9,2026-10-18,FC Twente,FC Utrecht,thuis,1,2,V,0,0,,70,17,13,2,1,,,,,2026-10-26
+9,2026-10-18,FC Utrecht,FC Twente,uit,2,1,W,3,0,,13,17,70,1,2,,,,,2026-10-26
+9,2026-10-18,NEC,Fortuna Sittard,thuis,2,2,G,1,0,,56,22,22,1,1,,,,,2026-10-26
+9,2026-10-18,Fortuna Sittard,NEC,uit,2,2,G,1,0,,22,22,56,1,1,,,,,2026-10-26
+9,2026-10-18,PEC Zwolle,Go Ahead Eagles,thuis,4,1,W,3,0,,28,23,49,1,1,,,,,2026-10-26
+9,2026-10-18,Go Ahead Eagles,PEC Zwolle,uit,1,4,V,0,0,,49,23,28,1,1,,,,,2026-10-26
+9,2026-10-18,SC Cambuur,AZ,thuis,2,2,G,1,0,,16,19,65,1,2,,,,,2026-10-26
+9,2026-10-18,AZ,SC Cambuur,uit,2,2,G,1,0,,65,19,16,2,1,,,,,2026-10-26
+9,2026-10-16,sc Heerenveen,Excelsior,thuis,4,0,W,3,1,,59,21,20,2,1,,,,,2026-10-26
+9,2026-10-16,Excelsior,sc Heerenveen,uit,0,4,V,0,0,,20,21,59,1,2,,,,,2026-10-26
+9,2026-10-17,Sparta Rotterdam,Willem II,thuis,3,2,W,3,0,,60,21,19,2,1,,,,,2026-10-26
+9,2026-10-17,Willem II,Sparta Rotterdam,uit,2,3,V,0,0,,19,21,60,1,2,,,,,2026-10-26
+9,2026-10-17,Telstar,Feyenoord,thuis,3,4,V,0,0,,12,17,71,1,2,,,,,2026-10-26
+9,2026-10-17,Feyenoord,Telstar,uit,4,3,W,3,0,,71,17,12,2,1,,,,,2026-10-26
+10,2026-10-24,ADO Den Haag,sc Heerenveen,thuis,2,3,V,0,0,,30,23,47,1,1,1.51,1.91,66,66,2026-10-26
+10,2026-10-24,sc Heerenveen,ADO Den Haag,uit,3,2,W,3,0,,47,23,30,1,1,1.91,1.51,66,66,2026-10-26
+10,2026-10-25,AZ,FC Twente,thuis,0,2,V,0,0,,43,23,34,1,1,1.85,1.62,66,67,2026-10-26
+10,2026-10-25,FC Twente,AZ,uit,2,0,W,3,1,,34,23,43,1,1,1.62,1.85,66,67,2026-10-26
+10,2026-10-24,FC Utrecht,PEC Zwolle,thuis,1,1,G,1,0,,58,21,21,2,1,2.19,1.25,63,67,2026-10-26
+10,2026-10-24,PEC Zwolle,FC Utrecht,uit,1,1,G,1,0,,21,21,58,1,2,1.25,2.19,63,67,2026-10-26
+10,2026-10-25,Fortuna Sittard,Excelsior,thuis,1,0,W,3,1,,40,25,35,1,1,1.69,1.56,63,62,2026-10-26
+10,2026-10-25,Excelsior,Fortuna Sittard,uit,0,1,V,0,0,,35,25,40,1,1,1.56,1.69,63,62,2026-10-26
+10,2026-10-23,Go Ahead Eagles,Telstar,thuis,3,2,W,3,0,,60,21,19,2,1,2.36,1.29,65,70,2026-10-26
+10,2026-10-23,Telstar,Go Ahead Eagles,uit,2,3,V,0,0,,19,21,60,1,2,1.29,2.36,65,70,2026-10-26
+10,2026-10-25,NEC,FC Groningen,thuis,2,2,G,1,0,,42,23,35,1,1,1.85,1.68,68,68,2026-10-26
+10,2026-10-25,FC Groningen,NEC,uit,2,2,G,1,0,,35,23,42,1,1,1.68,1.85,68,68,2026-10-26
+10,2026-10-25,PSV,Feyenoord,thuis,1,1,G,1,0,,48,21,31,2,1,2.17,1.74,72,74,2026-10-26
+10,2026-10-25,Feyenoord,PSV,uit,1,1,G,1,0,,31,21,48,1,2,1.74,2.17,72,74,2026-10-26
+10,2026-10-25,Sparta Rotterdam,Ajax,thuis,1,2,V,0,0,,19,19,62,1,2,1.28,2.42,65,71,2026-10-26
+10,2026-10-25,Ajax,Sparta Rotterdam,uit,2,1,W,3,0,,62,19,19,2,1,2.42,1.28,65,71,2026-10-26
+10,2026-10-24,Willem II,SC Cambuur,thuis,1,6,V,0,0,,38,24,38,1,1,1.72,1.7,66,66,2026-10-26
+10,2026-10-24,SC Cambuur,Willem II,uit,6,1,W,3,0,,38,24,38,1,1,1.7,1.72,66,66,2026-10-26
+11,2026-10-31,Ajax,AZ,thuis,,,,,,,52,21,27,2,1,2.18,1.51,67,71,2026-10-26
+11,2026-10-31,AZ,Ajax,uit,,,,,,,27,21,52,1,2,1.51,2.18,67,71,2026-10-26
+11,2026-11-01,Excelsior,FC Twente,thuis,,,,,,,20,20,60,1,2,1.21,2.24,62,67,2026-10-26
+11,2026-11-01,FC Twente,Excelsior,uit,,,,,,,60,20,20,2,1,2.24,1.21,62,67,2026-10-26
+11,2026-11-01,FC Groningen,Sparta Rotterdam,thuis,,,,,,,55,21,24,2,1,2.21,1.4,65,69,2026-10-26
+11,2026-11-01,Sparta Rotterdam,FC Groningen,uit,,,,,,,24,21,55,1,2,1.4,2.21,65,69,2026-10-26
+11,2026-10-31,Feyenoord,Fortuna Sittard,thuis,,,,,,,81,11,8,3,0,3.14,0.91,55,78,2026-10-26
+11,2026-10-31,Fortuna Sittard,Feyenoord,uit,,,,,,,8,11,81,0,3,0.91,3.14,55,78,2026-10-26
+11,2026-11-01,PEC Zwolle,ADO Den Haag,thuis,,,,,,,42,24,34,1,1,1.75,1.53,63,62,2026-10-26
+11,2026-11-01,ADO Den Haag,PEC Zwolle,uit,,,,,,,34,24,42,1,1,1.53,1.75,63,62,2026-10-26
+11,2026-10-31,PSV,Willem II,thuis,,,,,,,87,8,5,3,0,3.68,0.87,54,84,2026-10-26
+11,2026-10-31,Willem II,PSV,uit,,,,,,,5,8,87,0,3,0.87,3.68,54,84,2026-10-26
+11,2026-10-31,SC Cambuur,Go Ahead Eagles,thuis,,,,,,,33,23,44,1,1,1.65,1.93,67,68,2026-10-26
+11,2026-10-31,Go Ahead Eagles,SC Cambuur,uit,,,,,,,44,23,33,1,1,1.93,1.65,67,68,2026-10-26
+11,2026-10-31,sc Heerenveen,NEC,thuis,,,,,,,48,21,31,1,1,2.08,1.66,69,71,2026-10-26
+11,2026-10-31,NEC,sc Heerenveen,uit,,,,,,,31,21,48,1,1,1.66,2.08,69,71,2026-10-26
+11,2026-11-01,Telstar,FC Utrecht,thuis,,,,,,,36,23,41,1,1,1.66,1.79,65,66,2026-10-26
+11,2026-11-01,FC Utrecht,Telstar,uit,,,,,,,41,23,36,1,1,1.79,1.66,65,66,2026-10-26
+12,2026-11-07,ADO Den Haag,Sparta Rotterdam,thuis,,,,,,,42,23,35,1,1,1.81,1.65,64,65,2026-10-26
+12,2026-11-07,Sparta Rotterdam,ADO Den Haag,uit,,,,,,,35,23,42,1,1,1.65,1.81,64,65,2026-10-26
+12,2026-11-08,AZ,FC Groningen,thuis,,,,,,,61,18,21,2,1,2.54,1.38,66,73,2026-10-26
+12,2026-11-08,FC Groningen,AZ,uit,,,,,,,21,18,61,1,2,1.38,2.54,66,73,2026-10-26
+12,2026-11-07,Excelsior,Go Ahead Eagles,thuis,,,,,,,35,22,43,1,1,1.73,1.92,67,69,2026-10-26
+12,2026-11-07,Go Ahead Eagles,Excelsior,uit,,,,,,,43,22,35,1,1,1.92,1.73,67,69,2026-10-26
+12,2026-11-08,FC Twente,Ajax,thuis,,,,,,,38,21,41,1,1,1.9,1.99,70,73,2026-10-26
+12,2026-11-08,Ajax,FC Twente,uit,,,,,,,41,21,38,1,1,1.99,1.9,70,73,2026-10-26
+12,2026-11-08,FC Utrecht,NEC,thuis,,,,,,,42,23,35,1,1,1.88,1.71,66,68,2026-10-26
+12,2026-11-08,NEC,FC Utrecht,uit,,,,,,,35,23,42,1,1,1.71,1.88,66,68,2026-10-26
+12,2026-11-07,Fortuna Sittard,Telstar,thuis,,,,,,,48,24,28,1,1,1.93,1.44,62,63,2026-10-26
+12,2026-11-07,Telstar,Fortuna Sittard,uit,,,,,,,28,24,48,1,1,1.44,1.93,62,63,2026-10-26
+12,2026-11-08,SC Cambuur,PSV,thuis,,,,,,,13,16,71,1,2,1.24,2.93,66,77,2026-10-26
+12,2026-11-08,PSV,SC Cambuur,uit,,,,,,,71,16,13,2,1,2.93,1.24,66,77,2026-10-26
+12,2026-11-08,sc Heerenveen,Feyenoord,thuis,,,,,,,25,20,55,1,2,1.57,2.42,70,75,2026-10-26
+12,2026-11-08,Feyenoord,sc Heerenveen,uit,,,,,,,55,20,25,2,1,2.42,1.57,70,75,2026-10-26
+12,2026-11-06,Willem II,PEC Zwolle,thuis,,,,,,,32,22,46,1,1,1.67,2.0,67,69,2026-10-26
+12,2026-11-06,PEC Zwolle,Willem II,uit,,,,,,,46,22,32,1,1,2.0,1.67,67,69,2026-10-26
+13,2026-11-22,Ajax,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,ADO Den Haag,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,FC Groningen,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,sc Heerenveen,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,FC Twente,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,Willem II,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,FC Utrecht,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,SC Cambuur,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,Feyenoord,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,Excelsior,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,Go Ahead Eagles,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,Fortuna Sittard,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,NEC,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,PSV,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,Sparta Rotterdam,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-22,AZ,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,Telstar,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+13,2026-11-21,PEC Zwolle,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,ADO Den Haag,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,FC Utrecht,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,Excelsior,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,Telstar,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-27,FC Groningen,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-27,Willem II,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,Feyenoord,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,Ajax,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,Fortuna Sittard,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,sc Heerenveen,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,NEC,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,FC Twente,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,PEC Zwolle,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-29,AZ,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,PSV,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,Go Ahead Eagles,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,SC Cambuur,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+14,2026-11-28,Sparta Rotterdam,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,ADO Den Haag,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,Excelsior,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,Ajax,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,FC Utrecht,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,AZ,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,PSV,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,Fortuna Sittard,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,PEC Zwolle,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,Go Ahead Eagles,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,FC Twente,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,sc Heerenveen,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-06,SC Cambuur,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,Sparta Rotterdam,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,NEC,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-04,Telstar,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-04,FC Groningen,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,Willem II,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+15,2026-12-05,Feyenoord,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,Ajax,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,SC Cambuur,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,AZ,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,NEC,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,FC Groningen,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,Feyenoord,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2027-02-07,FC Twente,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2027-02-07,Sparta Rotterdam,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,FC Utrecht,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,Fortuna Sittard,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,PEC Zwolle,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,Excelsior,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,PSV,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,Telstar,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,sc Heerenveen,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-12,Go Ahead Eagles,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,Willem II,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+16,2026-12-13,ADO Den Haag,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,Excelsior,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,AZ,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,FC Utrecht,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,sc Heerenveen,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,Feyenoord,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,FC Twente,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,Fortuna Sittard,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-19,Sparta Rotterdam,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,Go Ahead Eagles,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,Ajax,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,NEC,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,ADO Den Haag,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,PSV,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,PEC Zwolle,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,SC Cambuur,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-20,FC Groningen,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-18,Telstar,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+17,2026-12-18,Willem II,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,ADO Den Haag,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,Telstar,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,AZ,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,sc Heerenveen,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,FC Groningen,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,Go Ahead Eagles,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-08,FC Twente,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-08,Fortuna Sittard,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,Feyenoord,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,PSV,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,NEC,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-10,SC Cambuur,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,PEC Zwolle,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,FC Utrecht,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,Sparta Rotterdam,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,Excelsior,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,Willem II,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+18,2027-01-09,Ajax,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,ADO Den Haag,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,PEC Zwolle,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,Ajax,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,FC Groningen,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,Excelsior,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,Feyenoord,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,FC Utrecht,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,FC Twente,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,Fortuna Sittard,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,PSV,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,Go Ahead Eagles,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,AZ,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,SC Cambuur,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-17,Willem II,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-15,sc Heerenveen,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-15,Sparta Rotterdam,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,Telstar,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+19,2027-01-16,NEC,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,Ajax,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,Telstar,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,AZ,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,FC Utrecht,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-22,Excelsior,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-22,Fortuna Sittard,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,FC Twente,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,sc Heerenveen,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,Feyenoord,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,PEC Zwolle,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,Go Ahead Eagles,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,SC Cambuur,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,NEC,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,Willem II,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,PSV,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-23,ADO Den Haag,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,Sparta Rotterdam,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+20,2027-01-24,FC Groningen,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,ADO Den Haag,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,Go Ahead Eagles,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,AZ,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,Feyenoord,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,FC Groningen,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,NEC,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,FC Twente,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,SC Cambuur,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-29,FC Utrecht,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-29,Excelsior,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,PEC Zwolle,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,Fortuna Sittard,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,sc Heerenveen,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-31,Ajax,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,Sparta Rotterdam,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,Telstar,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,Willem II,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+21,2027-01-30,PSV,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Excelsior,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Ajax,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,FC Groningen,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,AZ,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Feyenoord,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,NEC,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Fortuna Sittard,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,ADO Den Haag,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Go Ahead Eagles,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,PEC Zwolle,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,PSV,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,FC Twente,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,SC Cambuur,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,FC Utrecht,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Telstar,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,sc Heerenveen,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Willem II,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+22,2027-02-14,Sparta Rotterdam,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Ajax,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Go Ahead Eagles,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,AZ,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Fortuna Sittard,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,FC Twente,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Excelsior,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,FC Utrecht,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,ADO Den Haag,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Feyenoord,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Telstar,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,NEC,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Sparta Rotterdam,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,PEC Zwolle,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,FC Groningen,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,PSV,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,SC Cambuur,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,sc Heerenveen,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+23,2027-02-21,Willem II,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,ADO Den Haag,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,FC Twente,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Ajax,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Feyenoord,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Excelsior,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,sc Heerenveen,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Fortuna Sittard,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,FC Utrecht,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,NEC,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,AZ,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,SC Cambuur,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,PEC Zwolle,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Sparta Rotterdam,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,PSV,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Telstar,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Go Ahead Eagles,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,Willem II,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+24,2027-02-28,FC Groningen,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,ADO Den Haag,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Ajax,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,FC Groningen,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Telstar,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,FC Twente,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,AZ,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Feyenoord,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,sc Heerenveen,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Fortuna Sittard,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,NEC,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Go Ahead Eagles,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Excelsior,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,PEC Zwolle,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Willem II,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,PSV,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,FC Utrecht,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,Sparta Rotterdam,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+25,2027-03-07,SC Cambuur,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Ajax,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,PEC Zwolle,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,AZ,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Sparta Rotterdam,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Excelsior,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,NEC,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,FC Utrecht,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,FC Groningen,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Go Ahead Eagles,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Feyenoord,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,SC Cambuur,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,ADO Den Haag,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,sc Heerenveen,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Fortuna Sittard,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Telstar,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,PSV,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,Willem II,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+26,2027-03-14,FC Twente,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,ADO Den Haag,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Willem II,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,AZ,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Excelsior,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,FC Groningen,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,PSV,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,FC Twente,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Go Ahead Eagles,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,FC Utrecht,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Sparta Rotterdam,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Feyenoord,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,SC Cambuur,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,NEC,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Ajax,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,PEC Zwolle,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,sc Heerenveen,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Telstar,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+27,2027-03-21,Fortuna Sittard,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Ajax,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,FC Twente,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Excelsior,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,PEC Zwolle,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Fortuna Sittard,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Feyenoord,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Go Ahead Eagles,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,NEC,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,PSV,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,AZ,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,SC Cambuur,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Telstar,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,sc Heerenveen,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,FC Groningen,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Sparta Rotterdam,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,ADO Den Haag,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,Willem II,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+28,2027-04-04,FC Utrecht,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,ADO Den Haag,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Feyenoord,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,FC Groningen,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Excelsior,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,FC Utrecht,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Ajax,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,NEC,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,sc Heerenveen,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,PEC Zwolle,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,PSV,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,SC Cambuur,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Fortuna Sittard,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Sparta Rotterdam,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Go Ahead Eagles,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Telstar,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,FC Twente,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,Willem II,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+29,2027-04-11,AZ,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,AZ,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,SC Cambuur,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Excelsior,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Willem II,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,FC Twente,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,NEC,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Feyenoord,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Sparta Rotterdam,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Fortuna Sittard,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,FC Groningen,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Go Ahead Eagles,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,FC Utrecht,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,PEC Zwolle,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Telstar,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,PSV,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,Ajax,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,sc Heerenveen,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+30,2027-04-25,ADO Den Haag,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Ajax,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Fortuna Sittard,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Excelsior,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,SC Cambuur,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,FC Groningen,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,ADO Den Haag,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Feyenoord,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Willem II,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Go Ahead Eagles,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,PSV,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,NEC,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,PEC Zwolle,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,sc Heerenveen,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,FC Utrecht,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Sparta Rotterdam,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,FC Twente,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,Telstar,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+31,2027-04-30,AZ,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,ADO Den Haag,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,NEC,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,AZ,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Ajax,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,FC Twente,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,FC Groningen,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,FC Utrecht,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Feyenoord,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Fortuna Sittard,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Go Ahead Eagles,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,PEC Zwolle,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Sparta Rotterdam,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,PSV,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Excelsior,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,SC Cambuur,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,sc Heerenveen,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Willem II,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+32,2027-05-09,Telstar,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Ajax,Sparta Rotterdam,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Sparta Rotterdam,Ajax,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,AZ,PEC Zwolle,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,PEC Zwolle,AZ,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Excelsior,ADO Den Haag,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,ADO Den Haag,Excelsior,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,FC Groningen,SC Cambuur,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,SC Cambuur,FC Groningen,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,FC Twente,Feyenoord,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Feyenoord,FC Twente,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,FC Utrecht,Telstar,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Telstar,FC Utrecht,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Fortuna Sittard,Willem II,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Willem II,Fortuna Sittard,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,Go Ahead Eagles,sc Heerenveen,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,sc Heerenveen,Go Ahead Eagles,uit,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,PSV,NEC,thuis,,,,,,,,,,,,,,,,2026-10-26
+33,2027-05-16,NEC,PSV,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,ADO Den Haag,AZ,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,AZ,ADO Den Haag,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Feyenoord,FC Groningen,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,FC Groningen,Feyenoord,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,NEC,FC Utrecht,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,FC Utrecht,NEC,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,PEC Zwolle,FC Twente,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,FC Twente,PEC Zwolle,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,SC Cambuur,Ajax,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Ajax,SC Cambuur,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,sc Heerenveen,PSV,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,PSV,sc Heerenveen,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Sparta Rotterdam,Fortuna Sittard,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Fortuna Sittard,Sparta Rotterdam,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Telstar,Excelsior,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Excelsior,Telstar,uit,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Willem II,Go Ahead Eagles,thuis,,,,,,,,,,,,,,,,2026-10-26
+34,2027-05-23,Go Ahead Eagles,Willem II,uit,,,,,,,,,,,,,,,,2026-10-26
