@@ -4094,7 +4094,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,luciano-valente,Luciano Valente,Feyenoord,Midfielder,1,1,90,0,1,0,0,0,0,,10,2026-10-26
 10,2026-10-25,oussama-targhalline,Oussama Targhalline,Feyenoord,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,tobias-van-den-elshout,Tobias van den Elshout,Feyenoord,Midfielder,1,0,1,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,anis-hadj-moussa,Anis Hadj Moussa,Feyenoord,Forward,1,1,90,1,0,2,0,0,0,,10,2026-10-26
+10,2026-10-25,anis-hadj-moussa,Anis Hadj Moussa,Feyenoord,Forward,1,1,90,1,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,nacho-ferri,Nacho Ferri,Feyenoord,Forward,1,1,89,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,joel-drommel,Joël Drommel,FC Twente,Goalkeeper,1,1,90,0,0,0,0,5,1,,10,2026-10-26
 10,2026-10-25,aske-adelgaard,Aske Adelgaard,FC Twente,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
@@ -4131,7 +4131,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,marc-ter-stegen,Marc ter Stegen,Ajax,Goalkeeper,1,1,90,0,0,0,0,3,0,,10,2026-10-26
 10,2026-10-25,daley-blind,Daley Blind,Ajax,Defender,1,0,2,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,dies-janse,Dies Janse,Ajax,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,lucas-rosa,Lucas Rosa,Ajax,Defender,1,1,90,0,0,,0,0,0,,10,2026-10-26
+10,2026-10-25,lucas-rosa,Lucas Rosa,Ajax,Defender,1,1,90,0,0,1,0,0,0,,10,2026-10-26
 10,2026-10-25,owen-wijndal,Owen Wijndal,Ajax,Defender,1,0,11,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,thilo-kehrer,Thilo Kehrer,Ajax,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,youri-baas,Youri Baas,Ajax,Defender,1,1,79,0,0,0,0,0,0,,10,2026-10-26
@@ -4243,7 +4243,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,alfons-sampsted,Alfons Sampsted,Go Ahead Eagles,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,dean-james,Dean James,Go Ahead Eagles,Defender,1,1,63,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,joris-kramer,Joris Kramer,Go Ahead Eagles,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,julius-dirksen,Julius Dirksen,Go Ahead Eagles,Defender,1,1,90,0,0,,0,0,0,,10,2026-10-26
+10,2026-10-25,julius-dirksen,Julius Dirksen,Go Ahead Eagles,Defender,1,1,90,0,0,1,0,0,0,,10,2026-10-26
 10,2026-10-25,tomas-galvez,Tomas Galvez,Go Ahead Eagles,Defender,1,0,27,0,1,0,0,0,0,,10,2026-10-26
 10,2026-10-25,evert-linthorst,Evert Linthorst,Go Ahead Eagles,Midfielder,1,1,90,1,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,melle-meulensteen,Melle Meulensteen,Go Ahead Eagles,Midfielder,1,1,84,0,0,0,0,0,0,,10,2026-10-26
@@ -4264,7 +4264,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,gilles-van-der-wal,Gilles van der Wal,PEC Zwolle,Midfielder,1,1,83,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,ryan-thomas,Ryan Thomas,PEC Zwolle,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,thijs-oosting,Thijs Oosting,PEC Zwolle,Midfielder,1,1,90,0,1,0,0,0,0,,10,2026-10-26
-10,2026-10-25,t-sommer,Tobias Sommer,PEC Zwolle,Midfielder,1,1,90,0,0,2,0,0,0,,10,2026-10-26
+10,2026-10-25,t-sommer,Tobias Sommer,PEC Zwolle,Midfielder,1,1,90,0,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,dylan-mbayo,Dylan Mbayo,PEC Zwolle,Forward,1,1,46,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,elias-srensen,Elias Sørensen,PEC Zwolle,Forward,1,0,44,1,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,koen-kostons,Koen Kostons,PEC Zwolle,Forward,1,0,7,0,0,0,0,0,0,,10,2026-10-26
@@ -4276,7 +4276,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,rick-meissen,Rick Meissen,Excelsior,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,simon-janssen,Simon Janssen,Excelsior,Defender,1,0,14,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,daniel-van-vianen,Daniel van Vianen,Excelsior,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,irakli-yegoian,Irakli Yegoian,Excelsior,Midfielder,1,1,90,0,0,2,0,0,0,,10,2026-10-26
+10,2026-10-25,irakli-yegoian,Irakli Yegoian,Excelsior,Midfielder,1,1,90,0,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,lennard-hartjes,Lennard Hartjes,Excelsior,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,noah-naujoks,Noah Naujoks,Excelsior,Midfielder,1,1,45,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,alireza-jahanbakhsh,Alireza Jahanbakhsh,Excelsior,Forward,1,0,14,0,0,0,0,0,0,,10,2026-10-26
@@ -4313,7 +4313,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,uriel-van-aalst,Uriël van Aalst,Willem II,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,armin-culum,Armin Culum,Willem II,Forward,1,0,44,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,devin-haen,Devin Haen,Willem II,Forward,1,1,90,0,1,0,0,0,0,,10,2026-10-26
-10,2026-10-25,jaden-slory,Jaden Slory,Willem II,Forward,1,1,68,0,0,2,0,0,0,,10,2026-10-26
+10,2026-10-25,jaden-slory,Jaden Slory,Willem II,Forward,1,1,68,0,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,thomas-verheydt,Thomas Verheydt,Willem II,Forward,1,0,44,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,vito-van-crooij,Vito van Crooij,Willem II,Forward,1,1,46,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,kilian-nikiema,Kilian Nikièma,ADO Den Haag,Goalkeeper,1,1,90,0,0,0,0,2,0,,10,2026-10-26
