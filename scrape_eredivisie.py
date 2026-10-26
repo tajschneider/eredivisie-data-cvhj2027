@@ -681,6 +681,26 @@ def parse_opstelling(soup, club):
         # controle verderop vangt het als het misgaat.
         elf_html, bron_blok = ruw, "hele pagina"
 
+    # Binnen het blok staan de elf in <ul>-lijsten, een per linie, en de
+    # PARAGRAFEN eronder bevatten andere spelers: "Niet beschikbaar:" en --
+    # nieuw sinds 26-10-2026 -- "Eerste wissels:". Die laatste voegde zeven
+    # links toe, waardoor de teller op 18 uitkwam en de aannemelijkheids-
+    # controle verderop terecht weigerde weg te schrijven. Alle 18 clubs
+    # leverden die dag nul spelers.
+    #
+    # De afwezigen werden al weggefilterd op speler_id, maar invallers zijn
+    # niet afwezig -- die staan nergens anders in, dus daar hielp dat niet.
+    #
+    # Oplossing in dezelfde geest als blok_na_kop(): ankeren op STRUCTUUR en
+    # niet op tekst. De elf staan in <li> binnen <ul>; "Eerste wissels" en
+    # "Niet beschikbaar" staan in <p>. Filteren op "Eerste wissels" zou werken
+    # tot de bron die zin anders formuleert -- en dat is precies wat er op
+    # 19-10-2026 met "Niet beschikbaar:" gebeurde.
+    if bron_blok == "kop":
+        lijsten = re.findall(r"<ul\b[^>]*>.*?</ul>", elf_html, re.S | re.I)
+        if lijsten:
+            elf_html, bron_blok = "".join(lijsten), "kop+lijsten"
+
     elf, gezien2 = [], set()
     for m in SPELER_HREF.finditer(elf_html):
         sid = m.group(1)
@@ -695,8 +715,18 @@ def parse_opstelling(soup, club):
         # tot een zelfgekozen aantal tekens: een percentage daarbuiten hoort
         # bij de volgende speler of bij de wedstrijdkansen.
         staart = elf_html[m.end():]
-        eind_a = staart.find("</a>")
-        venster = staart[:eind_a] if eind_a != -1 else staart[:400]
+        # Het percentage staat in een <span> NA </a>, binnen dezelfde <li>:
+        #   <a ... href="/eredivisie/speler/matej-kovar/">Matej Kovar</a>
+        #   <span class="ml-auto ... font-mono">91%</span>
+        # Een venster tot </a> mist het dus. Tot het einde van de <li> is de
+        # juiste grens: ruim genoeg voor de span, en krap genoeg dat het
+        # percentage van de volgende speler er niet in valt. Valt er geen
+        # </li> te vinden, dan tot de volgende spelerslink.
+        eind_li = staart.lower().find("</li>")
+        if eind_li == -1:
+            volgende = SPELER_HREF.search(staart)
+            eind_li = volgende.start() if volgende else min(len(staart), 400)
+        venster = staart[:eind_li]
         pm = re.search(r"(\d{1,3})\s*%", venster)
         kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
         naam = None
@@ -717,8 +747,12 @@ def parse_opstelling(soup, club):
         print(f"    {club}: {len(elf)} spelerslinks in het opstellingsblok "
               f"({bron_blok}), verwacht 11 — niet weggeschreven")
         return [], afwezig
-    if bron_blok != "kop":
-        print(f"    {club}: elf gevonden via de terugval op de {bron_blok}; "
+    # Alleen de ECHTE terugval melden. "kop+lijsten" is de normale weg sinds
+    # 26-10-2026 en geen terugval; dat zo noemen levert een melding op die
+    # elke run verschijnt en die je dus binnen twee weken niet meer leest --
+    # en dan mis je de keer dat de kop werkelijk weg is.
+    if bron_blok == "hele pagina":
+        print(f"    {club}: elf gevonden via de terugval op de hele pagina; "
               f"de kop 'Verwachte opstelling' is niet gevonden")
     return elf, afwezig
 
