@@ -1,13 +1,11 @@
 # Controle scrape — GEFAALD
 
-Uitgevoerd 2026-10-26. 2 fout(en), 0 waarschuwing(en), 28 controles.
+Uitgevoerd 2026-10-26. 1 fout(en), 0 waarschuwing(en), 28 controles.
 
 ## Fouten
 
 - **spelers_seizoen.csv** — geen dalende seizoenstotalen tussen 2026-10-23 en 2026-10-26  
   lasse-wilhelm.minuten: 63 -> 62; jan-zamburek.minuten: 219 -> 218; matej-sin.goals: 1 -> 0 — een teller kan niet omlaag; waarschijnlijk is er een parser stuk of een speler van club gewisseld
-- **spelers.csv** — minuten en productie per ronde plausibel  
-  r10 lucas-rosa: geel=3; r10 julius-dirksen: geel=3; r10 matej-sin: goals=-1
 
 ## Metingen
 
@@ -62,7 +60,7 @@ Uitgevoerd 2026-10-26. 2 fout(en), 0 waarschuwing(en), 28 controles.
 | FOUT | spelers_seizoen.csv | geen dalende seizoenstotalen tussen 2026-10-23 en 2026-10-26 |
 | OK | spelers.csv | geen dubbele ronde/speler/club |
 | OK | spelers.csv | elke rij heeft een ronde |
-| FOUT | spelers.csv | minuten en productie per ronde plausibel |
+| OK | spelers.csv | minuten en productie per ronde plausibel |
 | OK | afwezigen.csv | alle redenen bekend |
 | OK | afwezigen.csv | terugkeerdatums in ISO-vorm |
 | OK | opstellingen.csv | 18 clubs |

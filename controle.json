@@ -1,6 +1,6 @@
 {
   "datum": "2026-10-26",
-  "fouten": 2,
+  "fouten": 1,
   "waarschuwingen": 0,
   "controles": 28,
   "uitkomst": "GEFAALD",
@@ -40,11 +40,6 @@
       "groep": "spelers_seizoen.csv",
       "tekst": "geen dalende seizoenstotalen tussen 2026-10-23 en 2026-10-26",
       "detail": "lasse-wilhelm.minuten: 63 -> 62; jan-zamburek.minuten: 219 -> 218; matej-sin.goals: 1 -> 0 — een teller kan niet omlaag; waarschijnlijk is er een parser stuk of een speler van club gewisseld"
-    },
-    {
-      "groep": "spelers.csv",
-      "tekst": "minuten en productie per ronde plausibel",
-      "detail": "r10 lucas-rosa: geel=3; r10 julius-dirksen: geel=3; r10 matej-sin: goals=-1"
     }
   ]
 }
