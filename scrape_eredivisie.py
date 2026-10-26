@@ -1117,16 +1117,52 @@ def lees(pad):
         return list(csv.DictReader(f))
 
 
+def beter_dan(nieuw, oud):
+    """Welke van twee rijen met DEZELFDE sleutel blijft staan.
+
+    Een rij met status 'afwezig' zegt alleen dat de speler niet in de selectie
+    stond; een rij met 'basis', 'invaller' of 'bank' is de uitkomst van een
+    gespeelde wedstrijd. Voor een ronde die al gespeeld is, wint de uitkomst --
+    ook als de afwezig-rij later is opgehaald. Dat is precies wat er misging:
+    Julius Dirksen stond in ronde 1 zowel op 75 minuten met een doelpunt (19
+    oktober) als op afwezig (31 augustus), en Thomas Ouwejan op bank (31
+    augustus) naast afwezig (16 september).
+
+    Verder wint de nieuwste ophaaldatum. Zonder die kolommen wint de laatste
+    rij in het bestand, het gedrag van voorheen.
+    """
+    n_afw = (nieuw.get("status") or "") == "afwezig"
+    o_afw = (oud.get("status") or "") == "afwezig"
+    if n_afw != o_afw:
+        return not n_afw
+    return str(nieuw.get("opgehaald", "")) >= str(oud.get("opgehaald", ""))
+
+
 def schrijf(pad, cols, nieuw, sleutel):
     """Bijwerken op sleutel; nieuwe data overschrijft oude. Als het kolomformaat
-    is veranderd begint het bestand opnieuw, anders ontstaat er een mengsel."""
-    rijen, index = [], {}
+    is veranderd begint het bestand opnieuw, anders ontstaat er een mengsel.
+
+    BESTAANDE DUBBELEN WORDEN OPGERUIMD. Dat gebeurde hier niet: bij het
+    inlezen kreeg een dubbele sleutel wel een nieuwe index, maar beide rijen
+    bleven in de lijst staan. Nieuwe dubbelen werden dus voorkomen en oude
+    bleven eeuwig staan -- op 26-10-2026 waren dat er 38 in spelers.csv, en elk
+    van die rijen telt in bouw_pool() als een extra duel met nul minuten,
+    waardoor het speeltijdgemiddelde van die speler verwatert.
+    """
+    rijen, index, ontdubbeld = [], {}, 0
+    bestaand_bij = {}
     bestaand = lees(pad)
     if bestaand and set(bestaand[0]) == set(cols):
         for r in bestaand:
             k = tuple(str(r.get(c, "")) for c in sleutel)
+            if k in index:
+                ontdubbeld += 1
+                if beter_dan(r, rijen[index[k]]):
+                    rijen[index[k]] = r
+                continue
             index[k] = len(rijen)
             rijen.append(r)
+
     elif bestaand and all(c in bestaand[0] for c in sleutel):
         # Kolomformaat gewijzigd: de bestaande rijen MEEVERHUIZEN en niet
         # weggooien. Hier stond "bestand wordt opnieuw opgebouwd", en dat was
@@ -1149,7 +1185,18 @@ def schrijf(pad, cols, nieuw, sleutel):
         for r in bestaand:
             rij = {c: r.get(c, "") for c in cols}
             k = tuple(str(rij.get(c, "")) for c in sleutel)
+            if k in index:
+                # Ook hier ontdubbelen. De vergelijking kijkt naar de ORIGINELE
+                # rij en niet naar `rij`: de voorkeurskolommen (status,
+                # opgehaald) kunnen bij een kolomwissel net weggevallen zijn,
+                # en dan is er niets meer om op te kiezen.
+                ontdubbeld += 1
+                if beter_dan(r, bestaand_bij[k]):
+                    rijen[index[k]] = rij
+                    bestaand_bij[k] = r
+                continue
             index[k] = len(rijen)
+            bestaand_bij[k] = r
             rijen.append(rij)
         print(f"  {pad.name}: kolommen gewijzigd, {len(rijen)} bestaande rijen "
               f"meegenomen; nieuw en leeg: {', '.join(nieuw_in) or '(geen)'}")
@@ -1158,6 +1205,10 @@ def schrijf(pad, cols, nieuw, sleutel):
         print(f"  {pad.name}: kolommen gewijzigd EN de sleutelkolom(men) "
               f"{ontbreekt} ontbreken — de bestaande {len(bestaand)} rijen zijn "
               f"niet over te nemen en het bestand wordt opnieuw opgebouwd")
+    if ontdubbeld:
+        print(f"  {pad.name}: {ontdubbeld} dubbele rij(en) op "
+              f"{'+'.join(sleutel)} opgeruimd")
+
     bij = 0
     for r in nieuw:
         k = tuple(str(r.get(c, "")) for c in sleutel)
