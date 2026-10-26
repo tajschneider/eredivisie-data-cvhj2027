@@ -35,6 +35,7 @@ import collections
 import csv
 import importlib.util
 import math
+import unicodedata
 import sys
 from pathlib import Path
 
@@ -72,12 +73,80 @@ def werkelijke_punten(spelerrijen, ronde, m):
 
 
 def punten_met_positie(w, positie_kort, m):
-    """Werkelijke CVHJ-punten voor deze speler-ronde, gegeven zijn positie."""
+    """Werkelijke CVHJ-punten voor deze speler-ronde, gegeven zijn positie.
+
+    RECONSTRUCTIE, geen meting. spelers.csv heeft ploegpunten, clean sheets en
+    doelpunten, maar geen assists, kaarten of keepersreddingen. Hoe groot dat
+    gat is, is op 26-10-2026 voor het eerst gemeten tegen 86 speler-ronden met
+    echte punten uit eigen_elf.csv:
+
+      exact goed        67 van 86 (78%)
+      gemiddelde fout   -0.48   (te laag: gemiste assists)
+      RMSE              2.31
+      te laag / te hoog 14 / 5  (elke overschatting was een gemiste kaart)
+
+    Dat is geen kleinigheid naast een gerapporteerde model-RMSE van 3.42: als
+    de twee fouten onafhankelijk zijn, komt 46% van de gemeten variantie uit de
+    meetlat en niet uit het model. Gebruik daarom echte_punten() waar die
+    bestaan -- zie lees_echte_punten().
+    """
     lang = {"K": "Goalkeeper", "V": "Defender", "M": "Midfielder", "A": "Forward"}[positie_kort]
     p = w["ploegpunten"]
     p += w["clean_sheet"] * m.CLEANSHEET[positie_kort]
     p += w["goals"] * m.GOALWAARDE[lang]
     return p
+
+
+def lees_echte_punten(pad="eigen_elf.csv"):
+    """{(ronde, genormaliseerde naam): punten} uit eigen_elf.csv, of {}.
+
+    Handmatig bijgehouden: Thomas leest ze wekelijks van de CVHJ-app af. Het
+    zijn de ENIGE echte CVHJ-punten die dit project heeft -- alles wat uit
+    spelers.csv komt is een reconstructie zonder assists, kaarten en
+    reddingen.
+
+    Alleen zijn eigen elf, dus hooguit elf spelers per ronde. Dat is een
+    VERTEKENDE steekproef (spelers die het model hoog had staan), en daarom
+    rapporteert evalueer_ronde() apart hoeveel rijen echt zijn en wat de
+    maten los over die rijen doen. Een gemengde meetlat die je niet uit elkaar
+    kunt halen, is geen verbetering.
+
+    Ontbreekt het bestand, dan levert dit {} en draait backtest.py exact als
+    voorheen.
+
+    De sleutel is de ACHTERNAAM, kleingeschreven en zonder accenten. Dat is
+    grof, maar eigen_elf.csv bevat alleen achternamen zoals de app ze toont,
+    en binnen elf spelers per ronde is een botsing onwaarschijnlijk. Botst het
+    toch, dan wint de reconstructie: zie evalueer_ronde().
+    """
+    bestand = Path(pad)
+    if not bestand.exists():
+        return {}
+    uit, dubbel = {}, set()
+    with bestand.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if not (r.get("punten") or "").strip():
+                continue          # niet gespeeld of geen wedstrijd: geen waarneming
+            try:
+                sleutel = (int(r["ronde"]), achternaam(r["speler"]))
+                waarde = float(r["punten"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if sleutel in uit and uit[sleutel] != waarde:
+                dubbel.add(sleutel)
+            uit[sleutel] = waarde
+    for s in dubbel:
+        uit.pop(s, None)          # tegenstrijdig: liever geen waarde dan de verkeerde
+    return uit
+
+
+def achternaam(naam):
+    """Laatste woord, kleingeschreven, zonder accenten of leestekens."""
+    deel = (naam or "").strip().split()
+    if not deel:
+        return ""
+    s = unicodedata.normalize("NFKD", deel[-1]).encode("ascii", "ignore").decode()
+    return "".join(ch for ch in s.lower() if ch.isalpha())
 
 
 def spearman(x, y):
@@ -107,7 +176,7 @@ def spearman(x, y):
 
 
 def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_minuten,
-                   fbref=None):
+                   fbref=None, echte_punten=None):
     """Eén ronde: fit op < ronde, voorspel ronde, vergelijk met werkelijkheid."""
     training = [r for r in clubrijen if int(r["ronde"]) < ronde]
     if not training:
@@ -147,16 +216,27 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
 
     werkelijk = werkelijke_punten(spelerrijen, ronde, m)
 
+    # Echte CVHJ-punten gaan voor op de reconstructie. Ze bestaan alleen voor
+    # Thomas' eigen elf (eigen_elf.csv), dus hooguit elf per ronde; de rest
+    # blijft gereconstrueerd. Elke rij draagt daarom een veld `bron`, zodat de
+    # twee uit elkaar te houden zijn. Een gemengde meetlat die je niet kunt
+    # ontwarren is geen verbetering -- zie de samenvatting onderaan.
+    echte = echte_punten if echte_punten is not None else lees_echte_punten()
+
     voorspeld, echt, rijen = [], [], []
     for p in pool:
         w = werkelijk.get(p["speler_id"])
         if w is None or w["minuten"] == 0:
             continue  # niet gespeeld deze ronde (blessure, bank, transfer) -- geen "fout", geen data
-        wp = punten_met_positie(w, p["pos"], m)
+        gemeten = echte.get((ronde, achternaam(p["speler"])))
+        if gemeten is None:
+            wp, bron = punten_met_positie(w, p["pos"], m), "reconstructie"
+        else:
+            wp, bron = gemeten, "gemeten"
         voorspeld.append(p["E"]); echt.append(wp)
         rijen.append({"ronde": ronde, "speler": p["speler"], "club": p["club"], "pos": p["pos"],
                      "voorspeld": round(p["E"], 3), "werkelijk": round(wp, 3),
-                     "fout": round(p["E"] - wp, 3)})
+                     "fout": round(p["E"] - wp, 3), "bron": bron})
 
     if len(voorspeld) < 5:
         return None
@@ -167,7 +247,15 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
     bias = sum(v - e for v, e in zip(voorspeld, echt)) / n
     rho = spearman(voorspeld, echt)
 
+    # Apart, over alleen de gemeten rijen: dat is het enige getal dat op een
+    # ECHTE meetlat rust. Het is een vertekende steekproef (zijn eigen ploeg),
+    # dus het hoort naast de hoofdmaat te staan en er niet in te verdwijnen.
+    gem_rijen = [r for r in rijen if r["bron"] == "gemeten"]
+    rmse_gemeten = (math.sqrt(sum(r["fout"] ** 2 for r in gem_rijen) / len(gem_rijen))
+                    if len(gem_rijen) >= 3 else None)
+
     return {"ronde": ronde, "n": n, "n_pool": len(pool), "n_training_wedstrijden": n_obs,
+            "n_gemeten": len(gem_rijen), "rmse_gemeten": rmse_gemeten,
             "rmse": rmse, "mae": mae, "bias": bias, "spearman": rho, "rijen": rijen}
 
 
@@ -276,10 +364,39 @@ def main():
     print(f"  rho dicht bij 1 : het model zet spelers in de juiste volgorde,")
     print(f"                    ook als de absolute punten afwijken -- voor de")
     print(f"                    opstellingskeuze is dit belangrijker dan RMSE.")
-    print(f"\n  LET OP: 'werkelijk' hier mist assists, kaarten en keeper-reddingen,")
-    print(f"  want die staan niet in spelers.csv. Dit is dus een ondergrens op de")
-    print(f"  fout, geen absolute maatstaf -- gebruik het OM WIJZIGINGEN TE VERGELIJKEN,")
-    print(f"  niet om een RMSE-doel op zich na te jagen.")
+    # Hoeveel van de waarheid hierboven GEMETEN is, en hoeveel gereconstrueerd.
+    # Die twee horen uit elkaar gehouden te worden: de hoofdmaat hierboven is
+    # een mengsel, en een mengsel dat je niet kunt ontwarren is geen meting.
+    gemeten_n = sum(r.get("n_gemeten", 0) for r in resultaten)
+    alle_n = sum(r["n"] for r in resultaten)
+    if gemeten_n:
+        gem_fouten = [x["fout"] for r in resultaten for x in r["rijen"]
+                      if x.get("bron") == "gemeten"]
+        rec_fouten = [x["fout"] for r in resultaten for x in r["rijen"]
+                      if x.get("bron") != "gemeten"]
+        def _rmse(v):
+            return math.sqrt(sum(x * x for x in v) / len(v)) if v else float("nan")
+        print(f"\nWAARHEID: GEMETEN TEGENOVER GERECONSTRUEERD")
+        print(f"  {gemeten_n} van {alle_n} rijen ({100*gemeten_n/alle_n:.1f}%) komen uit "
+              f"eigen_elf.csv en zijn ECHTE CVHJ-punten.")
+        print(f"    RMSE over alleen die rijen        {_rmse(gem_fouten):.2f}")
+        print(f"    RMSE over de gereconstrueerde rest {_rmse(rec_fouten):.2f}")
+        print(f"  De eerste rust op een echte meetlat maar is een VERTEKENDE steekproef")
+        print(f"  (Thomas' eigen ploeg: spelers die het model hoog had staan). De tweede")
+        print(f"  mist nog steeds assists, kaarten en reddingen. Vergelijk ze dus niet")
+        print(f"  alsof het dezelfde maat is.")
+    else:
+        print(f"\n  Geen eigen_elf.csv gevonden: alle waarheid hierboven is")
+        print(f"  gereconstrueerd uit spelers.csv.")
+
+    print(f"\n  LET OP: waar 'werkelijk' gereconstrueerd is, mist het assists, kaarten")
+    print(f"  en keeper-reddingen, want die staan niet in spelers.csv. Gemeten tegen 86")
+    print(f"  echte speler-ronden is die reconstructie 78% exact, met een RMSE van 2.31")
+    print(f"  en een gemiddelde van -0.48 (te laag door gemiste assists, te hoog door")
+    print(f"  gemiste kaarten). Dat is geen kleinigheid naast een model-RMSE rond 3.4:")
+    print(f"  bij onafhankelijke fouten komt ~46% van de gemeten variantie uit de")
+    print(f"  meetlat. Gebruik dit OM WIJZIGINGEN TE VERGELIJKEN, niet om een RMSE-doel")
+    print(f"  op zich na te jagen.")
 
     if a.per_speler:
         with open(a.per_speler, "w", newline="", encoding="utf-8") as f:
