@@ -202,8 +202,18 @@ def test_bank_per_ronde():
 
     print(f"  {'OK  ' if ok_exact else 'FOUT'} horizon {rondes}: MILP-score {score:.6f} == "
           f"waardering {ref:.6f}")
+    # Het percentage is alleen zinvol als er iets te delen valt. Een horizon
+    # waarin elke kandidaat op nul staat (de afwezigenfilter kan de fixture
+    # leegtrekken) gaf hier een ZeroDivisionError -- in de PRINTREGEL, terwijl
+    # ok_bias een regel hoger al vastgesteld was. Die crash liet de suite
+    # falen, en wekelijks.yml pakt bij een falende regressietest de
+    # eenronde-terugval: op 24-10-2026 kwam het advies voor ronde 11 daaruit.
+    # Een diagnostiek die de uitkomst die hij rapporteert om zeep helpt, kost
+    # een ronde.
+    deel = (f"{onderschatting / echt_oud * 100:.2f}%" if abs(echt_oud) > 1e-12
+            else "n.v.t., horizonwaardering is 0")
     print(f"  {'OK  ' if ok_bias else 'FOUT'} vaste bank onderschat zijn eigen ploeg met "
-          f"{onderschatting:.3f} ({onderschatting / echt_oud * 100:.2f}%) -- nooit negatief")
+          f"{onderschatting:.3f} ({deel}) -- nooit negatief")
     return ok_exact and ok_bias
 
 
