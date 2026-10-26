@@ -1,21 +1,20 @@
 --transfers auto -> 1
+--horizon auto -> 2
 Periode 3; volgende periodestart over 2 ronden.
   verwachte goals: 18 duels uit de bron zelf, 81 teruggerekend uit de marktkansen
-Clubratings uit 99 wedstrijden met marktnotering (thuisvoordeel x1.23)
+Clubratings uit 99 wedstrijden (thuisvoordeel x1.23)
 LET OP: spelerstats.csv niet gevonden - assists en kaarten komen uit spelers_seizoen.csv (405 spelers). Verwachte goals zitten daar niet in, dus de doelpuntenschatting blijft op het eigen venster.
-  1 afwezige(n) weer in de pool: terug op of voor 2026-10-31, de eerste speeldag van deze ronde:
-    Devid Bouah               SC Cambuur       schorsing, terug 2026-10-25
-  4 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+afwezigen geladen: 66 spelers uit afwezigen.csv (opgehaald 2026-10-23)
+LET OP: opstellingen.csv bevat geen rijen voor ronde 11 - het bestand gaat over een andere ronde en wordt niet gebruikt.
+  7 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
     Artem Stepanov ⚠          FC Utrecht       blessure, terug 2026-11-02
+    Calvin Twigt              Willem II        blessure
+    Devid Bouah               SC Cambuur       schorsing, terug 2026-10-25
+    Jasper Dahlhaus           Fortuna Sittard  blessure
     Julius Dirksen            Go Ahead Eagles  blessure
     Kasper Boogaard           Willem II        blessure
     Ricardo Pepi              PSV              blessure
-258 spelers met voldoende speeltijd in de pool
-  spelerstats gekoppeld: 250/258 spelers uit de pool (spelerstats.csv bevat 405 spelers)
-
-AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
-    Artem Stepanov (blessure, terug 2026-11-02)
-LET OP: opstellingen.csv bevat geen rijen voor ronde 11 - het bestand gaat over een andere ronde en wordt niet gebruikt.
+Horizon: ronde [11, 12] (decay 0.84)
 
 OPSTELLING NU (zonder transfers)  3-4-3   verwacht 48.1 punten   kosten EUR 31.35
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.89
@@ -35,27 +34,18 @@ OPSTELLING NU (zonder transfers)  3-4-3   verwacht 48.1 punten   kosten EUR 31.3
   M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  0.76
   A            Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
 
-BESTE 1 TRANSFER(S)
+AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
+    Artem Stepanov (blessure, terug 2026-11-02)
 
-  verwacht 50.2  (3-5-2)   winst +2.1
+WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
+  0 transfer(s):   83.94
+  1 transfer(s):   87.89   +3.95 t.o.v. 0
+
+MULTI-RONDE ADVIES (horizon 2, decay 0.84, 1 transfer(s))
+  ronde 11: verwacht 50.2 punten  (3-5-2)  winst +2.1
+  gedecayde som over de horizon: 87.89  (huidig team: 83.94)
     UIT  Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
-    IN   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.76
-
-  verwacht 49.8  (3-4-3)   winst +1.7
-    UIT  Guus Til                  PSV              EUR 4.00  E  7.34
-    IN   Sven Mijnans              PSV              EUR 3.80  E  9.08
-
-  verwacht 49.8  (3-4-3)   winst +1.7
-    UIT  Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  0.76
-    IN   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.76
-
-  verwacht 49.4  (3-4-3)   winst +1.3
-    UIT  Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.25
-    IN   Olivier Aertssen          PEC Zwolle       EUR 1.50  E  2.73
-
-  verwacht 49.2  (3-4-3)   winst +1.2
-    UIT  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.58
-    IN   Olivier Aertssen          PEC Zwolle       EUR 1.50  E  2.73
+    IN   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.76  E(horizon)  6.61
 
 OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-5-2   verwacht 50.2 punten   kosten EUR 31.10
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.89
