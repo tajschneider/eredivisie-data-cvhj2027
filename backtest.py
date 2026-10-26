@@ -49,23 +49,61 @@ def laad_model():
     return m
 
 
-def werkelijke_punten(spelerrijen, ronde, m):
+def werkelijke_punten(spelerrijen, ronde, m, clubrijen=None):
     """{speler_id: (punten, club, positie_kort)} voor de daadwerkelijk GESPEELDE
     ronde, gereconstrueerd uit dezelfde termen die het model kent.
 
     `spelers.csv` bevat geen positie -- die komt uit prijzen.csv. Omdat we hier
     alleen spelers scoren die ook in de pool zaten, wordt de positie in
     `evalueer_ronde` bijgeplakt vanuit de voorspelling zelf.
+
+    TWEE KOLOMFORMATEN. Het bestand dat op 26-10-2026 in de repo stond heeft
+    `status`, `tegenstander`, `thuis_uit` en `afwezig_reden`; SPELER_COLS in
+    scrape_eredivisie.py heeft die niet meer en voegt positie, duels, assists,
+    geel, rood, reddingen en venster toe. De eerstvolgende scrape met een
+    gespeelde ronde ertussen migreert het bestand. Twee gevolgen, en geen van
+    beide meldt zichzelf:
+
+      status ontbreekt dan. Dit las r["status"] rechtstreeks en zou een
+      KeyError geven. cvhj_model.py kreeg daar in oktober rijstatus() voor,
+      met "dat verschil was een stille tijdbom" erbij -- backtest.py heeft die
+      harding nooit gekregen. Nu via .get(), met dezelfde afleiding: zonder
+      kolom is een rij met minuten geen afwezige.
+
+      ploegpunten wordt LEEG. ronde_uit_verschil() zet dat veld bewust op "",
+      want een verschil tussen twee seizoensmomentopnamen kent geen
+      wedstrijduitslag. Dat werd hier `int("" or 0)` = 0, en daarmee verloor
+      de gereconstrueerde waarheid stilzwijgend haar grootste term: winst
+      levert 3 punten en een gelijkspel 1, voor elke speler die meedeed. Als
+      clubrijen is meegegeven, wordt het alsnog uit clubs.csv gehaald -- daar
+      staat het per ronde en club, en dat is dezelfde bron die de scraper
+      vroeger gebruikte om deze kolom te vullen.
     """
+    ploeg = {}
+    for r in (clubrijen or []):
+        try:
+            ploeg[(str(r["ronde"]), m.norm_club(r["club"]))] = int(r["ploegpunten"] or 0)
+        except (KeyError, TypeError, ValueError):
+            continue
+
     uit = {}
     for r in spelerrijen:
-        if r["ronde"] != str(ronde) or r["status"] == "afwezig":
+        if r["ronde"] != str(ronde):
+            continue
+        # Zonder status-kolom is "afwezig" niet vast te stellen uit het veld.
+        # Een rij zonder minuten EN zonder duels is er dan geen bewijs van --
+        # die valt verderop toch af op minuten == 0.
+        if (r.get("status") or "") == "afwezig":
             continue
         sid = r.get("speler_id") or m.norm(r["speler"])
         cs = 1 if r.get("clean_sheet") in ("1", 1, "True", True) else 0
+        club = m.norm_club(r["club"])
+        pp = r.get("ploegpunten")
+        if pp in (None, ""):
+            pp = ploeg.get((str(ronde), club), 0)
         uit[sid] = {
-            "speler": r["speler"], "club": m.norm_club(r["club"]),
-            "ploegpunten": int(r["ploegpunten"] or 0),
+            "speler": r["speler"], "club": club,
+            "ploegpunten": int(pp or 0),
             "clean_sheet": cs, "goals": int(r["goals"] or 0),
             "minuten": int(r["minuten"] or 0),
         }
@@ -214,7 +252,7 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
     if not pool:
         return None
 
-    werkelijk = werkelijke_punten(spelerrijen, ronde, m)
+    werkelijk = werkelijke_punten(spelerrijen, ronde, m, clubrijen)
 
     # Echte CVHJ-punten gaan voor op de reconstructie. Ze bestaan alleen voor
     # Thomas' eigen elf (eigen_elf.csv), dus hooguit elf per ronde; de rest
@@ -259,19 +297,20 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
             "rmse": rmse, "mae": mae, "bias": bias, "spearman": rho, "rijen": rijen}
 
 
-def basislijn(m, spelerrijen, prijsrijen, ronde, venster, min_minuten):
+def basislijn(m, spelerrijen, prijsrijen, ronde, venster, min_minuten,
+              clubrijen=None):
     """Naïeve vergelijker: 'volgende ronde = gemiddelde van het venster',
     zonder clubratings, zonder programma. Als het model deze niet klopt,
     doet al het Poisson- en ridge-werk niets."""
     recent = {str(r) for r in range(max(1, ronde - venster), ronde)}
     vorm = collections.defaultdict(lambda: {"min": 0, "goals": 0, "duels": 0})
     for r in spelerrijen:
-        if r["ronde"] not in recent or r["status"] == "afwezig":
+        if r["ronde"] not in recent or (r.get("status") or "") == "afwezig":
             continue
         v = vorm[r.get("speler_id") or m.norm(r["speler"])]
         v["min"] += int(r["minuten"] or 0); v["goals"] += int(r["goals"] or 0); v["duels"] += 1
 
-    werkelijk = werkelijke_punten(spelerrijen, ronde, m)
+    werkelijk = werkelijke_punten(spelerrijen, ronde, m, clubrijen)
     prijs_pos = {r.get("speler_id") or m.norm(r["speler"]): r["positie"] for r in prijsrijen}
     KORT = {"Goalkeeper": "K", "Defender": "V", "Midfielder": "M", "Forward": "A"}
 
@@ -333,7 +372,8 @@ def main():
     for ronde in range(vanaf, tot + 1):
         r = evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, a.venster,
                            a.min_minuten, fbref=fbref)
-        b = basislijn(m, spelerrijen, prijsrijen, ronde, a.venster, a.min_minuten)
+        b = basislijn(m, spelerrijen, prijsrijen, ronde, a.venster, a.min_minuten,
+                      clubrijen)
         if r is None:
             print(f"{ronde:5d}   -- onvoldoende data om te voorspellen of te evalueren --")
             continue
