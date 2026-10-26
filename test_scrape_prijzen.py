@@ -779,6 +779,65 @@ def test_eerste_wissels_vervuilt_de_elf_niet():
     return ok and goed
 
 
+def test_kaarten_top40():
+    """De zichtbare kaartenlijst is een TOP-N; de JSON-LD is de volledige.
+
+    Op 26-10-2026 lieten drie controles tegelijk af. Zes spelers gingen van 2
+    naar 0 gele kaarten en Lucas Rosa van 0 naar 3 -- in een ronde waarin dat
+    allebei onmogelijk is. Oorzaak: de tabel toont 40 rijen terwijl de pagina
+    zelf "numberOfItems": 175 meldt. Een speler met 2 kaarten viel uit de top
+    toen er genoeg spelers op 3 kwamen, en kreeg 0 toegekend omdat een slug
+    die niet in de lijst stond terugviel op nul.
+
+    Drie niveaus, en de test controleert alle drie: zichtbare lijst (met
+    slug), JSON-LD (op naam en club), en anders LEEG -- niet nul. Het verschil
+    tussen "nul kaarten" en "niet in de lijst" is precies waar dit op stuk
+    liep.
+    """
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+
+    jsonld = ('{"@context":"https://schema.org","@type":"ItemList",'
+              '"numberOfItems":175,"itemListElement":['
+              '{"@type":"ListItem","position":1,"name":"Ayoub Oufkir",'
+              '"description":"Ayoub Oufkir (AZ): 4 gele kaarten"},'
+              '{"@type":"ListItem","position":8,"name":"Shiloh \u0027t Zand",'
+              '"description":"Shiloh \u0027t Zand (Fortuna Sittard): 3 gele kaarten"},'
+              '{"@type":"ListItem","position":60,"name":"Youri Baas",'
+              '"description":"Youri Baas (Ajax): 2 gele kaarten"}]}')
+    html = (f'<html><body>'
+            f'<script type="application/ld+json">{jsonld}</script>'
+            f'<script type="application/ld+json">'
+            f'{{"@type":"BreadcrumbList","itemListElement":[]}}</script>'
+            f'</body></html>')
+    uit = s.kaarten_uit_jsonld(BeautifulSoup(html, "html.parser"))
+
+    ok = True
+    goed = len(uit) == 3
+    print(f"  {'OK  ' if goed else 'FOUT'} drie spelers uit de structured data "
+          f"({len(uit)}); de BreadcrumbList telt niet mee")
+    ok = ok and goed
+
+    goed = uit.get((s.norm("Shiloh 't Zand"), s.norm("Fortuna Sittard"))) == 3
+    print(f"  {'OK  ' if goed else 'FOUT'} een naam met een apostrof uit \\u0027 "
+          f"wordt gelezen")
+    ok = ok and goed
+
+    gevallen = [
+        ("staat in de zichtbare lijst", "ayoub-oufkir", "Ayoub Oufkir", "AZ",
+         {"ayoub-oufkir": ("Ayoub Oufkir", "AZ", 4)}, 4),
+        ("alleen in de JSON-LD (uit de top-40 gevallen)", "youri-baas",
+         "Youri Baas", "Ajax", {}, 2),
+        ("in geen van beide: LEEG, niet nul", "niemand", "Niemand", "Ajax", {}, ""),
+    ]
+    for wat, slug, naam, club, op_slug, verwacht in gevallen:
+        w = s.kaarten_van(slug, naam, club, op_slug, uit)
+        goed = w == verwacht and type(w) is type(verwacht)
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {w!r} (verwacht {verwacht!r})")
+        ok = ok and goed
+    return ok
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -808,8 +867,11 @@ def main():
     print("\nde elf blijft schoon bij 'Eerste wissels'\n")
     ok10 = test_eerste_wissels_vervuilt_de_elf_niet()
 
+    print("\nkaartenlijst is een top-N, geen volledige lijst\n")
+    ok11 = test_kaarten_top40()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

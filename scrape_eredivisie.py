@@ -30,6 +30,7 @@ Afhankelijkheden:  pip install requests beautifulsoup4
 import argparse
 import csv
 import html as htmllib
+import json
 import re
 import sys
 import time
@@ -1034,6 +1035,43 @@ def parse_kaartenlijst(soup, kolom_woord):
     return uit
 
 
+def kaarten_uit_jsonld(soup):
+    """{(genormaliseerde naam, genormaliseerde club): aantal} uit de JSON-LD.
+
+    De ZICHTBARE tabel op de kaartenpagina is een TOP-40. De structured data
+    in dezelfde pagina is dat niet: op 26-10-2026 stond er
+    "numberOfItems": 175 met voor elke speler een regel
+
+        "description": "Ayoub Oufkir (AZ): 4 gele kaarten"
+
+    Dat verschil heeft op die dag drie controles laten afgaan. Een speler met
+    2 kaarten stond op 23 oktober nog in de top 40 en viel er daarna uit toen
+    genoeg spelers op 3 kwamen. Hij kreeg toen 0 toegekend, want een slug die
+    niet in de lijst staat viel terug op nul -- en 2 -> 0 las de controle
+    terecht als een teller die omlaag gaat. Andersom kwam Lucas Rosa er met 3
+    kaarten bij, en dat werd +3 in een enkele ronde.
+
+    Geen slugs hier, alleen namen; de aanroeper koppelt op naam+club tegen de
+    spelersindex. De zichtbare tabel blijft de eerste bron, want die HEEFT
+    slugs en koppelt dus exact.
+    """
+    uit = {}
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        tekst = script.string or script.get_text() or ""
+        if '"ItemList"' not in tekst:
+            continue
+        try:
+            data = json.loads(tekst)
+        except ValueError:
+            continue
+        for item in (data.get("itemListElement") or []):
+            m = re.match(r"\s*(.+?)\s*\((.+?)\)\s*:\s*(\d{1,3})\b",
+                         str(item.get("description") or ""))
+            if m:
+                uit[(norm(m.group(1)), norm(club_naam(m.group(2))))] = int(m.group(3))
+    return uit
+
+
 # ----------------------------------------------------------- per ronde maken
 def ronde_uit_verschil(vorig, nu, rondes, datum):
     """Trek twee seizoensstanden van elkaar af en maak er ronderijen van.
@@ -1269,20 +1307,48 @@ def taak_afwezigen():
     return afw, elf
 
 
+def kaarten_van(slug, naam, club, op_slug, op_naam):
+    """Aantal kaarten: eerst de zichtbare lijst (exacte slug), dan de JSON-LD.
+
+    Staat de speler in geen van beide, dan is dat GEEN nul maar "niet in de
+    lijst". Nul teruggeven was de fout van 26-10-2026: een speler die uit de
+    top-40 viel ging van 2 naar 0, en dat las de controle terecht als een
+    teller die omlaag gaat. Leeg laten betekent onbekend, en schrijf() laat
+    een lege waarde de bestaande waarde niet overschrijven zolang de rij er
+    verder hetzelfde uitziet -- maar belangrijker: de controle op dalende
+    totalen slaat niet meer aan op iets wat nooit gebeurd is.
+    """
+    if slug in op_slug:
+        return op_slug[slug][2]
+    uit_naam = op_naam.get((norm(naam), norm(club)))
+    if uit_naam is not None:
+        return uit_naam
+    return ""
+
+
 def taak_spelers(max_spelers=None, duels=None):
     """spelers_seizoen.csv (momentopname) en spelers.csv (verschil per ronde)."""
     print("Kaarten ophalen")
     geel = rood = {}
-    try:
-        geel = parse_kaartenlijst(get(GEEL_URL), "gele kaarten")
-        print(f"  geel: {len(geel)} spelers")
-    except Exception as e:
-        print(f"  ! gele kaarten mislukt: {e}")
-    try:
-        rood = parse_kaartenlijst(get(ROOD_URL), "rode kaarten")
-        print(f"  rood: {len(rood)} spelers")
-    except Exception as e:
-        print(f"  ! rode kaarten mislukt: {e}")
+    geel_naam = rood_naam = {}
+    for url, woord, zet in ((GEEL_URL, "gele kaarten", "geel"),
+                            (ROOD_URL, "rode kaarten", "rood")):
+        try:
+            soup = get(url)
+            op_slug = parse_kaartenlijst(soup, woord)
+            op_naam = kaarten_uit_jsonld(soup)
+            if zet == "geel":
+                geel, geel_naam = op_slug, op_naam
+            else:
+                rood, rood_naam = op_slug, op_naam
+            extra = len(set(op_naam) - {(norm(n), norm(c)) for n, c, _ in
+                                        ((v[0], v[1], v[2]) for v in op_slug.values())})
+            print(f"  {zet}: {len(op_slug)} in de zichtbare lijst, "
+                  f"{len(op_naam)} in de structured data"
+                  + (f" ({extra} alleen daar)" if op_naam else
+                     " — geen JSON-LD gevonden, alleen de top van de lijst"))
+        except Exception as e:
+            print(f"  ! {woord} mislukt: {e}")
 
     print("Spelersindex ophalen")
     index = parse_spelersindex(get(SPELERS_URL))
@@ -1305,8 +1371,8 @@ def taak_spelers(max_spelers=None, duels=None):
         d = parse_speler(soup)
         d.update({"opgehaald": VANDAAG, "speler_id": slug, "speler": naam,
                   "club": club, "positie": positie,
-                  "geel": geel.get(slug, ("", "", 0))[2],
-                  "rood": rood.get(slug, ("", "", 0))[2]})
+                  "geel": kaarten_van(slug, naam, club, geel, geel_naam),
+                  "rood": kaarten_van(slug, naam, club, rood, rood_naam)})
         nu.append(d)
         if n % 50 == 0:
             print(f"  {n}/{len(index)} ...")
@@ -1326,6 +1392,32 @@ def taak_spelers(max_spelers=None, duels=None):
     # een kopie die niet wordt vastgelegd is geen reservekopie. De echte
     # reservekopie is de git-geschiedenis van dit bestand.
     oud_alles = lees(OUT / "spelers_seizoen.csv")
+    # Kaartentellers kunnen niet omlaag. Staat een speler niet meer in de
+    # lijst, dan levert kaarten_van() een lege waarde ("onbekend"); dan
+    # blijft het laatst bekende aantal staan. En mocht de bron ooit een
+    # lager getal geven, dan wint alsnog het hoogste -- een daling is per
+    # definitie een fout in de meting, niet in de werkelijkheid.
+    eerder = {}
+    for r in lees(OUT / "spelers_seizoen.csv"):
+        sid = r.get("speler_id")
+        if sid:
+            eerder.setdefault(sid, {})
+            for kolom in ("geel", "rood"):
+                w = getal(r.get(kolom))
+                if w is not None:
+                    eerder[sid][kolom] = max(eerder[sid].get(kolom, 0), w)
+    hersteld = 0
+    for r in nu:
+        oud_r = eerder.get(r.get("speler_id")) or {}
+        for kolom in ("geel", "rood"):
+            was, is_ = oud_r.get(kolom), getal(r.get(kolom))
+            if was is not None and (is_ is None or is_ < was):
+                r[kolom] = was
+                hersteld += 1
+    if hersteld:
+        print(f"  {hersteld} kaartenteller(s) op de laatst bekende waarde gehouden "
+              f"(de zichtbare lijst is een top-N, geen volledige lijst)")
+
     schrijf(OUT / "spelers_seizoen.csv", SEIZOEN_COLS, nu,
             ["opgehaald", "speler_id"])
 
