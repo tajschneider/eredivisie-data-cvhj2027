@@ -46,6 +46,7 @@ import argparse
 import csv
 import datetime
 import importlib.util
+import json
 import random
 import subprocess
 import sys
@@ -224,6 +225,100 @@ def lees_historie():
         return list(csv.DictReader(f))
 
 
+# Hoeveel een enkele SPELENDE speler per ronde schommelt, gemeten op
+# punten_historie.csv (ronde 8 en 9, 354 waarnemingen met een score ongelijk
+# nul): sd 3.91 punt. Elf daarvan, onafhankelijk, geeft 3.91 * sqrt(11).
+#
+# Dit getal is het belangrijkste in deze hele functie. Zonder ruisvloer leest
+# een RMSE van 14 als een slecht model, terwijl 13 het theoretische maximum is
+# -- en dan ga je een model bijstellen dat al tegen de bodem zit.
+SD_SPELER_PER_RONDE = 3.91
+BASISSPELERS = 11
+RUISVLOER = SD_SPELER_PER_RONDE * (BASISSPELERS ** 0.5)
+
+
+def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
+    """Verwachting van het model tegen de WERKELIJK behaalde ploegscore.
+
+    De meest directe toets die dit project heeft, en tot 26-10-2026 de enige
+    die nergens stond: validatie/historie.csv meet RMSE en rho over de hele
+    POOL, niet over de elf die je echt had.
+
+    Invoer is optioneel. `eigen_punten.csv` met twee kolommen (ronde, punten)
+    houd je met de hand bij -- die getallen staan alleen op de site van CVHJ en
+    komen uit geen enkele scrape. Ontbreekt het bestand, dan levert deze
+    functie None en verandert er niets.
+
+    De verwachting per ronde komt uit historie/ronde-N.json, veld
+    huidig.verwacht: wat het model dacht dat je ploeg ZONDER transfers zou
+    opleveren. Dat is het juiste vergelijkingspunt, want dat is de ploeg waar
+    je mee speelde.
+
+    WAT HIER WEL EN NIET UIT TE HALEN VALT. De weekschommeling van een som van
+    elf spelers is grotendeels onvermijdelijk (zie RUISVLOER). Op de stand van
+    26-10-2026, met vijf gekoppelde ronden: waargenomen sd 14.94, ruisvloer
+    12.97, dus 75% van de variantie is ruis. Een RMSE rond 13 is daarmee geen
+    slecht model maar een model op de bodem. Wat deze reeks WEL kan vaststellen
+    is het NIVEAU: voorspelt het model gemiddeld te hoog of te laag. Daar is
+    geen ruis tegen, alleen tijd.
+    """
+    p = Path(pad)
+    if not p.exists():
+        return None
+    echt = {}
+    with p.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            try:
+                echt[int(r["ronde"])] = float(r["punten"])
+            except (KeyError, TypeError, ValueError):
+                continue
+    if not echt:
+        return None
+
+    verw = {}
+    for j in Path(map_historie).glob("ronde-*.json"):
+        try:
+            d = json.loads(j.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        r, h = d.get("ronde"), (d.get("huidig") or {})
+        if r is not None and h.get("verwacht") is not None:
+            verw[int(r)] = float(h["verwacht"])
+
+    paren = sorted((r, verw[r], echt[r]) for r in echt if r in verw)
+    if len(paren) < 2:
+        return {"eigen_ronden": len(paren), "eigen_gekoppeld": 0}
+
+    fouten = [a - v for _, v, a in paren]
+    n = len(fouten)
+    gem_fout = sum(fouten) / n
+    rmse = (sum(x * x for x in fouten) / n) ** 0.5
+    alle = sorted(echt.values())
+    gem_echt = sum(alle) / len(alle)
+    # Spreiding van je uitslagen zelf; met minder dan twee ronden zinloos.
+    sd_echt = ((sum((x - gem_echt) ** 2 for x in alle) / (len(alle) - 1)) ** 0.5
+               if len(alle) > 1 else 0.0)
+    # Standaardfout van de bias: zonder dit getal leest een bias van +3 als
+    # een bevinding, terwijl hij bij vijf ronden volledig binnen de marge valt.
+    sd_fout = ((sum((x - gem_fout) ** 2 for x in fouten) / (n - 1)) ** 0.5
+               if n > 1 else 0.0)
+    rest = rmse * rmse - RUISVLOER * RUISVLOER
+    return {
+        "eigen_ronden": len(echt),
+        "eigen_gekoppeld": n,
+        "eigen_gemiddeld": round(gem_echt, 2),
+        "eigen_sd": round(sd_echt, 2),
+        "eigen_bias": round(gem_fout, 2),
+        "eigen_bias_se": round(sd_fout / (n ** 0.5), 2) if n > 1 else None,
+        "eigen_rmse": round(rmse, 2),
+        "eigen_ruisvloer": round(RUISVLOER, 2),
+        "eigen_modelfout": round(rest ** 0.5, 2) if rest > 0 else 0.0,
+        "eigen_ruisaandeel": (round(100 * RUISVLOER ** 2 / (sd_echt ** 2), 0)
+                              if sd_echt > 0 else None),
+        "eigen_zonder_verwachting": sorted(r for r in echt if r not in verw),
+    }
+
+
 def getal(x):
     try:
         return float(x)
@@ -303,6 +398,34 @@ def main():
     for k, v in data.items():
         print(f"  {k:20s} {v}")
 
+    # De directe toets: wat het model voor JOUW elf voorspelde tegen wat je
+    # werkelijk haalde. Optioneel -- zonder eigen_punten.csv verandert er niets.
+    eigen = meet_eigen_ploeg()
+    if eigen is None:
+        print("\nEigen ploeg: geen eigen_punten.csv, dus niet gemeten "
+              "(twee kolommen: ronde,punten)")
+    elif eigen.get("eigen_gekoppeld", 0) < 2:
+        print(f"\nEigen ploeg: {eigen['eigen_ronden']} ronde(n) ingevoerd, maar te "
+              f"weinig met een verwachting in historie/ om iets te zeggen")
+    else:
+        print("\nEigen ploeg tegen de verwachting")
+        print(f"  ronden gekoppeld      {eigen['eigen_gekoppeld']} van "
+              f"{eigen['eigen_ronden']} ingevoerd")
+        print(f"  gemiddeld werkelijk   {eigen['eigen_gemiddeld']} "
+              f"(sd {eigen['eigen_sd']})")
+        print(f"  bias                  {eigen['eigen_bias']:+} +/- "
+              f"{eigen['eigen_bias_se']}")
+        print(f"  RMSE                  {eigen['eigen_rmse']}")
+        print(f"  ruisvloer             {eigen['eigen_ruisvloer']}  "
+              f"({eigen['eigen_ruisaandeel']}% van de variantie is ruis)")
+        print(f"  modelfout erboven     {eigen['eigen_modelfout']}")
+        if abs(eigen["eigen_bias"]) < 2 * (eigen["eigen_bias_se"] or 0):
+            print("  -> de bias valt binnen de marge; nog geen aanwijzing dat het "
+                  "model structureel te hoog of te laag zit")
+        if eigen["eigen_zonder_verwachting"]:
+            print(f"  ronden zonder verwachting in historie/: "
+                  f"{eigen['eigen_zonder_verwachting']}")
+
     historie = lees_historie()
     rij = {
         "datum": datetime.date.today().isoformat(),
@@ -317,6 +440,27 @@ def main():
 
     UIT.mkdir(parents=True, exist_ok=True)
     nieuw = not HISTORIE.exists()
+    # De reeks wordt AANGEVULD onder een kop die alleen bij het eerste bestand
+    # is geschreven. Zet iemand later een veld in VELDEN, dan krijgt de nieuwe
+    # regel meer kolommen dan de kop aangeeft en schuift alles een plek op --
+    # zonder foutmelding, in een reeks die juist bedoeld is om trends in te
+    # zien. Daarom eerst vergelijken, en bij verschil weigeren in plaats van
+    # door te schrijven.
+    if not nieuw:
+        with HISTORIE.open(encoding="utf-8") as f:
+            kop = (f.readline().strip().split(",") if HISTORIE.stat().st_size else [])
+        if kop and kop != VELDEN:
+            erbij = [v for v in VELDEN if v not in kop]
+            eraf = [v for v in kop if v not in VELDEN]
+            sys.exit(
+                f"{HISTORIE} heeft een andere kop dan VELDEN en wordt niet "
+                f"aangevuld.\n"
+                f"  nieuw in VELDEN: {erbij or 'geen'}\n"
+                f"  weg uit VELDEN:  {eraf or 'geen'}\n"
+                f"Aanvullen zou de kolommen laten verschuiven in alle volgende "
+                f"regels, zonder foutmelding. Schrijf het bestand eerst om naar "
+                f"de nieuwe kolommen (met de hand, dan lees je het zelf), of zet "
+                f"VELDEN terug.")
     with HISTORIE.open("a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=VELDEN, extrasaction="ignore")
         if nieuw:
