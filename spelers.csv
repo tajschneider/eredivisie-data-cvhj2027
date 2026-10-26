@@ -4131,7 +4131,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,marc-ter-stegen,Marc ter Stegen,Ajax,Goalkeeper,1,1,90,0,0,0,0,3,0,,10,2026-10-26
 10,2026-10-25,daley-blind,Daley Blind,Ajax,Defender,1,0,2,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,dies-janse,Dies Janse,Ajax,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,lucas-rosa,Lucas Rosa,Ajax,Defender,1,1,90,0,0,3,0,0,0,,10,2026-10-26
+10,2026-10-25,lucas-rosa,Lucas Rosa,Ajax,Defender,1,1,90,0,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,owen-wijndal,Owen Wijndal,Ajax,Defender,1,0,11,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,thilo-kehrer,Thilo Kehrer,Ajax,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,youri-baas,Youri Baas,Ajax,Defender,1,1,79,0,0,0,0,0,0,,10,2026-10-26
@@ -4243,7 +4243,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,alfons-sampsted,Alfons Sampsted,Go Ahead Eagles,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,dean-james,Dean James,Go Ahead Eagles,Defender,1,1,63,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,joris-kramer,Joris Kramer,Go Ahead Eagles,Defender,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,julius-dirksen,Julius Dirksen,Go Ahead Eagles,Defender,1,1,90,0,0,3,0,0,0,,10,2026-10-26
+10,2026-10-25,julius-dirksen,Julius Dirksen,Go Ahead Eagles,Defender,1,1,90,0,0,,0,0,0,,10,2026-10-26
 10,2026-10-25,tomas-galvez,Tomas Galvez,Go Ahead Eagles,Defender,1,0,27,0,1,0,0,0,0,,10,2026-10-26
 10,2026-10-25,evert-linthorst,Evert Linthorst,Go Ahead Eagles,Midfielder,1,1,90,1,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,melle-meulensteen,Melle Meulensteen,Go Ahead Eagles,Midfielder,1,1,84,0,0,0,0,0,0,,10,2026-10-26
@@ -4325,7 +4325,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 10,2026-10-25,sekou-sylla,Sekou Sylla,ADO Den Haag,Defender,1,1,55,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,evan-rottier,Evan Rottier,ADO Den Haag,Midfielder,1,1,90,0,1,0,0,0,0,,10,2026-10-26
 10,2026-10-25,juho-kilo,Juho Kilo,ADO Den Haag,Midfielder,1,1,90,0,0,0,0,0,0,,10,2026-10-26
-10,2026-10-25,matej-sin,Matěj Šín,ADO Den Haag,Midfielder,1,1,57,-1,0,0,0,0,0,,10,2026-10-26
+10,2026-10-25,matej-sin,Matěj Šín,ADO Den Haag,Midfielder,1,1,57,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,cameron-peupion,C. Peupion,ADO Den Haag,Forward,1,0,23,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,daryl-van-mieghem,Daryl van Mieghem,ADO Den Haag,Forward,1,0,44,0,0,0,0,0,0,,10,2026-10-26
 10,2026-10-25,jalen-hawkins,Jalen Hawkins,ADO Den Haag,Forward,1,1,68,0,0,0,0,0,0,,10,2026-10-26
