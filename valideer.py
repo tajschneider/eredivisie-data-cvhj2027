@@ -167,7 +167,8 @@ def meet_model(m, venster, min_minuten):
         fout2 += [x["fout"] ** 2 for x in r["rijen"]]
         if r.get("spearman") is not None:
             rhos.append(r["spearman"])
-        b = backtest.basislijn(m, spelerrijen, prijsrijen, ronde, venster, min_minuten)
+        b = backtest.basislijn(m, spelerrijen, prijsrijen, ronde, venster,
+                               min_minuten, clubrijen)
         if b:
             # basislijn() geeft alleen een samengevatte RMSE terug, geen losse
             # fouten. Voor een reeks over meerdere ronden tellen we hem daarom
