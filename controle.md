@@ -34,7 +34,7 @@ Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | rijen_clubs.csv | 612 |
 | rijen_opstellingen.csv | 594 |
 | rijen_prijzen.csv | 507 |
-| rijen_spelers.csv | 4285 |
+| rijen_spelers.csv | 4284 |
 | rijen_spelers_seizoen.csv | 1515 |
 | ronderijen_ronden | 10 |
 | seizoen_dalende_tellers | 3 |
