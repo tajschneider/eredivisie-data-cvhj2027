@@ -5,116 +5,123 @@
   "bron_selectie": "bestand",
   "bron_afwezigen": {
     "status": "bestand",
-    "opgehaald": "2026-10-23",
-    "aantal": 66
+    "opgehaald": "2026-10-26",
+    "aantal": 77
   },
   "bron_opstellingen": {
-    "status": "andere_ronde",
-    "opgehaald": null,
-    "clubs": 0
+    "status": "bestand",
+    "opgehaald": "2026-10-26",
+    "clubs": 18
   },
-  "buiten_vermoedelijke_elf": [],
+  "buiten_vermoedelijke_elf": [
+    {
+      "speler": "Mohamed Ihattaren",
+      "club": "Fortuna Sittard",
+      "basis": 4,
+      "duels": 6
+    }
+  ],
   "afwezig_in_selectie": [
     {
       "speler": "Artem Stepanov",
       "reden": "blessure",
-      "terug": "2026-11-02"
+      "terug": "2026-11-01"
     }
   ],
   "stats_bron": {
     "bestand": null,
     "leeftijd_dagen": null,
     "soort": "seizoen",
-    "spelers": 405
+    "spelers": 413
   },
-  "gegenereerd": "2026-10-26T13:54:36",
+  "gegenereerd": "2026-10-27T16:58:32",
   "transfers_toegestaan": 1,
   "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
   "transferladder": [
     {
       "transfers": 0,
-      "score": 83.942,
+      "score": 89.889,
       "marginale_winst": 0.0
     },
     {
       "transfers": 1,
-      "score": 87.894,
-      "marginale_winst": 3.951
+      "score": 94.092,
+      "marginale_winst": 4.203
     }
   ],
   "periode": 3,
   "periodestart": false,
   "ronden_tot_volgende_periode": 2,
   "huidig": {
-    "verwacht": 48.08,
+    "verwacht": 51.88,
     "kosten": 31.35,
     "basis": [
       {
         "speler": "Kjetil Haug",
         "club": "Go Ahead Eagles",
         "pos": "K",
-        "E": 3.887
+        "E": 3.828
       },
       {
         "speler": "Ruud Nijstad",
         "club": "FC Twente",
         "pos": "V",
-        "E": 3.595
-      },
-      {
-        "speler": "Deveron Fonville",
-        "club": "NEC",
-        "pos": "V",
-        "E": 2.052
+        "E": 3.486
       },
       {
         "speler": "Marvin Young",
         "club": "Sparta Rotterdam",
         "pos": "V",
-        "E": 1.579
+        "E": 1.562
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 1.397
       },
       {
         "speler": "Guus Til",
         "club": "PSV",
         "pos": "M",
-        "E": 7.342
+        "E": 9.303
       },
       {
         "speler": "Gjivai Zechiël",
         "club": "Feyenoord",
         "pos": "M",
-        "E": 6.485
+        "E": 6.271
       },
       {
         "speler": "Julian Brandt",
         "club": "Ajax",
         "pos": "M",
-        "E": 5.15
+        "E": 5.51
       },
       {
         "speler": "Tyrone Owusu",
         "club": "Telstar",
         "pos": "M",
-        "E": 3.4
+        "E": 3.931
       },
       {
         "speler": "Brynjólfur Willumsson",
         "club": "FC Groningen",
         "pos": "A",
-        "E": 4.622
+        "E": 5.688
       },
       {
         "speler": "Jacob Trenskow",
         "club": "sc Heerenveen",
         "pos": "A",
-        "E": 4.378
+        "E": 5.578
       },
       {
         "speler": "Mexx Meerdink",
         "club": "AZ",
         "pos": "A",
-        "E": 3.323
+        "E": 3.115
       }
     ],
     "bank": [
@@ -122,19 +129,19 @@
         "speler": "Stijn van Gassel",
         "club": "Excelsior",
         "pos": "K",
-        "E": 2.536
+        "E": 2.523
       },
       {
         "speler": "Sekou Sylla",
         "club": "ADO Den Haag",
         "pos": "V",
-        "E": 1.248
+        "E": 1.217
       },
       {
         "speler": "Mohamed Ihattaren",
         "club": "Fortuna Sittard",
         "pos": "M",
-        "E": 0.759
+        "E": 0.691
       },
       {
         "speler": "Artem Stepanov",
@@ -186,10 +193,10 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 252,
+  "pool_grootte": 273,
   "advies": {
-    "verwacht": 50.18,
-    "winst": 2.1,
+    "verwacht": 54.31,
+    "winst": 2.42,
     "formatie": "3-5-2",
     "uit": [
       {
@@ -206,7 +213,7 @@
         "club": "PEC Zwolle",
         "pos": "M",
         "prijs": 2.0,
-        "E": 3.759
+        "E": 3.982
       }
     ],
     "basis": [
@@ -214,67 +221,67 @@
         "speler": "Kjetil Haug",
         "club": "Go Ahead Eagles",
         "pos": "K",
-        "E": 3.887
+        "E": 3.828
       },
       {
         "speler": "Ruud Nijstad",
         "club": "FC Twente",
         "pos": "V",
-        "E": 3.595
-      },
-      {
-        "speler": "Deveron Fonville",
-        "club": "NEC",
-        "pos": "V",
-        "E": 2.052
+        "E": 3.486
       },
       {
         "speler": "Marvin Young",
         "club": "Sparta Rotterdam",
         "pos": "V",
-        "E": 1.579
+        "E": 1.562
+      },
+      {
+        "speler": "Deveron Fonville",
+        "club": "NEC",
+        "pos": "V",
+        "E": 1.397
       },
       {
         "speler": "Guus Til",
         "club": "PSV",
         "pos": "M",
-        "E": 7.342
+        "E": 9.303
       },
       {
         "speler": "Gjivai Zechiël",
         "club": "Feyenoord",
         "pos": "M",
-        "E": 6.485
+        "E": 6.271
       },
       {
         "speler": "Julian Brandt",
         "club": "Ajax",
         "pos": "M",
-        "E": 5.15
+        "E": 5.51
       },
       {
         "speler": "Thijs Oosting",
         "club": "PEC Zwolle",
         "pos": "M",
-        "E": 3.759
+        "E": 3.982
       },
       {
         "speler": "Tyrone Owusu",
         "club": "Telstar",
         "pos": "M",
-        "E": 3.4
+        "E": 3.931
       },
       {
         "speler": "Brynjólfur Willumsson",
         "club": "FC Groningen",
         "pos": "A",
-        "E": 4.622
+        "E": 5.688
       },
       {
         "speler": "Jacob Trenskow",
         "club": "sc Heerenveen",
         "pos": "A",
-        "E": 4.378
+        "E": 5.578
       }
     ],
     "bank": [
@@ -282,25 +289,25 @@
         "speler": "Stijn van Gassel",
         "club": "Excelsior",
         "pos": "K",
-        "E": 2.536
+        "E": 2.523
       },
       {
         "speler": "Sekou Sylla",
         "club": "ADO Den Haag",
         "pos": "V",
-        "E": 1.248
+        "E": 1.217
       },
       {
         "speler": "Mohamed Ihattaren",
         "club": "Fortuna Sittard",
         "pos": "M",
-        "E": 0.759
+        "E": 0.691
       },
       {
         "speler": "Mexx Meerdink",
         "club": "AZ",
         "pos": "A",
-        "E": 3.323
+        "E": 3.115
       }
     ]
   },
@@ -311,5 +318,5 @@
     12
   ],
   "decay": 0.84,
-  "verwacht_horizon": 87.89
+  "verwacht_horizon": 94.09
 }
