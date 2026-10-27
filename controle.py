@@ -30,6 +30,7 @@ import json
 import re
 import sys
 import time
+import unicodedata
 from pathlib import Path
 
 import scrape_eredivisie as s
@@ -737,6 +738,69 @@ def controleer_rondes(r, momentopnamen=1):
     dubbel = {k for k in sleutels if sleutels.count(k) > 1}
     r.eis(not dubbel, "spelers.csv", "geen dubbele ronde/speler/club",
           f"dubbel: {sorted(dubbel)[:4]}")
+
+    # Dezelfde speler onder TWEE slugs. Dat is geen dubbele sleutel -- de
+    # controle hierboven ziet het dus niet -- maar het kan erger zijn, want de
+    # twee rijen delen de speelhistorie.
+    #
+    # Wat het ERNSTIG maakt is niet de tweede slug op zich, maar de vraag of
+    # daar MINUTEN onder staan. Alleen de slug uit prijzen.csv wordt door
+    # bouw_pool() gelezen; staat de speeltijd onder de andere, dan is ze voor
+    # het model onzichtbaar. Op 27-10-2026 was dat bij elf spelers zo: Tobias
+    # Sommer stond op 90 minuten in plaats van 889, vier spelers vielen
+    # volledig uit de pool, en Soren Tengstedt kwam op E 2.12 in plaats van
+    # 5.12.
+    #
+    # Een tweede slug ZONDER minuten is een lege restrij en kost niets. Die
+    # als fout melden zou een controle opleveren die vrijwel altijd rood
+    # staat, en dan leest niemand hem meer -- vier van zulke restrijen stonden
+    # er op diezelfde dag.
+    def _naamsleutel(x):
+        # Niet `s` als naam: dat is in dit bestand de alias voor
+        # scrape_eredivisie, en die hier overschaduwen is vragen om een fout
+        # die pas verderop opvalt.
+        naam = unicodedata.normalize("NFKD", x.get("speler") or "")
+        naam = naam.encode("ascii", "ignore").decode().lower()
+        woorden = re.sub(r"[^a-z ]+", " ", naam).split()
+        club = re.sub(r"[^a-z]+", "", (x.get("club") or "").lower())
+        return (woorden[-1] if woorden else "", club)
+
+    def _minuten(x):
+        try:
+            return int(x.get("minuten") or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    minuten_per_slug = {}
+    slugs_per_naam = {}
+    for x in rijen:
+        sid = x.get("speler_id")
+        minuten_per_slug[sid] = minuten_per_slug.get(sid, 0) + _minuten(x)
+        slugs_per_naam.setdefault(_naamsleutel(x), set()).add(sid)
+
+    geldig = {x.get("speler_id") for x in _lees("prijzen.csv", r, verplicht=False)}
+    gesplitst = {k: v for k, v in slugs_per_naam.items() if len(v) > 1 and k[0]}
+    r.meet("spelers_met_twee_slugs", len(gesplitst))
+
+    # Verloren speeltijd: een slug die NIET in prijzen.csv staat, met minuten,
+    # naast een slug die er wel in staat.
+    kwijt = {}
+    for k, v in gesplitst.items():
+        if not (v & geldig):
+            continue        # geen van beide in prijzen.csv: geen pool, geen verlies
+        blind = {sid: minuten_per_slug[sid] for sid in v
+                 if sid not in geldig and minuten_per_slug[sid] > 0}
+        if blind:
+            kwijt[k] = blind
+    r.meet("minuten_onzichtbaar_voor_model", sum(sum(b.values()) for b in kwijt.values()))
+    r.eis(not kwijt, "spelers.csv", "geen speeltijd onder een onbekende slug",
+          "; ".join(f"{k[0]}/{k[1]}: " + ", ".join(f"{sid} ({m} min)" for sid, m in b.items())
+                    for k, b in sorted(kwijt.items())[:4])
+          + " -- die minuten staan onder een speler_id dat niet in prijzen.csv "
+            "voorkomt, en bouw_pool() leest alleen die laatste. Voeg de rijen "
+            "samen onder de slug uit prijzen.csv. Twee naamgenoten bij dezelfde "
+            "club geven hier een vals alarm; kijk dan of het echt twee personen "
+            "zijn.")
 
     per_ronde = {}
     for x in rijen:
