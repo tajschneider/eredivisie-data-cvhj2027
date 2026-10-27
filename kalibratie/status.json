@@ -117,6 +117,13 @@
       "max_haalbare_verbetering": 0.0024424234479683226,
       "besluit": "geen aanpassing",
       "reden": "verbetering 0.2% onder de drempel van 3% -- binnen de ruis van dit aantal rondes. LET OP: de best haalbare winst in het HELE raster is 0.24%, nog steeds onder de drempel van 3%. Deze kalibratie kan dus niets aanpassen, wat je ook meet -- de drempel past niet bij de schaal van deze maatstaf. Overweeg te ijken op de werkelijk behaalde punten van de gekozen vijftien in plaats van op RMSE over de hele pool: daar zijn de verschillen een orde van grootte groter."
+    },
+    {
+      "tijdstip": "2026-10-27T14:17:07.078148+00:00",
+      "tot_ronde": 34,
+      "n_evalueerbaar": 33,
+      "besluit": "overgeslagen",
+      "reden": "nog maar 0 nieuwe ronde(s) sinds de vorige controle (ronde 34); wacht tot 4"
     }
   ]
 }
