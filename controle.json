@@ -1,5 +1,5 @@
 {
-  "datum": "2026-10-26",
+  "datum": "2026-10-27",
   "fouten": 1,
   "waarschuwingen": 0,
   "controles": 28,
@@ -20,7 +20,7 @@
     "seizoen_momentopnamen": 3,
     "seizoen_spelers_laatste": 506,
     "seizoen_dalende_tellers": 3,
-    "rijen_spelers.csv": 4350,
+    "rijen_spelers.csv": 4285,
     "ronderijen_ronden": 10,
     "rijen_afwezigen.csv": 165,
     "afwezigen_laatste": 56,
@@ -33,7 +33,7 @@
     "prijzen_goedkoopste15": 15.0,
     "prijzen_koppelgraad": "476 van 507 (94%)",
     "nieuwste_ophaaldatum": "2026-10-26",
-    "dagen_oud": 0
+    "dagen_oud": 1
   },
   "fout_details": [
     {

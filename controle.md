@@ -1,6 +1,6 @@
 # Controle scrape — GEFAALD
 
-Uitgevoerd 2026-10-26. 1 fout(en), 0 waarschuwing(en), 28 controles.
+Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
 
 ## Fouten
 
@@ -23,7 +23,7 @@ Uitgevoerd 2026-10-26. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | clubs_verder_vooruit_met_xg | 18 van 18 |
 | clubs_verschillend | 18 |
 | clubs_volledige_ronden | 10 |
-| dagen_oud | 0 |
+| dagen_oud | 1 |
 | nieuwste_ophaaldatum | 2026-10-26 |
 | opstellingen_clubs | 18 |
 | prijzen_clubs | 18 |
@@ -34,7 +34,7 @@ Uitgevoerd 2026-10-26. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | rijen_clubs.csv | 612 |
 | rijen_opstellingen.csv | 594 |
 | rijen_prijzen.csv | 507 |
-| rijen_spelers.csv | 4350 |
+| rijen_spelers.csv | 4285 |
 | rijen_spelers_seizoen.csv | 1515 |
 | ronderijen_ronden | 10 |
 | seizoen_dalende_tellers | 3 |
@@ -72,4 +72,4 @@ Uitgevoerd 2026-10-26. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | OK | prijzen.csv | geen dubbele speler_id |
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
 | OK | prijzen.csv | 476 van de 507 prijsrijen koppelt aan een gescrapete speler (94%) |
-| OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
+| OK | versheid | nieuwste gegevens zijn 1 dag(en) oud |
