@@ -34,7 +34,7 @@
     "soort": "seizoen",
     "spelers": 413
   },
-  "gegenereerd": "2026-10-27T16:58:32",
+  "gegenereerd": "2026-10-29T15:48:45",
   "transfers_toegestaan": 1,
   "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
@@ -193,7 +193,7 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 273,
+  "pool_grootte": 272,
   "advies": {
     "verwacht": 54.31,
     "winst": 2.42,

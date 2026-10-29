@@ -6,7 +6,8 @@ Clubratings uit 108 wedstrijden (thuisvoordeel x1.22)
 LET OP: spelerstats.csv niet gevonden - assists en kaarten komen uit spelers_seizoen.csv (413 spelers). Verwachte goals zitten daar niet in, dus de doelpuntenschatting blijft op het eigen venster.
 afwezigen geladen: 77 spelers uit afwezigen.csv (opgehaald 2026-10-26)
 opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 11 (opgehaald 2026-10-26)
-  9 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+  11 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+    Anthony Descotte          Fortuna Sittard  blessure
     Artem Stepanov ⚠          FC Utrecht       blessure, terug 2026-11-01
     Ayodele Thomas            NEC              schorsing
     Calvin Twigt              Willem II        blessure
@@ -14,6 +15,7 @@ opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 11 (opgehaald 20
     Jasper Dahlhaus           Fortuna Sittard  blessure
     Julius Dirksen            Go Ahead Eagles  blessure
     Kasper Boogaard           Willem II        blessure
+    Lequincio Zeefuik         Fortuna Sittard  blessure
     Ricardo Pepi              PSV              blessure
     Vasilis Barkas            FC Utrecht       blessure
 Horizon: ronde [11, 12] (decay 0.84)

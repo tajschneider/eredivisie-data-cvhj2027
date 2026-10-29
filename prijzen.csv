@@ -95,7 +95,7 @@ Excelsior,Rick Meissen,Defender,1.50,rick-meissen,,0,,24.0
 Excelsior,Simon Janssen,Defender,1.20,simon-janssen,,0,,26.0
 Excelsior,Alireza Jahanbakhsh,Forward,1.80,alireza-jahanbakhsh,,1,,5.0
 Excelsior,Aymen Sliti,Forward,1.50,aymen-sliti,,0,,31.0
-Excelsior,David Garden,Forward,1.20,david-garden,,1,,29.0
+Excelsior,David Garden,Forward,1.20,david-garden,,0,,29.0
 Excelsior,Mario Domínguez,Forward,1.50,mario-dominguez,,1,,-2.0
 Excelsior,Nesto Groen,Forward,1.00,nesto-groen,,0,,13.0
 Excelsior,Ágúst Orri Thorsteinsson,Forward,1.50,agust-orri-thorsteinsson,,1,,4.0
@@ -130,7 +130,6 @@ FC Groningen,Lovro Stubljar,Goalkeeper,1.20,lovro-stubljar,,1,,0.0
 FC Groningen,Rijk Janse,Goalkeeper,1.00,rijk-janse,,0,tot en met 1 juli,0.0
 FC Groningen,Alvin Nordin,Midfielder,1.50,alvin-nordin,,1,,3.0
 FC Groningen,David van der Werff,Midfielder,1.80,david-van-der-werff,,0,,31.0
-FC Groningen,Jahelille Hall,Midfielder,1.20,jahelille-hall,,1,,0.0
 FC Groningen,Jismerai Dillema,Midfielder,1.00,jismerai-dillema,,0,,0.0
 FC Groningen,Jorg Schreuders,Midfielder,1.80,jorg-schreuders,,0,,36.0
 FC Groningen,Pelle Clement,Midfielder,1.80,pelle-clement,,0,,21.0
@@ -236,10 +235,10 @@ Fortuna Sittard,Kevin van Burgsteden,Defender,1.20,kevin-van-burgsteden,,1,,
 Fortuna Sittard,Rodrigo Guth,Defender,1.80,rodrigo-guth,,1,,28.0
 Fortuna Sittard,Siebe Wylin,Defender,1.20,siebe-wylin,,1,,6.0
 Fortuna Sittard,Syb van Ottele,Defender,1.50,syb-van-ottele,,0,,24.0
-Fortuna Sittard,Anthony Descotte,Forward,1.80,anthony-descotte,,0,duur onbekend,45.0
+Fortuna Sittard,Anthony Descotte,Forward,1.80,anthony-descotte,,0,,45.0
 Fortuna Sittard,David Stockbrink,Forward,1.00,david-stockbrink,,1,,
 Fortuna Sittard,Kristoffer Peterson,Forward,1.80,kristoffer-peterson,,0,,8.0
-Fortuna Sittard,Lequincio Zeefuik,Forward,1.80,lequincio-zeefuik,,0,duur onbekend,29.0
+Fortuna Sittard,Lequincio Zeefuik,Forward,1.80,lequincio-zeefuik,,0,,29.0
 Fortuna Sittard,Ole Romeny,Forward,1.50,ole-romeny,,1,,8.0
 Fortuna Sittard,Kaylen Reitmaier,Goalkeeper,1.20,kaylen,,1,,0.0
 Fortuna Sittard,Luuk Koopmans,Goalkeeper,1.50,luuk-koopmans,,0,,0.0
@@ -384,7 +383,7 @@ SC Cambuur,Nicolas Binder,Forward,1.20,nicolas-binder,,0,,45.0
 SC Cambuur,Sami Bouhoudane,Forward,1.20,sami-bouhoudane,,0,,8.0
 SC Cambuur,Skye Vink,Forward,1.50,s-vink,,0,,7.0
 SC Cambuur,Wiebe Kooistra,Forward,1.20,wiebe-kooistra,,0,,7.0
-SC Cambuur,Jasper Meijster,Goalkeeper,1.00,jasper-meijster,,1,duur onbekend,0.0
+SC Cambuur,Jasper Meijster,Goalkeeper,1.00,jasper-meijster,,0,duur onbekend,0.0
 SC Cambuur,Luca Plogmann,Goalkeeper,1.50,luca-plogmann,,1,,0.0
 SC Cambuur,Matthijs Kalisvaart,Goalkeeper,1.20,matthijs-kalisvaart,,1,,0.0
 SC Cambuur,Thijs Jansen,Goalkeeper,1.50,thijs-jansen,,0,,19.0
@@ -411,7 +410,7 @@ Sparta Rotterdam,Giannino Vianello,Forward,1.20,giannino-vianello,,0,,0.0
 Sparta Rotterdam,Joel Ideho,Forward,1.50,joel-ideho,,0,,3.0
 Sparta Rotterdam,Milan Zonneveld,Forward,1.80,milan-zonneveld,basis,0,,46.0
 Sparta Rotterdam,Mitchell van Bergen,Forward,2.00,mitchell-van-bergen,,0,,7.0
-Sparta Rotterdam,Filip Bednarek,Goalkeeper,1.50,filip-bednarek,,1,,4.0
+Sparta Rotterdam,Filip Bednarek,Goalkeeper,1.50,filip-bednarek,,0,,4.0
 Sparta Rotterdam,Michael Brouwer,Goalkeeper,1.50,michael-brouwer,,0,,5.0
 Sparta Rotterdam,Pascal Kuiper,Goalkeeper,1.20,pascal-kuiper,,1,,0.0
 Sparta Rotterdam,Rik Suur,Goalkeeper,1.00,rik-suur,,1,,0.0
@@ -424,7 +423,7 @@ Sparta Rotterdam,Robin van Cruijsen,Midfielder,1.80,robin-van-cruijsen,,0,,16.0
 Sparta Rotterdam,Shunsuke Mito,Midfielder,2.00,shunsuke-mito,,0,duur onbekend,11.0
 Telstar,Abdelnour Soualhia,Defender,1.20,abdelnour-soualhia,,1,,14.0
 Telstar,Abdelraffie Benzzine,Defender,1.00,abdelraffie-benzzine,,1,,
-Telstar,Gerald Alders,Defender,1.50,gerald-alders,,0,,3.0
+Telstar,Gerald Alders,Defender,1.50,gerald-alders,,0,duur onbekend,3.0
 Telstar,Jeff Hardeveld,Defender,2.00,jeff-hardeveld,,0,,8.0
 Telstar,Marvin Peersman,Defender,1.80,marvin-peersman,,0,,6.0
 Telstar,Nigel Ogidi Nwankwo,Defender,1.20,nigel-ogidi-nwankwo,,0,,0.0
@@ -445,7 +444,7 @@ Telstar,Gabi Caschili,Midfielder,1.20,gabi-caschili,,1,,3.0
 Telstar,Harrie Kuster,Midfielder,1.50,harrie-kuster,,0,,-1.0
 Telstar,Isaiah Ahmed,Midfielder,1.20,isaiah-ahmed,,0,,1.0
 Telstar,Nils Rossen,Midfielder,1.50,nils-rossen,,0,,6.0
-Telstar,Noach Shenkman,Midfielder,1.00,noach-shenkman,,1,,19.0
+Telstar,Noach Shenkman,Midfielder,1.00,noach-shenkman,,0,,19.0
 Telstar,Rojendro Oudsten,Midfielder,1.20,rojendro-oudsten,,0,,1.0
 Telstar,Tyrone Owusu,Midfielder,1.20,tyrone-owusu,,0,,38.0
 Willem II,Alessandro Ciranni,Defender,1.20,alessandro-ciranni,,0,,12.0
@@ -467,7 +466,7 @@ Willem II,Thomas Verheydt,Forward,1.50,thomas-verheydt,,0,,5.0
 Willem II,Karst de Leeuw,Goalkeeper,1.00,karst-de-leeuw,,0,,1.0
 Willem II,Maxime Delanghe,Goalkeeper,1.20,maxime-delanghe,,1,,1.0
 Willem II,Thomas Didillon-Hödl,Goalkeeper,1.50,thomas-didillon-hodl,,0,,0.0
-Willem II,Wouter van der Steen,Goalkeeper,1.20,wouter-van-der-steen,,1,duur onbekend,0.0
+Willem II,Wouter van der Steen,Goalkeeper,1.20,wouter-van-der-steen,,1,,0.0
 Willem II,Amine Lachkar,Midfielder,1.20,amine-lachkar,,1,,
 Willem II,Anass Zarrouk,Midfielder,1.20,anass-zarrouk,,0,,8.0
 Willem II,Calvin Twigt,Midfielder,1.50,calvin-twigt,,0,,9.0
