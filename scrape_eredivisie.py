@@ -823,6 +823,14 @@ def parse_opstelling(soup, club):
         "links_blok": len(set(SPELER_HREF.findall(elf_html))),
         "met_avatar": len(met_avatar), "kaarten": len(kaarten),
         "ul": elf_html.lower().count("<ul"), "afwezig": len(afwezig),
+        # Welke spelers staan WEL op de pagina maar in geen van beide groepen?
+        # Bij SC Cambuur klopte de rekensom niet: 14 links, 10 in het blok,
+        # 3 afwezigen. Die ene overgebleven link is de kandidaat voor de
+        # ontbrekende elfde, en zijn slug zegt meteen of het blok te vroeg
+        # eindigt of dat hij ergens anders op de pagina staat.
+        "buiten": sorted(set(SPELER_HREF.findall(ruw))
+                         - set(SPELER_HREF.findall(elf_html))
+                         - {r.get("speler_id") for r in afwezig}),
         "kansen": [r["kans_basis"] for r in elf if r["kans_basis"] != ""],
     }
     if len(elf) != 11:
@@ -1745,6 +1753,9 @@ def overzicht_opstellingen():
                   f"in het blok, {s['met_avatar']} met avatar, "
                   f"{s['kaarten']} kaarten met data-avatar, "
                   f"{s['ul']} <ul>, {s['afwezig']} afwezigen")
+            if s["buiten"]:
+                print(f"::error title={club} buiten blok en afwezigen::"
+                      + ", ".join(s["buiten"][:12]))
 
     pad = os.environ.get("GITHUB_STEP_SUMMARY")
     if pad:
