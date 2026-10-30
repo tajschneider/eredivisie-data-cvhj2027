@@ -725,6 +725,8 @@ def parse_opstelling(soup, club):
     #
     # Alleen toepassen als het iets oplevert. Blijft er niets over, dan is de
     # oude opmaak nog in gebruik en verandert er niets.
+    blok_heel = elf_html          # vóór het avatarfilter: de ongelinkte
+                                  # kaarten zitten hier nog in
     met_avatar = [mm.group(0) for mm in
                   re.finditer(r'<a\b[^>]*href="/eredivisie/speler/[^"]+"[^>]*>.*?</a>',
                               elf_html, re.S | re.I)
@@ -732,6 +734,37 @@ def parse_opstelling(soup, club):
     if met_avatar:
         elf_html = "".join(met_avatar)
         bron_blok = "kop+avatars" if bron_blok == "kop" else bron_blok + "+avatars"
+
+    # EEN SPELER ZONDER FOTO. SC Cambuur leverde op 30-10-2026 tien spelers
+    # terwijl er elf in de opstelling staan. Jason Ceka stond wel op de
+    # pagina, maar niet in het blok en niet bij de afwezigen -- want zijn
+    # link heeft geen <img>, en het avatarfilter hierboven houdt alleen
+    # links MET afbeelding over. Een speler zonder pasfoto valt er dus uit.
+    #
+    # Mijn eerste lezing was dat zijn kaart geen <a> had. Dat was fout, en de
+    # diagnostiek van 29-10 hielp daarbij: die meldde "10 in het blok, 10 met
+    # avatar" en daaruit las ik dat er niets was weggefilterd. Beide getallen
+    # werden echter NA het filter gemeten, dus ze waren per definitie gelijk.
+    # Een getal dat niet kan verschillen is geen controle.
+    #
+    # De reparatie: valt het filter onder de elf terwijl de links in het hele
+    # kopblok -- minus de afwezigen -- er precies elf geven, neem dan die.
+    # Het filter bestaat om de FAQ-links eronder buiten te houden; de
+    # afwezigen daarvan zijn al op speler_id bekend, en invallers onder
+    # "Eerste wissels" zouden het aantal boven elf duwen, waardoor deze weg
+    # niet gekozen wordt.
+    #
+    # ZELFVALIDEREND, en dat is met opzet: alleen precies elf is goed. Klopt
+    # de aanname niet, dan verandert er niets en weigert de parser zoals
+    # voorheen -- liever geen opstelling dan een halve, want een club met
+    # tien van de elf laat de elfde speler eruitzien alsof hij zijn
+    # basisplaats kwijt is. Zie cvhj_model.lees_opstellingen().
+    if len(set(SPELER_HREF.findall(elf_html))) != 11:
+        zonder_foto = [s for s in dict.fromkeys(SPELER_HREF.findall(blok_heel))
+                       if s not in afwezig_ids]
+        if len(zonder_foto) == 11:
+            elf_html = blok_heel
+            bron_blok += "+zonderfoto"
 
     elf, gezien2 = [], set()
     for m in SPELER_HREF.finditer(elf_html):
@@ -790,8 +823,19 @@ def parse_opstelling(soup, club):
         alle = SPELER_HREF.findall(ruw)
         in_blok = SPELER_HREF.findall(elf_html)
         print(f"      koppen: {koppen[:5]}")
+        # Het blok VOOR en NA het avatarfilter. Eerst stond hier alleen het
+        # aantal na het filter, naast "met avatar" -- twee getallen die na
+        # hetzelfde filter gemeten worden en dus altijd gelijk zijn. Dat las
+        # op 30-10-2026 als "er is niets weggefilterd", terwijl juist het
+        # filter de speler zonder foto liet vallen. Een getal dat niet kan
+        # verschillen van zijn buur is geen controle maar decor.
+        heel = SPELER_HREF.findall(blok_heel)
         print(f"      spelerslinks: {len(set(alle))} op de pagina, "
-              f"{len(set(in_blok))} in het blok, {len(met_avatar)} met avatar")
+              f"{len(set(heel))} in het kopblok, {len(set(in_blok))} na het "
+              f"avatarfilter ({len(met_avatar)} met afbeelding)")
+        kwijt = sorted(set(heel) - set(in_blok) - afwezig_ids)
+        if kwijt:
+            print(f"      door het avatarfilter gevallen: {', '.join(kwijt[:8])}")
         print(f"      'Verwachte opstelling' in de koppen: "
               f"{any('verwachte opstelling' in k.lower() for k in koppen)}")
         print(f"      <ul> in het blok: {elf_html.lower().count('<ul')}, "

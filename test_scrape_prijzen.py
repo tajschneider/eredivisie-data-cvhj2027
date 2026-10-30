@@ -872,6 +872,85 @@ def test_kaarten_top40():
     return ok
 
 
+def test_speler_zonder_foto():
+    """Een speler zonder pasfoto mag de hele club niet laten vallen.
+
+    SC Cambuur leverde op 30-10-2026 tien spelers terwijl er elf in de
+    opstelling stonden. Jason Ceka stond wel op de pagina, maar niet in het
+    blok en niet bij de afwezigen: zijn link heeft geen <img>, en het
+    avatarfilter van #28 houdt alleen links MET afbeelding over.
+
+    Mijn eerste lezing was dat zijn kaart geen <a> had. Dat was fout, en de
+    diagnostiek hielp daarbij: die meldde "10 in het blok, 10 met avatar",
+    en beide getallen werden NA het filter gemeten -- dus ze waren per
+    definitie gelijk. Een getal dat niet kan verschillen is geen controle.
+
+    De weg is ZELFVALIDEREND: alleen precies elf is goed. Een afwezige of een
+    invaller zonder foto mag er niet in meegelift komen.
+    """
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+
+    def link(slug, naam, pct, foto=True):
+        afb = (f'<img alt="{naam}" data-avatar="" src="https://cdn/x.png"/>'
+               if foto else '<div class="bg-slate-200">?</div>')
+        return (f'<a href="/eredivisie/speler/{slug}/">'
+                f'<div class="relative">{afb}'
+                f'<span class="absolute -bottom-1">{pct}%</span></div>'
+                f'<span>{naam}</span></a>')
+
+    elf = [("thijs-jansen", "Thijs Jansen", 88), ("morgan-costarelli", "M Costarelli", 71),
+           ("billy-van-duijl", "Billy van Duijl", 80), ("ismael-baouf", "Ismael Baouf", 85),
+           ("rik-mulders", "Rik Mulders", 77), ("nicky-souren", "Nicky Souren", 64),
+           ("ilyes-hamache", "Ilyes Hamache", 82), ("rafik-el-arguioui", "R El Arguioui", 79),
+           ("speler-negen", "Speler Negen", 70), ("speler-tien", "Speler Tien", 66),
+           ("jason-ceka", "Jason Ceka", 58)]
+
+    def pagina(zonder_foto=None, n=11, extra=""):
+        k = "".join(link(sl, nm, pc, foto=(i != zonder_foto))
+                    for i, (sl, nm, pc) in enumerate(elf[:n]))
+        faq = "".join(f'<a href="/eredivisie/speler/{x}/">{x}</a> blessure '
+                      for x in ("wout-asselman", "jamal-amofa", "derde-man"))
+        return (f'<html><body>'
+                f'<h1>Vermoedelijke opstelling SC Cambuur tegen Go Ahead Eagles</h1>'
+                f'<h2>Verwachte opstelling SC Cambuur tegen Go Ahead Eagles</h2>'
+                f'<div class="relative flex"><div class="flex">{k}</div>{extra}</div>'
+                f'<h2>Wat deze opstelling betekent</h2>'
+                f'<h2>Blessures en schorsingen SC Cambuur</h2>'
+                f'<p>{faq}</p></body></html>')
+
+    # Een afwezige zonder foto IN het blok mag niet als twaalfde meeliften:
+    # dan zijn het twaalf links en is precies-elf niet gehaald.
+    met_afwezige = link("wout-asselman", "Wout Asselman", 0, foto=False)
+
+    ok = True
+    gevallen = [
+        ("elfde zonder foto (het Cambuur-geval)", pagina(zonder_foto=10), 11),
+        ("alle elf met foto (de andere clubs)", pagina(), 11),
+        ("eerste zonder foto", pagina(zonder_foto=0), 11),
+        ("maar tien spelers: nog steeds weigeren", pagina(n=10), 0),
+        ("afwezige zonder foto in het blok telt niet mee",
+         pagina(zonder_foto=10, extra=met_afwezige), 11),
+    ]
+    for wat, html, verwacht in gevallen:
+        rij, _ = s.parse_opstelling(BeautifulSoup(html, "html.parser"), "SC Cambuur")
+        goed = len(rij) == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {len(rij)} spelers "
+              f"(verwacht {verwacht})")
+        ok = ok and goed
+
+    # De speler zonder foto hoort er met zijn eigen slug, naam en percentage
+    # in te staan -- niet als een lege rij die het aantal opvult.
+    rij, _ = s.parse_opstelling(BeautifulSoup(pagina(zonder_foto=10),
+                                              "html.parser"), "SC Cambuur")
+    ids = [r["speler_id"] for r in rij]
+    kansen = [r["kans_basis"] for r in rij]
+    goed = ids == [sl for sl, _, _ in elf] and kansen == [p for _, _, p in elf]
+    print(f"  {'OK  ' if goed else 'FOUT'} slugs en percentages blijven op hun "
+          f"plaats{'' if goed else f': {ids[-2:]} / {kansen[-2:]}'}")
+    return ok and goed
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -904,8 +983,11 @@ def main():
     print("\nkaartenlijst is een top-N, geen volledige lijst\n")
     ok11 = test_kaarten_top40()
 
+    print("\neen speler zonder pasfoto\n")
+    ok12 = test_speler_zonder_foto()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
