@@ -44,6 +44,8 @@ CLUBS = 18
 BASIS_PER_CLUB = 11
 MIN_SPELERS = 400          # de index telde 504 op 19-10-2026
 MAX_DAGEN_OUD = 8
+MINUTEN_REVISIE = 2        # zie controleer_seizoen(): de bron herrekent
+                           # speelminuten, feitentellers herziet hij niet
 REDENEN = {"blessure", "schorsing", "vertrokken", "ziek", "twijfel",
            "persoonlijk", "transfer", ""}
 
@@ -730,23 +732,69 @@ def controleer_seizoen(r):
 
     # Seizoenstotalen kunnen niet dalen. Dit is de scherpste regressietest die
     # er is: gaat de parser ergens de mist in, dan zakt een teller.
+    #
+    # Met EEN uitzondering, en die is op 30-10-2026 gemeten. Drie spelers --
+    # Daan Rots, Dean James en Mathis Suray -- zakten tussen 26-10 en 30-10
+    # elk precies een minuut (540->539, 765->764, 829->828) terwijl al hun
+    # andere tellers gelijk bleven. De scrape werd daarop afgekeurd en
+    # weggegooid.
+    #
+    # Dat is geen kapotte parser. Een parser die omvalt verliest een hele
+    # wedstrijd of een hele speler: dan zakt minuten met tientallen EN zakken
+    # duels en basisplaatsen mee. Een enkele minuut terwijl de rest op de
+    # komma gelijk blijft, kan de bron zelf: hij herrekent speelminuten
+    # (wisselmoment, blessuretijd) en rondt daarbij anders af.
+    #
+    # Dus: GOALS, ASSISTS, KAARTEN, DUELS, BASISPLAATSEN en REDDINGEN zijn
+    # feiten -- die kunnen niet herzien worden, en een daling is een FOUT.
+    # MINUTEN is een herrekening: een daling van hooguit MINUTEN_REVISIE,
+    # bij een speler van wie geen enkele andere teller zakt, is een
+    # waarschuwing. Zakt er ook maar een feitenteller mee, of gaat het om
+    # meer minuten, dan blijft het een fout.
+    #
+    # Dit verzwakt de test niet, het maakt hem specifiek. Een drempel die een
+    # hele scrape weggooit om een minuut is geen strenge controle maar een
+    # controle die je leert om hem met --soft te omzeilen, en dan staat alles
+    # open.
     if len(standen) >= 2:
-        vorige, dalers = standen[-2], []
+        vorige, dalers, revisies = standen[-2], [], []
         oud = {x["speler_id"]: x for x in rijen if x.get("opgehaald") == vorige}
+        FEITEN = ("duels", "goals", "assists", "geel", "rood",
+                  "basisplaatsen", "reddingen")
         for x in nu:
             v = oud.get(x["speler_id"])
             if not v:
                 continue
-            for c in ("duels", "minuten", "goals", "assists", "geel", "rood",
-                      "basisplaatsen", "reddingen"):
+            eigen = []
+            for c in FEITEN:
                 a, b = _f(x.get(c)), _f(v.get(c))
                 if a is not None and b is not None and a < b:
-                    dalers.append(f"{x['speler_id']}.{c}: {b:.0f} -> {a:.0f}")
+                    eigen.append(f"{x['speler_id']}.{c}: {b:.0f} -> {a:.0f}")
+            a, b = _f(x.get("minuten")), _f(v.get("minuten"))
+            if a is not None and b is not None and a < b:
+                tekst = f"{x['speler_id']}.minuten: {b:.0f} -> {a:.0f}"
+                if not eigen and b - a <= MINUTEN_REVISIE:
+                    revisies.append(tekst)
+                else:
+                    eigen.append(tekst)
+            dalers += eigen
         r.meet("seizoen_dalende_tellers", len(dalers))
+        r.meet("seizoen_minuten_revisies", len(revisies))
         r.eis(not dalers, "spelers_seizoen.csv",
               f"geen dalende seizoenstotalen tussen {vorige} en {laatste}",
-              "; ".join(dalers[:6]) + " — een teller kan niet omlaag; "
-              "waarschijnlijk is er een parser stuk of een speler van club gewisseld")
+              "; ".join(dalers[:6]) + " — deze tellers zijn feiten en kunnen "
+              "niet omlaag; waarschijnlijk is er een parser stuk of een speler "
+              "van club gewisseld")
+        if revisies:
+            r.waarschuw("spelers_seizoen.csv",
+                        f"{len(revisies)} speler(s) met een minuut minder dan "
+                        f"op {vorige}",
+                        "; ".join(revisies[:6]) + f" — hooguit "
+                        f"{MINUTEN_REVISIE} minuut verschil en geen andere "
+                        f"teller zakt mee, dus de bron heeft zijn speelminuten "
+                        f"herrekend. Blokkeert niet; het model gebruikt "
+                        f"minuten als speelfractie en een minuut op honderden "
+                        f"verschuift die niet merkbaar")
     return laatste
 
 
@@ -1079,6 +1127,19 @@ def main():
         controleer_versheid(r)
 
     r.schrijf(HIER / "controle.md", HIER / "controle.json")
+    # En een eigen kopie als ALLEEN de bron is nagekeken. In scrape.yml
+    # draaien twee passages na elkaar -- eerst --bron, dan --data -- en die
+    # schreven beide naar controle.md. De tweede overschreef dus de eerste,
+    # en daarmee verdween de structuurtabel van de achttien clubpagina's uit
+    # het rapport dat bewaard wordt. Dat is precies het stuk dat je na een
+    # layoutwijziging wilt terugkijken.
+    #
+    # Deze kopie komt pas in het artefact als scrape.yml hem meeneemt; dat is
+    # een regel in de workflow, en die mag een automatisch voorstel niet
+    # aanraken (grenzen.py). Tot die regel er staat, is de tabel te vinden in
+    # het log van de stap Broncontrole.
+    if doe_bron and not doe_data:
+        r.schrijf(HIER / "controle_bron.md", HIER / "controle_bron.json")
     n_f, n_w = len(r.fouten), len(r.waarschuwingen)
     print(f"\n{'=' * 66}\n{len(r.regels)} controles: {n_f} fout, "
           f"{n_w} waarschuwing")
