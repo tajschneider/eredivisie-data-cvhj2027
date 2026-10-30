@@ -951,6 +951,159 @@ def test_speler_zonder_foto():
     return ok and goed
 
 
+def test_overzicht_alle_clubs():
+    """De sweep over alle 18 clubs moet afwijkingen vinden EN rust houden.
+
+    Vier keer op rij werd een layoutwijziging bij een enkele club opgemerkt
+    doordat die club niets opleverde, en toen per club gerepareerd. De sweep
+    is het antwoord daarop: hij leest alle achttien en zegt in een tabel hoe
+    elke pagina in elkaar zat, zodat drift te zien is voordat het een gat is.
+
+    Twee eisen, en de tweede is de lastigste:
+      1. een club zonder elf spelers, een onleesbare pagina of een terugval
+         op de hele pagina is een FOUT (exitcode 1)
+      2. een club die blijvend een andere route nodig heeft -- SC Cambuur met
+         een speler zonder pasfoto -- is INFORMATIE. Anders staat die
+         waarschuwing elke week aan, en dan leert het rapport je zichzelf
+         over te slaan.
+    """
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+    import io, contextlib, re
+
+    def kaart(slug, naam, pct, foto=True):
+        afb = (f'<img alt="{naam}" data-avatar="" src="x.png"/>' if foto
+               else '<div class="bg-slate-200">?</div>')
+        return (f'<a href="/eredivisie/speler/{slug}/"><div class="relative">'
+                f'{afb}<span class="absolute">{pct}%</span></div>'
+                f'<span>{naam}</span></a>')
+
+    def pagina(club, n=11, zonder_foto=None, geen_blok=False):
+        k = "".join(kaart(f"{s.norm(club)}-sp{i}", f"Speler {i}", 90 - i,
+                          foto=(i != zonder_foto)) for i in range(n))
+        blok = k if geen_blok else f'<div class="relative flex">{k}</div>'
+        kop = "" if geen_blok else f'<h2>Verwachte opstelling {club} tegen X</h2>'
+        return BeautifulSoup(
+            f'<html><body><h1>Vermoedelijke opstelling {club} tegen X</h1>{kop}'
+            f'{blok}<h2>Wat deze opstelling betekent</h2>'
+            f'<h2>Blessures en schorsingen {club}</h2>'
+            f'<p><a href="/eredivisie/speler/afw-1/">A</a> blessure</p>'
+            f'</body></html>', "html.parser")
+
+    clubs = list(s.CLUB_SLUG.values())
+    echte_get = s.get
+
+    def draai(plan):
+        def nep(url):
+            club = s.CLUB_SLUG[re.search(r"/eredivisie/([^/]+)/opstelling",
+                                         url).group(1)]
+            return pagina(club, **plan.get(club, {}))
+        s.get = nep
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                ok = s.overzicht_opstellingen()
+        finally:
+            s.get = echte_get
+        return ok, buf.getvalue()
+
+    ok = True
+    # 1. Alles netjes: achttien keer elf, geen fout.
+    goed, uit = draai({})
+    g = goed and "Alle 18 clubs elf spelers" in uit
+    print(f"  {'OK  ' if g else 'FOUT'} achttien nette clubs: geen fout gemeld")
+    ok = ok and g
+
+    # 2. Een club blijvend via de route voor een speler zonder pasfoto:
+    #    informatie, GEEN fout.
+    goed, uit = draai({clubs[3]: dict(zonder_foto=10)})
+    g = goed and "afwijkend van" in uit and "!" not in uit
+    print(f"  {'OK  ' if g else 'FOUT'} speler zonder foto bij een club: afwijking "
+          f"gemeld, geen fout{'' if g else f' -- retour {goed}'}")
+    ok = ok and g
+
+    # 3. Een club zonder elf: WEL een fout, en de club wordt genoemd.
+    goed, uit = draai({clubs[7]: dict(n=10)})
+    g = (not goed) and "geen elf spelers" in uit and clubs[7] in uit
+    print(f"  {'OK  ' if g else 'FOUT'} club met tien spelers: fout gemeld")
+    ok = ok and g
+
+    # 4. Terugval op de hele pagina: fout, want dan kan er vervuiling in.
+    goed, uit = draai({clubs[5]: dict(geen_blok=True)})
+    g = (not goed) and ("hele pagina" in uit or "geen elf spelers" in uit)
+    print(f"  {'OK  ' if g else 'FOUT'} blok niet gevonden: fout gemeld")
+    ok = ok and g
+
+    # 5. De samenvatting mag alleen over DEZE run gaan.
+    goed, uit = draai({})
+    g = f"{len(clubs)} van de {len(clubs)} clubs gelezen" in uit
+    print(f"  {'OK  ' if g else 'FOUT'} samenvatting telt alleen deze run")
+    return ok and g
+
+
+def test_structuurtabel_in_het_rapport():
+    """De structuurtabel hoort in controle.md, zonder de tellingen te raken.
+
+    De broncontrole draait in de workflow VOOR het scrapen en haalt de
+    achttien opstellingspagina's al op. De tabel komt daar dus gratis uit:
+    geen extra request. Twee risico's om af te dekken:
+
+      1. een blok mag geen controle WORDEN. Achttien clubs als achttien
+         "ok"-regels maakt het rapport onleesbaar, en als het de tellingen
+         opblaast gaat "0 fouten" iets anders betekenen dan gisteren.
+      2. een formatter, niet twee. De sweep en de broncontrole gebruiken
+         dezelfde tabelopmaak; zouden ze die elk zelf maken, dan ligt het
+         verschil tussen twee rapporten na de eerste wijziging aan de opmaak
+         in plaats van aan de bron.
+    """
+    import json, tempfile, os
+    import scrape_eredivisie as s
+    import controle as c
+
+    st = {"PSV": {"route": "kop+avatars", "elf": 11, "links_pagina": 14,
+                  "links_heel": 11, "links_blok": 11, "met_avatar": 11,
+                  "ul": 0, "afwezig": 3, "kansen": [91, 88, 70], "buiten": []},
+          "SC Cambuur": {"route": "kop+avatars+zonderfoto", "elf": 11,
+                         "links_pagina": 14, "links_heel": 11, "links_blok": 10,
+                         "met_avatar": 10, "ul": 0, "afwezig": 3,
+                         "kansen": [88, 58], "buiten": []}}
+
+    regels, routes = s.tabel_opstellingen(st)
+    ok = True
+    g = len(regels) == 1 + len(st) + 2 and len(routes) == 2
+    print(f"  {'OK  ' if g else 'FOUT'} tabel: kop, {len(st)} clubs en een "
+          f"routeregel ({len(regels)} regels, {len(routes)} routes)")
+    ok = ok and g
+
+    g = any("zonderfoto" in r and "SC Cambuur" in r for r in regels)
+    print(f"  {'OK  ' if g else 'FOUT'} de route staat per club in de tabel")
+    ok = ok and g
+
+    r = c.Rapport()
+    r.ok("proef", "een geslaagde controle")
+    voor = (len(r.regels), len(r.fouten), len(r.waarschuwingen))
+    r.blok("opstellingen: structuur van de clubpagina's", regels)
+    na = (len(r.regels), len(r.fouten), len(r.waarschuwingen))
+    g = voor == na
+    print(f"  {'OK  ' if g else 'FOUT'} een blok verandert de tellingen niet "
+          f"({voor} -> {na})")
+    ok = ok and g
+
+    map_ = tempfile.mkdtemp()
+    md, js = os.path.join(map_, "c.md"), os.path.join(map_, "c.json")
+    r.schrijf(md, js)
+    tekst = open(md, encoding="utf-8").read()
+    d = json.load(open(js, encoding="utf-8"))
+    g = ("## opstellingen: structuur van de clubpagina's" in tekst
+         and "SC Cambuur" in tekst and tekst.count("```") == 2
+         and d["controles"] == 1 and d["fouten"] == 0
+         and "SC Cambuur" in "\n".join(
+             d["blokken"]["opstellingen: structuur van de clubpagina's"]))
+    print(f"  {'OK  ' if g else 'FOUT'} blok staat in controle.md en "
+          f"controle.json, controles blijft {d['controles']}")
+    return ok and g
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -986,8 +1139,15 @@ def main():
     print("\neen speler zonder pasfoto\n")
     ok12 = test_speler_zonder_foto()
 
+    print("\nalle 18 clubs in een tabel\n")
+    ok13 = test_overzicht_alle_clubs()
+
+    print("\nde structuurtabel in het controlerapport\n")
+    ok14 = test_structuurtabel_in_het_rapport()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
+            ok13, ok14]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
