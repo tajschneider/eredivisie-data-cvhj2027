@@ -31,6 +31,7 @@ import argparse
 import csv
 import html as htmllib
 import json
+import os
 import re
 import sys
 import time
@@ -53,6 +54,13 @@ SPELER_URL = BASE + "/eredivisie/speler/{slug}/"
 # spelers op puur omdat hun blok toevallig voor de afwezigen eindigde. Dat is
 # precies het soort stille verschuiving waar je achteraan wilt kunnen kijken.
 ROUTE_PER_CLUB = {}
+
+# Hoe de pagina van elke club IN ELKAAR ZAT bij het parsen. Gevuld door
+# parse_opstelling zelf, zodat de tabel van `--debug opstellingen` dezelfde
+# getallen laat zien als waar het parsen op is uitgekomen. Een tweede
+# implementatie die de pagina nog eens apart telt zou kunnen gaan afwijken,
+# en dan liegt het overzicht precies wanneer je het nodig hebt.
+STRUCTUUR_PER_CLUB = {}
 
 GEEL_URL = BASE + "/eredivisie/statistieken/gele-kaarten/"
 ROOD_URL = BASE + "/eredivisie/statistieken/rode-kaarten/"
@@ -725,6 +733,8 @@ def parse_opstelling(soup, club):
     #
     # Alleen toepassen als het iets oplevert. Blijft er niets over, dan is de
     # oude opmaak nog in gebruik en verandert er niets.
+    blok_heel = elf_html          # vóór het avatarfilter: de ongelinkte
+                                  # kaarten zitten hier nog in
     met_avatar = [mm.group(0) for mm in
                   re.finditer(r'<a\b[^>]*href="/eredivisie/speler/[^"]+"[^>]*>.*?</a>',
                               elf_html, re.S | re.I)
@@ -732,6 +742,37 @@ def parse_opstelling(soup, club):
     if met_avatar:
         elf_html = "".join(met_avatar)
         bron_blok = "kop+avatars" if bron_blok == "kop" else bron_blok + "+avatars"
+
+    # EEN SPELER ZONDER FOTO. SC Cambuur leverde op 30-10-2026 tien spelers
+    # terwijl er elf in de opstelling staan. Jason Ceka stond wel op de
+    # pagina, maar niet in het blok en niet bij de afwezigen -- want zijn
+    # link heeft geen <img>, en het avatarfilter hierboven houdt alleen
+    # links MET afbeelding over. Een speler zonder pasfoto valt er dus uit.
+    #
+    # Mijn eerste lezing was dat zijn kaart geen <a> had. Dat was fout, en de
+    # diagnostiek van 29-10 hielp daarbij: die meldde "10 in het blok, 10 met
+    # avatar" en daaruit las ik dat er niets was weggefilterd. Beide getallen
+    # werden echter NA het filter gemeten, dus ze waren per definitie gelijk.
+    # Een getal dat niet kan verschillen is geen controle.
+    #
+    # De reparatie: valt het filter onder de elf terwijl de links in het hele
+    # kopblok -- minus de afwezigen -- er precies elf geven, neem dan die.
+    # Het filter bestaat om de FAQ-links eronder buiten te houden; de
+    # afwezigen daarvan zijn al op speler_id bekend, en invallers onder
+    # "Eerste wissels" zouden het aantal boven elf duwen, waardoor deze weg
+    # niet gekozen wordt.
+    #
+    # ZELFVALIDEREND, en dat is met opzet: alleen precies elf is goed. Klopt
+    # de aanname niet, dan verandert er niets en weigert de parser zoals
+    # voorheen -- liever geen opstelling dan een halve, want een club met
+    # tien van de elf laat de elfde speler eruitzien alsof hij zijn
+    # basisplaats kwijt is. Zie cvhj_model.lees_opstellingen().
+    if len(set(SPELER_HREF.findall(elf_html))) != 11:
+        zonder_foto = [s for s in dict.fromkeys(SPELER_HREF.findall(blok_heel))
+                       if s not in afwezig_ids]
+        if len(zonder_foto) == 11:
+            elf_html = blok_heel
+            bron_blok += "+zonderfoto"
 
     elf, gezien2 = [], set()
     for m in SPELER_HREF.finditer(elf_html):
@@ -776,6 +817,26 @@ def parse_opstelling(soup, club):
     # een nette CSV, want dan ziet vervuiling eruit als data. Te weinig is net
     # zo verdacht. Afkappen op elf zou de fout juist verbergen.
     ROUTE_PER_CLUB[club] = bron_blok
+    STRUCTUUR_PER_CLUB[club] = {
+        "route": bron_blok, "elf": len(elf),
+        "links_pagina": len(set(SPELER_HREF.findall(ruw))),
+        "links_blok": len(set(SPELER_HREF.findall(elf_html))),
+        "met_avatar": len(met_avatar),
+        # Het kopblok VOOR het avatarfilter. Dit is het getal dat op
+        # 30-10-2026 ontbrak: zonder dit zijn "in het blok" en "met avatar"
+        # twee metingen na hetzelfde filter, die per definitie gelijk zijn.
+        "links_heel": len(set(SPELER_HREF.findall(blok_heel))),
+        "ul": elf_html.lower().count("<ul"), "afwezig": len(afwezig),
+        # Welke spelers staan WEL op de pagina maar in geen van beide groepen?
+        # Bij SC Cambuur klopte de rekensom niet: 14 links, 10 in het blok,
+        # 3 afwezigen. Die ene overgebleven link is de kandidaat voor de
+        # ontbrekende elfde, en zijn slug zegt meteen of het blok te vroeg
+        # eindigt of dat hij ergens anders op de pagina staat.
+        "buiten": sorted(set(SPELER_HREF.findall(ruw))
+                         - set(SPELER_HREF.findall(elf_html))
+                         - {r.get("speler_id") for r in afwezig}),
+        "kansen": [r["kans_basis"] for r in elf if r["kans_basis"] != ""],
+    }
     if len(elf) != 11:
         print(f"    {club}: {len(elf)} spelerslinks in het opstellingsblok "
               f"({bron_blok}), verwacht 11 — niet weggeschreven")
@@ -790,8 +851,19 @@ def parse_opstelling(soup, club):
         alle = SPELER_HREF.findall(ruw)
         in_blok = SPELER_HREF.findall(elf_html)
         print(f"      koppen: {koppen[:5]}")
+        # Het blok VOOR en NA het avatarfilter. Eerst stond hier alleen het
+        # aantal na het filter, naast "met avatar" -- twee getallen die na
+        # hetzelfde filter gemeten worden en dus altijd gelijk zijn. Dat las
+        # op 30-10-2026 als "er is niets weggefilterd", terwijl juist het
+        # filter de speler zonder foto liet vallen. Een getal dat niet kan
+        # verschillen van zijn buur is geen controle maar decor.
+        heel = SPELER_HREF.findall(blok_heel)
         print(f"      spelerslinks: {len(set(alle))} op de pagina, "
-              f"{len(set(in_blok))} in het blok, {len(met_avatar)} met avatar")
+              f"{len(set(heel))} in het kopblok, {len(set(in_blok))} na het "
+              f"avatarfilter ({len(met_avatar)} met afbeelding)")
+        kwijt = sorted(set(heel) - set(in_blok) - afwezig_ids)
+        if kwijt:
+            print(f"      door het avatarfilter gevallen: {', '.join(kwijt[:8])}")
         print(f"      'Verwachte opstelling' in de koppen: "
               f"{any('verwachte opstelling' in k.lower() for k in koppen)}")
         print(f"      <ul> in het blok: {elf_html.lower().count('<ul')}, "
@@ -1560,6 +1632,168 @@ def rondes_in_venster(van, tot, duels):
     return sorted(rondes), laatste or tot
 
 
+# --------------------------------------------------- overzicht alle clubs
+def tabel_opstellingen(st):
+    """De structuurtabel als regels, voor hergebruik.
+
+    Een formatter, niet twee. De broncontrole haalt dezelfde achttien
+    pagina's op als deze sweep, en als beide hun eigen tabel zouden opmaken
+    gaan die na de eerste wijziging uit elkaar lopen -- en dan ligt het
+    verschil tussen twee rapporten aan de opmaak in plaats van aan de bron.
+    """
+    regels = [f"{'club':<22}{'n':>3} {'route':<22}"
+              f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans"]
+    for club, s in st.items():
+        k = s["kansen"]
+        regels.append(
+            f"{club:<22}{s['elf']:>3} {s['route']:<22}"
+            f"{s['links_pagina']:>5}/{s['links_heel']}/{s['links_blok']:<5}"
+            f"{s['ul']:>4}{s['afwezig']:>5}  "
+            + (f"{min(k)}-{max(k)} ({len(k)})" if k else "GEEN"))
+    routes = {}
+    for club, s in st.items():
+        routes.setdefault(s["route"], []).append(club)
+    regels.append("")
+    regels.append("routes: " + ", ".join(
+        f"{r} ({len(c)}x)" for r, c in sorted(routes.items(),
+                                              key=lambda x: -len(x[1]))))
+    return regels, routes
+
+
+def overzicht_opstellingen():
+    """Alle 18 opstellingspagina's in een tabel: hoe zat de pagina in elkaar?
+
+    Vier keer op rij is een layoutwijziging bij een enkele club opgemerkt
+    doordat die club NIETS opleverde, en toen per club gerepareerd. Dat is
+    reageren, niet valideren: elke keer bleef de vraag open of de andere
+    zeventien over dezelfde weg liepen of er net ook af aan het zakken waren.
+
+    Deze sweep leest geen enkel premiumveld: alleen naam, slug, basiskans en
+    de STRUCTUUR van de pagina -- hoeveel links, hoeveel kaarten, welke route.
+    Hij schrijft niets weg. Hij gebruikt dezelfde get() als de scraper, dus
+    dezelfde pauze van 1,2 s en dezelfde backoff.
+
+    Wat hij moet laten zien, in volgorde van belang:
+      1. welke clubs geen elf opleveren (dan ontbreken ze in opstellingen.csv)
+      2. welke clubs een ANDERE route lopen dan de meerderheid -- dat is het
+         signaal dat op 29-10 vier dagen onopgemerkt bleef
+      3. hoeveel clubs de kaartroute nodig hebben; wordt dat er plots veel
+         meer, dan is de bron van links naar kaarten overgestapt
+    """
+    # Dezelfde tabel ook naar de job-samenvatting van Actions, als die er is.
+    # Dat is geen opsmuk: de ruwe logs van een run zijn alleen te lezen door
+    # ze te downloaden, en de samenvatting komt via de gewone API mee. Zo is
+    # het antwoord op "liep het goed?" op te vragen zonder in de logs te
+    # klikken. Lukt het schrijven niet, dan gaat de sweep gewoon door --
+    # een rapportagepad mag de meting niet laten vallen.
+    regels = []
+
+    def zeg(tekst=""):
+        print(tekst)
+        regels.append(tekst)
+
+    zeg("Opstellingen van alle 18 clubs: structuur van de pagina\n")
+    # Alleen wat DEZE sweep leest mag in de samenvatting staan. Laat een
+    # eerdere parse in hetzelfde proces een club achter, dan zou die club
+    # straks meetellen alsof hij vandaag gelezen is.
+    STRUCTUUR_PER_CLUB.clear()
+    zeg("  " + f"{'club':<22}{'n':>3} {'route':<22}"
+        f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans")
+    mislukt = []
+    for slug, club in CLUB_SLUG.items():
+        try:
+            soup = get(OPSTELLING_URL.format(slug=slug))
+        except Exception as e:
+            zeg(f"  {club:<22}  ! {type(e).__name__}: {e}")
+            mislukt.append(club)
+            continue
+        parse_opstelling(soup, club)
+        s = STRUCTUUR_PER_CLUB.get(club)
+        if not s:
+            zeg(f"  {club:<22}  ! geen structuur vastgelegd")
+            mislukt.append(club)
+            continue
+        # de regel voor deze club komt uit de gedeelde formatter
+        zeg("  " + tabel_opstellingen({club: s})[0][1])
+
+    # Samenvatting. De tabel is om naar te kijken; dit is om op te reageren.
+    st = STRUCTUUR_PER_CLUB
+    zeg(f"\n  {len(st)} van de {len(CLUB_SLUG)} clubs gelezen")
+    _, routes = tabel_opstellingen(st)
+    zeg("  routes: " + ", ".join(f"{r} ({len(c)}x)"
+                                   for r, c in sorted(routes.items(),
+                                                      key=lambda x: -len(x[1]))))
+    # Een afwijkende route is INFORMATIE, geen fout. SC Cambuur heeft de
+    # kaartroute blijvend nodig zolang die club een kaart zonder link heeft;
+    # daar elke week een uitroepteken bij zetten levert een waarschuwing op
+    # die altijd aanstaat, en die leert je het rapport over te slaan. Alleen
+    # "hele pagina" is een echte terugval: dan is het blok niet gevonden en
+    # kan er vervuiling in zitten.
+    if len(routes) > 1:
+        hoofd = max(routes, key=lambda r: len(routes[r]))
+        for r, c in sorted(routes.items(), key=lambda x: -len(x[1])):
+            if r != hoofd:
+                zeg(f"  afwijkend van {hoofd}: {', '.join(sorted(c))} via {r}")
+
+    fouten = []
+    zonder_elf = [c for c, s in st.items() if s["elf"] != 11]
+    if zonder_elf:
+        fouten.append(f"geen elf spelers: {', '.join(sorted(zonder_elf))} "
+                      f"-- deze clubs ontbreken in opstellingen.csv")
+    if mislukt:
+        fouten.append(f"pagina niet gelezen: {', '.join(mislukt)}")
+    via_pagina = [c for c, s in st.items() if s["route"].startswith("hele pagina")]
+    if via_pagina:
+        fouten.append(f"terugval op de hele pagina: {', '.join(sorted(via_pagina))} "
+                      f"-- het opstellingsblok is niet gevonden, dus kan er "
+                      f"van elders op de pagina iets in staan")
+    geen_kans = [c for c, s in st.items() if s["elf"] == 11 and not s["kansen"]]
+    if geen_kans:
+        fouten.append(f"elf spelers maar geen enkele basiskans: "
+                      f"{', '.join(sorted(geen_kans))}")
+    zeg()
+    for f in fouten:
+        zeg(f"  ! {f}")
+    if not fouten:
+        zeg("  Alle 18 clubs elf spelers met basiskansen; geen terugval.")
+
+    # En de conclusies als annotatie. Dat is geen dubbelop: de ruwe logs van
+    # een run zijn alleen te lezen door ze te downloaden, de samenvatting
+    # staat op de runpagina, maar annotaties komen via de gewone API mee EN
+    # verschijnen bij de pull request. Zo is "welke club is stuk" op te
+    # vragen zonder ergens in te klikken.
+    if os.environ.get("GITHUB_ACTIONS"):
+        print(f"::notice title=Routes::{len(st)} clubs; " +
+              ", ".join(f"{r} ({len(c)}x)" for r, c in
+                        sorted(routes.items(), key=lambda x: -len(x[1]))))
+        for f in fouten:
+            print(f"::error title=Opstellingen::{f}")
+        # Bij een club die geen elf oplevert: de getallen mee, niet alleen
+        # de naam. "Cambuur is stuk" kost een nieuwe run om iets mee te
+        # kunnen; "10 links, 10 avatars, 10 kaarten" zegt meteen welke weg
+        # het niet is.
+        for club in sorted(c for c, s in st.items() if s["elf"] != 11):
+            s = st[club]
+            print(f"::error title={club}::{s['elf']} spelers via {s['route']}; "
+                  f"links {s['links_pagina']} op de pagina / {s['links_blok']} "
+                  f"in het blok, {s['met_avatar']} met avatar, "
+                  f"{s['kaarten']} kaarten met data-avatar, "
+                  f"{s['ul']} <ul>, {s['afwezig']} afwezigen")
+            if s["buiten"]:
+                print(f"::error title={club} buiten blok en afwezigen::"
+                      + ", ".join(s["buiten"][:12]))
+
+    pad = os.environ.get("GITHUB_STEP_SUMMARY")
+    if pad:
+        try:
+            with open(pad, "a", encoding="utf-8") as fh:
+                fh.write("## Opstellingen: structuur van alle 18 clubpagina's\n\n"
+                         "```\n" + "\n".join(regels) + "\n```\n")
+        except OSError as e:
+            print(f"  (samenvatting niet weggeschreven: {e})")
+    return not fouten
+
+
 # ------------------------------------------------------------------- debug
 def debug(url):
     soup = get(url)
@@ -1620,9 +1854,15 @@ def main():
     p.add_argument("--ronde", type=int, action="append", default=[])
     p.add_argument("--max-spelers", type=int)
     p.add_argument("--debug", metavar="URL",
-                   help="een of meer URL's, gescheiden door komma's")
+                   help="een of meer URL's, gescheiden door komma's; of het "
+                        "woord 'opstellingen' voor alle 18 clubs in een tabel")
     a = p.parse_args()
 
+    # Bewust een woord in plaats van een eigen vlag: de bestaande workflow
+    # `Debug een wedstrijd` geeft precies deze ene parameter door, en zo is
+    # de sweep vanaf Actions te draaien zonder aan de workflows te komen.
+    if a.debug and a.debug.strip().lower() in ("opstellingen", "alle"):
+        sys.exit(0 if overzicht_opstellingen() else 1)
     if a.debug:
         for url in [u.strip() for u in a.debug.split(",") if u.strip()]:
             debug(url)
