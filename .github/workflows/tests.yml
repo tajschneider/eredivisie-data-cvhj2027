@@ -60,12 +60,18 @@ jobs:
 
       - name: Scrapers en koppeling
         run: |
-          python test_scrape_prijzen.py
-          python test_statistieken.py
-          python test_synchroniseer.py
-          python test_notify.py
-          python test_valideer.py
-          python test_grenzen.py
+          mis=""
+          for f in test_scrape_prijzen.py test_statistieken.py \
+                   test_synchroniseer.py test_notify.py test_valideer.py \
+                   test_grenzen.py; do
+            if python "$f" > uit.txt 2>&1; then
+              echo "OK $f"
+            else
+              echo "::error title=$f::$(tail -c 900 uit.txt | tr '\n' '|')"
+              mis="$mis $f"
+            fi
+          done
+          test -z "$mis"
 
       # Heeft clubs.csv/spelers.csv/prijzen.csv/programma.csv/selectie.csv nodig.
       # Staan die er niet, dan is dat geen testfout maar een lege repo; dan
