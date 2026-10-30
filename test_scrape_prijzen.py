@@ -963,7 +963,7 @@ def test_overzicht_alle_clubs():
       1. een club zonder elf spelers, een onleesbare pagina of een terugval
          op de hele pagina is een FOUT (exitcode 1)
       2. een club die blijvend een andere route nodig heeft -- SC Cambuur met
-         zijn kaart zonder link -- is INFORMATIE. Anders staat die
+         een speler zonder pasfoto -- is INFORMATIE. Anders staat die
          waarschuwing elke week aan, en dan leert het rapport je zichzelf
          over te slaan.
     """
@@ -971,15 +971,16 @@ def test_overzicht_alle_clubs():
     from bs4 import BeautifulSoup
     import io, contextlib, re
 
-    def kaart(slug, naam, pct, link=True):
-        b = (f'<div class="relative"><img alt="{naam}" data-avatar="" src="x.png"/>'
-             f'<span class="absolute">{pct}%</span></div><span>{naam}</span>')
-        return (f'<a href="/eredivisie/speler/{slug}/">{b}</a>' if link
-                else f'<div class="flex">{b}</div>')
+    def kaart(slug, naam, pct, foto=True):
+        afb = (f'<img alt="{naam}" data-avatar="" src="x.png"/>' if foto
+               else '<div class="bg-slate-200">?</div>')
+        return (f'<a href="/eredivisie/speler/{slug}/"><div class="relative">'
+                f'{afb}<span class="absolute">{pct}%</span></div>'
+                f'<span>{naam}</span></a>')
 
-    def pagina(club, n=11, zonder_link=None, geen_blok=False):
+    def pagina(club, n=11, zonder_foto=None, geen_blok=False):
         k = "".join(kaart(f"{s.norm(club)}-sp{i}", f"Speler {i}", 90 - i,
-                          link=(i != zonder_link)) for i in range(n))
+                          foto=(i != zonder_foto)) for i in range(n))
         blok = k if geen_blok else f'<div class="relative flex">{k}</div>'
         kop = "" if geen_blok else f'<h2>Verwachte opstelling {club} tegen X</h2>'
         return BeautifulSoup(
@@ -1013,10 +1014,11 @@ def test_overzicht_alle_clubs():
     print(f"  {'OK  ' if g else 'FOUT'} achttien nette clubs: geen fout gemeld")
     ok = ok and g
 
-    # 2. Een club blijvend via de kaartroute: informatie, GEEN fout.
-    goed, uit = draai({clubs[3]: dict(zonder_link=10)})
+    # 2. Een club blijvend via de route voor een speler zonder pasfoto:
+    #    informatie, GEEN fout.
+    goed, uit = draai({clubs[3]: dict(zonder_foto=10)})
     g = goed and "afwijkend van" in uit and "!" not in uit
-    print(f"  {'OK  ' if g else 'FOUT'} kaartroute bij een club: afwijking "
+    print(f"  {'OK  ' if g else 'FOUT'} speler zonder foto bij een club: afwijking "
           f"gemeld, geen fout{'' if g else f' -- retour {goed}'}")
     ok = ok and g
 

@@ -821,7 +821,11 @@ def parse_opstelling(soup, club):
         "route": bron_blok, "elf": len(elf),
         "links_pagina": len(set(SPELER_HREF.findall(ruw))),
         "links_blok": len(set(SPELER_HREF.findall(elf_html))),
-        "met_avatar": len(met_avatar), "kaarten": len(kaarten),
+        "met_avatar": len(met_avatar),
+        # Het kopblok VOOR het avatarfilter. Dit is het getal dat op
+        # 30-10-2026 ontbrak: zonder dit zijn "in het blok" en "met avatar"
+        # twee metingen na hetzelfde filter, die per definitie gelijk zijn.
+        "links_heel": len(set(SPELER_HREF.findall(blok_heel))),
         "ul": elf_html.lower().count("<ul"), "afwezig": len(afwezig),
         # Welke spelers staan WEL op de pagina maar in geen van beide groepen?
         # Bij SC Cambuur klopte de rekensom niet: 14 links, 10 in het blok,
@@ -1667,7 +1671,7 @@ def overzicht_opstellingen():
     # straks meetellen alsof hij vandaag gelezen is.
     STRUCTUUR_PER_CLUB.clear()
     zeg(f"  {'club':<22}{'n':>3} {'route':<22}"
-          f"{'links p/b':>10}{'kaart':>6}{'ul':>4}{'afw':>5}  kans")
+          f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans")
     mislukt = []
     for slug, club in CLUB_SLUG.items():
         try:
@@ -1685,8 +1689,8 @@ def overzicht_opstellingen():
         k = s["kansen"]
         bereik = f"{min(k)}-{max(k)} ({len(k)})" if k else "GEEN"
         zeg(f"  {club:<22}{s['elf']:>3} {s['route']:<22}"
-              f"{s['links_pagina']:>5}/{s['links_blok']:<4}"
-              f"{s['kaarten']:>6}{s['ul']:>4}{s['afwezig']:>5}  {bereik}")
+              f"{s['links_pagina']:>5}/{s['links_heel']}/{s['links_blok']:<5}"
+              f"{s['ul']:>4}{s['afwezig']:>5}  {bereik}")
 
     # Samenvatting. De tabel is om naar te kijken; dit is om op te reageren.
     st = STRUCTUUR_PER_CLUB
