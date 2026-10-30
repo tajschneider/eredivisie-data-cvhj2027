@@ -31,6 +31,7 @@ import argparse
 import csv
 import html as htmllib
 import json
+import os
 import re
 import sys
 import time
@@ -1640,40 +1641,52 @@ def overzicht_opstellingen():
       3. hoeveel clubs de kaartroute nodig hebben; wordt dat er plots veel
          meer, dan is de bron van links naar kaarten overgestapt
     """
-    print("Opstellingen van alle 18 clubs: structuur van de pagina\n")
+    # Dezelfde tabel ook naar de job-samenvatting van Actions, als die er is.
+    # Dat is geen opsmuk: de ruwe logs van een run zijn alleen te lezen door
+    # ze te downloaden, en de samenvatting komt via de gewone API mee. Zo is
+    # het antwoord op "liep het goed?" op te vragen zonder in de logs te
+    # klikken. Lukt het schrijven niet, dan gaat de sweep gewoon door --
+    # een rapportagepad mag de meting niet laten vallen.
+    regels = []
+
+    def zeg(tekst=""):
+        print(tekst)
+        regels.append(tekst)
+
+    zeg("Opstellingen van alle 18 clubs: structuur van de pagina\n")
     # Alleen wat DEZE sweep leest mag in de samenvatting staan. Laat een
     # eerdere parse in hetzelfde proces een club achter, dan zou die club
     # straks meetellen alsof hij vandaag gelezen is.
     STRUCTUUR_PER_CLUB.clear()
-    print(f"  {'club':<22}{'n':>3} {'route':<22}"
+    zeg(f"  {'club':<22}{'n':>3} {'route':<22}"
           f"{'links p/b':>10}{'kaart':>6}{'ul':>4}{'afw':>5}  kans")
     mislukt = []
     for slug, club in CLUB_SLUG.items():
         try:
             soup = get(OPSTELLING_URL.format(slug=slug))
         except Exception as e:
-            print(f"  {club:<22}  ! {type(e).__name__}: {e}")
+            zeg(f"  {club:<22}  ! {type(e).__name__}: {e}")
             mislukt.append(club)
             continue
         parse_opstelling(soup, club)
         s = STRUCTUUR_PER_CLUB.get(club)
         if not s:
-            print(f"  {club:<22}  ! geen structuur vastgelegd")
+            zeg(f"  {club:<22}  ! geen structuur vastgelegd")
             mislukt.append(club)
             continue
         k = s["kansen"]
         bereik = f"{min(k)}-{max(k)} ({len(k)})" if k else "GEEN"
-        print(f"  {club:<22}{s['elf']:>3} {s['route']:<22}"
+        zeg(f"  {club:<22}{s['elf']:>3} {s['route']:<22}"
               f"{s['links_pagina']:>5}/{s['links_blok']:<4}"
               f"{s['kaarten']:>6}{s['ul']:>4}{s['afwezig']:>5}  {bereik}")
 
     # Samenvatting. De tabel is om naar te kijken; dit is om op te reageren.
     st = STRUCTUUR_PER_CLUB
-    print(f"\n  {len(st)} van de {len(CLUB_SLUG)} clubs gelezen")
+    zeg(f"\n  {len(st)} van de {len(CLUB_SLUG)} clubs gelezen")
     routes = {}
     for club, s in st.items():
         routes.setdefault(s["route"], []).append(club)
-    print("  routes: " + ", ".join(f"{r} ({len(c)}x)"
+    zeg("  routes: " + ", ".join(f"{r} ({len(c)}x)"
                                    for r, c in sorted(routes.items(),
                                                       key=lambda x: -len(x[1]))))
     # Een afwijkende route is INFORMATIE, geen fout. SC Cambuur heeft de
@@ -1686,7 +1699,7 @@ def overzicht_opstellingen():
         hoofd = max(routes, key=lambda r: len(routes[r]))
         for r, c in sorted(routes.items(), key=lambda x: -len(x[1])):
             if r != hoofd:
-                print(f"  afwijkend van {hoofd}: {', '.join(sorted(c))} via {r}")
+                zeg(f"  afwijkend van {hoofd}: {', '.join(sorted(c))} via {r}")
 
     fouten = []
     zonder_elf = [c for c, s in st.items() if s["elf"] != 11]
@@ -1704,11 +1717,20 @@ def overzicht_opstellingen():
     if geen_kans:
         fouten.append(f"elf spelers maar geen enkele basiskans: "
                       f"{', '.join(sorted(geen_kans))}")
-    print()
+    zeg()
     for f in fouten:
-        print(f"  ! {f}")
+        zeg(f"  ! {f}")
     if not fouten:
-        print("  Alle 18 clubs elf spelers met basiskansen; geen terugval.")
+        zeg("  Alle 18 clubs elf spelers met basiskansen; geen terugval.")
+
+    pad = os.environ.get("GITHUB_STEP_SUMMARY")
+    if pad:
+        try:
+            with open(pad, "a", encoding="utf-8") as fh:
+                fh.write("## Opstellingen: structuur van alle 18 clubpagina's\n\n"
+                         "```\n" + "\n".join(regels) + "\n```\n")
+        except OSError as e:
+            print(f"  (samenvatting niet weggeschreven: {e})")
     return not fouten
 
 
