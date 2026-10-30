@@ -1,17 +1,17 @@
-# Controle scrape — GEFAALD
+# Controle scrape — MET WAARSCHUWINGEN
 
-Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
+Uitgevoerd 2026-10-30. 0 fout(en), 1 waarschuwing(en), 30 controles.
 
-## Fouten
+## Waarschuwingen
 
-- **spelers_seizoen.csv** — geen dalende seizoenstotalen tussen 2026-10-23 en 2026-10-26  
-  lasse-wilhelm.minuten: 63 -> 62; jan-zamburek.minuten: 219 -> 218; matej-sin.goals: 1 -> 0 — een teller kan niet omlaag; waarschijnlijk is er een parser stuk of een speler van club gewisseld
+- **spelers_seizoen.csv** — 3 speler(s) met een minuut minder dan op 2026-10-26  
+  daan-rots.minuten: 540 -> 539; dean-james.minuten: 765 -> 764; mathis-suray.minuten: 829 -> 828 — hooguit 2 minuut verschil en geen andere teller zakt mee, dus de bron heeft zijn speelminuten herrekend. Blokkeert niet; het model gebruikt minuten als speelfractie en een minuut op honderden verschuift die niet merkbaar
 
 ## Metingen
 
 | Meting | Waarde |
 |---|---|
-| afwezigen_clubs | 16 |
+| afwezigen_clubs | 17 |
 | afwezigen_laatste | 56 |
 | clubs_eerstvolgende_met_xg | 18 van 18 |
 | clubs_eerstvolgende_ronde | 11 |
@@ -23,23 +23,26 @@ Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | clubs_verder_vooruit_met_xg | 18 van 18 |
 | clubs_verschillend | 18 |
 | clubs_volledige_ronden | 10 |
-| dagen_oud | 1 |
-| nieuwste_ophaaldatum | 2026-10-26 |
+| dagen_oud | 0 |
+| minuten_onzichtbaar_voor_model | 0 |
+| nieuwste_ophaaldatum | 2026-10-30 |
 | opstellingen_clubs | 18 |
 | prijzen_clubs | 18 |
 | prijzen_goedkoopste15 | 15.0 |
-| prijzen_koppelgraad | 476 van 507 (94%) |
-| prijzen_spelers | 507 |
-| rijen_afwezigen.csv | 165 |
+| prijzen_koppelgraad | 475 van 506 (94%) |
+| prijzen_spelers | 506 |
+| rijen_afwezigen.csv | 221 |
 | rijen_clubs.csv | 612 |
-| rijen_opstellingen.csv | 594 |
-| rijen_prijzen.csv | 507 |
+| rijen_opstellingen.csv | 792 |
+| rijen_prijzen.csv | 506 |
 | rijen_spelers.csv | 4284 |
-| rijen_spelers_seizoen.csv | 1515 |
+| rijen_spelers_seizoen.csv | 2020 |
 | ronderijen_ronden | 10 |
-| seizoen_dalende_tellers | 3 |
-| seizoen_momentopnamen | 3 |
-| seizoen_spelers_laatste | 506 |
+| seizoen_dalende_tellers | 0 |
+| seizoen_minuten_revisies | 3 |
+| seizoen_momentopnamen | 4 |
+| seizoen_spelers_laatste | 505 |
+| spelers_met_twee_slugs | 18 |
 
 ## Alle controles
 
@@ -54,11 +57,13 @@ Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | OK | clubs.csv | uitslag, resultaat, ploegpunten en clean sheet rijmen |
 | OK | clubs.csv | geen uitslag bij een wedstrijd in de toekomst |
 | OK | clubs.csv | verwachte goals bij 18 van de 18 rijen van ronde 11, de eerstvolgende |
-| OK | spelers_seizoen.csv | 506 spelers in de stand van 2026-10-26 |
+| OK | spelers_seizoen.csv | 505 spelers in de stand van 2026-10-30 |
 | OK | spelers_seizoen.csv | 18 clubs |
 | OK | spelers_seizoen.csv | tellers intern consistent |
-| FOUT | spelers_seizoen.csv | geen dalende seizoenstotalen tussen 2026-10-23 en 2026-10-26 |
+| OK | spelers_seizoen.csv | geen dalende seizoenstotalen tussen 2026-10-26 en 2026-10-30 |
+| WAARSCHUWING | spelers_seizoen.csv | 3 speler(s) met een minuut minder dan op 2026-10-26 |
 | OK | spelers.csv | geen dubbele ronde/speler/club |
+| OK | spelers.csv | geen speeltijd onder een onbekende slug |
 | OK | spelers.csv | elke rij heeft een ronde |
 | OK | spelers.csv | minuten en productie per ronde plausibel |
 | OK | afwezigen.csv | alle redenen bekend |
@@ -71,5 +76,5 @@ Uitgevoerd 2026-10-27. 1 fout(en), 0 waarschuwing(en), 28 controles.
 | OK | prijzen.csv | prijzen in een plausibel bereik |
 | OK | prijzen.csv | geen dubbele speler_id |
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
-| OK | prijzen.csv | 476 van de 507 prijsrijen koppelt aan een gescrapete speler (94%) |
-| OK | versheid | nieuwste gegevens zijn 1 dag(en) oud |
+| OK | prijzen.csv | 475 van de 506 prijsrijen koppelt aan een gescrapete speler (94%) |
+| OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
