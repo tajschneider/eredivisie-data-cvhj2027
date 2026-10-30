@@ -1723,6 +1723,18 @@ def overzicht_opstellingen():
     if not fouten:
         zeg("  Alle 18 clubs elf spelers met basiskansen; geen terugval.")
 
+    # En de conclusies als annotatie. Dat is geen dubbelop: de ruwe logs van
+    # een run zijn alleen te lezen door ze te downloaden, de samenvatting
+    # staat op de runpagina, maar annotaties komen via de gewone API mee EN
+    # verschijnen bij de pull request. Zo is "welke club is stuk" op te
+    # vragen zonder ergens in te klikken.
+    if os.environ.get("GITHUB_ACTIONS"):
+        print(f"::notice title=Routes::{len(st)} clubs; " +
+              ", ".join(f"{r} ({len(c)}x)" for r, c in
+                        sorted(routes.items(), key=lambda x: -len(x[1]))))
+        for f in fouten:
+            print(f"::error title=Opstellingen::{f}")
+
     pad = os.environ.get("GITHUB_STEP_SUMMARY")
     if pad:
         try:
