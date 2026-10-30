@@ -4,8 +4,8 @@ Periode 3; volgende periodestart over 2 ronden.
   verwachte goals: 27 duels uit de bron zelf, 81 teruggerekend uit de marktkansen
 Clubratings uit 108 wedstrijden (thuisvoordeel x1.22)
 LET OP: spelerstats.csv niet gevonden - assists en kaarten komen uit spelers_seizoen.csv (413 spelers). Verwachte goals zitten daar niet in, dus de doelpuntenschatting blijft op het eigen venster.
-afwezigen geladen: 77 spelers uit afwezigen.csv (opgehaald 2026-10-26)
-opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 11 (opgehaald 2026-10-26)
+afwezigen geladen: 78 spelers uit afwezigen.csv (opgehaald 2026-10-30)
+opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 11 (opgehaald 2026-10-30)
   11 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
     Anthony Descotte          Fortuna Sittard  blessure
     Artem Stepanov ⚠          FC Utrecht       blessure, terug 2026-11-01
@@ -23,21 +23,21 @@ Horizon: ronde [11, 12] (decay 0.84)
 UIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE (de verwachting hieronder rekent hier NIET mee):
     Mohamed Ihattaren         Fortuna Sittard  begon 4/6 recent, staat nu niet in de vermoedelijke elf
 
-OPSTELLING NU (zonder transfers)  3-4-3   verwacht 51.9 punten   kosten EUR 31.35
+OPSTELLING NU (zonder transfers)  3-4-3   verwacht 51.8 punten   kosten EUR 31.35
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.83
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  3.49
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.56
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  3.48
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.57
   Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.40
-  Middenveld   Guus Til                  PSV              EUR 4.00  E  9.30
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.27
-  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  5.51
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.93
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.69
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  5.58
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  3.11
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  9.33
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.26
+  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  5.55
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.91
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.67
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  5.56
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  3.07
   ---- bank (50%) ----
-  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.52
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.22
+  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.53
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.21
   M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  0.69
   A            Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
 
@@ -45,31 +45,31 @@ AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
     Artem Stepanov (blessure, terug 2026-11-01)
 
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
-  0 transfer(s):   89.89
-  1 transfer(s):   94.09   +4.20 t.o.v. 0
+  0 transfer(s):   89.81
+  1 transfer(s):   94.03   +4.23 t.o.v. 0
 
 MULTI-RONDE ADVIES (horizon 2, decay 0.84, 1 transfer(s))
-  ronde 11: verwacht 54.3 punten  (3-5-2)  winst +2.4
-  gedecayde som over de horizon: 94.09  (huidig team: 89.89)
+  ronde 11: verwacht 54.3 punten  (3-5-2)  winst +2.5
+  gedecayde som over de horizon: 94.03  (huidig team: 89.81)
     UIT  Artem Stepanov            FC Utrecht       EUR 2.25  E  0.00
-    IN   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.98  E(horizon)  7.04
+    IN   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.99  E(horizon)  7.05
 
 OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-5-2   verwacht 54.3 punten   kosten EUR 31.10
   Keeper       Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  3.83
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  3.49
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.56
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  3.48
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  1.57
   Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.40
-  Middenveld   Guus Til                  PSV              EUR 4.00  E  9.30
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.27
-  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  5.51
-  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.98
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.93
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.69
-  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  5.58
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  9.33
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  6.26
+  Middenveld   Julian Brandt             Ajax             EUR 2.80  E  5.55
+  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  3.99
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.91
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.67
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  5.56
   ---- bank (50%) ----
-  A            Mexx Meerdink             AZ               EUR 2.50  E  3.11
-  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.52
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.22
+  A            Mexx Meerdink             AZ               EUR 2.50  E  3.07
+  K            Stijn van Gassel          Excelsior        EUR 1.80  E  2.53
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.21
   M            Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  0.69
 
 besluit -> besluit.json
