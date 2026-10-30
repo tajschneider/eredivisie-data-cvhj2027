@@ -253,13 +253,29 @@ def test_vermoedelijke_elf():
         elf3, _ = draai(_pagina(d, faq_met_links=True))
         gevallen.append((len(elf3) == n_elf, f"FAQ met dezelfde links: {len(elf3)} starters"))
 
-        # 4. Vervuiling BINNEN het blok: dan niets afleveren. Afkappen op elf
-        #    zou de fout verbergen, en vijftien namen in een CSV zien er
-        #    volwaardig uit.
+        # 4. Vervuiling BINNEN het blok. Hier stond dat de parser dan NIETS mag
+        #    afleveren: afkappen op elf zou de fout verbergen, en vijftien
+        #    namen in een CSV zien er volwaardig uit. Dat was het juiste
+        #    gedrag zolang vervuiling niet van een starter te onderscheiden
+        #    viel.
+        #
+        #    Sinds 29-10-2026 kan dat wel. De bron zet de elf in een
+        #    veldweergave waarin elke speler een avatar heeft; een losse
+        #    tekstlink heeft die niet. parse_opstelling() houdt daarom alleen
+        #    de links MET afbeelding over, en levert dan precies de elf.
+        #
+        #    De eis is daarmee STRENGER geworden, niet soepeler: hij moet nu
+        #    de juiste elf teruggeven, in de juiste volgorde, zonder een
+        #    enkele vreemde link -- "elf stuks" alleen zou ook kloppen als hij
+        #    er vier echte inruilde voor vier vreemde.
         elf4, afw4 = draai(_pagina(d, extra_links=4))
-        gevallen.append((elf4 == [] and len(afw4) == n_afw,
-                         f"vier vreemde links in het blok: {len(elf4)} starters "
-                         f"(0 verwacht), afwezigen blijven {len(afw4)}"))
+        ids4 = [e["speler_id"] for e in elf4]
+        vreemd = [i for i in ids4 if i.startswith("vreemd-")]
+        gevallen.append((ids4 == [sl for sl, _ in d["elf"]] and not vreemd
+                         and len(afw4) == n_afw,
+                         f"vier vreemde links in het blok: {len(elf4)} starters, "
+                         f"{len(vreemd)} vreemde erin (0 verwacht), "
+                         f"volgorde gelijk aan de bron, afwezigen blijven {len(afw4)}"))
 
         # 5. Kop weg: terugval op de hele pagina. Die rust erop dat alle
         #    spelerslinks minus de afwezigen de elf zijn -- bij PSV 16-5, bij
@@ -269,6 +285,24 @@ def test_vermoedelijke_elf():
         gevallen.append((len(elf5) == n_elf,
                          f"zonder de kop: {len(elf5)} starters via de terugval "
                          f"({n_elf + n_afw} links min {n_afw} afwezigen)"))
+
+        # 6. De afwezigen BINNEN het kopblok, als kale tekstlinks. Dat is wat
+        #    FC Groningen op 29-10-2026 liet omvallen terwijl zeventien andere
+        #    clubs doorliepen: bij hen eindigde het blok toevallig voor die
+        #    paragraaf, bij Groningen niet. Vijftien links in het blok, elf
+        #    verwacht, dus niets afgeleverd -- en geen enkel signaal over de
+        #    enige FC Groningen-speler in de ploeg.
+        in_blok = _pagina(d).replace(
+            "<h2>Wat deze opstelling betekent</h2>",
+            "<p>Wie ontbreekt er op dit moment bij " + club + "? "
+            + "".join(f'<a href="/eredivisie/speler/{s}/">{n}</a> {reden} '
+                      for s, n, reden, _ in d["afwezig"])
+            + "</p><h2>Wat deze opstelling betekent</h2>")
+        elf6, afw6 = draai(in_blok)
+        gevallen.append(([e["speler_id"] for e in elf6] == [sl for sl, _ in d["elf"]]
+                         and len(afw6) == n_afw,
+                         f"afwezigen binnen het kopblok: {len(elf6)} starters "
+                         f"(de juiste), afwezigen blijven {len(afw6)}"))
 
         for goed, tekst in gevallen:
             print(f"  {'OK  ' if goed else 'FOUT'} {tekst}")

@@ -702,6 +702,28 @@ def parse_opstelling(soup, club):
         if lijsten:
             elf_html, bron_blok = "".join(lijsten), "kop+lijsten"
 
+    # Sinds 29-10-2026 staat de elf niet meer in <ul><li> maar in een
+    # VELDWEERGAVE: losse <a>'s met een avatar, in <div>'s. De filter op
+    # <ul> hierboven vindt dan niets en het hele kopblok blijft staan --
+    # inclusief de afwezigen in de FAQ eronder. Zeventien clubs leverden
+    # toevallig toch elf links op; FC Groningen niet, en die viel om.
+    #
+    # Het onderscheid zit in de LINK ZELF: een speler in het veld heeft een
+    # avatar (<img alt="Etienne Vaessen">) binnen zijn <a>, een afwezige in de
+    # FAQ is een kale tekstlink. Dat is structuur en geen class -- die
+    # veranderen bij elke redesign, zoals hier voor de derde keer in twee
+    # weken.
+    #
+    # Alleen toepassen als het iets oplevert. Blijft er niets over, dan is de
+    # oude opmaak nog in gebruik en verandert er niets.
+    met_avatar = [mm.group(0) for mm in
+                  re.finditer(r'<a\b[^>]*href="/eredivisie/speler/[^"]+"[^>]*>.*?</a>',
+                              elf_html, re.S | re.I)
+                  if "<img" in mm.group(0).lower()]
+    if met_avatar:
+        elf_html = "".join(met_avatar)
+        bron_blok = "kop+avatars" if bron_blok == "kop" else bron_blok + "+avatars"
+
     elf, gezien2 = [], set()
     for m in SPELER_HREF.finditer(elf_html):
         sid = m.group(1)
