@@ -1734,6 +1734,17 @@ def overzicht_opstellingen():
                         sorted(routes.items(), key=lambda x: -len(x[1]))))
         for f in fouten:
             print(f"::error title=Opstellingen::{f}")
+        # Bij een club die geen elf oplevert: de getallen mee, niet alleen
+        # de naam. "Cambuur is stuk" kost een nieuwe run om iets mee te
+        # kunnen; "10 links, 10 avatars, 10 kaarten" zegt meteen welke weg
+        # het niet is.
+        for club in sorted(c for c, s in st.items() if s["elf"] != 11):
+            s = st[club]
+            print(f"::error title={club}::{s['elf']} spelers via {s['route']}; "
+                  f"links {s['links_pagina']} op de pagina / {s['links_blok']} "
+                  f"in het blok, {s['met_avatar']} met avatar, "
+                  f"{s['kaarten']} kaarten met data-avatar, "
+                  f"{s['ul']} <ul>, {s['afwezig']} afwezigen")
 
     pad = os.environ.get("GITHUB_STEP_SUMMARY")
     if pad:
