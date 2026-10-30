@@ -1770,14 +1770,15 @@ def overzicht_opstellingen():
             print(f"::error title=Opstellingen::{f}")
         # Bij een club die geen elf oplevert: de getallen mee, niet alleen
         # de naam. "Cambuur is stuk" kost een nieuwe run om iets mee te
-        # kunnen; "10 links, 10 avatars, 10 kaarten" zegt meteen welke weg
-        # het niet is.
+        # kunnen; "14 op de pagina, 11 in het kopblok, 10 na het filter"
+        # zegt meteen welke weg het niet is.
         for club in sorted(c for c, s in st.items() if s["elf"] != 11):
             s = st[club]
             print(f"::error title={club}::{s['elf']} spelers via {s['route']}; "
-                  f"links {s['links_pagina']} op de pagina / {s['links_blok']} "
-                  f"in het blok, {s['met_avatar']} met avatar, "
-                  f"{s['kaarten']} kaarten met data-avatar, "
+                  f"links {s['links_pagina']} op de pagina, "
+                  f"{s['links_heel']} in het kopblok, "
+                  f"{s['links_blok']} na het avatarfilter "
+                  f"({s['met_avatar']} met afbeelding), "
                   f"{s['ul']} <ul>, {s['afwezig']} afwezigen")
             if s["buiten"]:
                 print(f"::error title={club} buiten blok en afwezigen::"

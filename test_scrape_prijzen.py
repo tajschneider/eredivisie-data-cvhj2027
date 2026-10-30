@@ -993,6 +993,14 @@ def test_overzicht_alle_clubs():
     clubs = list(s.CLUB_SLUG.values())
     echte_get = s.get
 
+    # MET GITHUB_ACTIONS AAN, en dat is de pointe van deze test geworden.
+    # Het annotatiepad draait alleen binnen Actions EN alleen als een club
+    # faalt, dus het werd nooit geoefend: lokaal niet omdat de variabele er
+    # niet is, in CI niet omdat er geen club faalde. Een verwijzing naar een
+    # verdwenen veld bleef daardoor staan tot een test met een falende club
+    # hem raakte (KeyError: 'kaarten', 30-10-2026). Een pad dat alleen bij
+    # een storing loopt, moet in de test juist wel lopen.
+    import os, tempfile
     def draai(plan):
         def nep(url):
             club = s.CLUB_SLUG[re.search(r"/eredivisie/([^/]+)/opstelling",
@@ -1000,12 +1008,26 @@ def test_overzicht_alle_clubs():
             return pagina(club, **plan.get(club, {}))
         s.get = nep
         buf = io.StringIO()
+        bewaard = {k: os.environ.get(k)
+                   for k in ("GITHUB_ACTIONS", "GITHUB_STEP_SUMMARY")}
+        samenvatting = os.path.join(tempfile.mkdtemp(), "samenvatting.md")
+        os.environ["GITHUB_ACTIONS"] = "1"
+        os.environ["GITHUB_STEP_SUMMARY"] = samenvatting
         try:
             with contextlib.redirect_stdout(buf):
                 ok = s.overzicht_opstellingen()
         finally:
             s.get = echte_get
-        return ok, buf.getvalue()
+            for k, v in bewaard.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        uit = buf.getvalue()
+        if os.path.exists(samenvatting):
+            uit += "\n[SAMENVATTING]\n" + open(samenvatting,
+                                                encoding="utf-8").read()
+        return ok, uit
 
     ok = True
     # 1. Alles netjes: achttien keer elf, geen fout.
@@ -1036,8 +1058,18 @@ def test_overzicht_alle_clubs():
 
     # 5. De samenvatting mag alleen over DEZE run gaan.
     goed, uit = draai({})
-    g = f"{len(clubs)} van de {len(clubs)} clubs gelezen" in uit
-    print(f"  {'OK  ' if g else 'FOUT'} samenvatting telt alleen deze run")
+    g = (f"{len(clubs)} van de {len(clubs)} clubs gelezen" in uit
+         and "[SAMENVATTING]" in uit and "routes:" in uit.split("[SAMENVATTING]")[1])
+    print(f"  {'OK  ' if g else 'FOUT'} samenvatting telt alleen deze run en "
+          f"staat ook in de job-samenvatting")
+    ok = ok and g
+
+    # 6. Het annotatiepad: bij een falende club moeten de getallen mee, en
+    #    dat mag geen KeyError opleveren op een veld dat niet meer bestaat.
+    goed, uit = draai({clubs[7]: dict(n=10)})
+    g = (not goed) and "::error title=" in uit and "in het kopblok" in uit
+    print(f"  {'OK  ' if g else 'FOUT'} annotatie bij een falende club bevat "
+          f"de getallen")
     return ok and g
 
 
