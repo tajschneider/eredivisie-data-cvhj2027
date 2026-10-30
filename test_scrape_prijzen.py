@@ -1041,6 +1041,69 @@ def test_overzicht_alle_clubs():
     return ok and g
 
 
+def test_structuurtabel_in_het_rapport():
+    """De structuurtabel hoort in controle.md, zonder de tellingen te raken.
+
+    De broncontrole draait in de workflow VOOR het scrapen en haalt de
+    achttien opstellingspagina's al op. De tabel komt daar dus gratis uit:
+    geen extra request. Twee risico's om af te dekken:
+
+      1. een blok mag geen controle WORDEN. Achttien clubs als achttien
+         "ok"-regels maakt het rapport onleesbaar, en als het de tellingen
+         opblaast gaat "0 fouten" iets anders betekenen dan gisteren.
+      2. een formatter, niet twee. De sweep en de broncontrole gebruiken
+         dezelfde tabelopmaak; zouden ze die elk zelf maken, dan ligt het
+         verschil tussen twee rapporten na de eerste wijziging aan de opmaak
+         in plaats van aan de bron.
+    """
+    import json, tempfile, os
+    import scrape_eredivisie as s
+    import controle as c
+
+    st = {"PSV": {"route": "kop+avatars", "elf": 11, "links_pagina": 14,
+                  "links_heel": 11, "links_blok": 11, "met_avatar": 11,
+                  "ul": 0, "afwezig": 3, "kansen": [91, 88, 70], "buiten": []},
+          "SC Cambuur": {"route": "kop+avatars+zonderfoto", "elf": 11,
+                         "links_pagina": 14, "links_heel": 11, "links_blok": 10,
+                         "met_avatar": 10, "ul": 0, "afwezig": 3,
+                         "kansen": [88, 58], "buiten": []}}
+
+    regels, routes = s.tabel_opstellingen(st)
+    ok = True
+    g = len(regels) == 1 + len(st) + 2 and len(routes) == 2
+    print(f"  {'OK  ' if g else 'FOUT'} tabel: kop, {len(st)} clubs en een "
+          f"routeregel ({len(regels)} regels, {len(routes)} routes)")
+    ok = ok and g
+
+    g = any("zonderfoto" in r and "SC Cambuur" in r for r in regels)
+    print(f"  {'OK  ' if g else 'FOUT'} de route staat per club in de tabel")
+    ok = ok and g
+
+    r = c.Rapport()
+    r.ok("proef", "een geslaagde controle")
+    voor = (len(r.regels), len(r.fouten), len(r.waarschuwingen))
+    r.blok("opstellingen: structuur van de clubpagina's", regels)
+    na = (len(r.regels), len(r.fouten), len(r.waarschuwingen))
+    g = voor == na
+    print(f"  {'OK  ' if g else 'FOUT'} een blok verandert de tellingen niet "
+          f"({voor} -> {na})")
+    ok = ok and g
+
+    map_ = tempfile.mkdtemp()
+    md, js = os.path.join(map_, "c.md"), os.path.join(map_, "c.json")
+    r.schrijf(md, js)
+    tekst = open(md, encoding="utf-8").read()
+    d = json.load(open(js, encoding="utf-8"))
+    g = ("## opstellingen: structuur van de clubpagina's" in tekst
+         and "SC Cambuur" in tekst and tekst.count("```") == 2
+         and d["controles"] == 1 and d["fouten"] == 0
+         and "SC Cambuur" in "\n".join(
+             d["blokken"]["opstellingen: structuur van de clubpagina's"]))
+    print(f"  {'OK  ' if g else 'FOUT'} blok staat in controle.md en "
+          f"controle.json, controles blijft {d['controles']}")
+    return ok and g
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -1079,9 +1142,12 @@ def main():
     print("\nalle 18 clubs in een tabel\n")
     ok13 = test_overzicht_alle_clubs()
 
+    print("\nde structuurtabel in het controlerapport\n")
+    ok14 = test_structuurtabel_in_het_rapport()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13]):
+            ok13, ok14]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

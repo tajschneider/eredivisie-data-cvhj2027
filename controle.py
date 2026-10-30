@@ -52,6 +52,7 @@ class Rapport:
     def __init__(self):
         self.regels = []
         self.meting = {}
+        self.blokken = []
 
     def _voeg(self, niveau, groep, tekst, detail=""):
         self.regels.append((niveau, groep, tekst, detail))
@@ -79,6 +80,20 @@ class Rapport:
     def meet(self, naam, waarde):
         self.meting[naam] = waarde
 
+    def blok(self, titel, regels):
+        """Tekst die in het rapport hoort maar geen controle IS.
+
+        Achttien clubs als achttien "ok"-regels afdrukken is precies wat de
+        opmerking hieronder verbiedt: dan lees je de acht die ertoe doen niet
+        meer. Maar de structuurtabel zelf wil je wel zien, want daarin is een
+        verschuiving te zien voordat er een club omvalt. Dus: in het rapport,
+        buiten de tellingen.
+        """
+        self.blokken.append((titel, list(regels)))
+        print(f"  {titel}")
+        for r in regels:
+            print(f"      {r}")
+
     @property
     def fouten(self):
         return [r for r in self.regels if r[0] == "FOUT"]
@@ -103,6 +118,8 @@ class Rapport:
             for _, g, t, d in self.waarschuwingen:
                 uit.append(f"- **{g}** — {t}" + (f"  \n  {d}" if d else ""))
             uit.append("")
+        for titel, regels in self.blokken:
+            uit += [f"## {titel}", "", "```"] + list(regels) + ["```", ""]
         uit += ["## Metingen", "", "| Meting | Waarde |", "|---|---|"]
         for k, v in sorted(self.meting.items()):
             uit.append(f"| {k} | {v} |")
@@ -115,6 +132,7 @@ class Rapport:
             {"datum": VANDAAG, "fouten": n_f, "waarschuwingen": n_w,
              "controles": len(self.regels), "uitkomst": kop,
              "metingen": self.meting,
+             "blokken": {titel: regels for titel, regels in self.blokken},
              "fout_details": [{"groep": g, "tekst": t, "detail": d}
                               for _, g, t, d in self.fouten]},
             indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -223,6 +241,23 @@ def controleer_bron(r):
             stuk[club] = f"{type(e).__name__}: {e}"
             per_club[club] = ([], [])
     r.meet("bron_clubs_bekeken", len(per_club))
+
+    # De STRUCTUURTABEL, uit de pagina's die hier net al zijn opgehaald --
+    # geen enkele extra request. Dit is wat tot 30-10-2026 ontbrak: er stond
+    # wel "17 van 18 clubs met 11 spelers", maar niet HOE die zeventien aan
+    # hun elf kwamen. Op 29-10 zakten zeventien clubs stil van "kop+lijsten"
+    # naar "kop" en leverden ze nog elf spelers op puur omdat hun blok
+    # toevallig voor de afwezigen eindigde. Zo'n verschuiving is in deze
+    # tabel te zien voordat er een club omvalt.
+    #
+    # Deze controle draait in de workflow VOOR het scrapen, dus een bron die
+    # van opmaak is veranderd blijkt hier en niet halverwege een run.
+    if s.STRUCTUUR_PER_CLUB:
+        regels, routes = s.tabel_opstellingen(s.STRUCTUUR_PER_CLUB)
+        r.blok("opstellingen: structuur van de clubpagina's", regels)
+        r.meet("bron_opstelling_routes_aantal", len(routes))
+        for route, clubs_r in routes.items():
+            r.meet(f"bron_route_{route.replace('+', '_')}", len(clubs_r))
 
     # Een onbereikbare pagina is iets anders dan een pagina die anders is
     # geworden: de eerste kan aan het netwerk liggen, de tweede is werk.

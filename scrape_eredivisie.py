@@ -1633,6 +1633,33 @@ def rondes_in_venster(van, tot, duels):
 
 
 # --------------------------------------------------- overzicht alle clubs
+def tabel_opstellingen(st):
+    """De structuurtabel als regels, voor hergebruik.
+
+    Een formatter, niet twee. De broncontrole haalt dezelfde achttien
+    pagina's op als deze sweep, en als beide hun eigen tabel zouden opmaken
+    gaan die na de eerste wijziging uit elkaar lopen -- en dan ligt het
+    verschil tussen twee rapporten aan de opmaak in plaats van aan de bron.
+    """
+    regels = [f"{'club':<22}{'n':>3} {'route':<22}"
+              f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans"]
+    for club, s in st.items():
+        k = s["kansen"]
+        regels.append(
+            f"{club:<22}{s['elf']:>3} {s['route']:<22}"
+            f"{s['links_pagina']:>5}/{s['links_heel']}/{s['links_blok']:<5}"
+            f"{s['ul']:>4}{s['afwezig']:>5}  "
+            + (f"{min(k)}-{max(k)} ({len(k)})" if k else "GEEN"))
+    routes = {}
+    for club, s in st.items():
+        routes.setdefault(s["route"], []).append(club)
+    regels.append("")
+    regels.append("routes: " + ", ".join(
+        f"{r} ({len(c)}x)" for r, c in sorted(routes.items(),
+                                              key=lambda x: -len(x[1]))))
+    return regels, routes
+
+
 def overzicht_opstellingen():
     """Alle 18 opstellingspagina's in een tabel: hoe zat de pagina in elkaar?
 
@@ -1670,8 +1697,8 @@ def overzicht_opstellingen():
     # eerdere parse in hetzelfde proces een club achter, dan zou die club
     # straks meetellen alsof hij vandaag gelezen is.
     STRUCTUUR_PER_CLUB.clear()
-    zeg(f"  {'club':<22}{'n':>3} {'route':<22}"
-          f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans")
+    zeg("  " + f"{'club':<22}{'n':>3} {'route':<22}"
+        f"{'links p/h/b':>13}{'ul':>4}{'afw':>5}  kans")
     mislukt = []
     for slug, club in CLUB_SLUG.items():
         try:
@@ -1686,18 +1713,13 @@ def overzicht_opstellingen():
             zeg(f"  {club:<22}  ! geen structuur vastgelegd")
             mislukt.append(club)
             continue
-        k = s["kansen"]
-        bereik = f"{min(k)}-{max(k)} ({len(k)})" if k else "GEEN"
-        zeg(f"  {club:<22}{s['elf']:>3} {s['route']:<22}"
-              f"{s['links_pagina']:>5}/{s['links_heel']}/{s['links_blok']:<5}"
-              f"{s['ul']:>4}{s['afwezig']:>5}  {bereik}")
+        # de regel voor deze club komt uit de gedeelde formatter
+        zeg("  " + tabel_opstellingen({club: s})[0][1])
 
     # Samenvatting. De tabel is om naar te kijken; dit is om op te reageren.
     st = STRUCTUUR_PER_CLUB
     zeg(f"\n  {len(st)} van de {len(CLUB_SLUG)} clubs gelezen")
-    routes = {}
-    for club, s in st.items():
-        routes.setdefault(s["route"], []).append(club)
+    _, routes = tabel_opstellingen(st)
     zeg("  routes: " + ", ".join(f"{r} ({len(c)}x)"
                                    for r, c in sorted(routes.items(),
                                                       key=lambda x: -len(x[1]))))
