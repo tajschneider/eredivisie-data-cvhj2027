@@ -1104,6 +1104,91 @@ def test_structuurtabel_in_het_rapport():
     return ok and g
 
 
+def test_minuut_revisie_versus_kapotte_teller():
+    """Een minuut minder is een herrekening; een feit minder is een fout.
+
+    Op 30-10-2026 zakten drie spelers elk precies een minuut terwijl al hun
+    andere tellers gelijk bleven. De controle keurde de scrape daarop af en
+    de verse data werd weggegooid -- op de dag voor een transferdeadline.
+
+    Een parser die omvalt verliest een hele wedstrijd of een hele speler:
+    dan zakt minuten met tientallen EN zakken duels en basisplaatsen mee.
+    Een enkele minuut terwijl de rest op de komma gelijk blijft, kan de bron
+    zelf: hij herrekent speelminuten en rondt anders af.
+
+    Deze test legt vast dat het onderscheid ook werkt wanneer het misleidend
+    lijkt: een minuut minder MET een duel minder is wel een fout, en vijf
+    minuten minder ook. Anders is de drempel een achterdeur.
+    """
+    import controle as c
+
+    def stand(dag, afwijkingen=None):
+        rijen = []
+        clubs = [f"Club {i}" for i in range(18)]
+        for i in range(450):
+            r = {"opgehaald": dag, "speler_id": f"speler-{i}",
+                 "speler": f"Speler {i}", "club": clubs[i % 18],
+                 "positie": "Midfielder", "duels": "10", "basisplaatsen": "9",
+                 "minuten": "800", "goals": "2", "assists": "1",
+                 "overtredingen": "5", "reddingen": "0", "nul_achter": "0",
+                 "cijfer": "7.0", "geel": "1", "rood": "0", "status_tekst": ""}
+            r.update((afwijkingen or {}).get(f"speler-{i}", {}))
+            rijen.append(r)
+        return rijen
+
+    gevallen = [
+        ("een minuut minder, rest gelijk: waarschuwing",
+         {"speler-3": {"minuten": "799"}}, 0, 1),
+        ("twee minuten minder: nog steeds waarschuwing",
+         {"speler-3": {"minuten": "798"}}, 0, 1),
+        ("vijf minuten minder: fout",
+         {"speler-3": {"minuten": "795"}}, 1, 0),
+        ("een minuut EN een duel minder: fout",
+         {"speler-3": {"minuten": "799", "duels": "9"}}, 2, 0),
+        ("een goal minder: fout",
+         {"speler-3": {"goals": "1"}}, 1, 0),
+        ("drie spelers een minuut minder: drie waarschuwingen in een regel",
+         {"speler-3": {"minuten": "799"}, "speler-7": {"minuten": "799"},
+          "speler-9": {"minuten": "799"}}, 0, 3),
+        ("niets gedaald", {}, 0, 0),
+    ]
+
+    echte_lees = c._lees
+    ok = True
+    for wat, afw, verwacht_f, verwacht_w in gevallen:
+        rijen = stand("2026-10-26") + stand("2026-10-30", afw)
+        c._lees = lambda *a, **k: rijen
+        r = c.Rapport()
+        try:
+            import io, contextlib
+            with contextlib.redirect_stdout(io.StringIO()):
+                c.controleer_seizoen(r)
+        finally:
+            c._lees = echte_lees
+        nf = len([x for x in r.fouten if "dalende" in x[2]])
+        nw = r.meting.get("seizoen_minuten_revisies", 0)
+        nd = r.meting.get("seizoen_dalende_tellers", 0)
+        goed = nf == (1 if verwacht_f else 0) and nd == verwacht_f and nw == verwacht_w
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {nd} dalend, "
+              f"{nw} herrekend{'' if goed else f' (verwacht {verwacht_f}/{verwacht_w})'}")
+        ok = ok and goed
+
+    # En de waarschuwing mag de scrape niet blokkeren: alleen fouten doen dat.
+    rijen = stand("2026-10-26") + stand("2026-10-30", {"speler-3": {"minuten": "799"}})
+    c._lees = lambda *a, **k: rijen
+    r = c.Rapport()
+    try:
+        import io, contextlib
+        with contextlib.redirect_stdout(io.StringIO()):
+            c.controleer_seizoen(r)
+    finally:
+        c._lees = echte_lees
+    g = len(r.fouten) == 0 and len(r.waarschuwingen) == 1
+    print(f"  {'OK  ' if g else 'FOUT'} een herrekening blokkeert de scrape niet "
+          f"({len(r.fouten)} fout, {len(r.waarschuwingen)} waarschuwing)")
+    return ok and g
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -1145,9 +1230,12 @@ def main():
     print("\nde structuurtabel in het controlerapport\n")
     ok14 = test_structuurtabel_in_het_rapport()
 
+    print("\nherrekende minuten versus een kapotte teller\n")
+    ok15 = test_minuut_revisie_versus_kapotte_teller()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14]):
+            ok13, ok14, ok15]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
