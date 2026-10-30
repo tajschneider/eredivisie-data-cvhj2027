@@ -268,6 +268,36 @@ def controleer_bron(r):
     met_kans = {c: len([e for e in elf if e["kans_basis"] != ""])
                 for c, (elf, _) in per_club.items() if elf}
     r.meet("bron_basiskans_clubs", sum(1 for n in met_kans.values() if n))
+
+    # LANGS WELKE ROUTE is de elf gevonden? Dat is geen uitvoer maar een
+    # vroegtijdig signaal. Op 29-10-2026 leverden zeventien clubs nog netjes
+    # elf spelers, maar niet meer via de lijststructuur waarop de parser
+    # ankert -- hun blok eindigde toevallig voor de afwezigen. Alleen FC
+    # Groningen viel om, en pas daardoor kwam aan het licht dat de andere
+    # zeventien op geluk draaiden.
+    #
+    # Een route die bij alle clubs hetzelfde is, is gezond. Verschillende
+    # routes naast elkaar betekenen dat de bron halverwege een wijziging
+    # doorvoert, of dat de parser op twee manieren tegelijk zoekt. Beide zijn
+    # het bekijken waard voordat er iets omvalt.
+    routes = {c: s.ROUTE_PER_CLUB.get(c, "onbekend") for c in per_club}
+    verdeling = {}
+    for route in routes.values():
+        verdeling[route] = verdeling.get(route, 0) + 1
+    r.meet("bron_opstelling_routes",
+           ", ".join(f"{k}: {v}" for k, v in sorted(verdeling.items())) or "geen")
+
+    # De terugval op de hele pagina is wel een fout. Die rust erop dat alle
+    # spelerslinks minus de afwezigen de elf zijn, en dat klopt alleen zolang
+    # er nergens anders op de pagina een spelerslink staat -- een aanname die
+    # de bron twee keer heeft gebroken.
+    hele_pagina = sorted(c for c, route in routes.items() if route.startswith("hele pagina"))
+    r.eis(not hele_pagina, "opstelling",
+          f"geen club via de terugval op de hele pagina"
+          + (f" ({len(hele_pagina)})" if hele_pagina else ""),
+          f"{', '.join(hele_pagina)} -- de kop 'Verwachte opstelling' is daar niet "
+          f"gevonden, dus de elf komt uit alle spelerslinks van de pagina minus de "
+          f"afwezigen. Dat werkt tot er elders een spelerslink bijkomt.")
     half = {c: n for c, n in met_kans.items()
             if 0 < n < BASIS_PER_CLUB - 2}
     if met_kans and not any(met_kans.values()):

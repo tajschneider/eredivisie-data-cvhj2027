@@ -45,6 +45,15 @@ UITSLAGEN_URL = BASE + "/eredivisie/uitslagen/"
 SPELERS_URL = BASE + "/eredivisie/spelers/"
 OPSTELLING_URL = BASE + "/eredivisie/{slug}/opstelling/"
 SPELER_URL = BASE + "/eredivisie/speler/{slug}/"
+# Welke route parse_opstelling() per club nam om de elf te vinden. Geen
+# uitvoer maar een MEETWAARDE: zolang alle clubs dezelfde route nemen is er
+# niets aan de hand, en zodra de bron zijn opmaak verandert wisselt die route
+# -- ook als het parsen nog net lukt. Op 29-10-2026 waren zeventien clubs
+# stilletjes van "kop+lijsten" naar "kop" gezakt en leverden ze nog elf
+# spelers op puur omdat hun blok toevallig voor de afwezigen eindigde. Dat is
+# precies het soort stille verschuiving waar je achteraan wilt kunnen kijken.
+ROUTE_PER_CLUB = {}
+
 GEEL_URL = BASE + "/eredivisie/statistieken/gele-kaarten/"
 ROOD_URL = BASE + "/eredivisie/statistieken/rode-kaarten/"
 PRIJZEN_URL = BASE + "/eredivisie/poule/coach-van-het-jaar/spelers/"
@@ -766,9 +775,29 @@ def parse_opstelling(soup, club):
     # namen is een pagina die ergens doorloopt, en die mogen er niet uit als
     # een nette CSV, want dan ziet vervuiling eruit als data. Te weinig is net
     # zo verdacht. Afkappen op elf zou de fout juist verbergen.
+    ROUTE_PER_CLUB[club] = bron_blok
     if len(elf) != 11:
         print(f"    {club}: {len(elf)} spelerslinks in het opstellingsblok "
               f"({bron_blok}), verwacht 11 — niet weggeschreven")
+        # En meteen de diagnose erbij. Drie keer in twee weken moest Thomas
+        # hierna met de hand `--debug` draaien en de uitvoer doorsturen, en
+        # dat kostte elke keer een dag. De pagina is op dit moment in handen;
+        # het enige wat ontbrak was dat er iets mee gedaan werd.
+        #
+        # Bewust kort: vijf regels voor de club die faalt, niet de achttien
+        # schermen die --debug geeft. Wie dat nodig heeft draait het alsnog.
+        koppen = [vlak(h).strip()[:60] for h in soup.find_all(["h1", "h2"])]
+        alle = SPELER_HREF.findall(ruw)
+        in_blok = SPELER_HREF.findall(elf_html)
+        print(f"      koppen: {koppen[:5]}")
+        print(f"      spelerslinks: {len(set(alle))} op de pagina, "
+              f"{len(set(in_blok))} in het blok, {len(met_avatar)} met avatar")
+        print(f"      'Verwachte opstelling' in de koppen: "
+              f"{any('verwachte opstelling' in k.lower() for k in koppen)}")
+        print(f"      <ul> in het blok: {elf_html.lower().count('<ul')}, "
+              f"afwezigen gelezen: {len(afwezig)}")
+        print(f"      -> `python scrape_eredivisie.py --debug <url>` op de "
+              f"opstellingspagina van {club} geeft de volledige dump")
         return [], afwezig
     # Alleen de ECHTE terugval melden. "kop+lijsten" is de normale weg sinds
     # 26-10-2026 en geen terugval; dat zo noemen levert een melding op die
