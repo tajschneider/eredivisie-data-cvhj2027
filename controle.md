@@ -29,12 +29,12 @@ Uitgevoerd 2026-10-30. 0 fout(en), 1 waarschuwing(en), 30 controles.
 | opstellingen_clubs | 18 |
 | prijzen_clubs | 18 |
 | prijzen_goedkoopste15 | 15.0 |
-| prijzen_koppelgraad | 475 van 506 (94%) |
-| prijzen_spelers | 506 |
+| prijzen_koppelgraad | 475 van 505 (94%) |
+| prijzen_spelers | 505 |
 | rijen_afwezigen.csv | 221 |
 | rijen_clubs.csv | 612 |
 | rijen_opstellingen.csv | 792 |
-| rijen_prijzen.csv | 506 |
+| rijen_prijzen.csv | 505 |
 | rijen_spelers.csv | 4284 |
 | rijen_spelers_seizoen.csv | 2020 |
 | ronderijen_ronden | 10 |
@@ -76,5 +76,5 @@ Uitgevoerd 2026-10-30. 0 fout(en), 1 waarschuwing(en), 30 controles.
 | OK | prijzen.csv | prijzen in een plausibel bereik |
 | OK | prijzen.csv | geen dubbele speler_id |
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
-| OK | prijzen.csv | 475 van de 506 prijsrijen koppelt aan een gescrapete speler (94%) |
+| OK | prijzen.csv | 475 van de 505 prijsrijen koppelt aan een gescrapete speler (94%) |
 | OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
