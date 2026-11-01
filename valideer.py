@@ -235,6 +235,8 @@ def lees_historie():
 # -- en dan ga je een model bijstellen dat al tegen de bodem zit.
 SD_SPELER_PER_RONDE = 3.91
 BASISSPELERS = 11
+WEDSTRIJDEN_PER_RONDE = 9  # 18 clubs; minder in historie/ronde-N.json betekent
+                           # dat het advies midden in de ronde draaide
 RUISVLOER = SD_SPELER_PER_RONDE * (BASISSPELERS ** 0.5)
 
 
@@ -276,15 +278,36 @@ def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
     if not echt:
         return None
 
-    verw = {}
+    # EEN HALF GEDRAAIDE RONDE IS GEEN METING. Het advies van ronde 6 liep op
+    # 12-09-2026, midden in een ronde die van 11 tot 13 september duurde. Het
+    # model zag toen 5 van de 9 wedstrijden; acht clubs ontbraken, en drie
+    # basisspelers kregen daardoor stil E=0. De 24,37 die eruit kwam is geen
+    # voorspelling van die ronde maar van de REST ervan.
+    #
+    # Dat ene paar (24,37 tegen 55 werkelijk) trok de gemeten bias over vijf
+    # ronden van -7,6 naar +0,05 -- precies de verkeerde conclusie, en dan nog
+    # de geruststellende. Een meetreeks met zo'n paar erin is slechter dan een
+    # kortere zonder.
+    #
+    # Herkenbaar aan het programma in de JSON zelf: staan er minder wedstrijden
+    # in dan een volledige ronde, dan dekte het advies de ronde niet. Dat werkt
+    # ook op de bestanden die er al liggen, zonder die te hoeven herschrijven.
+    verw, half = {}, []
     for j in Path(map_historie).glob("ronde-*.json"):
         try:
             d = json.loads(j.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             continue
         r, h = d.get("ronde"), (d.get("huidig") or {})
-        if r is not None and h.get("verwacht") is not None:
-            verw[int(r)] = float(h["verwacht"])
+        if r is None or h.get("verwacht") is None:
+            continue
+        wedstrijden = len(d.get("programma") or [])
+        gedekt = d.get("ronde_gedekt") or {}
+        verwacht_aantal = int(gedekt.get("verwacht") or WEDSTRIJDEN_PER_RONDE)
+        if wedstrijden and wedstrijden < verwacht_aantal:
+            half.append((int(r), wedstrijden, verwacht_aantal))
+            continue
+        verw[int(r)] = float(h["verwacht"])
 
     paren = sorted((r, verw[r], echt[r]) for r in echt if r in verw)
     if len(paren) < 2:
@@ -316,7 +339,10 @@ def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
         "eigen_modelfout": round(rest ** 0.5, 2) if rest > 0 else 0.0,
         "eigen_ruisaandeel": (round(100 * RUISVLOER ** 2 / (sd_echt ** 2), 0)
                               if sd_echt > 0 else None),
-        "eigen_zonder_verwachting": sorted(r for r in echt if r not in verw),
+        "eigen_zonder_verwachting": sorted(r for r in echt if r not in verw
+                                           and r not in {x for x, _, _ in half}),
+        "eigen_halve_ronden": sorted(f"{r} ({w}/{v} wedstrijden)"
+                                     for r, w, v in half if r in echt),
     }
 
 
@@ -426,6 +452,13 @@ def main():
         if eigen["eigen_zonder_verwachting"]:
             print(f"  ronden zonder verwachting in historie/: "
                   f"{eigen['eigen_zonder_verwachting']}")
+        if eigen["eigen_halve_ronden"]:
+            print(f"  overgeslagen, advies draaide midden in de ronde: "
+                  f"{', '.join(eigen['eigen_halve_ronden'])}")
+        # De meetlat is de ploeg ZONDER transfers. Volgde je het transferadvies
+        # op, dan speelde je met een andere ploeg dan waartegen hier gemeten
+        # wordt, en valt de bias te gunstig uit.
+        print("  let op: gemeten tegen je ploeg VOOR de transfers van die ronde")
 
     historie = lees_historie()
     rij = {

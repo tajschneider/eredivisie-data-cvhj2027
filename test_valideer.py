@@ -117,6 +117,62 @@ def test_gat_gevangen():
     return goed and goed2
 
 
+def test_halve_ronde_telt_niet_mee():
+    """Een ronde waarvan het advies halverwege draaide, is geen meting.
+
+    Het advies van ronde 6 liep op 12-09-2026, midden in een ronde die van
+    11 tot 13 september duurde. Het programma bevatte toen 5 van de 9
+    wedstrijden; acht clubs waren eruit en drie basisspelers kregen stil E=0.
+    De 24,37 die eruit kwam is geen voorspelling van die ronde maar van de
+    rest ervan.
+
+    Dat ene paar trok de gemeten bias van -7,6 naar +0,05: precies de
+    verkeerde conclusie, en dan nog de geruststellende. Een reeks met zo'n
+    paar erin is slechter dan een kortere zonder.
+    """
+    import json, tempfile, os
+    import valideer as v
+
+    map_ = tempfile.mkdtemp()
+    hist = os.path.join(map_, "historie")
+    os.makedirs(hist)
+    # Vier normale ronden plus een halve. De halve is zo gekozen dat hij de
+    # bias van negatief naar bijna nul trekt, net als ronde 6 deed.
+    ronden = {6: (24.37, 5), 7: (39.9, 9), 8: (42.5, 9), 9: (40.1, 9), 11: (51.8, 9)}
+    for r, (verwacht, wedstrijden) in ronden.items():
+        json.dump({"ronde": r, "huidig": {"verwacht": verwacht},
+                   "programma": [{"thuis": f"C{i}", "uit": f"D{i}"}
+                                 for i in range(wedstrijden)]},
+                  open(os.path.join(hist, f"ronde-{r}.json"), "w"))
+    punten = os.path.join(map_, "eigen_punten.csv")
+    with open(punten, "w", encoding="utf-8") as f:
+        f.write("ronde,punten\n6,55\n7,31\n8,22\n9,40\n11,51\n")
+
+    uit = v.meet_eigen_ploeg(pad=punten, map_historie=hist)
+    ok = True
+    g = uit["eigen_gekoppeld"] == 4
+    print(f"  {'OK  ' if g else 'FOUT'} vier ronden gekoppeld, de halve valt af "
+          f"({uit['eigen_gekoppeld']})")
+    ok = ok and g
+
+    g = any(x.startswith("6 ") for x in uit["eigen_halve_ronden"])
+    print(f"  {'OK  ' if g else 'FOUT'} ronde 6 wordt benoemd als overgeslagen: "
+          f"{uit['eigen_halve_ronden']}")
+    ok = ok and g
+
+    # De bias moet het signaal laten zien, niet het artefact wegmiddelen.
+    g = -9 < uit["eigen_bias"] < -6
+    print(f"  {'OK  ' if g else 'FOUT'} bias {uit['eigen_bias']:+} (met de halve "
+          f"ronde erbij zou dit rond nul uitkomen)")
+    ok = ok and g
+
+    # En een volledige ronde mag er NIET uitvallen.
+    g = uit["eigen_gekoppeld"] == 4 and not uit["eigen_zonder_verwachting"]
+    print(f"  {'OK  ' if g else 'FOUT'} de vier volledige ronden blijven allemaal "
+          f"staan")
+    return ok and g
+
+
 def main():
     print("poortwachter: draait de validatie deze week?\n")
     ok1 = test_poortwachter()
@@ -129,8 +185,11 @@ def main():
     print("\nbeslissingsmaat\n")
     ok5 = test_gat_gevangen()
 
+    print("\neen halve ronde is geen meting\n")
+    ok6 = test_halve_ronde_telt_niet_mee()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6]):
         print("OK: de poortwachter kiest de juiste weken en het rapport oordeelt niet op ruis.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
