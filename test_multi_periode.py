@@ -523,14 +523,72 @@ def test_horizon_1_matcht_brute_force(ronde, transfers, vervuild=False):
     return ok_score and (ok_spelers or gelijkstand or gesnoeid)
 
 
+def test_dekking_van_ronde():
+    """Een advies midden in een ronde is onbruikbaar, niet alleen onnauwkeurig.
+
+    Pouletips haalt een gespeelde wedstrijd uit het programma. Draaide het
+    advies van ronde 6 daarom op 12-09-2026 -- met 5 van de 9 wedstrijden nog
+    te gaan -- dan bestonden acht clubs voor het model niet meer. Hun spelers
+    kregen E=0, en de zoeker ziet E=0 als een dood slot: hij wil ze WEGDOEN,
+    ook je beste, juist omdat ze hun punten al binnen hebben.
+
+    Daarom weigert multi_periode.py zo'n ronde. Deze test dekt de meting
+    waarop dat besluit rust.
+    """
+    import multi_periode as mp
+
+    def ronde(duels):
+        return (duels, {})
+
+    per_ronde = {
+        11: ronde([("Ajax", "AZ"), ("PSV", "Feyenoord"), ("NEC", "Telstar"),
+                   ("Excelsior", "FC Twente"), ("FC Groningen", "Sparta Rotterdam"),
+                   ("PEC Zwolle", "ADO Den Haag"), ("Willem II", "SC Cambuur"),
+                   ("Fortuna Sittard", "sc Heerenveen"),
+                   ("Go Ahead Eagles", "FC Utrecht")]),
+        12: ronde([("AZ", "Ajax"), ("Feyenoord", "PSV")]),
+    }
+    selectie = {"Guus Til": ("PSV", "M", 4.0),
+                "Tyrone Owusu": ("Telstar", "M", 1.2),
+                "Kjetil Haug": ("Go Ahead Eagles", "K", 1.5)}
+
+    ok = True
+    vol = mp.dekking_van_ronde(per_ronde, 11, selectie)
+    g = (vol["wedstrijden"] == 9 and vol["verwacht"] == 9
+         and not vol["eigen_spelers_zonder_wedstrijd"])
+    print(f"  {'OK  ' if g else 'FOUT'} volledige ronde: 9 van 9, niemand zonder "
+          f"wedstrijd")
+    ok = ok and g
+
+    half = mp.dekking_van_ronde(per_ronde, 12, selectie)
+    g = (half["wedstrijden"] == 2 and half["verwacht"] == 9
+         and half["eigen_spelers_zonder_wedstrijd"] == ["Kjetil Haug",
+                                                        "Tyrone Owusu"])
+    print(f"  {'OK  ' if g else 'FOUT'} halve ronde: 2 van 9, en hij noemt wie "
+          f"eruit valt ({half['eigen_spelers_zonder_wedstrijd']})")
+    ok = ok and g
+
+    # `verwacht` komt uit de ronde met de meeste wedstrijden in hetzelfde
+    # bestand, niet uit een constante 18/2. Zo blijft dit kloppen als de
+    # competitie ooit van omvang verandert.
+    klein = {1: ronde([("A", "B"), ("C", "D")]), 2: ronde([("A", "C")])}
+    g = (mp.dekking_van_ronde(klein, 1, {})["verwacht"] == 2
+         and mp.dekking_van_ronde(klein, 2, {})["verwacht"] == 2)
+    print(f"  {'OK  ' if g else 'FOUT'} de maatstaf komt uit de bron zelf, niet "
+          f"uit een vast getal")
+    return ok and g
+
+
 def main():
     m = laad_model()
     clubrijen = m.lees("clubs.csv")
     per_ronde = lees_programma_per_ronde("programma.csv", m)
     rondes = sorted(per_ronde) or [max(int(r["ronde"]) for r in clubrijen) + 1]
 
-    print("Regressietest multi_periode.py vs cvhj_model.py (horizon=1)\n")
-    alles_ok = True
+    print("Dekking van de ronde (weigeren bij een half gedraaide ronde)\n")
+    alles_ok = test_dekking_van_ronde()
+
+    print("\nRegressietest multi_periode.py vs cvhj_model.py (horizon=1)\n")
     for ronde in rondes:
         for transfers in (1, 3):
             if not test_horizon_1_matcht_brute_force(ronde, transfers):

@@ -44,6 +44,7 @@ en het bestand dat de driewekelijkse Claude-sessie leest).
 """
 import argparse
 import csv
+import unicodedata
 import datetime
 import importlib.util
 import json
@@ -235,10 +236,46 @@ def lees_historie():
 # -- en dan ga je een model bijstellen dat al tegen de bodem zit.
 SD_SPELER_PER_RONDE = 3.91
 BASISSPELERS = 11
+WEDSTRIJDEN_PER_RONDE = 9  # 18 clubs; minder in historie/ronde-N.json betekent
+                           # dat het advies midden in de ronde draaide
 RUISVLOER = SD_SPELER_PER_RONDE * (BASISSPELERS ** 0.5)
 
 
-def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
+def _achternaam(naam):
+    """Laatste woord, kleingeschreven, zonder accenten -- zoals in backtest.py.
+
+    Bewust een eigen kopie van vier regels in plaats van een import: valideer.py
+    draait ook als backtest.py er niet is, en een meetreeks hoort niet om te
+    vallen over een hulpfunctie.
+    """
+    deel = (naam or "").strip().split()
+    if not deel:
+        return ""
+    s = unicodedata.normalize("NFKD", deel[-1]).encode("ascii", "ignore").decode()
+    return "".join(c for c in s.lower() if c.isalpha())
+
+
+def lees_eigen_elf(pad="eigen_elf.csv"):
+    """{ronde: {achternaam, ...}} uit eigen_elf.csv, of {}.
+
+    Alleen de NAMEN zijn hier nodig, niet de punten: het gaat om de vraag of
+    een geadviseerde aankoop werkelijk in de ploeg stond.
+    """
+    p = Path(pad)
+    if not p.exists():
+        return {}
+    uit = {}
+    with p.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            try:
+                uit.setdefault(int(r["ronde"]), set()).add(_achternaam(r["speler"]))
+            except (KeyError, TypeError, ValueError):
+                continue
+    return uit
+
+
+def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie",
+                     pad_elf="eigen_elf.csv"):
     """Verwachting van het model tegen de WERKELIJK behaalde ploegscore.
 
     De meest directe toets die dit project heeft, en tot 26-10-2026 de enige
@@ -276,15 +313,62 @@ def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
     if not echt:
         return None
 
-    verw = {}
+    # EEN HALF GEDRAAIDE RONDE IS GEEN METING. Het advies van ronde 6 liep op
+    # 12-09-2026, midden in een ronde die van 11 tot 13 september duurde. Het
+    # model zag toen 5 van de 9 wedstrijden; acht clubs ontbraken, en drie
+    # basisspelers kregen daardoor stil E=0. De 24,37 die eruit kwam is geen
+    # voorspelling van die ronde maar van de REST ervan.
+    #
+    # Dat ene paar (24,37 tegen 55 werkelijk) trok de gemeten bias over vijf
+    # ronden van -7,6 naar +0,05 -- precies de verkeerde conclusie, en dan nog
+    # de geruststellende. Een meetreeks met zo'n paar erin is slechter dan een
+    # kortere zonder.
+    #
+    # Herkenbaar aan het programma in de JSON zelf: staan er minder wedstrijden
+    # in dan een volledige ronde, dan dekte het advies de ronde niet. Dat werkt
+    # ook op de bestanden die er al liggen, zonder die te hoeven herschrijven.
+    # WELKE PLOEG IS DE MEETLAT? huidig.verwacht is de ploeg ZONDER de
+    # transfers van die ronde. Voerde je het advies uit, dan speelde je met
+    # een andere ploeg en meet je tegen iets wat nooit op het veld stond --
+    # systematisch te laag, want een geadviseerde transfer wint per definitie
+    # in de ogen van het model.
+    #
+    # Dat is niet te raden, maar wel vast te stellen: staan ALLE geadviseerde
+    # aankopen in je elf van diezelfde ronde, dan is het advies uitgevoerd en
+    # is advies.verwacht de juiste meetlat. Zo niet, dan huidig.verwacht.
+    #
+    # Gemeten op 02-11-2026: ronde 9 en 11 volgden het advies, ronde 7 en 8
+    # niet (daar kwamen Nijstad en Stepanov in plaats van de geadviseerde
+    # Propper en Viergever). Voor die laatste twee is huidig.verwacht de
+    # beste benadering die er is, maar niet de ploeg die werkelijk speelde --
+    # die is door het model nooit gewaardeerd. Het rapport zegt dat erbij.
+    elf_per_ronde = lees_eigen_elf(pad_elf)
+    verw, half, gevolgd, benadering = {}, [], [], []
     for j in Path(map_historie).glob("ronde-*.json"):
         try:
             d = json.loads(j.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             continue
         r, h = d.get("ronde"), (d.get("huidig") or {})
-        if r is not None and h.get("verwacht") is not None:
-            verw[int(r)] = float(h["verwacht"])
+        if r is None or h.get("verwacht") is None:
+            continue
+        r = int(r)
+        wedstrijden = len(d.get("programma") or [])
+        gedekt = d.get("ronde_gedekt") or {}
+        verwacht_aantal = int(gedekt.get("verwacht") or WEDSTRIJDEN_PER_RONDE)
+        if wedstrijden and wedstrijden < verwacht_aantal:
+            half.append((r, wedstrijden, verwacht_aantal))
+            continue
+        a = d.get("advies") or {}
+        aankopen = [x.get("speler") for x in (a.get("in") or []) if x.get("speler")]
+        mijn_elf = elf_per_ronde.get(r)
+        if aankopen and a.get("verwacht") is not None and mijn_elf is not None:
+            if all(_achternaam(s) in mijn_elf for s in aankopen):
+                verw[r] = float(a["verwacht"])
+                gevolgd.append(r)
+                continue
+            benadering.append(r)
+        verw[r] = float(h["verwacht"])
 
     paren = sorted((r, verw[r], echt[r]) for r in echt if r in verw)
     if len(paren) < 2:
@@ -316,7 +400,12 @@ def meet_eigen_ploeg(pad="eigen_punten.csv", map_historie="historie"):
         "eigen_modelfout": round(rest ** 0.5, 2) if rest > 0 else 0.0,
         "eigen_ruisaandeel": (round(100 * RUISVLOER ** 2 / (sd_echt ** 2), 0)
                               if sd_echt > 0 else None),
-        "eigen_zonder_verwachting": sorted(r for r in echt if r not in verw),
+        "eigen_zonder_verwachting": sorted(r for r in echt if r not in verw
+                                           and r not in {x for x, _, _ in half}),
+        "eigen_halve_ronden": sorted(f"{r} ({w}/{v} wedstrijden)"
+                                     for r, w, v in half if r in echt),
+        "eigen_advies_gevolgd": sorted(r for r in gevolgd if r in echt),
+        "eigen_meetlat_benadering": sorted(r for r in benadering if r in echt),
     }
 
 
@@ -426,6 +515,17 @@ def main():
         if eigen["eigen_zonder_verwachting"]:
             print(f"  ronden zonder verwachting in historie/: "
                   f"{eigen['eigen_zonder_verwachting']}")
+        if eigen["eigen_halve_ronden"]:
+            print(f"  overgeslagen, advies draaide midden in de ronde: "
+                  f"{', '.join(eigen['eigen_halve_ronden'])}")
+        if eigen["eigen_advies_gevolgd"]:
+            print(f"  advies uitgevoerd, dus tegen de GESPEELDE ploeg gemeten: "
+                  f"ronde {eigen['eigen_advies_gevolgd']}")
+        if eigen["eigen_meetlat_benadering"]:
+            print(f"  eigen transfer, afwijkend van het advies: "
+                  f"ronde {eigen['eigen_meetlat_benadering']} -- gemeten tegen de "
+                  f"ploeg VOOR die transfer, want de ploeg die werkelijk speelde "
+                  f"is nooit door het model gewaardeerd")
 
     historie = lees_historie()
     rij = {

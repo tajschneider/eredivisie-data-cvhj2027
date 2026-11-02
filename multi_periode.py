@@ -463,6 +463,29 @@ def kies_uit_ladder(ladder, drempel):
     return gekozen
 
 
+def dekking_van_ronde(per_ronde, ronde, selectie_in, volledig=None):
+    """Hoeveel wedstrijden van deze ronde staan er nog in het programma?
+
+    Pouletips haalt een gespeelde wedstrijd uit het programma. Draait het
+    advies dus midden in een ronde, dan ontbreken de clubs die al geweest
+    zijn -- en hun spelers krijgen E=0, alsof ze niet spelen.
+
+    `volledig` wordt afgeleid uit de ronde met de MEESTE wedstrijden in
+    hetzelfde bestand, niet uit een constante 18/2. Zo blijft dit kloppen als
+    de competitie ooit van omvang verandert, en meet het zichzelf aan de
+    eigen bron in plaats van aan een aanname.
+    """
+    duels = per_ronde[ronde][0]
+    if volledig is None:
+        volledig = max((len(v[0]) for v in per_ronde.values()), default=len(duels))
+    clubs = {c for duel in duels for c in duel}
+    # selectie_in is {naam: (club, positie, prijs)} uit lees_selectie().
+    geraakt = sorted(naam for naam, gegevens in (selectie_in or {}).items()
+                     if gegevens and gegevens[0] and gegevens[0] not in clubs)
+    return {"wedstrijden": len(duels), "verwacht": volledig,
+            "eigen_spelers_zonder_wedstrijd": geraakt}
+
+
 def main():
     import math
 
@@ -500,6 +523,9 @@ def main():
     p.add_argument("--horizon", default="auto",
                    help="aantal ronden vooruit (incl. de eerstvolgende), of 'auto' "
                         "(tot de volgende periodestart, of 6 zonder perioden.csv)")
+    p.add_argument("--halve-ronde", action="store_true",
+                   help="doorgaan terwijl de ronde al begonnen is; standaard "
+                        "weigert dit script dat, zie de uitleg bij de controle")
     p.add_argument("--decay", type=float, default=0.84, help="gewicht per ronde verder weg")
     p.add_argument("--venster", type=int, default=6)
     p.add_argument("--min-minuten", type=int, default=60)
@@ -628,6 +654,43 @@ def main():
     if a.ronde not in per_ronde:
         sys.exit(f"Geen programma voor ronde {a.ronde} in {a.programma}. "
                  f"Draai eerst scrape_programma.py --ronde {a.ronde} --horizon {a.horizon}.")
+
+    # IS DE RONDE AL BEGONNEN? Het advies van ronde 6 liep op 12-09-2026,
+    # midden in een ronde die van 11 tot 13 september duurde. Het programma
+    # bevatte toen nog 5 van de 9 wedstrijden -- de gespeelde waren eruit --
+    # en de acht clubs die al geweest waren bestonden voor het model niet meer.
+    # Drie basisspelers kregen daardoor E=0.
+    #
+    # Dat is erger dan een onnauwkeurige verwachting. De zoeker ziet een speler
+    # met E=0 als een dood slot en wil hem WEGDOEN, terwijl die speler enkel
+    # al gespeeld heeft. Het advies raadt dan aan je beste spelers te verkopen
+    # omdat ze hun punten al binnen hebben.
+    #
+    # Daarom weigeren, niet waarschuwen. Een waarschuwing boven een advies dat
+    # er verder normaal uitziet, wordt gelezen als een formaliteit -- en dit
+    # advies is niet minder nauwkeurig maar onbruikbaar. Wie de rest van een
+    # halve ronde toch wil bekijken, zegt dat expliciet met --halve-ronde.
+    ronde_gedekt = dekking_van_ronde(per_ronde, a.ronde, selectie_in)
+    wedstrijden_nu, volledig = ronde_gedekt["wedstrijden"], ronde_gedekt["verwacht"]
+    if wedstrijden_nu < volledig:
+        geraakt = ronde_gedekt["eigen_spelers_zonder_wedstrijd"]
+        kop = (f"RONDE {a.ronde} IS AL BEGONNEN: het programma bevat "
+               f"{wedstrijden_nu} van de {volledig} wedstrijden.")
+        if not a.halve_ronde:
+            sys.exit(
+                f"{kop}\n"
+                f"De {volledig - wedstrijden_nu} gespeelde wedstrijden staan er niet "
+                f"meer in, dus hun spelers krijgen E=0 en de zoeker wil ze "
+                f"WEGDOEN -- ook je beste, juist omdat ze hun punten al binnen "
+                f"hebben.\n"
+                + (f"In jouw selectie raakt dat: {', '.join(geraakt)}.\n"
+                   if geraakt else "")
+                + f"Draai dit advies voor ronde {a.ronde + 1}, of gebruik "
+                  f"--halve-ronde als je bewust naar de rest van deze ronde "
+                  f"wilt kijken (het resultaat is dan geen ploegadvies).")
+        print(f"LET OP: {kop} Je draait met --halve-ronde, dus dit is een "
+              f"advies over de REST van de ronde, geen ploegadvies."
+              + (f" Zonder wedstrijd: {', '.join(geraakt)}." if geraakt else ""))
 
     reeksen, metadata, rondes_gebruikt = bouw_horizon_pools(
         m, prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
@@ -854,6 +917,7 @@ def main():
             "programma": [{"thuis": h, "uit": u} for h, u in per_ronde[a.ronde][0]],
             "inhaal": sorted(per_ronde[a.ronde][1]),
             "pool_grootte": len(metadata),
+            "ronde_gedekt": ronde_gedekt,
             "advies": {
                 "verwacht": round(totaal_n, 2),
                 "winst": round(winst, 2),
