@@ -173,6 +173,84 @@ def test_halve_ronde_telt_niet_mee():
     return ok and g
 
 
+def test_meetlat_volgt_de_gespeelde_ploeg():
+    """Welke ploeg is de meetlat: voor of na de transfers van die ronde?
+
+    huidig.verwacht is de ploeg ZONDER de transfers. Voerde Thomas het advies
+    uit, dan speelde hij met een andere ploeg en meet je tegen iets wat nooit
+    op het veld stond -- en systematisch te laag, want een geadviseerde
+    transfer wint per definitie in de ogen van het model.
+
+    Dat is niet te raden maar wel vast te stellen: staan alle geadviseerde
+    aankopen in de elf van diezelfde ronde, dan is het advies uitgevoerd.
+    Gemeten op de echte data: ronde 9 en 11 wel, ronde 7 en 8 niet -- daar
+    kwamen Nijstad en Stepanov in plaats van de geadviseerde Propper en
+    Viergever.
+    """
+    import json, tempfile, os
+    import valideer as v
+
+    map_ = tempfile.mkdtemp()
+    hist = os.path.join(map_, "historie")
+    os.makedirs(hist)
+
+    def schrijf(r, huidig, advies=None, aankopen=()):
+        d = {"ronde": r, "huidig": {"verwacht": huidig},
+             "programma": [{"thuis": f"C{i}", "uit": f"D{i}"} for i in range(9)]}
+        if advies is not None:
+            d["advies"] = {"verwacht": advies,
+                           "in": [{"speler": s} for s in aankopen]}
+        json.dump(d, open(os.path.join(hist, f"ronde-{r}.json"), "w"))
+
+    # 9: advies gevolgd (Til staat in de elf) -> meetlat 50.1
+    # 8: eigen transfer (Viergever niet in de elf) -> meetlat 42.5
+    # 10: geen advies -> meetlat 42.97
+    schrijf(8, 42.5, 45.5, ["Nick Viergever"])
+    schrijf(9, 40.1, 50.1, ["Guus Til"])
+    schrijf(10, 42.97)
+
+    elf = os.path.join(map_, "eigen_elf.csv")
+    with open(elf, "w", encoding="utf-8") as f:
+        f.write("ronde,speler,punten,plek\n")
+        for r, namen in ((8, ["Ruud Nijstad", "Artem Stepanov"]),
+                         (9, ["Guus Til", "Tyrone Owusu"]),
+                         (10, ["Julian Brandt"])):
+            for n in namen:
+                f.write(f"{r},{n},3,basis\n")
+    punten = os.path.join(map_, "eigen_punten.csv")
+    with open(punten, "w", encoding="utf-8") as f:
+        f.write("ronde,punten\n8,22\n9,40\n10,59\n")
+
+    uit = v.meet_eigen_ploeg(pad=punten, map_historie=hist, pad_elf=elf)
+    ok = True
+    g = uit["eigen_advies_gevolgd"] == [9]
+    print(f"  {'OK  ' if g else 'FOUT'} ronde 9 herkend als uitgevoerd advies "
+          f"({uit['eigen_advies_gevolgd']})")
+    ok = ok and g
+
+    g = uit["eigen_meetlat_benadering"] == [8]
+    print(f"  {'OK  ' if g else 'FOUT'} ronde 8 herkend als eigen transfer "
+          f"({uit['eigen_meetlat_benadering']})")
+    ok = ok and g
+
+    # De bias moet op de GEKOZEN meetlatten rusten:
+    # (22-42.5) + (40-50.1) + (59-42.97) = -14.57 over 3 -> -4.86
+    g = abs(uit["eigen_bias"] - (-4.86)) < 0.02
+    print(f"  {'OK  ' if g else 'FOUT'} bias {uit['eigen_bias']:+} "
+          f"(verwacht -4.86: 42.5 voor ronde 8, 50.1 voor 9, 42.97 voor 10)")
+    ok = ok and g
+
+    # Zonder eigen_elf.csv valt alles terug op huidig.verwacht -- dan is
+    # (40-40.1) in plaats van (40-50.1) en wordt de bias -1.52.
+    zonder = v.meet_eigen_ploeg(pad=punten, map_historie=hist,
+                                pad_elf=os.path.join(map_, "bestaat-niet.csv"))
+    g = (not zonder["eigen_advies_gevolgd"]
+         and abs(zonder["eigen_bias"] - (-1.52)) < 0.02)
+    print(f"  {'OK  ' if g else 'FOUT'} zonder eigen_elf.csv valt het terug op de "
+          f"ploeg voor de transfers (bias {zonder['eigen_bias']:+})")
+    return ok and g
+
+
 def main():
     print("poortwachter: draait de validatie deze week?\n")
     ok1 = test_poortwachter()
@@ -188,8 +266,11 @@ def main():
     print("\neen halve ronde is geen meting\n")
     ok6 = test_halve_ronde_telt_niet_mee()
 
+    print("\nde meetlat volgt de ploeg die werkelijk speelde\n")
+    ok7 = test_meetlat_volgt_de_gespeelde_ploeg()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7]):
         print("OK: de poortwachter kiest de juiste weken en het rapport oordeelt niet op ruis.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
