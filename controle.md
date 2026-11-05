@@ -1,18 +1,20 @@
 # Controle scrape — MET WAARSCHUWINGEN
 
-Uitgevoerd 2026-11-02. 0 fout(en), 1 waarschuwing(en), 30 controles.
+Uitgevoerd 2026-11-05. 0 fout(en), 2 waarschuwing(en), 31 controles.
 
 ## Waarschuwingen
 
 - **spelers_seizoen.csv** — 1 speler(s) met een minuut minder dan op 2026-10-30  
   david-van-der-werff.minuten: 812 -> 811 — hooguit 2 minuut verschil en geen andere teller zakt mee, dus de bron heeft zijn speelminuten herrekend. Blokkeert niet; het model gebruikt minuten als speelfractie en een minuut op honderden verschuift die niet merkbaar
+- **versheid** — spelers_seizoen.csv loopt achter (2026-11-02 tegen 2026-11-05)  
+  normaal bij een lichte run, verdacht na een volledige
 
 ## Metingen
 
 | Meting | Waarde |
 |---|---|
 | afwezigen_clubs | 15 |
-| afwezigen_laatste | 48 |
+| afwezigen_laatste | 52 |
 | clubs_eerstvolgende_met_xg | 18 van 18 |
 | clubs_eerstvolgende_ronde | 12 |
 | clubs_gespeeld_met_xg | 36 van 198 |
@@ -25,16 +27,16 @@ Uitgevoerd 2026-11-02. 0 fout(en), 1 waarschuwing(en), 30 controles.
 | clubs_volledige_ronden | 11 |
 | dagen_oud | 0 |
 | minuten_onzichtbaar_voor_model | 0 |
-| nieuwste_ophaaldatum | 2026-11-02 |
+| nieuwste_ophaaldatum | 2026-11-05 |
 | opstellingen_clubs | 18 |
 | prijzen_clubs | 18 |
 | prijzen_goedkoopste15 | 15.0 |
-| prijzen_koppelgraad | 475 van 505 (94%) |
-| prijzen_spelers | 505 |
-| rijen_afwezigen.csv | 269 |
+| prijzen_koppelgraad | 475 van 508 (94%) |
+| prijzen_spelers | 508 |
+| rijen_afwezigen.csv | 321 |
 | rijen_clubs.csv | 612 |
-| rijen_opstellingen.csv | 990 |
-| rijen_prijzen.csv | 505 |
+| rijen_opstellingen.csv | 1188 |
+| rijen_prijzen.csv | 508 |
 | rijen_spelers.csv | 4572 |
 | rijen_spelers_seizoen.csv | 2525 |
 | ronderijen_ronden | 11 |
@@ -76,5 +78,6 @@ Uitgevoerd 2026-11-02. 0 fout(en), 1 waarschuwing(en), 30 controles.
 | OK | prijzen.csv | prijzen in een plausibel bereik |
 | OK | prijzen.csv | geen dubbele speler_id |
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
-| OK | prijzen.csv | 475 van de 505 prijsrijen koppelt aan een gescrapete speler (94%) |
+| OK | prijzen.csv | 475 van de 508 prijsrijen koppelt aan een gescrapete speler (94%) |
 | OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
+| WAARSCHUWING | versheid | spelers_seizoen.csv loopt achter (2026-11-02 tegen 2026-11-05) |
