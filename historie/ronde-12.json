@@ -34,7 +34,7 @@
     "soort": "seizoen",
     "spelers": 419
   },
-  "gegenereerd": "2026-11-02T16:51:27",
+  "gegenereerd": "2026-11-05T17:01:49",
   "transfers_toegestaan": 1,
   "transfers_beschikbaar": 1,
   "transfer_drempel": 0.0,
@@ -193,7 +193,7 @@
     }
   ],
   "inhaal": [],
-  "pool_grootte": 277,
+  "pool_grootte": 276,
   "ronde_gedekt": {
     "wedstrijden": 9,
     "verwacht": 9,
