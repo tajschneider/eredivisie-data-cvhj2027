@@ -54,6 +54,7 @@ SPELER_URL = BASE + "/eredivisie/speler/{slug}/"
 # spelers op puur omdat hun blok toevallig voor de afwezigen eindigde. Dat is
 # precies het soort stille verschuiving waar je achteraan wilt kunnen kijken.
 ROUTE_PER_CLUB = {}
+DIAGNOSE_GEDAAN = []
 
 # Hoe de pagina van elke club IN ELKAAR ZAT bij het parsen. Gevuld door
 # parse_opstelling zelf, zodat de tabel van `--debug opstellingen` dezelfde
@@ -801,11 +802,12 @@ def parse_opstelling(soup, club):
             eind_li = volgende.start() if volgende else min(len(staart), 400)
         venster = staart[:eind_li]
         pm = re.search(r"(\d{1,3})\s*%", venster)
-        if os.environ.get("KANS_DIAGNOSE") and pm and club == "Ajax":
-            rond = venster[max(0, pm.start()-160):pm.end()+60]
-            rond = re.sub(r"\s+", " ", rond)
-            print(f"::notice title=Ajax kans::{sid}: {pm.group(1)}% uit >>> "
-                  f"{rond[-230:]}")
+        if (os.environ.get("KANS_DIAGNOSE") and pm and club == "Ajax"
+                and not DIAGNOSE_GEDAAN):
+            DIAGNOSE_GEDAAN.append(1)
+            rond = re.sub(r"\s+", " ", venster[:pm.end() + 40])
+            print(f"::notice title=Ajax eerste kans::{sid} -> {pm.group(1)}%"
+                  f" | venster: {rond[:700]}")
         kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
         naam = None
         am = re.search(r'alt="([^"]{2,60})"', staart)
@@ -1768,6 +1770,12 @@ def overzicht_opstellingen():
     # verschijnen bij de pull request. Zo is "welke club is stuk" op te
     # vragen zonder ergens in te klikken.
     if os.environ.get("GITHUB_ACTIONS"):
+        import collections as _c
+        alle_k = [k for s_ in st.values() for k in s_["kansen"]]
+        tel = _c.Counter(alle_k)
+        print(f"::notice title=Kansen::{len(alle_k)} waarden, "
+              f"{len(tel)} verschillend; meest voorkomend: "
+              f"{tel.most_common(6)}")
         print(f"::notice title=Routes::{len(st)} clubs; " +
               ", ".join(f"{r} ({len(c)}x)" for r, c in
                         sorted(routes.items(), key=lambda x: -len(x[1]))))
