@@ -805,9 +805,11 @@ def parse_opstelling(soup, club):
         if (os.environ.get("KANS_DIAGNOSE") and pm and club == "Ajax"
                 and not DIAGNOSE_GEDAAN):
             DIAGNOSE_GEDAAN.append(1)
-            rond = re.sub(r"\s+", " ", venster[:pm.end() + 40])
+            rond = re.sub(r"\s+", " ", venster[max(0, pm.start() - 260):
+                                                pm.end() + 80])
             print(f"::notice title=Ajax eerste kans::{sid} -> {pm.group(1)}%"
-                  f" | venster: {rond[:700]}")
+                  f" | op positie {pm.start()} van {len(venster)} | rond de "
+                  f"match: {rond}")
         kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
         naam = None
         am = re.search(r'alt="([^"]{2,60})"', staart)
