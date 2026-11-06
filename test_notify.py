@@ -209,6 +209,71 @@ def test_signalen_zonder_getal():
     return ok and goed
 
 
+def test_alleen_de_nieuwste_opstelling_telt():
+    """opstellingen.csv groeit aan; alleen de laatste run telt.
+
+    Elke scrape schrijft de elf van dezelfde ronde er opnieuw bij. Alle rijen
+    van die ronde nemen levert de SOM van alle runs op, en dan blijft een
+    speler die uit de opstelling is gehaald er voor altijd in staan.
+
+    Op 06-11-2026 zag het model 14 Ajax-spelers voor ronde 12: elf uit de
+    scrape van 2 november plus drie nieuwe van 5 november. Julian Brandt viel
+    op 1 november uit met een hamstring en stond op 5 november niet meer in de
+    vermoedelijke elf -- maar wel nog in die van 2 november, en gold dus als
+    basisspeler. Juist de speler die eruit is gehaald, is de speler over wie
+    je gewaarschuwd wilt worden.
+
+    Het lidmaatschap van de elf is de ENIGE manier waarop deze bron meeweegt
+    (zie lees_opstellingen()), dus een verouderde optelsom raakt precies het
+    signaal waar de bron voor binnengehaald wordt.
+    """
+    import tempfile, os
+    import cvhj_model as m
+
+    map_ = tempfile.mkdtemp()
+    pad = os.path.join(map_, "opstellingen.csv")
+    with open(pad, "w", encoding="utf-8") as f:
+        f.write("opgehaald,club,speler,speler_id,kans_basis,tegenstander,"
+                "thuis_uit,datum,ronde\n")
+        # oude run: Brandt staat er nog in
+        for i, (sp, sid) in enumerate([("Julian Brandt", "julian-brandt"),
+                                       ("Oscar Gloukh", "oscar-gloukh")]):
+            f.write(f"2026-11-02,Ajax,{sp},{sid},93,FC Twente,,2026-11-08,12\n")
+        # nieuwe run: Brandt eruit, Janse erin
+        for sp, sid in [("Oscar Gloukh", "oscar-gloukh"),
+                        ("Dies Janse", "dies-janse")]:
+            f.write(f"2026-11-05,Ajax,{sp},{sid},,FC Twente,,2026-11-08,12\n")
+        # een club die ALLEEN in de oude run staat: geen uitspraak, geen
+        # verouderde uitspraak
+        f.write("2026-11-02,PSV,Guus Til,guus-til,88,NEC,,2026-11-08,12\n")
+        # en een rij van een andere ronde, die nooit mee mag tellen
+        f.write("2026-11-05,Ajax,Wout Weghorst,wout-weghorst,90,AZ,,2026-11-01,11\n")
+
+    elf, opgehaald = m.lees_opstellingen(pad, 12)
+    ajax = {k for k in elf.get(m.norm_club("Ajax"), {}) if "|" not in k}
+    ok = True
+
+    g = ajax == {"oscar-gloukh", "dies-janse"}
+    print(f"  {'OK  ' if g else 'FOUT'} alleen de elf van de laatste run: "
+          f"{sorted(ajax)}")
+    ok = ok and g
+
+    g = "julian-brandt" not in ajax
+    print(f"  {'OK  ' if g else 'FOUT'} een speler die eruit is gehaald telt "
+          f"niet meer mee")
+    ok = ok and g
+
+    g = m.norm_club("PSV") not in elf
+    print(f"  {'OK  ' if g else 'FOUT'} een club die in de laatste run ontbreekt "
+          f"krijgt geen verouderde elf")
+    ok = ok and g
+
+    g = "wout-weghorst" not in ajax and opgehaald == "2026-11-05"
+    print(f"  {'OK  ' if g else 'FOUT'} een andere ronde telt niet mee "
+          f"(opgehaald {opgehaald})")
+    return ok and g
+
+
 def main():
     print("geen vals alarm bij normale invoer\n")
     ok1 = test_normaal_geen_valse_alarmen()
@@ -226,8 +291,11 @@ def main():
     ok7 = test_afwezigen_bron()
     ok8 = test_signalen_zonder_getal()
 
+    print("\nalleen de nieuwste opstelling telt\n")
+    ok9 = test_alleen_de_nieuwste_opstelling_telt()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9]):
         print("OK: alles wat het model weet over onbetrouwbare invoer, bereikt de mail.")
     else:
         sys.exit("MISLUKT: zie hierboven -- een waarschuwing die jou niet bereikt, "

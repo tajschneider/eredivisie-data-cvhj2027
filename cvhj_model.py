@@ -1021,8 +1021,25 @@ def lees_opstellingen(pad, ronde):
             raise SystemExit(f"{pad}: kolom(men) {sorted(mist)} ontbreken "
                              f"(gevonden: {sorted(rijen[0])}). Draai scrape_eredivisie.py "
                              f"opnieuw, of verwijder het bestand om zonder te rekenen.")
-    for r in rijen:
-        if str(r.get("ronde")) != str(ronde):
+    # ALLEEN DE NIEUWSTE MOMENTOPNAME. opstellingen.csv groeit aan: elke run
+    # schrijft de elf van dezelfde ronde er opnieuw bij. Alle rijen van de
+    # ronde nemen levert dus de SOM van alle runs op, en dan blijft een speler
+    # die uit de opstelling is gehaald er voor altijd in staan.
+    #
+    # Op 06-11-2026 zag dit 14 Ajax-spelers voor ronde 12: elf uit de scrape
+    # van 2 november plus drie nieuwe van 5 november. Julian Brandt viel op
+    # 1 november uit met een hamstring en stond op 5 november niet meer in de
+    # vermoedelijke elf -- maar wel nog in die van 2 november, en dus gold hij
+    # als basisspeler. Juist de speler die eruit is gehaald, is de speler over
+    # wie je gewaarschuwd wilt worden.
+    #
+    # Een club die in de nieuwste run ontbreekt, krijgt geen uitspraak in
+    # plaats van een verouderde: zie niet_in_vermoedelijke_elf(), waar een
+    # ontbrekende club betekent dat er niets over zijn spelers gezegd wordt.
+    van_ronde = [r for r in rijen if str(r.get("ronde")) == str(ronde)]
+    nieuwste = max((r.get("opgehaald") or "" for r in van_ronde), default="")
+    for r in van_ronde:
+        if (r.get("opgehaald") or "") != nieuwste:
             continue
         try:
             p = float(r["kans_basis"]) / 100.0
