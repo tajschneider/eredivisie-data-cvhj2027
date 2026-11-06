@@ -1789,10 +1789,24 @@ def overzicht_opstellingen():
                       f"({sorted(set(alle_kansen))[:4]}) -- dat is geen kans "
                       f"maar een getal uit de opmaak")
 
-    geen_kans = [c for c, s in st.items() if s["elf"] == 11 and not s["kansen"]]
-    if geen_kans:
-        fouten.append(f"elf spelers maar geen enkele basiskans: "
-                      f"{', '.join(sorted(geen_kans))}")
+    # GEEN basiskans is geen fout, GEDEELTELIJK wel -- dezelfde regel als in
+    # controle.controleer_bron(). De bron haalde de percentages op 23-10-2026
+    # van de opstellingspagina en zet ze er soms weer op; het model rekent er
+    # niet mee, alleen met wie er in de elf staat. Dit als fout melden zou een
+    # controle opleveren die wekenlang rood staat zonder dat er iets te doen
+    # is, en dan leer je het rapport over te slaan.
+    #
+    # Dat sommige clubs wel en andere geen percentage hebben, is wel een fout:
+    # dan weet je niet welke helft je ziet.
+    met_kans = [c for c, s in st.items() if s["elf"] == 11 and s["kansen"]]
+    zonder = [c for c, s in st.items() if s["elf"] == 11 and not s["kansen"]]
+    if met_kans and zonder:
+        fouten.append(f"basiskans bij {len(met_kans)} club(s) wel en bij "
+                      f"{len(zonder)} niet ({', '.join(sorted(zonder)[:4])}) "
+                      f"-- dan is onduidelijk welke helft je ziet")
+    elif zonder and not met_kans:
+        zeg(f"  geen basiskans bij alle {len(zonder)} clubs: de bron "
+            f"publiceert het percentage nu niet; het model rekent er niet mee")
     zeg()
     for f in fouten:
         zeg(f"  ! {f}")

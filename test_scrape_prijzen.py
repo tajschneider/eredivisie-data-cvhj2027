@@ -1351,6 +1351,84 @@ def test_controle_ziet_eenheidskansen():
     return ok
 
 
+def test_sweep_zwijgt_over_ontbrekende_kansen():
+    """Geen basiskans is geen fout; gedeeltelijk wel.
+
+    De bron haalde de percentages op 23-10-2026 van de opstellingspagina en
+    zet ze er soms weer op. Het model rekent er niet mee -- alleen met wie er
+    in de elf staat. Zou de sweep dat als fout melden, dan staat hij wekenlang
+    rood zonder dat er iets te doen is, en dan leer je het rapport over te
+    slaan. Dezelfde afweging als in controle.controleer_bron(), en hier
+    vastgelegd zodat de twee niet uit elkaar lopen.
+
+    Dat sommige clubs wel en andere geen percentage hebben is wel een fout:
+    dan weet je niet welke helft je ziet.
+    """
+    import io, contextlib, re
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+
+    def pagina(club, pct=None):
+        def kaart(i):
+            perc = (f'<span class="absolute">{pct - i}%</span>'
+                    if pct is not None else "")
+            return (f'<a class="w-[19%]" '
+                    f'href="/eredivisie/speler/{s.norm(club)}-sp{i}/">'
+                    f'<div><img alt="Speler {i}" data-avatar=""/>{perc}</div>'
+                    f'<span>Speler {i}</span></a>')
+        k = "".join(kaart(i) for i in range(11))
+        return BeautifulSoup(
+            f'<html><body><h1>Vermoedelijke opstelling {club} tegen X</h1>'
+            f'<h2>Verwachte opstelling {club} tegen X</h2>'
+            f'<div class="relative flex">{k}</div>'
+            f'<h2>Wat deze opstelling betekent</h2>'
+            f'<h2>Blessures en schorsingen {club}</h2>'
+            f'<p><a href="/eredivisie/speler/afw-een/">A</a> blessure</p>'
+            f'</body></html>', "html.parser")
+
+    clubs = list(s.CLUB_SLUG.values())
+    echte_get = s.get
+
+    def draai(plan):
+        def nep(url):
+            club = s.CLUB_SLUG[re.search(r"/eredivisie/([^/]+)/opstelling",
+                                         url).group(1)]
+            return pagina(club, **plan.get(club, {}))
+        s.get = nep
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                ok = s.overzicht_opstellingen()
+        finally:
+            s.get = echte_get
+        return ok, buf.getvalue()
+
+    ok = True
+    goed_fout, uit = draai({})
+    g = goed_fout and "geen basiskans bij alle 18 clubs" in uit
+    print(f"  {'OK  ' if g else 'FOUT'} nergens een kans: gemeld, geen fout")
+    ok = ok and g
+
+    goed_fout, uit = draai({c: {"pct": 90} for c in clubs})
+    g = goed_fout
+    print(f"  {'OK  ' if g else 'FOUT'} overal een kans: geen fout")
+    ok = ok and g
+
+    goed_fout, uit = draai({c: {"pct": 90} for c in clubs[:9]})
+    g = (not goed_fout) and "welke helft" in uit
+    print(f"  {'OK  ' if g else 'FOUT'} helft wel, helft niet: fout gemeld")
+    ok = ok and g
+
+    # En de breedteklasse w-[19%] in dezelfde kaarten mag nooit als kans
+    # binnensluipen -- anders was "nergens een kans" hierboven stilletjes
+    # "overal 19".
+    goed_fout, uit = draai({})
+    g = "19" not in uit.split("routes:")[0].replace("w-[19%]", "")
+    print(f"  {'OK  ' if g else 'FOUT'} de 19 uit de opmaak komt nergens in de "
+          f"tabel terug")
+    return ok and g
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -1401,9 +1479,12 @@ def main():
     print("\neen controle die wel kan afgaan\n")
     ok17 = test_controle_ziet_eenheidskansen()
 
+    print("\nde sweep over ontbrekende kansen\n")
+    ok18 = test_sweep_zwijgt_over_ontbrekende_kansen()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15, ok16, ok17]):
+            ok13, ok14, ok15, ok16, ok17, ok18]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
