@@ -801,6 +801,11 @@ def parse_opstelling(soup, club):
             eind_li = volgende.start() if volgende else min(len(staart), 400)
         venster = staart[:eind_li]
         pm = re.search(r"(\d{1,3})\s*%", venster)
+        if os.environ.get("KANS_DIAGNOSE") and pm and club == "Ajax":
+            rond = venster[max(0, pm.start()-160):pm.end()+60]
+            rond = re.sub(r"\s+", " ", rond)
+            print(f"::notice title=Ajax kans::{sid}: {pm.group(1)}% uit >>> "
+                  f"{rond[-230:]}")
         kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
         naam = None
         am = re.search(r'alt="([^"]{2,60})"', staart)
