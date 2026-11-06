@@ -1,20 +1,13 @@
-# Controle scrape — MET WAARSCHUWINGEN
+# Controle scrape — GOED
 
-Uitgevoerd 2026-11-05. 0 fout(en), 2 waarschuwing(en), 31 controles.
-
-## Waarschuwingen
-
-- **spelers_seizoen.csv** — 1 speler(s) met een minuut minder dan op 2026-10-30  
-  david-van-der-werff.minuten: 812 -> 811 — hooguit 2 minuut verschil en geen andere teller zakt mee, dus de bron heeft zijn speelminuten herrekend. Blokkeert niet; het model gebruikt minuten als speelfractie en een minuut op honderden verschuift die niet merkbaar
-- **versheid** — spelers_seizoen.csv loopt achter (2026-11-02 tegen 2026-11-05)  
-  normaal bij een lichte run, verdacht na een volledige
+Uitgevoerd 2026-11-06. 0 fout(en), 0 waarschuwing(en), 30 controles.
 
 ## Metingen
 
 | Meting | Waarde |
 |---|---|
 | afwezigen_clubs | 15 |
-| afwezigen_laatste | 52 |
+| afwezigen_laatste | 53 |
 | clubs_eerstvolgende_met_xg | 18 van 18 |
 | clubs_eerstvolgende_ronde | 12 |
 | clubs_gespeeld_met_xg | 36 van 198 |
@@ -27,23 +20,24 @@ Uitgevoerd 2026-11-05. 0 fout(en), 2 waarschuwing(en), 31 controles.
 | clubs_volledige_ronden | 11 |
 | dagen_oud | 0 |
 | minuten_onzichtbaar_voor_model | 0 |
-| nieuwste_ophaaldatum | 2026-11-05 |
+| nieuwste_ophaaldatum | 2026-11-06 |
 | opstellingen_clubs | 18 |
+| opstellingen_kansen_verschillend | 0 |
 | prijzen_clubs | 18 |
 | prijzen_goedkoopste15 | 15.0 |
-| prijzen_koppelgraad | 475 van 508 (94%) |
+| prijzen_koppelgraad | 480 van 508 (94%) |
 | prijzen_spelers | 508 |
-| rijen_afwezigen.csv | 321 |
+| rijen_afwezigen.csv | 374 |
 | rijen_clubs.csv | 612 |
-| rijen_opstellingen.csv | 1188 |
+| rijen_opstellingen.csv | 1386 |
 | rijen_prijzen.csv | 508 |
 | rijen_spelers.csv | 4572 |
-| rijen_spelers_seizoen.csv | 2525 |
+| rijen_spelers_seizoen.csv | 3037 |
 | ronderijen_ronden | 11 |
 | seizoen_dalende_tellers | 0 |
-| seizoen_minuten_revisies | 1 |
-| seizoen_momentopnamen | 5 |
-| seizoen_spelers_laatste | 505 |
+| seizoen_minuten_revisies | 0 |
+| seizoen_momentopnamen | 6 |
+| seizoen_spelers_laatste | 512 |
 | spelers_met_twee_slugs | 18 |
 
 ## Alle controles
@@ -59,11 +53,10 @@ Uitgevoerd 2026-11-05. 0 fout(en), 2 waarschuwing(en), 31 controles.
 | OK | clubs.csv | uitslag, resultaat, ploegpunten en clean sheet rijmen |
 | OK | clubs.csv | geen uitslag bij een wedstrijd in de toekomst |
 | OK | clubs.csv | verwachte goals bij 18 van de 18 rijen van ronde 12, de eerstvolgende |
-| OK | spelers_seizoen.csv | 505 spelers in de stand van 2026-11-02 |
+| OK | spelers_seizoen.csv | 512 spelers in de stand van 2026-11-06 |
 | OK | spelers_seizoen.csv | 18 clubs |
 | OK | spelers_seizoen.csv | tellers intern consistent |
-| OK | spelers_seizoen.csv | geen dalende seizoenstotalen tussen 2026-10-30 en 2026-11-02 |
-| WAARSCHUWING | spelers_seizoen.csv | 1 speler(s) met een minuut minder dan op 2026-10-30 |
+| OK | spelers_seizoen.csv | geen dalende seizoenstotalen tussen 2026-11-02 en 2026-11-06 |
 | OK | spelers.csv | geen dubbele ronde/speler/club |
 | OK | spelers.csv | geen speeltijd onder een onbekende slug |
 | OK | spelers.csv | elke rij heeft een ronde |
@@ -73,11 +66,11 @@ Uitgevoerd 2026-11-05. 0 fout(en), 2 waarschuwing(en), 31 controles.
 | OK | opstellingen.csv | 18 clubs |
 | OK | opstellingen.csv | elke club 11 basisspelers |
 | OK | opstellingen.csv | basiskansen tussen 0 en 100 |
+| OK | opstellingen.csv | basiskansen varieren (0 verschillende waarden over 0 spelers) |
 | OK | prijzen.csv | 18 clubs |
 | OK | prijzen.csv | vier posities in het Engels |
 | OK | prijzen.csv | prijzen in een plausibel bereik |
 | OK | prijzen.csv | geen dubbele speler_id |
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
-| OK | prijzen.csv | 475 van de 508 prijsrijen koppelt aan een gescrapete speler (94%) |
+| OK | prijzen.csv | 480 van de 508 prijsrijen koppelt aan een gescrapete speler (94%) |
 | OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
-| WAARSCHUWING | versheid | spelers_seizoen.csv loopt achter (2026-11-02 tegen 2026-11-05) |
