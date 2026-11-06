@@ -1221,6 +1221,136 @@ def test_minuut_revisie_versus_kapotte_teller():
     return ok and g
 
 
+def test_kans_komt_uit_tekst_niet_uit_opmaak():
+    """Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
+
+    Op 06-11-2026 stond bij alle 180 spelers van alle 18 clubs precies 19 in
+    opstellingen.csv. Dat getal kwam uit het tag van de VOLGENDE speler:
+
+        <a class="flex flex-col items-center w-[19%] min-w-0" href="...">
+
+    Vijf kaarten naast elkaar op het veld, dus 19% breed. Het leesvenster
+    loopt tot de volgende spelerslink en pikte die breedte op.
+
+    Twee valkuilen die deze test afdekt:
+
+      1. Het venster begint en eindigt MIDDEN in een tag. Die twee halve tags
+         hebben geen sluitende punthaak, dus een gewone tagfilter laat ze
+         staan -- en juist in het tweede staat w-[19%].
+      2. In de lijstweergave staat het percentage NA </a>, in een <span>
+         binnen dezelfde <li>. Het avatarfilter van #28 houdt alleen de
+         <a>...</a> fragmenten over en gooide dat weg: die opmaak was al
+         onleesbaar voordat iemand het merkte.
+    """
+    import scrape_eredivisie as s
+    from bs4 import BeautifulSoup
+
+    def pagina(blok):
+        return BeautifulSoup(
+            f'<html><body><h1>Vermoedelijke opstelling PSV tegen Ajax</h1>'
+            f'<h2>Verwachte opstelling PSV tegen Ajax</h2>'
+            f'<div class="relative flex">{blok}</div>'
+            f'<h2>Wat deze opstelling betekent</h2>'
+            f'<h2>Blessures en schorsingen PSV</h2>'
+            f'<p><a href="/eredivisie/speler/afw-een/">A</a> blessure</p>'
+            f'</body></html>', "html.parser")
+
+    def veld(i, pct=None):
+        perc = (f'<span class="absolute -bottom-1 text-[9px]">{pct}%</span>'
+                if pct is not None else "")
+        return (f'<a class="flex flex-col items-center w-[19%] min-w-0" '
+                f'href="/eredivisie/speler/sp{i}/"><div class="relative">'
+                f'<img alt="Speler {i}" data-avatar="" src="x.png"/>{perc}'
+                f'</div><span>Speler {i}</span></a>')
+
+    def lijst(i, pct):
+        return (f'<li><a href="/eredivisie/speler/sp{i}/">'
+                f'<img alt="Speler {i}" data-avatar=""/>Speler {i}</a>'
+                f'<span class="ml-auto font-mono">{pct}%</span></li>')
+
+    gevallen = [
+        ("veld zonder kansen: leeg, geen 19 uit de opmaak",
+         "".join(veld(i) for i in range(11)), ["", "", ""]),
+        ("veld met kansen in de kaart",
+         "".join(veld(i, 91 - i) for i in range(11)), [91, 90, 89]),
+        ("lijst met het percentage na </a>",
+         "<ul>" + "".join(lijst(i, 90 - i) for i in range(11)) + "</ul>",
+         [90, 89, 88]),
+    ]
+    ok = True
+    for wat, blok, verwacht in gevallen:
+        rij, _ = s.parse_opstelling(pagina(blok), "PSV")
+        gelezen = [r["kans_basis"] for r in rij][:3]
+        goed = len(rij) == 11 and gelezen == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {gelezen} "
+              f"({len(rij)} spelers)")
+        ok = ok and goed
+
+    # En het geval waar het echt om gaat: een breedte in het tag van de
+    # volgende speler mag nooit de kans van deze speler worden -- ook niet
+    # als die breedte toevallig op een plausibel getal uitkomt.
+    blok = "".join(
+        f'<a class="w-[{72 + i}%] flex" href="/eredivisie/speler/sp{i}/">'
+        f'<div><img alt="Speler {i}" data-avatar=""/></div>'
+        f'<span>Speler {i}</span></a>' for i in range(11))
+    rij, _ = s.parse_opstelling(pagina(blok), "PSV")
+    gelezen = [r["kans_basis"] for r in rij]
+    goed = len(rij) == 11 and all(k == "" for k in gelezen)
+    print(f"  {'OK  ' if goed else 'FOUT'} breedte 72-82% in het tag wordt geen "
+          f"kans: {gelezen[:4]}")
+    return ok and goed
+
+
+def test_controle_ziet_eenheidskansen():
+    """Een controle die niet kan afgaan, bewaakt niets.
+
+    "basiskansen tussen 0 en 100" liet 180 spelers met precies 19 ongemoeid
+    doorlopen -- 19 ligt immers keurig tussen 0 en 100. Deze toets kijkt naar
+    VARIATIE, want honderdtachtig spelers met dezelfde startkans bestaat niet.
+
+    De drempel staat laag (hoogstens drie verschillende waarden bij vijftig
+    of meer spelers) zodat een ronde waarin de bron weinig onderscheid maakt
+    geen vals alarm geeft. Het gaat om het platte geval.
+    """
+    import controle as c
+
+    def rijen(kansen):
+        return [{"opgehaald": "2026-11-06", "club": f"Club {i % 18}",
+                 "speler": f"Speler {i}", "speler_id": f"sp{i}",
+                 "kans_basis": str(k), "ronde": "12"}
+                for i, k in enumerate(kansen)]
+
+    echte_lees = c._lees
+    def meet(kansen):
+        c._lees = lambda *a, **k: rijen(kansen)
+        r = c.Rapport()
+        try:
+            import io, contextlib
+            with contextlib.redirect_stdout(io.StringIO()):
+                c.controleer_opstellingen(r)
+        finally:
+            c._lees = echte_lees
+        stuk = [x for x in r.fouten if "varieren" in x[2] or "variëren" in x[2]]
+        return len(stuk), r.meting.get("opstellingen_kansen_verschillend")
+
+    ok = True
+    gevallen = [
+        ("180 spelers, allemaal 19: FOUT", [19] * 180, 1),
+        ("180 spelers, 19 en 20: FOUT", [19 + (i % 2) for i in range(180)], 1),
+        ("180 spelers, echte spreiding: geen fout",
+         [40 + (i * 7) % 55 for i in range(180)], 0),
+        ("maar 20 spelers, allemaal gelijk: geen fout (te weinig om iets "
+         "van te zeggen)", [19] * 20, 0),
+    ]
+    for wat, kansen, verwacht in gevallen:
+        n, verschillend = meet(kansen)
+        goed = n == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat} ({verschillend} "
+              f"verschillend, {n} fout)")
+        ok = ok and goed
+    return ok
+
+
 def main():
     print("splits_status()\n")
     ok1 = test_splits_status()
@@ -1265,9 +1395,15 @@ def main():
     print("\nherrekende minuten versus een kapotte teller\n")
     ok15 = test_minuut_revisie_versus_kapotte_teller()
 
+    print("\nde basiskans komt uit tekst, niet uit opmaak\n")
+    ok16 = test_kans_komt_uit_tekst_niet_uit_opmaak()
+
+    print("\neen controle die wel kan afgaan\n")
+    ok17 = test_controle_ziet_eenheidskansen()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15]):
+            ok13, ok14, ok15, ok16, ok17]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

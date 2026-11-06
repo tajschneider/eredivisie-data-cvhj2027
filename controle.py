@@ -998,6 +998,29 @@ def controleer_opstellingen(r):
     r.eis(not buiten, "opstellingen.csv", "basiskansen tussen 0 en 100",
           f"afwijkend: {buiten[:5]}")
 
+    # VARIEREN DE BASISKANSEN? Op 06-11-2026 stond bij alle 180 spelers van
+    # alle 18 clubs precies 19. Dat kwam niet van de bron maar uit de opmaak:
+    # de kaarten op het veld staan vijf naast elkaar en hebben de klasse
+    # w-[19%]. De parser las die breedte als kans.
+    #
+    # De controle hierboven zag er niets van: 19 ligt keurig tussen 0 en 100.
+    # Zo'n toets kan niet afgaan en bewaakt dus niets. Deze wel: honderdtachtig
+    # spelers die allemaal dezelfde startkans hebben, bestaat niet.
+    #
+    # De drempel staat laag (hoogstens drie verschillende waarden) zodat een
+    # ronde waarin de bron weinig onderscheid maakt niet meteen alarm geeft.
+    # Het gaat om het platte geval, niet om nuance.
+    kansen = [_f(x.get("kans_basis")) for x in nu if x.get("kans_basis") != ""]
+    kansen = [k for k in kansen if k is not None]
+    verschillend = len(set(kansen))
+    r.meet("opstellingen_kansen_verschillend", verschillend)
+    r.eis(not (len(kansen) >= 50 and verschillend <= 3), "opstellingen.csv",
+          f"basiskansen varieren ({verschillend} verschillende waarden over "
+          f"{len(kansen)} spelers)",
+          f"alle spelers vrijwel dezelfde startkans ({sorted(set(kansen))[:4]}) "
+          f"-- dat is geen kans maar een getal uit de opmaak; draai "
+          f"scrape_eredivisie.py --debug op een opstellingspagina")
+
 
 def controleer_prijzen(r):
     """prijzen.csv, en vooral: koppelt het aan de gescrapete spelers?

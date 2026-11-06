@@ -787,7 +787,15 @@ def parse_opstelling(soup, club):
         # Het venster loopt tot het EINDE VAN DE LINK van deze speler, niet
         # tot een zelfgekozen aantal tekens: een percentage daarbuiten hoort
         # bij de volgende speler of bij de wedstrijdkansen.
-        staart = elf_html[m.end():]
+        # Het venster komt uit het HELE kopblok, niet uit het gefilterde
+        # elf_html. Het avatarfilter hierboven houdt alleen de <a>...</a>
+        # fragmenten over en gooit alles ertussen weg -- en in de
+        # lijstweergave staat het percentage juist NA </a>, in een <span>
+        # binnen dezelfde <li>. In die opmaak was de kans dus al onleesbaar
+        # voordat deze regel hem las.
+        pos = blok_heel.find(m.group(0))
+        staart = (blok_heel[pos + len(m.group(0)):] if pos != -1
+                  else elf_html[m.end():])
         # Het percentage staat in een <span> NA </a>, binnen dezelfde <li>:
         #   <a ... href="/eredivisie/speler/matej-kovar/">Matej Kovar</a>
         #   <span class="ml-auto ... font-mono">91%</span>
@@ -800,7 +808,30 @@ def parse_opstelling(soup, club):
             volgende = SPELER_HREF.search(staart)
             eind_li = volgende.start() if volgende else min(len(staart), 400)
         venster = staart[:eind_li]
-        pm = re.search(r"(\d{1,3})\s*%", venster)
+        # ALLEEN DE ZICHTBARE TEKST, niet de opmaak. Op 06-11-2026 stond bij
+        # alle 180 spelers van alle 18 clubs precies 19% in opstellingen.csv.
+        # Dat getal kwam niet van de bron maar uit het tag van de VOLGENDE
+        # speler:
+        #
+        #   <a class="flex flex-col items-center w-[19%] ..." href="...">
+        #
+        # Vijf kaarten naast elkaar op het veld, dus 19% breed. Het venster
+        # loopt tot de volgende spelerslink en pikte die breedte op.
+        #
+        # Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
+        # Daarom eerst de tags eruit: dan kan geen enkele klasse, stijl of
+        # breedte ooit nog als kans worden gelezen -- ook de volgende niet
+        # die iemand bij de bron verzint.
+        # Het venster begint MIDDEN in het <a>-tag van deze speler (vlak na
+        # zijn href) en eindigt midden in dat van de volgende. Die twee halve
+        # tags hebben geen bijbehorende punthaak, dus een gewone tagfilter
+        # laat ze staan -- en juist in het tweede staat w-[19%]. Daarom eerst
+        # de kop tot de eerste '>' weg, dan de hele tags, en dan alles vanaf
+        # een '<' dat nooit meer sluit.
+        deel = venster.split(">", 1)
+        zichtbaar = deel[1] if len(deel) > 1 else venster
+        zichtbaar = re.sub(r"<[^>]*>", " ", zichtbaar).split("<")[0]
+        pm = re.search(r"(\d{1,3})\s*%", zichtbaar)
         kans = int(pm.group(1)) if pm and 0 <= int(pm.group(1)) <= 100 else ""
         naam = None
         am = re.search(r'alt="([^"]{2,60})"', staart)
@@ -1747,6 +1778,17 @@ def overzicht_opstellingen():
         fouten.append(f"terugval op de hele pagina: {', '.join(sorted(via_pagina))} "
                       f"-- het opstellingsblok is niet gevonden, dus kan er "
                       f"van elders op de pagina iets in staan")
+    # Variëren de kansen? Zie controleer_opstellingen() in controle.py: op
+    # 06-11-2026 las de parser de breedteklasse w-[19%] als startkans en gaf
+    # alle 180 spelers een 19. Hier gemeten gebeurt dat voordat er iets
+    # weggeschreven is.
+    alle_kansen = [k for s_ in st.values() for k in s_["kansen"]]
+    if len(alle_kansen) >= 50 and len(set(alle_kansen)) <= 3:
+        fouten.append(f"basiskansen variëren niet: {len(set(alle_kansen))} "
+                      f"verschillende waarde(n) over {len(alle_kansen)} spelers "
+                      f"({sorted(set(alle_kansen))[:4]}) -- dat is geen kans "
+                      f"maar een getal uit de opmaak")
+
     geen_kans = [c for c, s in st.items() if s["elf"] == 11 and not s["kansen"]]
     if geen_kans:
         fouten.append(f"elf spelers maar geen enkele basiskans: "
