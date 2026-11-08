@@ -1,6 +1,6 @@
-# Validatie ronde 11 (2026-11-01)
+# Validatie ronde 12 (2026-11-08)
 
-Periode 3; volgende periodestart pas over 2 ronden (venster 1). Dit is meting 6.
+Periode 3; periodestart over 1 ronde(n) (venster 1). Dit is meting 7.
 
 ## Testsuites
 
@@ -15,25 +15,25 @@ Periode 3; volgende periodestart pas over 2 ronden (venster 1). Dit is meting 6.
 
 ## Modelkwaliteit
 
-Gemeten over 9 evalueerbare ronde(n).
+Gemeten over 10 evalueerbare ronde(n).
 
-- **top15_gevangen**: 0.171 (-0.019 sinds vorige meting, slechter)
-- **rho**: 0.325 (-0.073 sinds vorige meting, slechter)
-- **rmse**: 3.363 (+0.051 sinds vorige meting, slechter)
+- **top15_gevangen**: 0.186 (+0.014 sinds vorige meting, beter)
+- **rho**: 0.328 (+0.003 sinds vorige meting, beter)
+- **rmse**: 3.382 (+0.019 sinds vorige meting, slechter)
 
 `top15_gevangen` is de beslissingsmaat: welk deel van het gat tussen willekeurig en perfect kiezen vangt de top-15 van het model. Dat is wat je in punten merkt; RMSE staat erbij voor de vergelijkbaarheid met eerdere metingen.
 
 ## Datadrift
 
-- **markt_grootte**: 505 (-2 sinds vorige meting, slechter)
-- **koppelgraad**: 0.917 (+0.006 sinds vorige meting, beter)
-- **geblesseerd**: 41 (-1 sinds vorige meting, beter)
+- **markt_grootte**: 508 (+3 sinds vorige meting, beter)
+- **koppelgraad**: 0.915 (-0.001 sinds vorige meting, slechter)
+- **geblesseerd**: 38 (-3 sinds vorige meting, beter)
 
 Een sprong in deze drie is meestal geen echte verandering in de competitie maar een scraper die stil iets anders is gaan lezen.
 
 ## Wat dit rapport NIET zegt
 
 - De waarheid in de backtest komt uit `spelers.csv` en mist assists, kaarten en keepersreddingen. Elke maat hierboven is dus een ondergrens.
-- Met 9 ronde(n) is de onzekerheid groot; een verschil tussen twee metingen is pas een signaal als het zich herhaalt.
+- Met 10 ronde(n) is de onzekerheid groot; een verschil tussen twee metingen is pas een signaal als het zich herhaalt.
 - Groene testsuites zeggen dat de code consistent is, niet dat de voorspellingen goed zijn.
 
