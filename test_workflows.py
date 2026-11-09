@@ -92,13 +92,44 @@ def sluit_af(start, modules):
     return gezien, extern
 
 
+def pakketten_uit(pad):
+    """Pakketnamen uit een requirements-bestand, zonder versiepinningen.
+
+    Een ontbrekend bestand levert een lege verzameling en geen uitzondering:
+    dan meldt controleer() de afhankelijkheden als ontbrekend, en dat is de
+    juiste uitkomst -- een workflow die naar een weggegooid requirements-
+    bestand verwijst installeert immers niets.
+    """
+    if not pad.exists():
+        return set()
+    uit = set()
+    for regel in pad.read_text(encoding="utf-8").splitlines():
+        regel = regel.split("#")[0].strip()
+        if not regel or regel.startswith("-"):
+            continue
+        uit.add(re.split(r"[<>=!~\[;]", regel)[0].strip())
+    return uit
+
+
 def controleer(pad_workflow, modules):
     tekst = pad_workflow.read_text(encoding="utf-8")
     naam = pad_workflow.name
 
     geinstalleerd = set()
     for regel in re.findall(r"pip install ([^\n|&]+)", tekst):
-        geinstalleerd |= {w.strip() for w in regel.split() if not w.startswith("-")}
+        for woord in regel.split():
+            woord = woord.strip()
+            if woord.startswith("-"):
+                continue
+            if woord.endswith(".txt"):
+                # `pip install -r requirements.txt`: de pakketten staan in dat
+                # bestand en niet op de regel. Zonder deze tak zou de controle
+                # denken dat de workflow een pakket "requirements.txt"
+                # installeert en elke echte afhankelijkheid als ontbrekend
+                # melden -- precies het tegendeel van wat ze moet doen.
+                geinstalleerd |= pakketten_uit(HIER / woord)
+                continue
+            geinstalleerd.add(woord)
 
     gestart = sorted(set(re.findall(r"python\s+([A-Za-z0-9_]+)\.py", tekst)))
     if not gestart:

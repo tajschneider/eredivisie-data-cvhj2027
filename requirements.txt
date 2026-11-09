@@ -1,0 +1,13 @@
+# Wat elk script nodig heeft dat een bron ophaalt of een CSV leest.
+# De modelscripts hebben daarnaast requirements-model.txt nodig.
+#
+# Deze bestanden bestaan omdat de pakketlijst eerder in elke workflow met de
+# hand werd herhaald. Daardoor stond scipy in vier workflows en in drie andere
+# niet, en viel een verse Codespace om op vijf van de acht testsuites.
+#
+# Geen versiepinningen: de scrapers volgen externe pagina's die toch al
+# wijzigen, en een pin die stilletjes veroudert is hier een groter risico dan
+# een nieuwe minor. test_workflows.py controleert of elke import ergens
+# vandaan komt, niet welke versie.
+requests
+beautifulsoup4
