@@ -307,8 +307,18 @@ def basislijn(m, spelerrijen, prijsrijen, ronde, venster, min_minuten,
     for r in spelerrijen:
         if r["ronde"] not in recent or (r.get("status") or "") == "afwezig":
             continue
+        # Een rij ZONDER MINUTEN is geen gespeelde wedstrijd. Tot de migratie van
+        # 26-10-2026 hield de status-kolom die rijen hier buiten; die kolom bestaat
+        # sindsdien niet meer, waardoor `(r.get("status") or "") == "afwezig"` nooit
+        # meer waar is en afwezigen de noemer van gem_goals gingen verhogen. De
+        # naieve voorspelling zakte daardoor stilletjes -- en dat is de REFERENTIE
+        # waartegen het model wordt afgemeten. `duels` is per docstring hieronder
+        # het aantal GESPEELDE wedstrijden in het venster, dus filteren op minuten.
+        minuten = int(r["minuten"] or 0)
+        if minuten == 0:
+            continue
         v = vorm[r.get("speler_id") or m.norm(r["speler"])]
-        v["min"] += int(r["minuten"] or 0); v["goals"] += int(r["goals"] or 0); v["duels"] += 1
+        v["min"] += minuten; v["goals"] += int(r["goals"] or 0); v["duels"] += 1
 
     werkelijk = werkelijke_punten(spelerrijen, ronde, m, clubrijen)
     prijs_pos = {r.get("speler_id") or m.norm(r["speler"]): r["positie"] for r in prijsrijen}
