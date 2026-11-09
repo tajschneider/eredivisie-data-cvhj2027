@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
 
-      - run: pip install requests beautifulsoup4 numpy scipy
+      - run: pip install -r requirements.txt -r requirements-model.txt
 
       # Zonder meetreeks valt er niets te verbeteren dat op iets berust.
       # Dan stopt dit hier, in plaats van dat een model iets gaat verzinnen.

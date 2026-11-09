@@ -47,7 +47,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - run: pip install requests beautifulsoup4
+      - run: pip install -r requirements.txt
 
       - name: Broncontrole
         # Zet elke parser op een echte pagina. Faalt dit, dan is de bron

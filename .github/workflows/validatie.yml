@@ -47,7 +47,7 @@ jobs:
       # valideer.py importeert ze zelf niet, maar start de zes testsuites als
       # losse processen, en die hebben ze wel nodig. De statische controle
       # volgt alleen imports, geen subprocessen.
-      - run: pip install requests beautifulsoup4 numpy scipy
+      - run: pip install -r requirements.txt -r requirements-model.txt
 
       - name: Ronde bepalen
         id: ronde
