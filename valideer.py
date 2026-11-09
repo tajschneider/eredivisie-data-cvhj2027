@@ -58,13 +58,26 @@ UIT = HIER / "validatie"
 HISTORIE = UIT / "historie.csv"
 RAPPORT = UIT / "rapport.md"
 
+# test_valideer.py en test_grenzen.py stonden hier niet in: de validator testte
+# zichzelf niet, en `suites_geslaagd 6 van 6` wekte de indruk van volledige
+# dekking. Daarmee wordt suites_totaal 8 in plaats van 6 -- dat is een
+# zichtbare verandering in de reeks, geen stille.
 SUITES = ["test_workflows.py", "test_multi_periode.py", "test_scrape_prijzen.py",
-          "test_statistieken.py", "test_synchroniseer.py", "test_notify.py"]
+          "test_statistieken.py", "test_synchroniseer.py", "test_notify.py",
+          "test_valideer.py", "test_grenzen.py"]
 
 VELDEN = ["datum", "ronde", "periode", "ronden_tot_start", "rondes_geevalueerd",
           "rmse", "rmse_naief", "rho", "rho_naief", "top15_gevangen",
           "pool_grootte", "markt_grootte", "koppelgraad", "geblesseerd",
-          "suites_geslaagd", "suites_totaal"]
+          "suites_geslaagd", "suites_totaal",
+          # WELKE ronden, niet alleen hoeveel. rho en top15_gevangen zijn
+          # ONGEWOGEN gemiddelden over ronden (zie gem() in meet_model), dus een
+          # enkele slechte ronde die de reeks binnenkomt verschuift het totaal
+          # fors. Op 2026-11-01 zakte rho van 0.3982 naar 0.3252 doordat ronde 9
+          # (rho 0.037) en ronde 10 (rho 0.166) erbij kwamen -- niet door een
+          # model- of meetlatwijziging. Met deze twee kolommen is dat direct te
+          # zien in plaats van na te rekenen.
+          "ronden", "rho_min"]
 
 
 def laad_model():
@@ -154,16 +167,25 @@ def meet_model(m, venster, min_minuten):
     spelerrijen = m.lees("spelers.csv")
     prijsrijen = m.lees("prijzen.csv")
     fbref = m.lees_spelerstats(m.stats_pad("spelerstats.csv"))
+    if fbref is None:
+        # Zelfde terugval als productie en als backtest.main(). Zonder dit meet
+        # de REEKS een model zonder assists en kaarten, terwijl het advies ze
+        # sinds 2026-10-23 wel gebruikt. backtest.evalueer_ronde() poort ze per
+        # ronde, zodat ronde 1 t/m 9 -- waar de waarheid ze niet kan scoren --
+        # aan beide kanten zonder blijft.
+        fbref = m.stats_uit_seizoen("spelers_seizoen.csv")
 
     rondes = sorted({int(r["ronde"]) for r in spelerrijen})
     fout2, rhos, rhos_naief, fout2_naief, gaten, n = [], [], [], [], [], 0
     pool_grootte = None
+    geevalueerd = []   # WELKE ronden meededen, voor de kolom `ronden`
     for ronde in rondes[1:]:
         r = backtest.evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde,
                                     venster, min_minuten, fbref=fbref)
         if not r:
             continue
         n += 1
+        geevalueerd.append(ronde)
         pool_grootte = r.get("n_pool")      # laatste ronde: de actueelste marktomvang
         fout2 += [x["fout"] ** 2 for x in r["rijen"]]
         if r.get("spearman") is not None:
@@ -202,6 +224,12 @@ def meet_model(m, venster, min_minuten):
         "rho_naief": gem(rhos_naief),
         "top15_gevangen": gem(gaten),
         "pool_grootte": pool_grootte,
+        # Met een pijp als scheiding, want dit gaat in een CSV-veld.
+        "ronden": "|".join(str(x) for x in geevalueerd),
+        # De slechtste ronde in het ongewogen gemiddelde. Staat die ver onder
+        # rho, dan wordt het totaal door een uitbijter bepaald en niet door een
+        # trend -- dat hoort zichtbaar te zijn voordat je er conclusies aan hangt.
+        "rho_min": min(rhos) if rhos else None,
     }
 
 
@@ -480,9 +508,12 @@ def main():
         print(f"  niet gelukt: {type(e).__name__}: {e}")
         model = {k: None for k in ("rondes_geevalueerd", "rmse", "rmse_naief",
                                    "rho", "rho_naief", "top15_gevangen",
-                                   "pool_grootte")}
+                                   "pool_grootte", "ronden", "rho_min")}
     for k, v in model.items():
-        print(f"  {k:20s} {v if v is None else round(v, 4)}")
+        # Alleen floats afronden. `ronden` is een string en `rondes_geevalueerd`
+        # een int; round() op een string gaf hier een TypeError die de hele
+        # validatie liet vallen NA het rekenwerk, dus net voor het wegschrijven.
+        print(f"  {k:20s} {round(v, 4) if isinstance(v, float) else v}")
 
     data = meet_data(m)
     for k, v in data.items():
