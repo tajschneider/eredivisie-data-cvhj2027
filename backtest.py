@@ -101,11 +101,28 @@ def werkelijke_punten(spelerrijen, ronde, m, clubrijen=None):
         pp = r.get("ploegpunten")
         if pp in (None, ""):
             pp = ploeg.get((str(ronde), club), 0)
+        # LEEG IS NIET NUL. Ronde 1 t/m 9 heeft assists, geel, rood en reddingen
+        # als LEGE velden (geverifieerd 2026-11-09: 418-458 lege velden per ronde,
+        # geen enkele "0"); vanaf ronde 10 staat er "0" of een echt aantal. Leeg
+        # betekent 'niet gemeten' en dat is iets anders dan 'nul gebeurd'. De vlag
+        # `volledig` zegt of deze rij volledig volgens de spelregels te scoren is.
+        def _getal(v):
+            try:
+                return int(float(v))
+            except (TypeError, ValueError):
+                return 0
+        volledig = all((r.get(c) or "").strip() != ""
+                       for c in ("assists", "geel", "rood", "reddingen"))
         uit[sid] = {
             "speler": r["speler"], "club": club,
             "ploegpunten": int(pp or 0),
             "clean_sheet": cs, "goals": int(r["goals"] or 0),
             "minuten": int(r["minuten"] or 0),
+            "assists": _getal(r.get("assists")),
+            "geel": _getal(r.get("geel")),
+            "rood": _getal(r.get("rood")),
+            "reddingen": _getal(r.get("reddingen")),
+            "volledig": volledig,
         }
     return uit
 
@@ -132,6 +149,17 @@ def punten_met_positie(w, positie_kort, m):
     p = w["ploegpunten"]
     p += w["clean_sheet"] * m.CLEANSHEET[positie_kort]
     p += w["goals"] * m.GOALWAARDE[lang]
+    # Assists, kaarten en reddingen ALLEEN waar ze gemeten zijn (vanaf ronde 10).
+    # Waarden volgens de spelregels, zie CVHJ_modelverantwoording.md r.101:
+    # assist 5/4/3/2 naar positie, geel -3, rood -8, 1 punt per 5 reddingen.
+    # De reddingen gaan met VLOERDELING: de spelregel geeft een heel punt per
+    # vijf reddingen, dus drie reddingen leveren nul op, geen 0,6. Blijkt dat
+    # CVHJ toch naar rato uitkeert, dan is `//` hier `/`.
+    if w.get("volledig"):
+        p += w["assists"] * m.ASSISTWAARDE[lang]
+        p += w["geel"] * m.KAART_GEEL_PUNTEN
+        p += w["rood"] * m.KAART_ROOD_PUNTEN
+        p += w["reddingen"] // m.REDDINGEN_PER_PUNT
     return p
 
 
@@ -246,13 +274,22 @@ def evalueer_ronde(m, clubrijen, spelerrijen, prijsrijen, ronde, venster, min_mi
     # reconstrueren uit spelers.csv. De voorspelling bevat ze nu wel, de
     # waarheid niet. Dat maakt de RMSE een ondergrens, geen exacte maat --
     # maar het is eerlijker dan twee verschillende modellen vergelijken.
+    # PER RONDE SYMMETRISCH. De waarheid kan assists en kaarten pas vanaf ronde
+    # 10 scoren (eerder staan die velden leeg). Geeft de voorspelling ze wel mee
+    # en de waarheid niet, dan wordt het model afgerekend op termen die de
+    # meetlat niet ziet. Daarom: fbref alleen doorgeven voor ronden waarvan de
+    # waarheid de volle spelregels kan toepassen. Voor ronde 1 t/m 9 voorspelt
+    # en scoort hij dus ZONDER assists en kaarten -- aan beide kanten hetzelfde,
+    # en identiek aan wat meting 1 t/m 5 meette.
+    werkelijk = werkelijke_punten(spelerrijen, ronde, m, clubrijen)
+    ronde_volledig = any(w.get("volledig") for w in werkelijk.values())
+
     pool = m.bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                        programma, {}, laatste_ronde=ronde - 1,
-                       venster=venster, min_minuten=min_minuten, fbref=fbref)
+                       venster=venster, min_minuten=min_minuten,
+                       fbref=(fbref if ronde_volledig else None))
     if not pool:
         return None
-
-    werkelijk = werkelijke_punten(spelerrijen, ronde, m, clubrijen)
 
     # Echte CVHJ-punten gaan voor op de reconstructie. Ze bestaan alleen voor
     # Thomas' eigen elf (eigen_elf.csv), dus hooguit elf per ronde; de rest
@@ -374,9 +411,19 @@ def main():
 
     # Dezelfde statistieken als productie gebruikt; zie evalueer_ronde().
     fbref = m.lees_spelerstats(m.stats_pad("spelerstats.csv"))
-    print("spelerstats: " + (f"{len(fbref)} spelers" if fbref else
-                             "niet gevonden -- de ijking meet dan het model ZONDER "
-                             "assists en kaarten, terwijl het advies ze wel gebruikt"))
+    stats_soort = "spelerstats"
+    if fbref is None:
+        # DEZELFDE TERUGVAL ALS PRODUCTIE (cvhj_model.py en multi_periode.py).
+        # spelerstats.csv heeft nooit in de repo bestaan, dus hier stond `fbref`
+        # altijd leeg en ijkte deze backtest een modelvariant die niemand draait:
+        # KRIMP_SPELER en KRIMP_CLUB zijn daarop gekalibreerd. Zie stats_uit_seizoen().
+        fbref = m.stats_uit_seizoen("spelers_seizoen.csv")
+        if fbref is not None:
+            stats_soort = "seizoen"
+    print("spelerstats: " + (f"{len(fbref)} spelers uit {stats_soort}" if fbref else
+                             "niet gevonden, en ook geen spelers_seizoen.csv -- de "
+                             "ijking meet dan het model ZONDER assists en kaarten, "
+                             "terwijl het advies ze wel gebruikt"))
 
     resultaten, alle_rijen = [], []
     for ronde in range(vanaf, tot + 1):

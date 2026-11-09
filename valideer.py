@@ -154,6 +154,13 @@ def meet_model(m, venster, min_minuten):
     spelerrijen = m.lees("spelers.csv")
     prijsrijen = m.lees("prijzen.csv")
     fbref = m.lees_spelerstats(m.stats_pad("spelerstats.csv"))
+    if fbref is None:
+        # Zelfde terugval als productie en als backtest.main(). Zonder dit meet
+        # de REEKS een model zonder assists en kaarten, terwijl het advies ze
+        # sinds 2026-10-23 wel gebruikt. backtest.evalueer_ronde() poort ze per
+        # ronde, zodat ronde 1 t/m 9 -- waar de waarheid ze niet kan scoren --
+        # aan beide kanten zonder blijft.
+        fbref = m.stats_uit_seizoen("spelers_seizoen.csv")
 
     rondes = sorted({int(r["ronde"]) for r in spelerrijen})
     fout2, rhos, rhos_naief, fout2_naief, gaten, n = [], [], [], [], [], 0
