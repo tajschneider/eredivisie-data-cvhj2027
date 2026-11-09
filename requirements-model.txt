@@ -1,0 +1,10 @@
+# Alleen voor scripts die cvhj_model.py inladen of er statistiek op doen.
+# Installeer samen met requirements.txt:
+#     pip install -r requirements.txt -r requirements-model.txt
+#
+# Apart gehouden omdat numpy en scipy zwaar zijn en de scrape-workflows ze niet
+# nodig hebben. test_workflows.py meldt per workflow wat er te veel wordt
+# geinstalleerd, en die melding is alleen bruikbaar zolang dit onderscheid
+# bestaat.
+numpy
+scipy
