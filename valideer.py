@@ -58,8 +58,13 @@ UIT = HIER / "validatie"
 HISTORIE = UIT / "historie.csv"
 RAPPORT = UIT / "rapport.md"
 
+# test_valideer.py en test_grenzen.py stonden hier niet in: de validator testte
+# zichzelf niet, en `suites_geslaagd 6 van 6` wekte de indruk van volledige
+# dekking. Daarmee wordt suites_totaal 8 in plaats van 6 -- dat is een
+# zichtbare verandering in de reeks, geen stille.
 SUITES = ["test_workflows.py", "test_multi_periode.py", "test_scrape_prijzen.py",
-          "test_statistieken.py", "test_synchroniseer.py", "test_notify.py"]
+          "test_statistieken.py", "test_synchroniseer.py", "test_notify.py",
+          "test_valideer.py", "test_grenzen.py"]
 
 VELDEN = ["datum", "ronde", "periode", "ronden_tot_start", "rondes_geevalueerd",
           "rmse", "rmse_naief", "rho", "rho_naief", "top15_gevangen",
