@@ -4324,8 +4324,8 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,daan-rots,Daan Rots,FC Twente,Forward,1,1,90,2,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,lucas-vennegoor-of-hesselink,Lucas Vennegoor of Hesselink,FC Twente,Forward,1,0,27,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,marko-pjaca,Marko Pjaca,FC Twente,Forward,1,0,27,0,0,0,0,0,0,,11,2026-11-02
-11,2026-11-01,sondre-rjaster,Sondre Ørjasæter,FC Twente,Forward,1,1,63,0,5,0,0,0,0,,11,2026-11-02
-11,2026-11-01,wout-weghorst,Wout Weghorst,FC Twente,Forward,1,1,63,4,0,2,0,0,0,,11,2026-11-02
+11,2026-11-01,sondre-rjaster,Sondre Ørjasæter,FC Twente,Forward,1,1,63,0,,0,0,0,0,,11,2026-11-02
+11,2026-11-01,wout-weghorst,Wout Weghorst,FC Twente,Forward,1,1,63,4,0,,0,0,0,,11,2026-11-02
 11,2026-11-01,gonzalo-crettaz,Gonzalo Crettaz,NEC,Goalkeeper,1,1,90,0,0,0,0,1,0,,11,2026-11-02
 11,2026-11-01,ahmetcan-kaplan,Ahmetcan Kaplan,NEC,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,gabriel-bras,Gabriel Brás,NEC,Defender,1,0,11,0,0,0,0,0,0,,11,2026-11-02
@@ -4396,7 +4396,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,maas-willemsen,Maas Willemsen,sc Heerenveen,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,oliver-braude,Oliver Braude,sc Heerenveen,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,sam-kersten,Sam Kersten,sc Heerenveen,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
-11,2026-11-01,vasilios-zagaritis,Vasilios Zagaritis,sc Heerenveen,Defender,1,1,90,0,0,2,0,0,0,,11,2026-11-02
+11,2026-11-01,vasilios-zagaritis,Vasilios Zagaritis,sc Heerenveen,Defender,1,1,90,0,0,,0,0,0,,11,2026-11-02
 11,2026-11-01,dirk-proper,Dirk Proper,sc Heerenveen,Midfielder,1,0,12,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,levi-smans,Levi Smans,sc Heerenveen,Midfielder,1,1,78,0,1,0,0,0,0,,11,2026-11-02
 11,2026-11-01,marcus-linday,Marcus Linday,sc Heerenveen,Midfielder,1,1,90,0,0,1,0,0,0,,11,2026-11-02
@@ -4476,7 +4476,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,damian-van-der-haar,Damian van der Haar,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,jan-burger,Jan Bürger,PEC Zwolle,Defender,1,0,16,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,nick-viergever,Nick Viergever,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
-11,2026-11-01,olivier-aertssen,Olivier Aertssen,PEC Zwolle,Defender,1,1,74,0,0,2,0,0,0,,11,2026-11-02
+11,2026-11-01,olivier-aertssen,Olivier Aertssen,PEC Zwolle,Defender,1,1,74,0,0,,0,0,0,,11,2026-11-02
 11,2026-11-01,simon-graves,Simon Graves,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,tijs-velthuis,Tijs Velthuis,PEC Zwolle,Defender,1,0,2,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,gilles-van-der-wal,Gilles van der Wal,PEC Zwolle,Midfielder,1,1,90,0,0,0,0,0,0,,11,2026-11-02
@@ -4499,7 +4499,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,simon-janssen,Simon Janssen,Excelsior,Defender,1,0,27,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,daniel-van-vianen,Daniel van Vianen,Excelsior,Midfielder,1,1,45,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,irakli-yegoian,Irakli Yegoian,Excelsior,Midfielder,1,1,63,0,0,0,0,0,0,,11,2026-11-02
-11,2026-11-01,lennard-hartjes,Lennard Hartjes,Excelsior,Midfielder,1,1,90,0,0,2,0,0,0,,11,2026-11-02
+11,2026-11-01,lennard-hartjes,Lennard Hartjes,Excelsior,Midfielder,1,1,90,0,0,,0,0,0,,11,2026-11-02
 11,2026-11-01,noah-naujoks,Noah Naujoks,Excelsior,Midfielder,1,1,83,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,valentin-sulzbacher,Valentin Sulzbacher,Excelsior,Midfielder,1,0,9,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,aymen-sliti,Aymen Sliti,Excelsior,Forward,1,1,45,0,0,0,0,0,0,,11,2026-11-02
@@ -4524,7 +4524,7 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,maxime-delanghe,Maxime Delanghe,Willem II,Goalkeeper,1,1,90,0,0,0,0,2,0,,11,2026-11-02
 11,2026-11-01,alessandro-ciranni,Alessandro Ciranni,Willem II,Defender,1,0,10,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,amine-et-taibi,Amine Et-Taïbi,Willem II,Defender,1,0,10,0,0,0,0,0,0,,11,2026-11-02
-11,2026-11-01,finn-stam,Finn Stam,Willem II,Defender,1,1,80,0,0,2,0,0,0,,11,2026-11-02
+11,2026-11-01,finn-stam,Finn Stam,Willem II,Defender,1,1,80,0,0,,0,0,0,,11,2026-11-02
 11,2026-11-01,hidde-ter-avest,Hidde ter Avest,Willem II,Defender,1,1,62,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,mats-lemmens,Mats Lemmens,Willem II,Defender,1,1,90,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,maxim-dekker,Maxim Dekker,Willem II,Defender,1,1,89,0,0,0,0,0,0,,11,2026-11-02

@@ -168,3 +168,96 @@ een goede ronde weggooien.
 `test_valideer.py` en `test_grenzen.py` stonden niet in `SUITES`. `suites_totaal`
 gaat daarmee van 6 naar 8. Dat is een zichtbare verandering in de reeks, want
 beide kolommen staan er al in. Alle acht zijn groen.
+
+---
+
+# Naschrift 2026-11-10: de scraperepisode
+
+Een dag na het bovenstaande sloeg `controle.py --data` alarm op twee punten.
+Dit naschrift legt vast wat het was, omdat drie van mijn vermoedens onderweg
+onjuist bleken en het verslag anders scheef staat.
+
+## De oorzaak: een duizendscheidingsteken
+
+**Feit** — zes seizoenstotalen in `spelers_seizoen.csv` zakten tussen 06-11 en
+09-11 van circa 990 naar 1.
+
+**Feit** — de bron schrijft decimalen met een komma (`Cijfer 6,84`) en
+duizendtallen met een punt (`Min. 1.080`). `getal()` in `scrape_eredivisie.py`
+leest een punt als decimaalpunt, waarna `heel()` van 1.08 een 1 maakte.
+
+**Feit** — het trad deze week voor het eerst op omdat de eerste spelers de
+1.000 minuten passeerden. Kovar stond op 990 en kwam op 1.080. In de stand van
+06-11 stonden 62 spelers op 910-999 en 28 op 820-909, dus zonder reparatie
+liep dit per ronde verder op.
+
+Gerepareerd met `heel_teller()` in `parse_speler()`, niet in `getal()` zelf:
+`scrape_statistieken.py` rekent erop dat een punt daar wel een decimaalpunt is,
+en `test_statistieken.py` legt dat vast met `("1.238", 1.238)`.
+
+## Drie vermoedens die onjuist waren
+
+Voor de volgende keer, want ze kostten tijd:
+
+1. **"De seizoenstabel is van de pagina verdwenen."** Onjuist. De tabel staat
+   er nog, met kop `Seizoen | Club | Duels | Min. | ...` en een rij 2026/27.
+   De `TABELLEN: 0` in de debug-uitvoer kwam van de spelersINDEX, een andere
+   pagina, die alleen slugs hoort te leveren.
+2. **"`ronde_uit_verschil()` behandelt een ontbrekende speler als nul."** Die
+   tak bestaat (`oud.get(sid, {})` met `int(b or 0)`), maar was hier niet de
+   oorzaak: alle zes spelers stonden in elke eerdere stand.
+3. **"`goals` is besmet, dus de waarheid was al voor november vervuild."**
+   Onjuist voor Weghorst. Zijn `goals 4 -> 8` in een wedstrijd van 63 minuten
+   is vermoedelijk een echte vierklapper; zijn pagina staat op 9 goals in 12
+   duels. Die bewering is ingetrokken.
+
+## Zes rijen in ronde 11 leeggemaakt
+
+**Feit** — vijf spelers hadden `geel=2` met `rood=0`. Een tweede gele kaart in
+een wedstrijd IS een rode, dus die combinatie kan niet. Rjaster had
+`assists=5` in 63 minuten.
+
+**Feit** — Rjasters pagina staat op 7 assists in 11 duels en hij is
+competitieleider. Zijn stand van 30-10 (`assists=2`) was dus de fout, niet die
+van 02-11. De `+5` is een inhaalslag op een verkeerde ondergrens.
+
+**Interpretatie** — Zagaritis' `geel 0 -> 2` is de bekende beperking van de
+kaartenbron: die is een top-40-ranglijst, en wie onder de grens zit staat op 0
+tot hij er bovenkomt. Dat staat in `CVHJ_modelverantwoording.md` als open punt.
+
+Die zes velden zijn LEEGGEMAAKT, niet geraden. Leeg betekent niet gemeten, en
+`punten_met_positie()` valt voor zo'n rij terug op de termen die wel
+betrouwbaar zijn: ploegpunten, clean sheet en goals.
+
+**Feit, en niet wat je zou hopen** — het effect op de maten is nihil en zelfs
+licht ongunstig: ronde 11 gaat van rmse 3,62 / rho 0,393 naar 3,64 / 0,387, en
+het TOTAAL blijft op 3,41 / 0,332. De eerder genoemde 3,37 was van die rijen
+WEGLATEN, wat iets anders is dan ze leegmaken. Dit is dus een correctie om de
+data juist te krijgen, niet om een getal te verbeteren.
+
+## Wat de controle niet zag, en nu wel
+
+**Feit** — de tellercontrole op `spelers_seizoen.csv` had alleen een
+bovengrens (`m > d * 100 + 10`). Bij 1 minuut in 12 duels zweeg die.
+
+**Feit** — `--bron` zet `parse_speler()` wel op een echte pagina en had zelfs
+precies Kovar als keeper-steekproef, maar toetst of de kolom GEVONDEN is en
+niet of de waarde kan.
+
+Beide hebben nu een ondergrens: minder minuten dan duels kan niet. Over alle
+515 spelers in de stand van 06-11 is de laagste echte verhouding precies 1,00
+minuut per duel, dus die regel kan geen vals alarm geven.
+
+## Wat open blijft
+
+De losse-labelterugval in `parse_speler()` zoekt met een regex over de HELE
+pagina. Vindt de seizoenstabel niets, dan pakt hij het eerste getal achter het
+label, waar dat ook staat. Op Rjasters pagina staat `Assists 1e met 7` -- een
+ranglijstverwijzing waar de eerste cijfer de POSITIE is, niet het aantal.
+Vandaag bijt dat niet omdat een eerder voorkomen 7 geeft, maar als de
+paginaorde schuift krijgt elke speler zijn ranglijstpositie als assisttotaal.
+
+Dat is dezelfde vorm als deze week, en als de `w-[19%]` die in PR #34 als
+basiskans werd gelezen: een terugval die altijd iets vindt, ook het verkeerde.
+Een lege waarde levert een gevallen workflow; een verkeerde waarde levert
+ronden vervuilde geschiedenis.
