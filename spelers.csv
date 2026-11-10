@@ -4571,3 +4571,290 @@ ronde,datum,speler_id,speler,club,positie,duels,basis,minuten,goals,assists,geel
 11,2026-11-01,nicolas-binder,Nicolas Binder,SC Cambuur,Forward,1,1,68,0,0,0,0,0,0,,11,2026-11-02
 11,2026-11-01,sami-bouhoudane,Sami Bouhoudane,SC Cambuur,Forward,1,0,22,0,1,0,0,0,0,,11,2026-11-02
 11,2026-11-01,s-vink,Skye Vink,SC Cambuur,Forward,1,0,9,0,0,0,0,0,0,,11,2026-11-02
+12,2026-11-08,matej-kovar,Matej Kovar,PSV,Goalkeeper,1,1,90,0,0,0,0,1,0,,12,2026-11-10
+12,2026-11-08,armando-obispo,Armando Obispo,PSV,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,filip-kostic,Filip Kostic,PSV,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kiliann-sildillia,Kiliann Sildillia,PSV,Defender,1,0,15,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lutsharel-geertruida,Lutsharel Geertruida,PSV,Defender,1,1,86,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mauro-junior,Mauro Júnior,PSV,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ryan-flamingo,Ryan Flamingo,PSV,Defender,1,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sergino-dest,Sergiño Dest,PSV,Defender,1,1,75,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,guus-til,Guus Til,PSV,Midfielder,1,1,64,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kodai-sano,Kodai Sano,PSV,Midfielder,1,1,90,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sven-mijnans,Sven Mijnans,PSV,Midfielder,1,1,90,3,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ayoni-santos,Ayoni Santos,PSV,Forward,1,0,25,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dennis-man,Dennis Man,PSV,Forward,1,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,esmir-bajraktarevic,Esmir Bajraktarevic,PSV,Forward,1,1,86,0,2,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ricardo-pepi,Ricardo Pepi,PSV,Forward,1,0,26,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ruben-van-bommel,Ruben van Bommel,PSV,Forward,1,1,65,1,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tjark-ernst,Tjark Ernst,Feyenoord,Goalkeeper,1,1,90,0,0,0,0,5,0,,12,2026-11-10
+12,2026-11-08,givairo-read,Givairo Read,Feyenoord,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,javi-lopez,Javi López,Feyenoord,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mika-marmol,Mika Mármol,Feyenoord,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thijs-kraaijeveld,Thijs Kraaijeveld,Feyenoord,Defender,1,0,25,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tsuyoshi-watanabe,Tsuyoshi Watanabe,Feyenoord,Defender,1,1,65,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,charles-vanhoutte,Charles Vanhoutte,Feyenoord,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gjivai-zechiel,Gjivai Zechiël,Feyenoord,Midfielder,1,1,86,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,oussama-targhalline,Oussama Targhalline,Feyenoord,Midfielder,1,1,65,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sem-steijn,Sem Steijn,Feyenoord,Midfielder,1,0,25,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,anis-hadj-moussa,Anis Hadj Moussa,Feyenoord,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jerayno-schaken,Jerayno Schaken,Feyenoord,Forward,1,0,25,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,luciano-valente,Luciano Valente,Feyenoord,Forward,1,1,65,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nacho-ferri,Nacho Ferri,Feyenoord,Forward,1,1,79,1,2,0,0,0,0,,12,2026-11-10
+12,2026-11-08,shaqueel-van-persie,Shaqueel van Persie,Feyenoord,Forward,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,theodoros-delianidis,Theodoros Delianidis,Feyenoord,Forward,1,0,4,0,0,,,0,0,,12,2026-11-10
+12,2026-11-08,joel-drommel,Joël Drommel,FC Twente,Goalkeeper,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,aske-adelgaard,Aske Adelgaard,FC Twente,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,bart-van-rooij,Bart van Rooij,FC Twente,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,robin-propper,Robin Pröpper,FC Twente,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ruud-nijstad,Ruud Nijstad,FC Twente,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,daouda-weidmann,Daouda Weidmann,FC Twente,Midfielder,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ramiz-zerrouki,Ramiz Zerrouki,FC Twente,Midfielder,1,1,90,0,0,,0,0,0,,12,2026-11-10
+12,2026-11-08,thomas-van-den-belt,Thomas van den Belt,FC Twente,Midfielder,1,0,8,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,younes-taha,Younes Taha,FC Twente,Midfielder,1,1,69,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,daan-rots,Daan Rots,FC Twente,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lucas-vennegoor-of-hesselink,Lucas Vennegoor of Hesselink,FC Twente,Forward,1,0,8,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marko-pjaca,Marko Pjaca,FC Twente,Forward,1,0,21,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sondre-rjaster,Sondre Ørjasæter,FC Twente,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,wout-weghorst,Wout Weghorst,FC Twente,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gonzalo-crettaz,Gonzalo Crettaz,NEC,Goalkeeper,1,1,90,0,0,0,0,3,0,,12,2026-11-10
+12,2026-11-08,ahmetcan-kaplan,Ahmetcan Kaplan,NEC,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,deveron-fonville,Deveron Fonville,NEC,Defender,1,1,77,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gabriel-bras,Gabriel Brás,NEC,Defender,1,1,88,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,philippe-sandler,Philippe Sandler,NEC,Defender,1,0,13,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,t-storm,Tobias Storm,NEC,Defender,1,0,2,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,darko-nejasmic,Darko Nejasmic,NEC,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dusan-tadic,Dusan Tadic,NEC,Midfielder,1,1,88,2,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jamiro-monteiro,Jamiro Monteiro,NEC,Midfielder,1,0,2,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mitchel-bakker,Mitchel Bakker,NEC,Midfielder,1,1,90,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,noe-lebreton,Noé Lebreton,NEC,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tjaronn-chery,Tjaronn Chery,NEC,Midfielder,1,1,88,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,willum-thor-willumsson,Willum Thór Willumsson,NEC,Midfielder,1,0,6,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,adam-tahaui,Adam Tahaui,NEC,Forward,0,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,bryan-linssen,Bryan Linssen,NEC,Forward,1,1,90,0,0,,0,0,0,,12,2026-11-10
+12,2026-11-08,clement-bischoff,Clement Mutahi Bischoff,NEC,Forward,1,0,21,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kevin-kers,Kevin Kers,NEC,Forward,1,1,69,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marc-ter-stegen,Marc ter Stegen,Ajax,Goalkeeper,1,1,90,0,0,0,0,4,0,,12,2026-11-10
+12,2026-11-08,aaron-bouwman,Aaron Bouwman,Ajax,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,daley-blind,Daley Blind,Ajax,Defender,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dies-janse,Dies Janse,Ajax,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lucas-rosa,Lucas Rosa,Ajax,Defender,1,1,90,0,0,1,0,0,0,,12,2026-11-10
+12,2026-11-08,owen-wijndal,Owen Wijndal,Ajax,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,youri-baas,Youri Baas,Ajax,Defender,1,1,79,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,abdellah-ouazane,Abdellah Ouazane,Ajax,Midfielder,1,0,3,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,davy-klaassen,Davy Klaassen,Ajax,Midfielder,1,1,59,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jorthy-mokio,Jorthy Mokio,Ajax,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,oscar-gloukh,Oscar Gloukh,Ajax,Midfielder,1,1,87,0,2,0,0,0,0,,12,2026-11-10
+12,2026-11-08,rayane-bounida,Rayane Bounida,Ajax,Midfielder,1,0,31,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sofyan-amrabat,Sofyan Amrabat,Ajax,Midfielder,1,0,30,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,yves-bissouma,Yves Bissouma,Ajax,Midfielder,1,1,60,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marcos-leonardo,Marcos Leonardo,Ajax,Forward,1,0,3,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tolu-arokodare,Tolu Arokodare,Ajax,Forward,1,1,87,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jari-de-busser,Jari De Busser,AZ,Goalkeeper,1,1,90,0,0,0,0,2,0,,12,2026-11-10
+12,2026-11-08,denso-kasius,Denso Kasius,AZ,Defender,1,0,6,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,elijah-dijkstra,Elijah Dijkstra,AZ,Defender,1,1,84,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mateo-chavez,Mateo Chávez,AZ,Defender,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mees-de-wit,Mees de Wit,AZ,Defender,1,0,1,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,wesley-hoedt,Wesley Hoedt,AZ,Defender,1,1,91,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,wouter-goes,Wouter Goes,AZ,Defender,1,1,59,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dave-kwakman,Dave Kwakman,AZ,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jordy-clasie,Jordy Clasie,AZ,Midfielder,1,0,30,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kees-smit,Kees Smit,AZ,Midfielder,1,0,30,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,peer-koopmeiners,Peer Koopmeiners,AZ,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,valdemar-byskov,Valdemar Byskov Andreasen,AZ,Midfielder,1,1,60,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ayoub-oufkir,Ayoub Oufkir,AZ,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,bendeguz-kovacs,Bendegúz Kovács,AZ,Forward,0,0,5,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,calvin-stengs,Calvin Stengs,AZ,Forward,1,0,6,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mexx-meerdink,Mexx Meerdink,AZ,Forward,1,1,90,2,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ro-zangelo-daal,Ro-Zangelo Daal,AZ,Forward,1,1,84,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,vasilios-barkas,Vasilios Barkas,FC Utrecht,Goalkeeper,1,1,90,0,0,0,0,4,0,,12,2026-11-10
+12,2026-11-08,jakov-medic,Jakov Medic,FC Utrecht,Defender,1,0,1,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,matisse-didden,Matisse Didden,FC Utrecht,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,niklas-vesterlund,Niklas Vesterlund,FC Utrecht,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nikolas-panagiotou,Nikolas Panagiotou,FC Utrecht,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,per-kloosterboer,Per Kloosterboer,FC Utrecht,Defender,1,1,76,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dani-de-wit,Dani de Wit,FC Utrecht,Midfielder,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,joris-van-overeem,Joris van Overeem,FC Utrecht,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,oualid-agougil,Oualid Agougil,FC Utrecht,Midfielder,1,0,31,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,adrian-blake,Adrian Blake,FC Utrecht,Forward,1,0,31,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,artem-stepanov,Artem Stepanov,FC Utrecht,Forward,1,1,59,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marius-broholm,Marius Broholm,FC Utrecht,Forward,1,1,59,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nordin-amrabat,Nordin Amrabat,FC Utrecht,Forward,1,0,31,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sem-van-duijn,Sem van Duijn,FC Utrecht,Forward,1,0,14,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,yoann-cathline,Yoann Cathline,FC Utrecht,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,angel-alarcon,Ángel Alarcón,FC Utrecht,Forward,1,1,59,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,bernt-klaverboer,Bernt Klaverboer,sc Heerenveen,Goalkeeper,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,maas-willemsen,Maas Willemsen,sc Heerenveen,Defender,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mats-egbring,Mats Egbring,sc Heerenveen,Defender,1,0,9,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mees-hilgers,Mees Hilgers,sc Heerenveen,Defender,1,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,oliver-braude,Oliver Braude,sc Heerenveen,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sam-kersten,Sam Kersten,sc Heerenveen,Defender,1,1,86,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,vasilios-zagaritis,Vasilios Zagaritis,sc Heerenveen,Defender,1,1,81,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,levi-smans,Levi Smans,sc Heerenveen,Midfielder,1,1,86,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marcus-linday,Marcus Linday,sc Heerenveen,Midfielder,1,1,90,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nolhan-courtens,Nolhan Courtens,sc Heerenveen,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ringo-meerveld,Ringo Meerveld,sc Heerenveen,Midfielder,1,0,45,3,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dylan-vente,Dylan Vente,sc Heerenveen,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jacob-trenskow,Jacob Trenskow,sc Heerenveen,Forward,1,1,89,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,luca-oyen,Luca Oyen,sc Heerenveen,Forward,1,0,4,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,maxence-rivera,Maxence Rivera,sc Heerenveen,Forward,1,1,45,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,etienne-vaessen,Etienne Vaessen,FC Groningen,Goalkeeper,1,1,88,0,0,,0,1,0,,12,2026-11-10
+12,2026-11-08,lovro-stubljar,Lovro Stubljar,FC Groningen,Goalkeeper,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,hans-hateboer,Hans Hateboer,FC Groningen,Defender,1,1,90,0,0,0,1,0,0,,12,2026-11-10
+12,2026-11-08,jorg-schreuders,Jorg Schreuders,FC Groningen,Defender,1,1,79,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marco-rente,Marco Rente,FC Groningen,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mark-csinger,Márk Csinger,FC Groningen,Defender,1,1,73,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thijmen-blokzijl,Thijmen Blokzijl,FC Groningen,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tyrique-mercera,Tyrique Mercera,FC Groningen,Defender,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,wouter-prins,Wouter Prins,FC Groningen,Defender,1,0,17,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,pelle-clement,Pelle Clement,FC Groningen,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thom-van-bergen,Thom van Bergen,FC Groningen,Midfielder,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tika-de-jonge,Tika de Jonge,FC Groningen,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tygo-land,Tygo Land,FC Groningen,Midfielder,1,0,17,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,brynjolfur-willumsson,Brynjólfur Willumsson,FC Groningen,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jacob-ondrejka,Jacob Ondrejka,FC Groningen,Forward,1,1,73,1,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nils-eggens,Nils Eggens,FC Groningen,Forward,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,filip-bednarek,Filip Bednarek,Sparta Rotterdam,Goalkeeper,1,0,12,0,0,0,0,1,0,,12,2026-11-10
+12,2026-11-08,michael-brouwer,Michael Brouwer,Sparta Rotterdam,Goalkeeper,1,1,78,0,0,0,0,3,0,,12,2026-11-10
+12,2026-11-08,bas-kuipers,Bas Kuipers,Sparta Rotterdam,Defender,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,bruno-martins-indi,Bruno Martins Indi,Sparta Rotterdam,Defender,1,1,86,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lushendry-edward-martes,Lushendry Martes,Sparta Rotterdam,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marvin-young,Marvin Young,Sparta Rotterdam,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,teo-quintero,Teo Quintero,Sparta Rotterdam,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,cedric-hatenboer,Cedric Hatenboer,Sparta Rotterdam,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,isaac-babadi,Isaac Babadi,Sparta Rotterdam,Midfielder,1,1,86,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jens-toornstra,Jens Toornstra,Sparta Rotterdam,Midfielder,1,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,robin-van-cruijsen,Robin van Cruijsen,Sparta Rotterdam,Midfielder,1,0,34,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,shunsuke-mito,Shunsuke Mito,Sparta Rotterdam,Midfielder,1,1,56,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,andrej-kostic,Andrej Kostic,Sparta Rotterdam,Forward,1,0,21,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,joel-ideho,Joel Ideho,Sparta Rotterdam,Forward,1,0,4,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,milan-zonneveld,Milan Zonneveld,Sparta Rotterdam,Forward,1,1,90,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mitchell-van-bergen,Mitchell van Bergen,Sparta Rotterdam,Forward,1,1,69,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mattijs-branderhorst,Mattijs Branderhorst,Fortuna Sittard,Goalkeeper,1,1,90,0,0,0,0,6,0,,12,2026-11-10
+12,2026-11-08,ivo-pinto,Ivo Pinto,Fortuna Sittard,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ivan-marquez,Iván Márquez,Fortuna Sittard,Defender,1,1,66,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jasper-dahlhaus,Jasper Dahlhaus,Fortuna Sittard,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,justin-hubner,Justin Hubner,Fortuna Sittard,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nick-de-groot,Nick de Groot,Fortuna Sittard,Defender,1,0,1,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,siebe-wylin,Siebe Wylin,Fortuna Sittard,Defender,1,0,1,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,syb-van-ottele,Syb van Ottele,Fortuna Sittard,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mohamed-ihattaren,Mohamed Ihattaren,Fortuna Sittard,Midfielder,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,philip-brittijn,Philip Brittijn,Fortuna Sittard,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,shiloh-t-zand,Shiloh 't Zand,Fortuna Sittard,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sven-simons,Sven Simons,Fortuna Sittard,Midfielder,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,yassin-oukili,Yassin Oukili,Fortuna Sittard,Midfielder,1,0,17,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,anthony-descotte,Anthony Descotte,Fortuna Sittard,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kristoffer-peterson,Kristoffer Peterson,Fortuna Sittard,Forward,1,1,73,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jasper-cillessen,Jasper Cillessen,Go Ahead Eagles,Goalkeeper,1,1,82,0,0,0,0,2,1,,12,2026-11-10
+12,2026-11-08,alfons-sampsted,Alfons Sampsted,Go Ahead Eagles,Defender,1,1,84,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gerrit-nauber,Gerrit Nauber,Go Ahead Eagles,Defender,1,0,6,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,joris-kramer,Joris Kramer,Go Ahead Eagles,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,julius-dirksen,Julius Dirksen,Go Ahead Eagles,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tino-jukic,Tino Jukic,Go Ahead Eagles,Defender,1,0,6,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tomas-galvez,Tomas Galvez,Go Ahead Eagles,Defender,1,1,83,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,melle-meulensteen,Melle Meulensteen,Go Ahead Eagles,Midfielder,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,victor-edvardsen,Victor Edvardsen,Go Ahead Eagles,Midfielder,1,0,30,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,yassir-salah-rahmouni,Yassir Salah Rahmouni,Go Ahead Eagles,Midfielder,1,1,76,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,erik-flataker,Erik Flataker,Go Ahead Eagles,Forward,1,0,30,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mathis-suray,Mathis Suray,Go Ahead Eagles,Forward,1,1,90,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,oskar-sivertsen,Oskar Sivertsen,Go Ahead Eagles,Forward,1,0,13,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,stefan-ingi-sigurdarson,Stefán Ingi Sigurdarson,Go Ahead Eagles,Forward,1,1,60,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sren-tengstedt,Søren Tengstedt,Go Ahead Eagles,Forward,1,1,76,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thibo-baeten,Thibo Baeten,Go Ahead Eagles,Forward,1,1,53,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jasper-schendelaar,Jasper Schendelaar,PEC Zwolle,Goalkeeper,1,1,90,0,0,0,0,4,0,,12,2026-11-10
+12,2026-11-08,damian-van-der-haar,Damian van der Haar,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jan-burger,Jan Bürger,PEC Zwolle,Defender,1,0,16,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nick-viergever,Nick Viergever,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,olivier-aertssen,Olivier Aertssen,PEC Zwolle,Defender,1,1,74,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tijs-velthuis,Tijs Velthuis,PEC Zwolle,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gilles-van-der-wal,Gilles van der Wal,PEC Zwolle,Midfielder,1,1,58,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nick-fichtinger,Nick Fichtinger,PEC Zwolle,Midfielder,1,0,5,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ryan-thomas,Ryan Thomas,PEC Zwolle,Midfielder,1,1,85,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thijs-oosting,Thijs Oosting,PEC Zwolle,Midfielder,1,0,16,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,t-sommer,Tobias Sommer,PEC Zwolle,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,dylan-mbayo,Dylan Mbayo,PEC Zwolle,Forward,1,1,74,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,elias-srensen,Elias Sørensen,PEC Zwolle,Forward,1,0,32,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gabriel-reiziger,Gabriël Reiziger,PEC Zwolle,Forward,1,0,5,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sydney-van-hooijdonk,Sydney van Hooijdonk,PEC Zwolle,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,younes-namli,Younes Namli,PEC Zwolle,Forward,1,1,85,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,stijn-van-gassel,Stijn van Gassel,Excelsior,Goalkeeper,1,1,90,0,0,0,0,1,0,,12,2026-11-10
+12,2026-11-08,casper-widell,Casper Widell,Excelsior,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jan-plug,Jan Plug,Excelsior,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kasey-bos,Kasey Bos,Excelsior,Defender,1,1,79,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,rick-meissen,Rick Meissen,Excelsior,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,simon-janssen,Simon Janssen,Excelsior,Defender,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,irakli-yegoian,Irakli Yegoian,Excelsior,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lennard-hartjes,Lennard Hartjes,Excelsior,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,noah-naujoks,Noah Naujoks,Excelsior,Midfielder,1,1,70,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,valentin-sulzbacher,Valentin Sulzbacher,Excelsior,Midfielder,1,0,20,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,y-finey,Yacqub Finey,Excelsior,Midfielder,1,0,11,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,alireza-jahanbakhsh,Alireza Jahanbakhsh,Excelsior,Forward,1,0,19,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,aymen-sliti,Aymen Sliti,Excelsior,Forward,1,1,71,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,david-garden,David Garden,Excelsior,Forward,1,0,20,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mario-dominguez,Mario Domínguez,Excelsior,Forward,1,1,70,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,agust-orri-thorsteinsson,Ágúst Orri Thorsteinsson,Excelsior,Forward,1,1,79,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ronald-koeman-jr,Ronald Koeman Jr.,Telstar,Goalkeeper,1,1,90,0,0,0,0,2,0,,12,2026-11-10
+12,2026-11-08,abdelnour-soualhia,Abdelnour Soualhia,Telstar,Defender,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,gabi-caschili,Gabi Caschili,Telstar,Defender,1,1,66,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,marvin-peersman,Marvin Peersman,Telstar,Defender,1,1,90,0,0,,0,0,0,,12,2026-11-10
+12,2026-11-08,rojendro-oudsten,Rojendro Oudsten,Telstar,Defender,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sem-valk,Sem Valk,Telstar,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,harrie-kuster,Harrie Kuster,Telstar,Midfielder,1,0,2,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,isaiah-ahmed,Isaiah Ahmed,Telstar,Midfielder,1,1,88,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nils-rossen,Nils Rossen,Telstar,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,noach-shenkman,Noach Shenkman,Telstar,Midfielder,1,0,2,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,patrick-brouwer,Patrick Brouwer,Telstar,Midfielder,1,1,66,1,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tyrone-owusu,Tyrone Owusu,Telstar,Midfielder,1,1,88,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ar-jany-martha,Ar'jany Martha,Telstar,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,emirhan-demircan,Emirhan Demircan,Telstar,Forward,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jelani-seedorf,Jelani Seedorf,Telstar,Forward,1,0,9,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nokkvi-thorisson,Nökkvi Thórisson,Telstar,Forward,1,1,81,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,maxime-delanghe,Maxime Delanghe,Willem II,Goalkeeper,1,1,90,0,0,0,0,1,0,,12,2026-11-10
+12,2026-11-08,finn-stam,Finn Stam,Willem II,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,hidde-ter-avest,Hidde ter Avest,Willem II,Defender,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mats-lemmens,Mats Lemmens,Willem II,Defender,1,0,7,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,maxim-dekker,Maxim Dekker,Willem II,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nathan-tjoe-a-on,Nathan Tjoe-A-On,Willem II,Defender,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,anass-zarrouk,Anass Zarrouk,Willem II,Midfielder,1,1,45,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,calvin-twigt,Calvin Twigt,Willem II,Midfielder,1,1,83,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jari-schuurman,Jari Schuurman,Willem II,Midfielder,1,0,35,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,kasper-boogaard,Kasper Boogaard,Willem II,Midfielder,1,0,45,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,tonny-vilhena,Tonny Vilhena,Willem II,Midfielder,1,1,67,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,uriel-van-aalst,Uriël van Aalst,Willem II,Midfielder,1,1,55,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,devin-haen,Devin Haen,Willem II,Forward,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,eser-gurbuz,Eser Gürbüz,Willem II,Forward,1,0,23,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thomas-verheydt,Thomas Verheydt,Willem II,Forward,1,0,7,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,vito-van-crooij,Vito van Crooij,Willem II,Forward,1,1,83,0,0,,0,0,0,,12,2026-11-10
+12,2026-11-08,kilian-nikiema,Kilian Nikièma,ADO Den Haag,Goalkeeper,1,1,90,0,0,0,0,6,0,,12,2026-11-10
+12,2026-11-08,jonas-jensen-abbew,Jonas Jensen-Abbew,ADO Den Haag,Defender,1,0,19,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,lasse-wilhelm,Lasse Wilhelm,ADO Den Haag,Defender,1,0,70,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,matteo-waem,Matteo Waem,ADO Den Haag,Defender,1,1,90,0,0,,0,0,0,,12,2026-11-10
+12,2026-11-08,milan-hokke,Milan Hokke,ADO Den Haag,Defender,1,1,87,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,pascal-mulder,Pascal Mulder,ADO Den Haag,Defender,1,1,20,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sekou-sylla,Sekou Sylla,ADO Den Haag,Defender,1,0,3,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,evan-rottier,Evan Rottier,ADO Den Haag,Midfielder,1,1,90,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jan-zamburek,Jan Zamburek,ADO Den Haag,Midfielder,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,juho-kilo,Juho Kilo,ADO Den Haag,Midfielder,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mylian-jimenez,Mylian Jiménez,ADO Den Haag,Midfielder,1,1,66,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,cameron-peupion,C. Peupion,ADO Den Haag,Forward,1,0,20,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,daryl-van-mieghem,Daryl van Mieghem,ADO Den Haag,Forward,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,illaijh-de-ruijter,Illaijh de Ruijter,ADO Den Haag,Forward,1,1,71,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jalen-hawkins,Jalen Hawkins,ADO Den Haag,Forward,1,1,70,0,1,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jesse-bal,Jesse Bal,ADO Den Haag,Forward,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nigel-thomas,Nigel Thomas,ADO Den Haag,Forward,1,1,66,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,thijs-jansen,Thijs Jansen,SC Cambuur,Goalkeeper,1,1,82,0,0,0,0,1,0,,12,2026-11-10
+12,2026-11-08,billy-van-duijl,Billy van Duijl,SC Cambuur,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,devid-eugene-bouah,Devid Eugene Bouah,SC Cambuur,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ismael-baouf,Ismaël Baouf,SC Cambuur,Defender,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,morgan-costarelli,Morgan Costarelli,SC Cambuur,Defender,1,1,65,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ethan-apkakou,Ethan Apkakou,SC Cambuur,Midfielder,1,0,9,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,mathieu-maertens,Mathieu Maertens,SC Cambuur,Midfielder,1,1,58,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nicky-souren,Nicky Souren,SC Cambuur,Midfielder,1,1,90,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,rafik-el-arguioui,Rafik El Arguioui,SC Cambuur,Midfielder,1,1,89,0,2,,0,0,0,,12,2026-11-10
+12,2026-11-08,f-kvam,Fabian Kvam,SC Cambuur,Forward,1,0,1,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,ilyes-hamache,Ilyes Hamache,SC Cambuur,Forward,1,1,82,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,iwan-henstra,Iwan Henstra,SC Cambuur,Forward,1,0,9,1,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,jason-ceka,Jason Ceka,SC Cambuur,Forward,1,1,89,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,nicolas-binder,Nicolas Binder,SC Cambuur,Forward,1,1,73,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,sami-bouhoudane,Sami Bouhoudane,SC Cambuur,Forward,1,0,24,0,0,0,0,0,0,,12,2026-11-10
+12,2026-11-08,s-vink,Skye Vink,SC Cambuur,Forward,1,0,-7,0,0,0,0,0,0,,12,2026-11-10
