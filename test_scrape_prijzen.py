@@ -221,6 +221,72 @@ def test_duizendscheiding():
     return ok
 
 
+def test_kaartdelta_onmeetbaar():
+    """Een kaartensprong die in een wedstrijd niet kan, hoort leeg te zijn.
+
+    Kaarten komen van een top-40-ranglijst. Wie eronder zit wordt als 0
+    vastgelegd, niet als onbekend; komt hij erboven, dan belandt zijn hele
+    seizoenstotaal in een ronde-delta. Zo kreeg Zagaritis in ronde 11 geel=2
+    en kregen Linssen, Van Crooij en Waem in ronde 12 geel=3.
+
+    Hoogstens een gele en een rode per wedstrijd, dus de grens schaalt mee met
+    het venster. Een tweede gele IN dezelfde wedstrijd is de rode, dus met een
+    rode erbij mag er een extra gele zijn.
+    """
+    import scrape_eredivisie as s
+
+    def sp(sid, **kw):
+        r = {"speler_id": sid, "speler": sid, "club": "PSV",
+             "positie": "Defender", "duels": 0, "basisplaatsen": 0,
+             "minuten": 0, "goals": 0, "assists": 0, "geel": 0, "rood": 0,
+             "reddingen": 0, "nul_achter": 0}
+        r.update(kw)
+        return r
+
+    gevallen = [
+        ("onzichtbaar -> top40 met 2", sp("a", duels=10, minuten=900),
+         sp("a", duels=11, minuten=990, geel=2), [12], "geel", ""),
+        ("onzichtbaar -> top40 met 3", sp("b", duels=11, minuten=950),
+         sp("b", duels=12, minuten=1040, geel=3), [12], "geel", ""),
+        ("echte enkele gele", sp("c", duels=10, minuten=900, geel=1),
+         sp("c", duels=11, minuten=990, geel=2), [12], "geel", 1),
+        ("twee geel MET rood", sp("d", duels=10, minuten=900, geel=1),
+         sp("d", duels=11, minuten=960, geel=3, rood=1), [12], "geel", 2),
+        ("geen kaarten", sp("e", duels=10, minuten=900),
+         sp("e", duels=11, minuten=990), [12], "geel", 0),
+        ("twee rood zonder reden", sp("f", duels=10, minuten=900),
+         sp("f", duels=11, minuten=990, rood=2), [12], "rood", ""),
+        ("venster van twee: 2 geel mag", sp("g", duels=9, minuten=800, geel=1),
+         sp("g", duels=11, minuten=980, geel=3), [11, 12], "geel", 2),
+        ("venster van twee: 3 geel niet", sp("h", duels=9, minuten=800),
+         sp("h", duels=11, minuten=980, geel=3), [11, 12], "geel", ""),
+    ]
+    ok = True
+    for naam, vorig, nu, rondes, kolom, verwacht in gevallen:
+        uit = s.ronde_uit_verschil([vorig], [nu], rondes, "2026-11-10")
+        gekregen = uit[0][kolom] if uit else "GEEN RIJ"
+        if gekregen != verwacht:
+            print(f"  FOUT {naam}: {kolom}={gekregen!r} "
+                  f"(verwacht {verwacht!r})")
+            ok = False
+
+    # De andere tellers komen van de spelerspagina en die lijst is volledig;
+    # daar blijft een verschil gewoon een verschil.
+    u = s.ronde_uit_verschil(
+        [sp("i", duels=10, minuten=900, goals=3, assists=2)],
+        [sp("i", duels=11, minuten=990, goals=5, assists=4)],
+        [12], "2026-11-10")[0]
+    if (u["goals"], u["assists"], u["minuten"]) != (2, 2, 90):
+        print(f"  FOUT andere tellers geraakt: {u['goals']}, {u['assists']}, "
+              f"{u['minuten']}")
+        ok = False
+
+    if ok:
+        print(f"  OK   {len(gevallen)} kaartdeltas, en de andere tellers "
+              f"ongemoeid")
+    return ok
+
+
 def _kaart(slug, naam, percentage=None):
     """Een starter zoals de bron hem neerzet: een link met avatar en naam."""
     pct = f"<span>{percentage}%</span>" if percentage is not None else ""
@@ -1536,9 +1602,12 @@ def main():
     print("\nduizendtallen in de seizoenstellers\n")
     ok19 = test_duizendscheiding()
 
+    print("\nkaartdeltas die niet kunnen\n")
+    ok20 = test_kaartdelta_onmeetbaar()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15, ok16, ok17, ok18, ok19]):
+            ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

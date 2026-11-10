@@ -1283,6 +1283,35 @@ def ronde_uit_verschil(vorig, nu, rondes, datum):
         for k in tellers:
             a, b = getal(r.get(k)), getal(v.get(k))
             delta[k] = (int(a) - int(b or 0)) if a is not None else ""
+        # KAARTEN KOMEN UIT EEN TOP-N-LIJST, en daar is 0 niet te onderscheiden
+        # van onbekend. Wie onder de zichtbaarheidsgrens zit wordt als 0
+        # vastgelegd; komt hij erboven, dan belandt zijn hele seizoenstotaal in
+        # een ronde-delta. Zo kreeg Zagaritis in ronde 11 geel=2 en kregen
+        # Linssen, Van Crooij en Waem in ronde 12 geel=3 -- getallen die in een
+        # wedstrijd niet kunnen.
+        #
+        # Een tweede gele kaart in een wedstrijd IS een rode. Een deltagetal
+        # van 2 of meer zonder dat er een rode bij zit kan dus niet uit die ene
+        # ronde komen; de ondergrens was onbekend. Dan is de waarde niet
+        # meetbaar en hoort hij LEEG te zijn, niet geraden -- dezelfde regel
+        # als hierboven voor een onbekende huidige waarde.
+        #
+        # Alleen voor kaarten. Goals, assists, minuten en duels komen van de
+        # spelerspagina en die lijst is volledig; daar betekent een ontbrekende
+        # vorige waarde wel degelijk nul.
+        # Hoogstens een gele en een rode per wedstrijd, dus de grens schaalt
+        # mee met het aantal ronden in het venster. Uitzondering voor geel: een
+        # tweede gele kaart IN dezelfde wedstrijd is de rode, dus met een rode
+        # erbij mag er een extra gele zijn.
+        n_rondes = max(1, len(rondes))
+        rd = delta.get("rood")
+        rood_erbij = rd if isinstance(rd, int) and rd > 0 else 0
+        for kaart, grens in (("geel", n_rondes + rood_erbij),
+                             ("rood", n_rondes)):
+            v_k = delta.get(kaart)
+            if isinstance(v_k, int) and v_k > grens:
+                delta[kaart] = ""
+
         if not any(isinstance(delta[k], int) and delta[k] > 0
                    for k in ("duels", "minuten")):
             continue                      # niet gespeeld in dit venster

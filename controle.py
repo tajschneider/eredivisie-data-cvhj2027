@@ -420,6 +420,17 @@ def controleer_bron(r):
         r.eis("minuten" in gevonden and "duels" in gevonden, "speler",
               f"{naam}: {v['duels']} duels, {v['minuten']} minuten",
               "de seizoenstabel of de losse labels zijn gewijzigd")
+        # Niet alleen OF de kolom gelezen is, ook of de waarde kan. De
+        # presentietoets hierboven liet op 09-11-2026 'Matej Kovar: 12 duels,
+        # 1 minuten' als geslaagd door -- de kolom was immers gevonden. Deze
+        # toets draait voor het wegschrijven, dus een bronwijziging valt hier
+        # om in plaats van negen ronden later in de reeks.
+        dd, mm = _f(v.get("duels")), _f(v.get("minuten"))
+        if dd is not None and mm is not None and dd > 0:
+            r.eis(mm >= dd, "speler",
+                  f"{naam}: {mm:.0f} minuten over {dd:.0f} duels",
+                  "minder minuten dan duels kan niet -- de waarde is verkeerd "
+                  "gelezen, ook al stond de kolom er")
         # Op de kolom zelf toetsen, niet op de waarde: een lege teller wordt
         # in de scraper op nul gezet, en dan lijkt een verdwenen kolom precies
         # op een speler zonder assists.
@@ -721,6 +732,17 @@ def controleer_seizoen(r):
             continue
         if m > d * 100 + 10:
             onzin.append(f"{x['speler_id']}: {m:.0f}' in {d:.0f} duels")
+        # En de ONDERGRENS, die hier ontbrak. Elk duel is minstens een minuut,
+        # dus minuten < duels kan niet. Op 09-11-2026 zakten zes
+        # seizoenstotalen naar 1 minuut (de duizendscheiding van '1.080' werd
+        # als decimaalpunt gelezen) en die regels kwamen hier ongehinderd
+        # langs: 1 > 12*100+10 is onwaar, dus de bovengrens zweeg.
+        # Geen vals alarm mogelijk: over alle 515 spelers in de stand van
+        # 06-11 was de laagste verhouding precies 1,00 minuut per duel, bij
+        # invallers met duels=1 en minuten=1. Die passeren m >= d.
+        if m < d:
+            onzin.append(f"{x['speler_id']}: {m:.0f}' in {d:.0f} duels "
+                         f"-- minder minuten dan duels kan niet")
         if b is not None and b > d:
             onzin.append(f"{x['speler_id']}: {b:.0f} basis in {d:.0f} duels")
         for c in ("goals", "assists", "geel", "rood"):
