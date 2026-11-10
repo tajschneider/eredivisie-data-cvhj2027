@@ -185,6 +185,33 @@ def heel(s):
     return int(round(g)) if g is not None else None
 
 
+def heel_teller(s):
+    """Een GEHELE teller uit Nederlandse opmaak: '1.080' is 1080, niet 1,08.
+
+    De bron schrijft decimalen met een komma ('Cijfer 6,84') en duizendtallen
+    met een punt ('Min. 1.080'). getal() leest een punt als decimaalpunt --
+    terecht voor '2.3' en voor JSON-LD, fout voor deze tellers. Daardoor werd
+    1.080 minuten gelezen als 1.08 en door heel() afgerond op 1.
+
+    Dat trad voor het eerst op tussen 06-11 en 09-11-2026, toen de eerste
+    spelers de 1.000 minuten passeerden: zes seizoenstotalen zakten van ~990
+    naar 1. In de stand van 06-11 stonden 62 spelers op 910-999 en 28 op
+    820-909, dus zonder deze reparatie loopt het per ronde verder op.
+
+    Alleen voor tellers gebruiken (duels, minuten, goals, assists, kaarten,
+    reddingen, nul achter). Een cijfer of een xG hoort via getal() te gaan,
+    anders wordt 6,84 of 2.3 stilletjes iets anders.
+    """
+    if s is None:
+        return None
+    t = str(s).strip()
+    # Punt tussen cijfers met precies drie cijfers erachter: duizendscheiding.
+    # '1.080' en '12.345' wel, '2.3' en '15.00' niet.
+    if re.fullmatch(r"-?\d{1,3}(?:\.\d{3})+", t):
+        t = t.replace(".", "")
+    return heel(t)
+
+
 def datum_iso(tekst, jaar_hint=2026):
     """'zo 18 okt, 20:00' of 'zondag 25 oktober 2026, 14:30' -> '2026-10-18'."""
     if not tekst:
@@ -1099,9 +1126,17 @@ def parse_speler(soup, seizoen=SEIZOEN):
                                ("cijfer", "cijfer")):
                 for k, v in paar.items():
                     if k.startswith(bron) and d[doel] == "":
-                        g = getal(v)
-                        if g is not None:
-                            d[doel] = g if doel == "cijfer" else int(round(g))
+                        # Tellers via heel_teller(), zodat '1.080' 1080 wordt;
+                        # het cijfer houdt getal(), want dat is een echte
+                        # decimaal ('6,84').
+                        if doel == "cijfer":
+                            g = getal(v)
+                            if g is not None:
+                                d[doel] = g
+                        else:
+                            g = heel_teller(v)
+                            if g is not None:
+                                d[doel] = g
             break
 
     # losse labels; alleen invullen wat de tabel niet gaf
@@ -1114,7 +1149,7 @@ def parse_speler(soup, seizoen=SEIZOEN):
             continue
         m = re.search(re.escape(label) + r"\s*:?\s*(\d+(?:[.,]\d+)?)", een)
         if m:
-            d[doel] = heel(m.group(1))
+            d[doel] = heel_teller(m.group(1))
     if d["nul_achter"] == "":
         m = re.search(r"(?:Nul achter|Wedstrijden zonder tegendoelpunt)"
                       r"\s*:?\s*(\d+)", een)
