@@ -35,42 +35,42 @@
     }
   ],
   "stats_bron": {
-    "bestand": null,
-    "leeftijd_dagen": null,
-    "soort": "seizoen",
-    "spelers": 426
+    "bestand": "spelerstats.csv",
+    "leeftijd_dagen": 0.0,
+    "soort": "spelerstats",
+    "spelers": 356
   },
-  "gegenereerd": "2026-11-10T19:24:35",
+  "gegenereerd": "2026-11-10T19:48:52",
   "transfers_toegestaan": 3,
   "transfers_beschikbaar": 3,
   "transfer_drempel": 0.0,
   "transferladder": [
     {
       "transfers": 0,
-      "score": 162.63,
+      "score": 178.939,
       "marginale_winst": 0.0
     },
     {
       "transfers": 1,
-      "score": 183.04,
-      "marginale_winst": 20.41
+      "score": 203.357,
+      "marginale_winst": 24.417
     },
     {
       "transfers": 2,
-      "score": 200.737,
-      "marginale_winst": 17.698
+      "score": 223.642,
+      "marginale_winst": 20.286
     },
     {
       "transfers": 3,
-      "score": 207.249,
-      "marginale_winst": 6.512
+      "score": 228.628,
+      "marginale_winst": 4.986
     }
   ],
   "periode": 4,
   "periodestart": true,
   "ronden_tot_volgende_periode": 5,
   "huidig": {
-    "verwacht": 45.1,
+    "verwacht": 49.58,
     "kosten": 31.05,
     "basis": [
       {
@@ -89,55 +89,55 @@
         "speler": "Marvin Young",
         "club": "Sparta Rotterdam",
         "pos": "V",
-        "E": 1.734
+        "E": 1.553
       },
       {
         "speler": "Deveron Fonville",
         "club": "NEC",
         "pos": "V",
-        "E": 1.651
+        "E": 1.407
       },
       {
         "speler": "Gjivai Zechiël",
         "club": "Feyenoord",
         "pos": "M",
-        "E": 5.377
+        "E": 7.131
       },
       {
         "speler": "Guus Til",
         "club": "PSV",
         "pos": "M",
-        "E": 4.934
+        "E": 6.172
       },
       {
         "speler": "Tyrone Owusu",
         "club": "Telstar",
         "pos": "M",
-        "E": 4.446
+        "E": 4.814
       },
       {
         "speler": "Mohamed Ihattaren",
         "club": "Fortuna Sittard",
         "pos": "M",
-        "E": 2.305
+        "E": 2.693
       },
       {
         "speler": "Thijs Oosting",
         "club": "PEC Zwolle",
         "pos": "M",
-        "E": 2.045
+        "E": 1.855
       },
       {
         "speler": "Mexx Meerdink",
         "club": "AZ",
         "pos": "A",
-        "E": 5.972
+        "E": 6.232
       },
       {
         "speler": "Brynjólfur Willumsson",
         "club": "FC Groningen",
         "pos": "A",
-        "E": 4.725
+        "E": 5.609
       }
     ],
     "bank": [
@@ -163,7 +163,7 @@
         "speler": "Jacob Trenskow",
         "club": "sc Heerenveen",
         "pos": "A",
-        "E": 3.558
+        "E": 3.962
       }
     ]
   },
@@ -221,30 +221,30 @@
     "eigen_spelers_zonder_wedstrijd": []
   },
   "advies": {
-    "verwacht": 59.13,
-    "winst": 14.03,
+    "verwacht": 65.07,
+    "winst": 15.49,
     "formatie": "3-4-3",
     "uit": [
-      {
-        "speler": "Sekou Sylla",
-        "club": "ADO Den Haag",
-        "pos": "V",
-        "prijs": 1.5,
-        "E": 0.329
-      },
-      {
-        "speler": "Guus Til",
-        "club": "PSV",
-        "pos": "M",
-        "prijs": 4.0,
-        "E": 4.934
-      },
       {
         "speler": "Julian Brandt",
         "club": "Ajax",
         "pos": "M",
         "prijs": 2.75,
         "E": 0.0
+      },
+      {
+        "speler": "Guus Til",
+        "club": "PSV",
+        "pos": "M",
+        "prijs": 4.0,
+        "E": 6.172
+      },
+      {
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "prijs": 1.5,
+        "E": 0.329
       }
     ],
     "in": [
@@ -253,21 +253,21 @@
         "club": "Ajax",
         "pos": "A",
         "prijs": 2.5,
-        "E": 7.637
+        "E": 8.9
       },
       {
-        "speler": "Niklas Vesterlund",
+        "speler": "Matisse Didden",
         "club": "FC Utrecht",
         "pos": "V",
         "prijs": 1.8,
-        "E": 4.241
+        "E": 3.604
       },
       {
         "speler": "Sven Mijnans",
         "club": "PSV",
         "pos": "M",
         "prijs": 3.8,
-        "E": 9.101
+        "E": 10.952
       }
     ],
     "basis": [
@@ -284,58 +284,58 @@
         "E": 4.709
       },
       {
-        "speler": "Niklas Vesterlund",
+        "speler": "Matisse Didden",
         "club": "FC Utrecht",
         "pos": "V",
-        "E": 4.241
+        "E": 3.604
       },
       {
         "speler": "Marvin Young",
         "club": "Sparta Rotterdam",
         "pos": "V",
-        "E": 1.734
+        "E": 1.553
       },
       {
         "speler": "Sven Mijnans",
         "club": "PSV",
         "pos": "M",
-        "E": 9.101
+        "E": 10.952
       },
       {
         "speler": "Gjivai Zechiël",
         "club": "Feyenoord",
         "pos": "M",
-        "E": 5.377
+        "E": 7.131
       },
       {
         "speler": "Tyrone Owusu",
         "club": "Telstar",
         "pos": "M",
-        "E": 4.446
+        "E": 4.814
       },
       {
         "speler": "Mohamed Ihattaren",
         "club": "Fortuna Sittard",
         "pos": "M",
-        "E": 2.305
+        "E": 2.693
       },
       {
         "speler": "Tolu Arokodare",
         "club": "Ajax",
         "pos": "A",
-        "E": 7.637
+        "E": 8.9
       },
       {
         "speler": "Mexx Meerdink",
         "club": "AZ",
         "pos": "A",
-        "E": 5.972
+        "E": 6.232
       },
       {
         "speler": "Brynjólfur Willumsson",
         "club": "FC Groningen",
         "pos": "A",
-        "E": 4.725
+        "E": 5.609
       }
     ],
     "bank": [
@@ -349,19 +349,19 @@
         "speler": "Deveron Fonville",
         "club": "NEC",
         "pos": "V",
-        "E": 1.651
+        "E": 1.407
       },
       {
         "speler": "Thijs Oosting",
         "club": "PEC Zwolle",
         "pos": "M",
-        "E": 2.045
+        "E": 1.855
       },
       {
         "speler": "Jacob Trenskow",
         "club": "sc Heerenveen",
         "pos": "A",
-        "E": 3.558
+        "E": 3.962
       }
     ]
   },
@@ -375,5 +375,5 @@
     17
   ],
   "decay": 0.84,
-  "verwacht_horizon": 207.25
+  "verwacht_horizon": 228.63
 }
