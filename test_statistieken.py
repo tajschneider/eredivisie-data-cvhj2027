@@ -126,6 +126,97 @@ def test_kaartkolom_op_koptekst():
     return ok and goed
 
 
+# De opmaak zoals pouletips.nl die op 10-11-2026 serveerde: een eigen
+# Club-kolom, de naam als link in de spelercel, en de clubnaam daar NOG EENS
+# achter zonder scheidingsteken. Overgenomen van de echte pagina, niet verzonnen.
+MET_CLUBKOLOM = """
+<table>
+  <tr><th>#</th><th>Speler</th><th>Club</th><th>Assists</th><th>Per 90</th>
+      <th>Duels</th><th>Min.</th></tr>
+  <tr><td>1</td>
+      <td><a href="/eredivisie/speler/sondre-rjaster/">Sondre \u00d8rjas\u00e6ter</a> FC Twente</td>
+      <td><img alt="FC Twente logo"/><a href="/eredivisie/twente/">FC Twente</a></td>
+      <td>7</td><td>0,76</td><td>11</td><td>824</td></tr>
+  <tr><td>2</td>
+      <td><a href="/eredivisie/speler/oscar-gloukh/">Oscar Gloukh</a> Ajax</td>
+      <td><img alt="Ajax logo"/><a href="/eredivisie/ajax/">Ajax</a></td>
+      <td>6</td><td>0,71</td><td>12</td><td>759</td></tr>
+  <tr><td>3</td>
+      <td><a href="/eredivisie/speler/irakli-yegoian/">Irakli Yegoian</a> Excelsior</td>
+      <td><img alt="Excelsior logo"/><a href="/eredivisie/excelsior/">Excelsior</a></td>
+      <td>5</td><td>0,43</td><td>12</td><td>1.038</td></tr>
+  <tr><td>4</td>
+      <td><a href="/eredivisie/speler/nokkvi-thorisson/">N\u00f6kkvi Th\u00f3risson</a> Telstar, Sparta Rotterdam</td>
+      <td>Telstar, Sparta Rotterdam</td>
+      <td>1</td><td>0,13</td><td>11</td><td>694</td></tr>
+</table>
+"""
+
+
+def test_clubkolom_in_plaats_van_komma():
+    """De naam komt uit de link, de club uit de Club-kolom.
+
+    Op 10-11-2026 koppelde geen enkele rij meer: 0 van 40 op assists,
+    doelpunten en gele kaarten. splits_speler() splitst op een komma, en die
+    staat er niet meer tussen naam en club -- de hele cel werd de naam.
+    """
+    verwacht = [
+        ("Sondre \u00d8rjas\u00e6ter", "FC Twente", 7),
+        ("Oscar Gloukh", "Ajax", 6),
+        ("Irakli Yegoian", "Excelsior", 5),
+        # Twee clubs: de komma scheidt hier de CLUBS, niet naam en club. De
+        # naam blijft schoon doordat hij uit de link komt.
+        ("N\u00f6kkvi Th\u00f3risson", "Telstar, Sparta Rotterdam", 1),
+    ]
+    gekregen = s.parse_ranglijst(MET_CLUBKOLOM, "assist")
+    ok = gekregen == verwacht
+    if not ok:
+        print(f"  FOUT {gekregen!r}")
+        print(f"       verwacht {verwacht!r}")
+    else:
+        print(f"  OK   {len(verwacht)} rijen: naam uit de link, club uit de kolom")
+    return ok
+
+
+def test_koppelt_aan_echte_spelers():
+    """De gelezen namen moeten koppelen aan spelers.csv zoals het er staat.
+
+    Dit is de toets die er werkelijk om gaat: parsen zonder koppelen levert nog
+    steeds nul gevulde rijen. De sleutel is norm(speler)|norm(club), precies
+    zoals main() hem bouwt.
+    """
+    import csv
+    from pathlib import Path
+    pad = Path(__file__).parent / "spelers.csv"
+    if not pad.exists():
+        print("  (spelers.csv ontbreekt, koppeling niet getoetst)")
+        return True
+
+    per = {}
+    with pad.open(newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            sid = r.get("speler_id") or s.norm(r["speler"])
+            per[sid] = {"speler": r["speler"], "club": r["club"]}
+    op_naam_club = {f"{s.norm(d['speler'])}|{s.norm(d['club'])}": sid
+                    for sid, d in per.items()}
+    op_naam = {}
+    for sid, d in per.items():
+        op_naam.setdefault(s.norm(d["speler"]), []).append(sid)
+
+    ok = True
+    for naam, club, _ in s.parse_ranglijst(MET_CLUBKOLOM, "assist"):
+        sid = op_naam_club.get(f"{s.norm(naam)}|{s.norm(club)}")
+        if sid is None:
+            kandidaten = op_naam.get(s.norm(naam), [])
+            sid = kandidaten[0] if len(kandidaten) == 1 else None
+        if sid is None:
+            print(f"  FOUT {naam} ({club}) koppelt niet aan spelers.csv")
+            ok = False
+    if ok:
+        print("  OK   elke gelezen rij koppelt aan een speler_id uit spelers.csv")
+    return ok
+
+
 def test_getal():
     gevallen = [("4", 4.0), ("0,84", 0.84), ("1.238", 1.238), ("", None),
                 ("-", None), ("12 x", 12.0)]
@@ -223,8 +314,14 @@ def main():
     print("\nafspraken over xg en xag (via bouw_rij)\n")
     ok5 = test_afspraken_over_xg_en_xag()
 
+    print("\nde Club-kolom in plaats van een komma\n")
+    ok6 = test_clubkolom_in_plaats_van_komma()
+
+    print("\nkoppeling aan spelers.csv zoals het er staat\n")
+    ok7 = test_koppelt_aan_echte_spelers()
+
     print()
-    if all([ok1, ok2, ok3, ok3b, ok4, ok5]):
+    if all([ok1, ok2, ok3, ok3b, ok4, ok5, ok6, ok7]):
         print("OK: scrape_statistieken.py levert data die het model ongewijzigd kan lezen.")
     else:
         sys.exit("MISLUKT: zie hierboven.")

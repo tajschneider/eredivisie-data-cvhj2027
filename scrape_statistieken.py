@@ -95,6 +95,12 @@ CATEGORIEEN = [
 
 MIN_GEVULD = 20   # onder dit aantal spelers met een waarde is er iets stuk
 
+# Behalve waar de lijst van nature kort is. Rode kaarten: de pagina meldde op
+# 10-11-2026 zelf "Top 6 van 6 spelers met minstens een rode kaart", en zes na
+# twaalf ronden is de competitie, geen gewijzigde opmaak. De drempel van 20 is
+# op de 40-rijenlijsten gekalibreerd en stuurde hier een onterechte FOUT.
+MIN_PER_CATEGORIE = {"rode_kaarten": 1}
+
 TRANS = str.maketrans({
     "ø": "o", "Ø": "O", "æ": "ae", "Æ": "Ae", "å": "a", "Å": "A",
     "ð": "d", "Ð": "D", "þ": "th", "Þ": "Th", "ł": "l", "Ł": "L",
@@ -148,6 +154,28 @@ def splits_speler(cel):
     return tekst, ""
 
 
+def speler_uit_cel(cel):
+    """(naam, club) uit de spelercel van een ranglijst.
+
+    Sinds november 2026 heeft de ranglijst een EIGEN Club-kolom, en bevat de
+    spelercel de naam als link plus de clubnaam er nog eens achter zonder
+    scheidingsteken: "Sondre Orjasaeter FC Twente". splits_speler() splitst op
+    een komma, dus die hele cel werd de naam en de club bleef leeg -- waarna
+    geen enkele rij meer koppelde: 0 van 40 op assists, doelpunten en gele
+    kaarten, ook bij namen zonder bijzondere tekens.
+
+    De link is hier het betrouwbare deel: die bevat alleen de naam. Is er geen
+    link, dan valt dit terug op de oude komma-splitsing, zodat de vorige opmaak
+    blijft werken.
+    """
+    a = cel.find("a", href=re.compile(r"/eredivisie/speler/"))
+    if a is not None:
+        naam = re.sub(r"\s+", " ", a.get_text(" ", strip=True)).strip()
+        if naam:
+            return naam, ""
+    return splits_speler(cel.get_text(" ", strip=True))
+
+
 def parse_ranglijst(html, koptekst):
     """[(naam, club, waarde)] uit een ranglijsttabel.
 
@@ -164,15 +192,22 @@ def parse_ranglijst(html, koptekst):
         i_speler = next(i for i, k in enumerate(koppen) if k.startswith("speler"))
         i_waarde = next((i for i, k in enumerate(koppen)
                          if i != i_speler and koptekst in k), None)
+        # De club staat sinds november 2026 in een eigen kolom. Stond hij in de
+        # spelercel (oude opmaak), dan levert speler_uit_cel() hem al.
+        i_club = next((i for i, k in enumerate(koppen)
+                       if i != i_speler and k.startswith("club")), None)
 
         uit = []
         for tr in tabel.find_all("tr"):
             cellen = tr.find_all("td")
             if len(cellen) <= i_speler:
                 continue
-            naam, club = splits_speler(cellen[i_speler].get_text(" ", strip=True))
+            naam, club = speler_uit_cel(cellen[i_speler])
             if not naam:
                 continue
+            if not club and i_club is not None and len(cellen) > i_club:
+                club = re.sub(r"\s+", " ",
+                              cellen[i_club].get_text(" ", strip=True)).strip()
             waarde = None
             if i_waarde is not None and len(cellen) > i_waarde:
                 waarde = getal(cellen[i_waarde].get_text(" ", strip=True))
@@ -289,7 +324,7 @@ def main():
 
         print(f"  {sleutel:14s} {len(rijen):3d} in de ranglijst, {gekoppeld:3d} gekoppeld"
               + (f", {len(niet)} niet: {', '.join(niet[:3])}" if niet else ""))
-        if len(rijen) < MIN_GEVULD:
+        if len(rijen) < MIN_PER_CATEGORIE.get(sleutel, MIN_GEVULD):
             sys.exit(f"FOUT: {url} leverde maar {len(rijen)} regels op. De opmaak is "
                      f"waarschijnlijk gewijzigd -- spelerstats.csv NIET geschreven. Draai met "
                      f"--dump om de HTML te bekijken.")
