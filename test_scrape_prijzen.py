@@ -170,6 +170,57 @@ _AJAX = {
 }
 
 
+def test_duizendscheiding():
+    """'1.080' minuten is 1080, niet 1,08.
+
+    Op 09-11-2026 zakten zes seizoenstotalen van ~990 naar 1, precies toen de
+    eerste spelers de 1.000 minuten passeerden. De bron schrijft decimalen met
+    een komma ('Cijfer 6,84') en duizendtallen met een punt ('Min. 1.080');
+    getal() leest een punt als decimaalpunt, en heel() rondde 1.08 af op 1.
+    In de stand van 06-11 stonden 62 spelers op 910-999, dus dit liep elke
+    ronde verder op.
+    """
+    import scrape_eredivisie as s
+
+    gevallen = [
+        ("1.080", 1080),    # Kovar, de rij die omviel
+        ("1.014", 1014),    # Weghorst
+        ("1.071", 1071),    # Zagaritis
+        ("2.790", 2790),    # een vorig seizoen
+        ("12.345", 12345),  # vijf cijfers
+        ("990", 990),       # onder de grens, ongewijzigd
+        ("12", 12),
+        ("0", 0),
+        ("", None),
+        ("-", None),
+        # GEEN duizendtal: te weinig cijfers achter de punt. Dat onderscheid is
+        # de hele truc -- xG en prijzen moeten decimaal blijven.
+        ("2.3", 2),
+        ("15.00", 15),
+        ("6,84", 7),        # komma-decimaal, afgerond
+    ]
+    ok = True
+    for invoer, verwacht in gevallen:
+        gekregen = s.heel_teller(invoer)
+        goed = gekregen == verwacht
+        if not goed:
+            print(f"  FOUT heel_teller({invoer!r}) -> {gekregen!r} "
+                  f"(verwacht {verwacht!r})")
+        ok = ok and goed
+
+    # getal() zelf moet ONGEMOEID blijven: scrape_statistieken.py rekent erop
+    # dat een punt daar een decimaalpunt is, en test_statistieken.py legt dat
+    # vast met ("1.238", 1.238).
+    if s.getal("2.3") != 2.3:
+        print(f"  FOUT getal('2.3') -> {s.getal('2.3')!r}, moet 2.3 blijven")
+        ok = False
+
+    if ok:
+        print(f"  OK   {len(gevallen)} getalformaten: duizendscheiding wel, "
+              f"decimalen ongemoeid")
+    return ok
+
+
 def _kaart(slug, naam, percentage=None):
     """Een starter zoals de bron hem neerzet: een link met avatar en naam."""
     pct = f"<span>{percentage}%</span>" if percentage is not None else ""
@@ -1482,9 +1533,12 @@ def main():
     print("\nde sweep over ontbrekende kansen\n")
     ok18 = test_sweep_zwijgt_over_ontbrekende_kansen()
 
+    print("\nduizendtallen in de seizoenstellers\n")
+    ok19 = test_duizendscheiding()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15, ok16, ok17, ok18]):
+            ok13, ok14, ok15, ok16, ok17, ok18, ok19]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
