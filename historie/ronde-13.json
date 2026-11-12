@@ -40,7 +40,7 @@
     "soort": "spelerstats",
     "spelers": 356
   },
-  "gegenereerd": "2026-11-10T19:48:52",
+  "gegenereerd": "2026-11-12T17:18:02",
   "transfers_toegestaan": 3,
   "transfers_beschikbaar": 3,
   "transfer_drempel": 0.0,
@@ -226,11 +226,11 @@
     "formatie": "3-4-3",
     "uit": [
       {
-        "speler": "Julian Brandt",
-        "club": "Ajax",
-        "pos": "M",
-        "prijs": 2.75,
-        "E": 0.0
+        "speler": "Sekou Sylla",
+        "club": "ADO Den Haag",
+        "pos": "V",
+        "prijs": 1.5,
+        "E": 0.329
       },
       {
         "speler": "Guus Til",
@@ -240,11 +240,11 @@
         "E": 6.172
       },
       {
-        "speler": "Sekou Sylla",
-        "club": "ADO Den Haag",
-        "pos": "V",
-        "prijs": 1.5,
-        "E": 0.329
+        "speler": "Julian Brandt",
+        "club": "Ajax",
+        "pos": "M",
+        "prijs": 2.75,
+        "E": 0.0
       }
     ],
     "in": [

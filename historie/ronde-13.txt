@@ -1,3 +1,4 @@
+--transfers auto -> 3
 --horizon auto -> 5
 
 *** RONDE 13 START PERIODE 4: 3 TRANSFERS TOEGESTAAN ***
@@ -6,7 +7,7 @@ Clubratings uit 126 wedstrijden (thuisvoordeel x1.22)
 spelerstats geladen: 356 spelers uit spelerstats.csv
 afwezigen geladen: 104 spelers uit afwezigen.csv (opgehaald 2026-11-10)
 opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 13 (opgehaald 2026-11-10)
-  18 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+  19 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
     Anthony Descotte          Fortuna Sittard  blessure
     Artem Stepanov ⚠          FC Utrecht       blessure, terug 2026-11-01
     Ayodele Thomas            NEC              schorsing
@@ -19,6 +20,7 @@ opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 13 (opgehaald 20
     Kasper Boogaard           Willem II        blessure
     Kees Smit                 AZ               blessure
     Levi Smans                sc Heerenveen    blessure
+    Michael Brouwer           Sparta Rotterdam blessure
     Nesto Groen               Excelsior        schorsing, terug 2026-11-29
     Ricardo Pepi              PSV              blessure
     Shunsuke Mito             Sparta Rotterdam blessure
@@ -64,9 +66,9 @@ WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
 MULTI-RONDE ADVIES (horizon 5, decay 0.84, 3 transfer(s))
   ronde 13: verwacht 65.1 punten  (3-4-3)  winst +15.5
   gedecayde som over de horizon: 228.63  (huidig team: 178.94)
-    UIT  Julian Brandt             Ajax             EUR 2.75  E  0.00
-    UIT  Guus Til                  PSV              EUR 4.00  E  6.17
     UIT  Sekou Sylla               ADO Den Haag     EUR 1.50  E  0.33
+    UIT  Guus Til                  PSV              EUR 4.00  E  6.17
+    UIT  Julian Brandt             Ajax             EUR 2.75  E  0.00
     IN   Tolu Arokodare            Ajax             EUR 2.50  E  8.90  E(horizon) 27.11
     IN   Matisse Didden            FC Utrecht       EUR 1.80  E  3.60  E(horizon)  9.49
     IN   Sven Mijnans              PSV              EUR 3.80  E 10.95  E(horizon) 46.43
