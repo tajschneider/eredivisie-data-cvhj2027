@@ -1418,6 +1418,57 @@ def test_kans_komt_uit_tekst_niet_uit_opmaak():
     return ok and goed
 
 
+def test_controle_ziet_lege_kansen():
+    """Nul kansen is ook een geval, en dat kwam er eerst ongehinderd langs.
+
+    De variatietoets klaagt pas bij vijftig of meer GEVULDE waarden. Nul
+    gevulde waarden haalden die drempel nooit, dus meldde het rapport op
+    13-11-2026 "basiskansen varieren (0 verschillende waarden over 0
+    spelers)" met uitkomst ok -- terwijl de kolom helemaal leeg was.
+
+    Dezelfde fout als met die 19: een toets die bij afwezigheid niet kan
+    afgaan, bewaakt dat geval niet.
+    """
+    import controle as c
+
+    def rijen(kansen):
+        return [{"opgehaald": "2026-11-13", "club": f"Club {i % 18}",
+                 "speler": f"Speler {i}", "speler_id": f"sp{i}",
+                 "kans_basis": k, "ronde": "14"}
+                for i, k in enumerate(kansen)]
+
+    echte_lees = c._lees
+    def meet(kansen):
+        c._lees = lambda *a, **k: rijen(kansen)
+        r = c.Rapport()
+        try:
+            import io as _io, contextlib
+            with contextlib.redirect_stdout(_io.StringIO()):
+                c.controleer_opstellingen(r)
+        finally:
+            c._lees = echte_lees
+        stuk = [x for x in r.fouten if "aanwezig" in x[2]]
+        return len(stuk), r.meting.get("opstellingen_kansen_gevuld")
+
+    ok = True
+    gevallen = [
+        ("198 rijen, alles leeg: FOUT", [""] * 198, 1),
+        ("198 rijen, echte spreiding: geen fout",
+         [str(40 + (i * 7) % 55) for i in range(198)], 0),
+        # De ondergrens blijft staan: bij een handvol rijen zegt dit niets,
+        # net als bij de variatietoets hierboven.
+        ("maar 20 rijen, alles leeg: geen fout (te weinig om iets van te "
+         "zeggen)", [""] * 20, 0),
+    ]
+    for wat, kansen, verwacht in gevallen:
+        n, gevuld = meet(kansen)
+        goed = n == verwacht
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat} ({gevuld} gevuld, "
+              f"{n} fout)")
+        ok = ok and goed
+    return ok
+
+
 def test_controle_ziet_eenheidskansen():
     """Een controle die niet kan afgaan, bewaakt niets.
 
@@ -1605,9 +1656,12 @@ def main():
     print("\nkaartdeltas die niet kunnen\n")
     ok20 = test_kaartdelta_onmeetbaar()
 
+    print("\neen controle die ook bij nul kansen afgaat\n")
+    ok21 = test_controle_ziet_lege_kansen()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20]):
+            ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

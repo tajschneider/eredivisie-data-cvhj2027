@@ -1036,6 +1036,27 @@ def controleer_opstellingen(r):
     kansen = [k for k in kansen if k is not None]
     verschillend = len(set(kansen))
     r.meet("opstellingen_kansen_verschillend", verschillend)
+    r.meet("opstellingen_kansen_gevuld", len(kansen))
+
+    # EN HELEMAAL GEEN KANSEN is ook een geval, en dat ontbrak hier. De toets
+    # hieronder klaagt pas bij minstens vijftig GEVULDE waarden, dus nul kwam
+    # er ongehinderd langs: op 13-11-2026 meldde het rapport "basiskansen
+    # varieren (0 verschillende waarden over 0 spelers)" met uitkomst ok.
+    #
+    # Dat is dezelfde fout als met die 19 hierboven: een toets die bij
+    # afwezigheid niet kan afgaan, bewaakt dat geval niet. De drempel die
+    # bedoeld is om een kleine steekproef niet te laten afgaan, maakte van een
+    # totale afwezigheid een stille goedkeuring.
+    #
+    # Zijn er wel opstellingsrijen (18 clubs x 11 basisspelers is 198) en geen
+    # enkele gevulde kans, dan is de kolom verdwenen of leeg gebleven. Dat moet
+    # blokkeren VOORDAT het model zonder speeltijdkansen gaat rekenen.
+    r.eis(not (len(nu) >= 50 and not kansen), "opstellingen.csv",
+          f"basiskansen aanwezig ({len(kansen)} van {len(nu)} rijen gevuld)",
+          f"geen enkele kans_basis gevuld terwijl er {len(nu)} "
+          f"opstellingsrijen zijn -- de kolom is verdwenen of leeg gebleven; "
+          f"draai scrape_eredivisie.py --debug op een opstellingspagina")
+
     r.eis(not (len(kansen) >= 50 and verschillend <= 3), "opstellingen.csv",
           f"basiskansen varieren ({verschillend} verschillende waarden over "
           f"{len(kansen)} spelers)",
