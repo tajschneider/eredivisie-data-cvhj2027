@@ -1266,8 +1266,17 @@ def test_minuut_revisie_versus_kapotte_teller():
     zelf: hij herrekent speelminuten en rondt anders af.
 
     Deze test legt vast dat het onderscheid ook werkt wanneer het misleidend
-    lijkt: een minuut minder MET een duel minder is wel een fout, en vijf
-    minuten minder ook. Anders is de drempel een achterdeur.
+    lijkt: een minuut minder MET een duel minder is wel een fout. En er moet
+    een bovengrens blijven staan, anders is de drempel een achterdeur.
+
+    Die bovengrens stond op 2 en dekte zes weken waarnemingen van precies een
+    minuut. Op 10-11-2026 (3 spelers, 7-8 minuten) en 13-11-2026 (11 spelers,
+    3-9 minuten) bleek de bron grotere herrekeningen te doen, zonder dat een
+    feitenteller meezakte en terwijl de spelerspagina's die lagere totalen
+    zelf tonen. MINUTEN_REVISIE is daarop 15 geworden, de blessuretijd van een
+    wedstrijd. Het geval van vijf minuten is daarmee een herrekening; zestien
+    minuten blijft een fout, en dat laatste staat hieronder zodat de grens
+    niet stilletjes verder opschuift.
     """
     import controle as c
 
@@ -1290,8 +1299,12 @@ def test_minuut_revisie_versus_kapotte_teller():
          {"speler-3": {"minuten": "799"}}, 0, 1),
         ("twee minuten minder: nog steeds waarschuwing",
          {"speler-3": {"minuten": "798"}}, 0, 1),
-        ("vijf minuten minder: fout",
-         {"speler-3": {"minuten": "795"}}, 1, 0),
+        ("vijf minuten minder: herrekening sinds de drempel 15 is",
+         {"speler-3": {"minuten": "795"}}, 0, 1),
+        ("negen minuten minder (het grootste dat we zagen): herrekening",
+         {"speler-3": {"minuten": "791"}}, 0, 1),
+        ("zestien minuten minder: fout, de bovengrens blijft staan",
+         {"speler-3": {"minuten": "784"}}, 1, 0),
         ("een minuut EN een duel minder: fout",
          {"speler-3": {"minuten": "799", "duels": "9"}}, 2, 0),
         ("een goal minder: fout",
@@ -1447,12 +1460,15 @@ def test_controle_ziet_lege_kansen():
                 c.controleer_opstellingen(r)
         finally:
             c._lees = echte_lees
-        stuk = [x for x in r.fouten if "aanwezig" in x[2]]
+        # Een WAARSCHUWING, niet een fout: de bron publiceert deze kansen met
+        # tussenpozen, en de scrape tegenhouden daarvoor bleek te streng.
+        # Zichtbaar maken was het punt, niet blokkeren.
+        stuk = [x for x in r.waarschuwingen if "basiskansen" in x[2]]
         return len(stuk), r.meting.get("opstellingen_kansen_gevuld")
 
     ok = True
     gevallen = [
-        ("198 rijen, alles leeg: FOUT", [""] * 198, 1),
+        ("198 rijen, alles leeg: WAARSCHUWING", [""] * 198, 1),
         ("198 rijen, echte spreiding: geen fout",
          [str(40 + (i * 7) % 55) for i in range(198)], 0),
         # De ondergrens blijft staan: bij een handvol rijen zegt dit niets,

@@ -44,7 +44,31 @@ CLUBS = 18
 BASIS_PER_CLUB = 11
 MIN_SPELERS = 400          # de index telde 504 op 19-10-2026
 MAX_DAGEN_OUD = 8
-MINUTEN_REVISIE = 2        # zie controleer_seizoen(): de bron herrekent
+# Hoeveel minuten de bron mag herrekenen voordat het een fout wordt.
+#
+# Stond op 2, gekalibreerd op 30-10-2026 toen drie spelers precies een minuut
+# zakten. Dat dekte zes weken aan waarnemingen: elke daling was exact een
+# minuut. Daarna twee keer iets anders:
+#
+#   10-11-2026   3 spelers, 7 tot 8 minuten
+#   13-11-2026  11 spelers, 3 tot 9 minuten
+#
+# Twee losse gelegenheden, geen enkele feitenteller die meezakt, en bij Vink
+# ging duels intussen juist van 8 naar 9. De spelerspagina's tonen die lagere
+# totalen zelf, dus de scraper leest goed en de bron herrekent.
+#
+# Nu 15: de blessuretijd van een wedstrijd. Dat is een EENHEID en niet "het
+# grootste dat we zagen" (dat was 9), zodat er marge is zonder dat de grens
+# met elke waarneming meeschuift.
+#
+# Dit is geen achterdeur, en dat was de zorg bij de vorige waarde. Twee
+# onafhankelijke bodems blijven staan: een daling waarbij OOK een feitenteller
+# zakt is altijd een fout, en minuten < duels is sinds 11-11 een aparte
+# onmogelijkheid die een minuten-only instorting pakt -- de duizendtallenfout
+# (989 omlaag) zou door beide zijn gevangen. Wat deze drempel doet is de
+# scrape niet elke week weggooien om een herrekening, want dat leert je hem
+# met --soft te omzeilen en dan staat alles open.
+MINUTEN_REVISIE = 15       # zie controleer_seizoen(): de bron herrekent
                            # speelminuten, feitentellers herziet hij niet
 REDENEN = {"blessure", "schorsing", "vertrokken", "ziek", "twijfel",
            "persoonlijk", "transfer", ""}
@@ -809,13 +833,13 @@ def controleer_seizoen(r):
               "van club gewisseld")
         if revisies:
             r.waarschuw("spelers_seizoen.csv",
-                        f"{len(revisies)} speler(s) met een minuut minder dan "
+                        f"{len(revisies)} speler(s) met minder minuten dan "
                         f"op {vorige}",
                         "; ".join(revisies[:6]) + f" — hooguit "
-                        f"{MINUTEN_REVISIE} minuut verschil en geen andere "
+                        f"{MINUTEN_REVISIE} minuten verschil en geen andere "
                         f"teller zakt mee, dus de bron heeft zijn speelminuten "
                         f"herrekend. Blokkeert niet; het model gebruikt "
-                        f"minuten als speelfractie en een minuut op honderden "
+                        f"minuten als speelfractie en een handvol op honderden "
                         f"verschuift die niet merkbaar")
     return laatste
 
@@ -1051,11 +1075,36 @@ def controleer_opstellingen(r):
     # Zijn er wel opstellingsrijen (18 clubs x 11 basisspelers is 198) en geen
     # enkele gevulde kans, dan is de kolom verdwenen of leeg gebleven. Dat moet
     # blokkeren VOORDAT het model zonder speeltijdkansen gaat rekenen.
-    r.eis(not (len(nu) >= 50 and not kansen), "opstellingen.csv",
-          f"basiskansen aanwezig ({len(kansen)} van {len(nu)} rijen gevuld)",
-          f"geen enkele kans_basis gevuld terwijl er {len(nu)} "
-          f"opstellingsrijen zijn -- de kolom is verdwenen of leeg gebleven; "
-          f"draai scrape_eredivisie.py --debug op een opstellingspagina")
+    # WAARSCHUWEN, NIET BLOKKEREN. Dit stond eerst op r.eis() en gooide op
+    # 13-11-2026 de hele scrape weg. Dat is te streng: de bron publiceert deze
+    # kansen met tussenpozen, en dat is al eerder gebeurd en weer goed gekomen.
+    #
+    #   19-10 198/198    02-11 198/198
+    #   23-10   0/198    05-11 180/198
+    #   26-10 180/198    06-11   0/198   <- twee dagen voor een wedstrijd
+    #   30-10 180/198    10-11 198/198
+    #
+    # 426012d legde vast dat de bron ze niet meer publiceerde, 18545c0 drie
+    # dagen later dat ze terug waren. Op de opstellingspagina staan vandaag
+    # alleen rugnummers en de mededeling dat verwachte punten achter Premium
+    # zitten.
+    #
+    # Het gat dat hier werkelijk zat, was dat nul ONZICHTBAAR was: de
+    # variatietoets hieronder meldde "0 verschillende waarden over 0 spelers"
+    # met uitkomst ok. Dat is opgelost met de meting hierboven en deze regel.
+    # Zichtbaar maken was nodig; de scrape tegenhouden niet.
+    if len(nu) >= 50 and not kansen:
+        r.waarschuw("opstellingen.csv",
+                    f"geen basiskansen ({len(kansen)} van {len(nu)} rijen "
+                    f"gevuld)",
+                    f"de bron publiceert ze met tussenpozen, dus dit kan "
+                    f"volgende run weer goed zijn. Blokkeert niet, maar het "
+                    f"model rekent dan zonder speeltijdkans: draai "
+                    f"scrape_eredivisie.py --debug op een opstellingspagina "
+                    f"als het blijft staan")
+    else:
+        r.ok("opstellingen.csv",
+             f"basiskansen aanwezig ({len(kansen)} van {len(nu)} rijen gevuld)")
 
     r.eis(not (len(kansen) >= 50 and verschillend <= 3), "opstellingen.csv",
           f"basiskansen varieren ({verschillend} verschillende waarden over "
