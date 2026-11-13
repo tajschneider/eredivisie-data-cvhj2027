@@ -1307,8 +1307,15 @@ def test_minuut_revisie_versus_kapotte_teller():
          {"speler-3": {"minuten": "784"}}, 1, 0),
         ("een minuut EN een duel minder: fout",
          {"speler-3": {"minuten": "799", "duels": "9"}}, 2, 0),
-        ("een goal minder: fout",
-         {"speler-3": {"goals": "1"}}, 1, 0),
+        # Dit stond hier als "een goal minder: fout" en dekte toen de regel
+        # dat een feitenteller nooit daalt. Die regel is op 13-11-2026
+        # weerlegd: de bron herziet beoordelingen (zie
+        # test_broncorrectie_versus_wegvallende_data). Precies EEN stap in
+        # EEN herzienbare teller is sindsdien een correctie. Twee stappen
+        # niet, en dat is wat deze regel nu vastlegt -- de bedoeling van het
+        # geval blijft dus overeind: een feitenteller die wegzakt is een fout.
+        ("twee goals minder: fout, dat is geen herziening",
+         {"speler-3": {"goals": "0"}}, 1, 0),
         ("drie spelers een minuut minder: drie waarschuwingen in een regel",
          {"speler-3": {"minuten": "799"}, "speler-7": {"minuten": "799"},
           "speler-9": {"minuten": "799"}}, 0, 3),
@@ -1349,6 +1356,148 @@ def test_minuut_revisie_versus_kapotte_teller():
     print(f"  {'OK  ' if g else 'FOUT'} een herrekening blokkeert de scrape niet "
           f"({len(r.fouten)} fout, {len(r.waarschuwingen)} waarschuwing)")
     return ok and g
+
+
+def test_broncorrectie_versus_wegvallende_data():
+    """De bron herziet beoordelingen. Dat is geen kapotte parser.
+
+    Op 10-11 en 13-11-2026 zakte younes-namli.assists van 2 naar 1 terwijl
+    duels op 2, basisplaatsen op 2 en minuten op 145 bleven staan. Beide
+    runs werden afgekeurd. De spelerspagina noemt zelf 1, op zes plekken: in
+    het statblok, in het blok Aanvallend, in de inleiding, in de tabel
+    Cijfers per seizoen, in "Wie is Younes Namli?" en in de FAQ. De scrape
+    was dus goed en werd tegengehouden omdat hij goed was.
+
+    Een assist is een BEOORDELING: wie de beslissende pass gaf wordt na de
+    wedstrijd vastgesteld en soms teruggedraaid. Datzelfde geldt voor een
+    goal, geel, rood en een redding. Duels en basisplaatsen niet -- die
+    komen van het wedstrijdformulier.
+
+    Deze test is er vooral om de TANDEN vast te leggen, want dit is een
+    versoepeling en die moet geen achterdeur worden. Een correctie is
+    precies een herzienbare teller, precies een stap omlaag, met duels,
+    basisplaatsen en minuten bekend en ongewijzigd, en hoogstens
+    MAX_FEITCORRECTIES spelers in een run. Elk van die vijf voorwaarden
+    heeft hieronder een geval dat faalt als hij wegvalt.
+    """
+    import controle as c
+
+    def stand(dag, afwijkingen=None):
+        rijen = []
+        clubs = [f"Club {i}" for i in range(18)]
+        for i in range(450):
+            r = {"opgehaald": dag, "speler_id": f"speler-{i}",
+                 "speler": f"Speler {i}", "club": clubs[i % 18],
+                 "positie": "Midfielder", "duels": "2", "basisplaatsen": "2",
+                 "minuten": "145", "goals": "2", "assists": "2",
+                 "overtredingen": "5", "reddingen": "3", "nul_achter": "0",
+                 "cijfer": "7.0", "geel": "1", "rood": "1",
+                 "status_tekst": ""}
+            r.update((afwijkingen or {}).get(f"speler-{i}", {}))
+            rijen.append(r)
+        return rijen
+
+    vier = {f"speler-{i}": {"assists": "1"} for i in (3, 7, 9, 11)}
+    drie = {f"speler-{i}": {"assists": "1"} for i in (3, 7, 9)}
+
+    # (wat, afwijking vorige stand, afwijking nieuwe stand,
+    #  verwacht aantal dalers, verwacht aantal correcties)
+    gevallen = [
+        # --- dit mag door: de bron draait een beoordeling terug
+        ("younes-namli: assists 2 -> 1, de rest tot op de minuut gelijk",
+         {}, {"speler-3": {"assists": "1"}}, 0, 1),
+        ("een goal herzien (eigen goal, laatste aanraking)",
+         {}, {"speler-3": {"goals": "1"}}, 0, 1),
+        ("een rode kaart in beroep geseponeerd",
+         {}, {"speler-3": {"rood": "0"}}, 0, 1),
+        ("geel ingetrokken",
+         {}, {"speler-3": {"geel": "0"}}, 0, 1),
+        ("een redding die een blok was",
+         {}, {"speler-3": {"reddingen": "2"}}, 0, 1),
+        ("assist herkend als goal: assists omlaag, goals omhoog",
+         {}, {"speler-3": {"assists": "1", "goals": "3"}}, 0, 1),
+        ("precies MAX_FEITCORRECTIES spelers: nog net een handvol",
+         {}, drie, 0, 3),
+        ("niets gedaald", {}, {}, 0, 0),
+
+        # --- en dit niet: hier valt data weg
+        ("twee stappen in een teller: geen herziening",
+         {}, {"speler-3": {"assists": "0"}}, 1, 0),
+        ("twee herzienbare tellers tegelijk",
+         {}, {"speler-3": {"assists": "1", "goals": "1"}}, 2, 0),
+        ("duels zakt mee: hard feit van het wedstrijdformulier",
+         {}, {"speler-3": {"assists": "1", "duels": "1"}}, 2, 0),
+        ("basisplaatsen zakt mee",
+         {}, {"speler-3": {"assists": "1", "basisplaatsen": "1"}}, 2, 0),
+        ("minuten zakt mee, ook binnen de revisiedrempel: anker gebroken",
+         {}, {"speler-3": {"assists": "1", "minuten": "140"}}, 2, 0),
+        ("duels in beide standen leeg: leeg is niet nul",
+         {"speler-3": {"duels": ""}},
+         {"speler-3": {"assists": "1", "duels": ""}}, 1, 0),
+        ("alleen duels zakt: altijd een fout",
+         {}, {"speler-3": {"duels": "1"}}, 1, 0),
+        ("alleen basisplaatsen zakt: altijd een fout",
+         {}, {"speler-3": {"basisplaatsen": "1"}}, 1, 0),
+        ("meer dan MAX_FEITCORRECTIES spelers: dat is een patroon",
+         {}, vier, 4, 0),
+    ]
+
+    echte_lees = c._lees
+    ok = True
+    for wat, afw_oud, afw_nu, verwacht_d, verwacht_c in gevallen:
+        rijen = stand("2026-11-10", afw_oud) + stand("2026-11-13", afw_nu)
+        c._lees = lambda *a, **k: rijen
+        r = c.Rapport()
+        try:
+            import io as _io, contextlib
+            with contextlib.redirect_stdout(_io.StringIO()):
+                c.controleer_seizoen(r)
+        finally:
+            c._lees = echte_lees
+        nd = r.meting.get("seizoen_dalende_tellers", 0)
+        nc = r.meting.get("seizoen_feitcorrecties", 0)
+        nf = len([x for x in r.fouten if "dalende" in x[2]])
+        # Een correctie mag NIET blokkeren; een daler moet dat wel.
+        goed = (nd == verwacht_d and nc == verwacht_c
+                and nf == (1 if verwacht_d else 0))
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {nd} dalend, "
+              f"{nc} herzien, {nf} fout"
+              + ("" if goed else f" (verwacht {verwacht_d}/{verwacht_c})"))
+        ok = ok and goed
+
+    # De grens staat waar de constante zegt dat hij staat, en niet ernaast.
+    g1 = c.MAX_FEITCORRECTIES == 3
+    print(f"  {'OK  ' if g1 else 'FOUT'} MAX_FEITCORRECTIES is "
+          f"{c.MAX_FEITCORRECTIES}")
+
+    # Duels en basisplaatsen staan niet in de herzienbare lijst, en de vijf
+    # herzienbare tellers staan er wel in. Zonder deze regel kan de lijst
+    # stil uitdijen.
+    g2 = (set(c.HARDE_FEITEN) == {"duels", "basisplaatsen"}
+          and set(c.HERZIENBARE_FEITEN) == {"goals", "assists", "geel",
+                                            "rood", "reddingen"})
+    print(f"  {'OK  ' if g2 else 'FOUT'} harde en herzienbare tellers staan "
+          f"waar ze horen")
+
+    # En de melding moet de lezer naar de spelerspagina sturen in plaats van
+    # naar een parser die niets mankeert. Dat was de oorspronkelijke klacht.
+    rijen = stand("2026-11-10") + stand("2026-11-13",
+                                        {"speler-3": {"assists": "1"}})
+    c._lees = lambda *a, **k: rijen
+    r = c.Rapport()
+    try:
+        import io as _io, contextlib
+        with contextlib.redirect_stdout(_io.StringIO()):
+            c.controleer_seizoen(r)
+    finally:
+        c._lees = echte_lees
+    w = [x for x in r.waarschuwingen if "herzien" in x[2]]
+    g3 = (len(r.fouten) == 0 and len(w) == 1
+          and "spelerspagina" in w[0][3] and "speler-3.assists" in w[0][3])
+    print(f"  {'OK  ' if g3 else 'FOUT'} een herziening blokkeert niet en "
+          f"noemt speler en pagina ({len(r.fouten)} fout, {len(w)} melding)")
+    return ok and g1 and g2 and g3
+
 
 
 def test_kans_komt_uit_tekst_niet_uit_opmaak():
@@ -1675,9 +1824,13 @@ def main():
     print("\neen controle die ook bij nul kansen afgaat\n")
     ok21 = test_controle_ziet_lege_kansen()
 
+    print("\neen broncorrectie versus data die wegvalt\n")
+    ok22 = test_broncorrectie_versus_wegvallende_data()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
-            ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21]):
+            ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
+            ok22]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
