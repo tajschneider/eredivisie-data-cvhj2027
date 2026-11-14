@@ -1500,6 +1500,111 @@ def test_broncorrectie_versus_wegvallende_data():
 
 
 
+def test_variatietoets_meldt_dat_hij_niets_meet():
+    """Een drempel hoort de uitkomst te bepalen, niet de toets uit te zetten.
+
+    Op 13-11-2026 stond in het rapport "ok basiskansen varieren (0
+    verschillende waarden over 0 spelers)", op dezelfde run waarin de kolom
+    helemaal leeg was. De variatietoets klaagt pas bij vijftig of meer
+    gevulde kansen, en die drempel zat IN de voorwaarde van de r.eis(). Nul
+    haalde hem niet, dus kwam de toets als geslaagd uit de bus.
+
+    Dat is dezelfde fout als de 19 uit de opmaak en als de lege kansen zelf:
+    een toets die bij afwezigheid niet kan afgaan, bewaakt dat geval niet --
+    en als ok gemeld leest het als een goedkeuring van iets wat niemand
+    bekeken heeft.
+
+    De drempel blijft staan; bij twintig spelers zegt variatie niets. Alleen
+    de uitkomst verandert: onder de drempel meldt de toets dat hij niet
+    gemeten heeft, en daarboven meet hij echt. Deze test pint ook de drempel
+    zelf vast, aan beide kanten, zodat hij niet stil kan opschuiven.
+    """
+    import controle as c
+
+    def rijen(kansen):
+        return [{"opgehaald": "2026-11-14", "club": f"Club {i % 18}",
+                 "speler": f"Speler {i}", "speler_id": f"sp{i}",
+                 "kans_basis": k, "ronde": "14"}
+                for i, k in enumerate(kansen)]
+
+    echte_lees = c._lees
+
+    def meet(kansen):
+        c._lees = lambda *a, **k: rijen(kansen)
+        r = c.Rapport()
+        try:
+            import io as _io, contextlib
+            with contextlib.redirect_stdout(_io.StringIO()):
+                c.controleer_opstellingen(r)
+        finally:
+            c._lees = echte_lees
+        regel = [x for x in r.regels if "varieren" in x[2]]
+        return r, (regel[0] if len(regel) == 1 else None)
+
+    # De drempel staat hier als getal en niet als c.MIN_KANSEN_VARIATIE.
+    # Anders zou deze test op de oude controle.py struikelen over een
+    # ontbrekende constante in plaats van over de verkeerde uitkomst, en dan
+    # bewijst hij niet wat hij hoort te bewijzen. De constante zelf wordt
+    # onderaan vastgepind.
+    N = 50
+    spreiding = lambda n: [str(40 + (i * 7) % 55) for i in range(n)]
+
+    gevallen = [
+        # (wat, kansen, verwacht niveau, moet 'niet gemeten' melden)
+        ("198 rijen, kolom helemaal leeg: niet gemeten",
+         [""] * 198, "OK", True),
+        ("198 rijen, allemaal 19: FOUT, de tanden blijven",
+         ["19"] * 198, "FOUT", False),
+        ("198 rijen, echte spreiding: gemeten en in orde",
+         spreiding(198), "OK", False),
+        (f"precies {N} gevuld en allemaal gelijk: FOUT, de drempel is gehaald",
+         ["19"] * N, "FOUT", False),
+        (f"{N - 1} gevuld en allemaal gelijk: niet gemeten",
+         ["19"] * (N - 1), "OK", True),
+        ("20 rijen, alles leeg: niet gemeten",
+         [""] * 20, "OK", True),
+    ]
+
+    ok = True
+    for wat, kansen, niveau, zwijgt in gevallen:
+        r, regel = meet(kansen)
+        if regel is None:
+            print(f"  FOUT {wat}: geen of meer dan een variatieregel")
+            ok = False
+            continue
+        tekst = f"{regel[2]} {regel[3]}"
+        goed = (regel[0] == niveau
+                and ("niet gemeten" in tekst) == zwijgt
+                # en nooit meer de misleidende vorm
+                and "0 verschillende waarden over 0 spelers" not in tekst)
+        print(f"  {'OK  ' if goed else 'FOUT'} {wat}: {regel[0]} "
+              f"-- {regel[2]}")
+        ok = ok and goed
+
+    # De regel verdwijnt niet: een toets die je niet meer ziet, kun je ook
+    # niet missen als hij wegvalt.
+    r, regel = meet([""] * 198)
+    g1 = regel is not None and len(
+        [x for x in r.regels if "basiskansen" in x[2]]) == 3
+    print(f"  {'OK  ' if g1 else 'FOUT'} alle drie de kansenregels staan nog "
+          f"in het rapport ({len([x for x in r.regels if 'basiskansen' in x[2]])})")
+
+    # En nul blijft ook als waarschuwing gemeld; deze toets vervangt die niet.
+    g2 = len([x for x in r.waarschuwingen if "geen basiskansen" in x[2]]) == 1
+    print(f"  {'OK  ' if g2 else 'FOUT'} de waarschuwing over nul kansen "
+          f"staat er nog")
+
+    # Beide drempels bij naam, zodat je ziet welke je verschuift. getattr
+    # met een terugval, want een ontbrekende constante is hier een FOUT en
+    # geen crash.
+    a = getattr(c, "MIN_RIJEN_KANSEN", None)
+    b = getattr(c, "MIN_KANSEN_VARIATIE", None)
+    g3 = a == 50 and b == 50
+    print(f"  {'OK  ' if g3 else 'FOUT'} beide drempels staan op 50 "
+          f"({a}, {b})")
+    return ok and g1 and g2 and g3
+
+
 def test_kans_komt_uit_tekst_niet_uit_opmaak():
     """Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
 
@@ -1827,10 +1932,13 @@ def main():
     print("\neen broncorrectie versus data die wegvalt\n")
     ok22 = test_broncorrectie_versus_wegvallende_data()
 
+    print("\neen variatietoets die zegt dat hij niets meet\n")
+    ok23 = test_variatietoets_meldt_dat_hij_niets_meet()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
             ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
-            ok22]):
+            ok22, ok23]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

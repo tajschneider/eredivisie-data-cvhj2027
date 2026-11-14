@@ -43,6 +43,15 @@ DUELS_PER_RONDE = 9
 CLUBS = 18
 BASIS_PER_CLUB = 11
 MIN_SPELERS = 400          # de index telde 504 op 19-10-2026
+
+# De twee drempels van de kansentoetsen in controleer_opstellingen(). Ze
+# stonden daar beide als een losse 50 terwijl ze iets anders tellen: hoeveel
+# OPSTELLINGSRIJEN er moeten zijn voordat een lege kolom iets betekent, en
+# hoeveel GEVULDE kansen er moeten zijn voordat variatie iets betekent.
+# Een naam maakt zichtbaar welke van de twee je verschuift.
+MIN_RIJEN_KANSEN = 50      # 18 clubs x 11 basisspelers is er 198
+MIN_KANSEN_VARIATIE = 50   # onder dit aantal gevulde kansen meet de
+                           # variatietoets niets, en dan zegt hij dat ook
 MAX_DAGEN_OUD = 8
 # Hoeveel minuten de bron mag herrekenen voordat het een fout wordt.
 #
@@ -1197,9 +1206,10 @@ def controleer_opstellingen(r):
     #
     # Het gat dat hier werkelijk zat, was dat nul ONZICHTBAAR was: de
     # variatietoets hieronder meldde "0 verschillende waarden over 0 spelers"
-    # met uitkomst ok. Dat is opgelost met de meting hierboven en deze regel.
+    # met uitkomst ok. Deze waarschuwing maakt nul zichtbaar; dat die ok-regel
+    # er daarnaast nog steeds stond, is pas bij de toets hieronder opgelost.
     # Zichtbaar maken was nodig; de scrape tegenhouden niet.
-    if len(nu) >= 50 and not kansen:
+    if len(nu) >= MIN_RIJEN_KANSEN and not kansen:
         r.waarschuw("opstellingen.csv",
                     f"geen basiskansen ({len(kansen)} van {len(nu)} rijen "
                     f"gevuld)",
@@ -1212,12 +1222,33 @@ def controleer_opstellingen(r):
         r.ok("opstellingen.csv",
              f"basiskansen aanwezig ({len(kansen)} van {len(nu)} rijen gevuld)")
 
-    r.eis(not (len(kansen) >= 50 and verschillend <= 3), "opstellingen.csv",
-          f"basiskansen varieren ({verschillend} verschillende waarden over "
-          f"{len(kansen)} spelers)",
-          f"alle spelers vrijwel dezelfde startkans ({sorted(set(kansen))[:4]}) "
-          f"-- dat is geen kans maar een getal uit de opmaak; draai "
-          f"scrape_eredivisie.py --debug op een opstellingspagina")
+    # EN EEN TOETS DIE NIETS MEET, MELDT DAT OOK. Dit stond als een enkele
+    # r.eis() met de drempel IN de voorwaarde, en dat leverde op 13-11-2026
+    # de regel "ok basiskansen varieren (0 verschillende waarden over 0
+    # spelers)" op. Dat is geen geslaagde controle maar een controle die niet
+    # gedraaid heeft, en als ok gemeld leest het als een goedkeuring.
+    #
+    # Hetzelfde gold minder opvallend voor elk aantal onder de drempel: "ok
+    # basiskansen varieren (2 verschillende waarden over 20 spelers)" kon
+    # evenmin afgaan. De drempel zelf is goed -- bij een handvol spelers zegt
+    # variatie niets -- maar hij hoort de UITKOMST te bepalen, niet stil de
+    # toets uit te zetten.
+    #
+    # Nul kansen blijft overigens gemeld door de waarschuwing hierboven; deze
+    # regel vervangt die niet, hij stopt alleen met iets goedkeuren wat hij
+    # niet bekeken heeft.
+    if len(kansen) >= MIN_KANSEN_VARIATIE:
+        r.eis(verschillend > 3, "opstellingen.csv",
+              f"basiskansen varieren ({verschillend} verschillende waarden "
+              f"over {len(kansen)} spelers)",
+              f"alle spelers vrijwel dezelfde startkans "
+              f"({sorted(set(kansen))[:4]}) -- dat is geen kans maar een "
+              f"getal uit de opmaak; draai scrape_eredivisie.py --debug op "
+              f"een opstellingspagina")
+    else:
+        r.ok("opstellingen.csv",
+             f"basiskansen varieren: niet gemeten bij {len(kansen)} gevulde "
+             f"kans(en), deze toets heeft er {MIN_KANSEN_VARIATIE} nodig")
 
 
 def controleer_prijzen(r):
