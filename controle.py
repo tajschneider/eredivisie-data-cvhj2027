@@ -69,7 +69,40 @@ MAX_DAGEN_OUD = 8
 # scrape niet elke week weggooien om een herrekening, want dat leert je hem
 # met --soft te omzeilen en dan staat alles open.
 MINUTEN_REVISIE = 15       # zie controleer_seizoen(): de bron herrekent
-                           # speelminuten, feitentellers herziet hij niet
+                           # speelminuten
+
+# EN HIJ HERZIET OOK FEITEN. Dat stond hierboven jarenlang als "feitentellers
+# herziet hij niet", en dat is op 13-11-2026 weerlegd. younes-namli.assists
+# zakte van 2 naar 1 terwijl duels op 2, basisplaatsen op 2 en minuten op 145
+# bleven staan. De spelerspagina noemt sindsdien zelf 1, op zes plekken: in
+# het statblok, in het blok Aanvallend, in de inleiding, in de tabel Cijfers
+# per seizoen, in "Wie is Younes Namli?" en in de FAQ. Onze scrape was dus
+# goed en werd afgekeurd omdat hij goed was -- twee runs achter elkaar.
+#
+# Een assist is een BEOORDELING, geen observatie: wie de laatste beslissende
+# pass gaf, wordt na de wedstrijd vastgesteld en soms teruggedraaid. Datzelfde
+# geldt voor een goal (eigen goal, laatste aanraking), voor geel (ingetrokken),
+# voor rood (in beroep geseponeerd) en voor een redding (redding of blok).
+# Alleen voor assists is de herziening gemeten; voor de andere vier is het
+# hetzelfde mechanisme en dat staat hier als zodanig.
+#
+# Duels en basisplaatsen zijn dat NIET. Die komen van het wedstrijdformulier:
+# je stond in de opstelling of je stond er niet. Daalt daar iets, dan is er
+# een parser stuk of is een speler van club gewisseld, en dat blijft een fout.
+# Daarmee houdt de toets zijn tanden: de duizendtallenfout van 09-11 (989
+# minuten omlaag) en elke omgevallen parser zakken door duels en minuten heen.
+HARDE_FEITEN = ("duels", "basisplaatsen")
+HERZIENBARE_FEITEN = ("goals", "assists", "geel", "rood", "reddingen")
+
+# Het anker: deze drie moeten BEKEND en GELIJK zijn voordat een daling een
+# correctie mag heten. Leeg is niet nul -- van een onbekende teller kun je
+# niet zeggen dat hij gelijk bleef.
+ANKERS = ("duels", "basisplaatsen", "minuten")
+
+# En de bodem onder de versoepeling: een bron corrigeert een handvol feiten,
+# een kapotte parser raakt tientallen spelers. Boven deze grens is het geen
+# correctie meer maar een patroon, en dan blokkeert het alsnog.
+MAX_FEITCORRECTIES = 3
 REDENEN = {"blessure", "schorsing", "vertrokken", "ziek", "twijfel",
            "persoonlijk", "transfer", ""}
 
@@ -803,19 +836,50 @@ def controleer_seizoen(r):
     # controle die je leert om hem met --soft te omzeilen, en dan staat alles
     # open.
     if len(standen) >= 2:
-        vorige, dalers, revisies = standen[-2], [], []
+        vorige, dalers, revisies, correcties = standen[-2], [], [], []
         oud = {x["speler_id"]: x for x in rijen if x.get("opgehaald") == vorige}
-        FEITEN = ("duels", "goals", "assists", "geel", "rood",
-                  "basisplaatsen", "reddingen")
         for x in nu:
             v = oud.get(x["speler_id"])
             if not v:
                 continue
-            eigen = []
-            for c in FEITEN:
+
+            def _daling(c):
                 a, b = _f(x.get(c)), _f(v.get(c))
-                if a is not None and b is not None and a < b:
-                    eigen.append(f"{x['speler_id']}.{c}: {b:.0f} -> {a:.0f}")
+                if a is None or b is None or a >= b:
+                    return None
+                return (c, b, a)
+
+            def _regel(d):
+                c, b, a = d
+                return f"{x['speler_id']}.{c}: {b:.0f} -> {a:.0f}"
+
+            # HET ANKER. Bekend EN gelijk, want leeg is niet nul.
+            anker_gelijk = all(
+                _f(x.get(c)) is not None and _f(x.get(c)) == _f(v.get(c))
+                for c in ANKERS)
+
+            harde = [d for d in map(_daling, HARDE_FEITEN) if d]
+            zacht = [d for d in map(_daling, HERZIENBARE_FEITEN) if d]
+
+            # EEN BRONCORRECTIE heeft vier kenmerken tegelijk, en alle vier
+            # moeten kloppen. Precies EEN herzienbare teller zakt, met precies
+            # EEN stap, geen harde teller zakt, en duels, basisplaatsen en
+            # minuten staan bekend en ongewijzigd op hun oude waarde. Zo zag
+            # younes-namli eruit: assists 2 -> 1, de rest tot op de minuut
+            # gelijk.
+            #
+            # Elke andere vorm van daling blijft een fout, en dat is de kern.
+            # Twee tellers tegelijk, twee stappen in een, een teller die
+            # meezakt, of een onbekende ankerwaarde: dat is geen beoordeling
+            # die wordt teruggedraaid maar data die wegvalt.
+            correctie = (not harde and len(zacht) == 1
+                         and zacht[0][1] - zacht[0][2] == 1
+                         and anker_gelijk)
+            eigen = [_regel(d) for d in harde]
+            if correctie:
+                correcties.append(_regel(zacht[0]))
+            else:
+                eigen += [_regel(d) for d in zacht]
             a, b = _f(x.get("minuten")), _f(v.get("minuten"))
             if a is not None and b is not None and a < b:
                 tekst = f"{x['speler_id']}.minuten: {b:.0f} -> {a:.0f}"
@@ -824,13 +888,55 @@ def controleer_seizoen(r):
                 else:
                     eigen.append(tekst)
             dalers += eigen
+        # DE BOVENGRENS. Een bron corrigeert een handvol beoordelingen; raakt
+        # het tientallen spelers, dan is het geen correctie meer maar een
+        # patroon, en dan blokkeert het alsnog. Zonder deze regel zou een
+        # parser die bij 200 spelers precies een assist kwijtraakt er
+        # ongehinderd langskomen.
+        patroon = len(correcties) > MAX_FEITCORRECTIES
+        if patroon:
+            dalers += correcties
         r.meet("seizoen_dalende_tellers", len(dalers))
         r.meet("seizoen_minuten_revisies", len(revisies))
+        r.meet("seizoen_feitcorrecties", 0 if patroon else len(correcties))
+        if patroon:
+            waarom = (f"dit zijn {len(correcties)} herziene feiten in een run "
+                      f"en dat is meer dan {MAX_FEITCORRECTIES}. Een bron "
+                      f"corrigeert een handvol beoordelingen; zoveel tegelijk "
+                      f"is een patroon, en een patroon komt uit de parser. "
+                      f"Draai scrape_eredivisie.py --debug op een "
+                      f"spelerspagina en kijk of de bron deze getallen zelf "
+                      f"ook noemt.")
+        else:
+            waarom = ("hier valt data weg, en dat is iets anders dan een bron "
+                      "die een beoordeling terugdraait. Zo'n correctie is "
+                      "precies een herzienbare teller (goals, assists, geel, "
+                      "rood, reddingen), precies een stap omlaag, met duels, "
+                      "basisplaatsen en minuten bekend en ongewijzigd; die "
+                      "blokkeert niet en staat als waarschuwing in het "
+                      "rapport. Wat hier staat is dat niet: er zakt een hard "
+                      "feit (duels of basisplaatsen), of er zakken twee "
+                      "tellers tegelijk, of het gaat om meer dan een stap, of "
+                      "een ankerwaarde is onbekend. Dan is er een parser stuk "
+                      "of is iemand van club gewisseld — draai "
+                      "scrape_eredivisie.py --debug op de spelerspagina.")
         r.eis(not dalers, "spelers_seizoen.csv",
               f"geen dalende seizoenstotalen tussen {vorige} en {laatste}",
-              "; ".join(dalers[:6]) + " — deze tellers zijn feiten en kunnen "
-              "niet omlaag; waarschijnlijk is er een parser stuk of een speler "
-              "van club gewisseld")
+              "; ".join(dalers[:6]) + " — " + waarom)
+        if correcties and not patroon:
+            r.waarschuw("spelers_seizoen.csv",
+                        f"{len(correcties)} herzien feit sinds {vorige}"
+                        if len(correcties) == 1 else
+                        f"{len(correcties)} herziene feiten sinds {vorige}",
+                        "; ".join(correcties[:6]) + " — een enkele "
+                        "herzienbare teller een stap omlaag, met duels, "
+                        "basisplaatsen en minuten onveranderd. Dat is de bron "
+                        "die een beoordeling terugdraait: een assist wordt na "
+                        "de wedstrijd toegekend en soms anders toegekend. "
+                        "Blokkeert niet, want onze cijfers volgen de bron en "
+                        "die noemt deze waarde nu zelf. Kijk wel op de "
+                        "spelerspagina als het dezelfde speler blijft of als "
+                        "er meer bijkomen.")
         if revisies:
             r.waarschuw("spelers_seizoen.csv",
                         f"{len(revisies)} speler(s) met minder minuten dan "
