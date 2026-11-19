@@ -68,8 +68,8 @@ MULTI-RONDE ADVIES (horizon 5, decay 0.84, 3 transfer(s))
   ronde 13: verwacht 65.4 punten  (3-4-3)  winst +15.6
   gedecayde som over de horizon: 230.13  (huidig team: 180.13)
     UIT  Sekou Sylla               ADO Den Haag     EUR 1.50  E  0.33
-    UIT  Julian Brandt             Ajax             EUR 2.75  E  0.00
     UIT  Guus Til                  PSV              EUR 4.00  E  6.20
+    UIT  Julian Brandt             Ajax             EUR 2.75  E  0.00
     IN   Tolu Arokodare            Ajax             EUR 2.50  E  8.90  E(horizon) 26.82
     IN   Matisse Didden            FC Utrecht       EUR 1.80  E  3.68  E(horizon)  9.71
     IN   Sven Mijnans              PSV              EUR 3.80  E 11.02  E(horizon) 46.96
