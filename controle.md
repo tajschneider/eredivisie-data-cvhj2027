@@ -1,18 +1,20 @@
 # Controle scrape — MET WAARSCHUWINGEN
 
-Uitgevoerd 2026-11-16. 0 fout(en), 1 waarschuwing(en), 31 controles.
+Uitgevoerd 2026-11-19. 0 fout(en), 2 waarschuwing(en), 32 controles.
 
 ## Waarschuwingen
 
 - **opstellingen.csv** — geen basiskansen (0 van 198 rijen gevuld)  
   de bron publiceert ze met tussenpozen, dus dit kan volgende run weer goed zijn. Blokkeert niet, maar het model rekent dan zonder speeltijdkans: draai scrape_eredivisie.py --debug op een opstellingspagina als het blijft staan
+- **versheid** — spelers_seizoen.csv loopt achter (2026-11-16 tegen 2026-11-19)  
+  normaal bij een lichte run, verdacht na een volledige
 
 ## Metingen
 
 | Meting | Waarde |
 |---|---|
 | afwezigen_clubs | 17 |
-| afwezigen_laatste | 60 |
+| afwezigen_laatste | 62 |
 | clubs_eerstvolgende_met_xg | 18 van 18 |
 | clubs_eerstvolgende_ronde | 13 |
 | clubs_gespeeld_met_xg | 54 van 216 |
@@ -25,7 +27,7 @@ Uitgevoerd 2026-11-16. 0 fout(en), 1 waarschuwing(en), 31 controles.
 | clubs_volledige_ronden | 12 |
 | dagen_oud | 0 |
 | minuten_onzichtbaar_voor_model | 0 |
-| nieuwste_ophaaldatum | 2026-11-16 |
+| nieuwste_ophaaldatum | 2026-11-19 |
 | opstellingen_clubs | 18 |
 | opstellingen_kansen_gevuld | 0 |
 | opstellingen_kansen_verschillend | 0 |
@@ -33,9 +35,9 @@ Uitgevoerd 2026-11-16. 0 fout(en), 1 waarschuwing(en), 31 controles.
 | prijzen_goedkoopste15 | 15.0 |
 | prijzen_koppelgraad | 479 van 508 (94%) |
 | prijzen_spelers | 508 |
-| rijen_afwezigen.csv | 557 |
+| rijen_afwezigen.csv | 619 |
 | rijen_clubs.csv | 612 |
-| rijen_opstellingen.csv | 1980 |
+| rijen_opstellingen.csv | 2178 |
 | rijen_prijzen.csv | 508 |
 | rijen_spelers.csv | 4859 |
 | rijen_spelers_seizoen.csv | 4570 |
@@ -82,3 +84,4 @@ Uitgevoerd 2026-11-16. 0 fout(en), 1 waarschuwing(en), 31 controles.
 | OK | prijzen.csv | vijftien goedkoopste spelers kosten 15.00 |
 | OK | prijzen.csv | 479 van de 508 prijsrijen koppelt aan een gescrapete speler (94%) |
 | OK | versheid | nieuwste gegevens zijn 0 dag(en) oud |
+| WAARSCHUWING | versheid | spelers_seizoen.csv loopt achter (2026-11-16 tegen 2026-11-19) |
