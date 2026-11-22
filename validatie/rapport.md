@@ -1,6 +1,6 @@
-# Validatie ronde 13 (2026-11-15)
+# Validatie ronde 13 (2026-11-22)
 
-Periode 4; ronde 13 IS een periodestart. Dit is meting 8.
+Periode 4; ronde 13 IS een periodestart. Dit is meting 9.
 
 ## Testsuites
 
@@ -19,9 +19,9 @@ Periode 4; ronde 13 IS een periodestart. Dit is meting 8.
 
 Gemeten over 11 evalueerbare ronde(n).
 
-- **top15_gevangen**: 0.232 (+0.046 sinds vorige meting, beter)
-- **rho**: 0.329 (+0.001 sinds vorige meting, beter)
-- **rmse**: 3.419 (+0.037 sinds vorige meting, slechter)
+- **top15_gevangen**: 0.227 (-0.005 sinds vorige meting, slechter)
+- **rho**: 0.331 (+0.002 sinds vorige meting, beter)
+- **rmse**: 3.424 (+0.005 sinds vorige meting, slechter)
 
 `top15_gevangen` is de beslissingsmaat: welk deel van het gat tussen willekeurig en perfect kiezen vangt de top-15 van het model. Dat is wat je in punten merkt; RMSE staat erbij voor de vergelijkbaarheid met eerdere metingen.
 
@@ -29,7 +29,7 @@ Gemeten over 11 evalueerbare ronde(n).
 
 - **markt_grootte**: 508 (ongewijzigd sinds vorige meting)
 - **koppelgraad**: 0.915 (ongewijzigd sinds vorige meting)
-- **geblesseerd**: 44 (+6 sinds vorige meting, slechter)
+- **geblesseerd**: 43 (-1 sinds vorige meting, beter)
 
 Een sprong in deze drie is meestal geen echte verandering in de competitie maar een scraper die stil iets anders is gaan lezen.
 
