@@ -56,6 +56,25 @@ POSITIE_NL_EN = {
     "aan": "Forward",
 }
 
+# DE LINIEPAGINA'S. Tot 20-11-2026 stonden alle 508 spelers op /spelers/ en
+# waren deze pagina's niet nodig. Sinds de herinrichting van 23-11 toont die
+# pagina er 100, met in de tabelkop nog steeds "508 spelers" en in het filter
+# "Keepers (68), Verdedigers (167), Middenvelders (144), Aanvallers (129)" --
+# samen precies 508. De vier liniepagina's zijn dus de volledige lijsten
+# geworden, en de hoofdpagina een voorproefje.
+#
+# Die pagina's hebben GEEN kolom Positie: die staat in de titel. Hun kop is
+# "# | Speler | Club | Waarde | Behaald | ...". Daarom komt de positie hier
+# uit het pad, en expliciet -- niet door de meervouds-s weg te strepen. Een
+# onbekend pad levert dan None op en geen gok, en valt terug op de strenge
+# route die de kolom wel eist.
+LINIES = {
+    "keepers": "Goalkeeper",
+    "verdedigers": "Defender",
+    "middenvelders": "Midfielder",
+    "aanvallers": "Forward",
+}
+
 # Clubnamen moeten letterlijk gelijk zijn aan die in clubs.csv/spelers.csv,
 # anders valt de join stil. Alleen bekende afwijkingen staan hier; onbekende
 # namen worden gemeld door --check, niet stilzwijgend aangepast.
@@ -199,7 +218,7 @@ def parse_positie(tekst):
     return POSITIE_NL_EN.get(sleutel)
 
 
-def kies_tabel(soup):
+def kies_tabel(soup, positie_vereist=True):
     """De spelerstabel is die met kopteksten Speler/Club/Positie/Waarde.
 
     Bewust niet op class of id gezocht: die veranderen bij elke redesign,
@@ -231,6 +250,9 @@ def kies_tabel(soup):
     inlezen kromp iedere verwachting met 8%, dus hij wordt hier voorlopig
     ook niet gelezen; dat vraagt eerst een herschaling.
     """
+    nodig = {"speler", "club", "prijs"}
+    if positie_vereist:
+        nodig.add("positie")
     for tabel in soup.find_all("table"):
         koppen = [re.sub(r"\s+", " ", th.get_text(" ", strip=True)).lower()
                   for th in tabel.find_all("th")]
@@ -262,17 +284,25 @@ def kies_tabel(soup):
             #              oktober veranderde hij voor 1 van de 507 spelers.
             elif k.startswith("behaald"):
                 idx.setdefault("behaald", i)
-        if {"speler", "club", "positie", "prijs"} <= set(idx):
+        if nodig <= set(idx):
             return tabel, idx
     return None, None
 
 
-def parse_rijen(html):
+def parse_rijen(html, positie=None):
+    """Rijen uit de spelerstabel.
+
+    `positie` vult de positie in voor een pagina die er geen kolom voor
+    heeft omdat ze over een enkele linie gaat (zie LINIES). Blijft hij None,
+    dan moet de tabel de kolom Positie zelf hebben; dat is de strenge route
+    en die geldt voor de hoofdpagina.
+    """
     soup = BeautifulSoup(html, "html.parser")
-    tabel, idx = kies_tabel(soup)
+    tabel, idx = kies_tabel(soup, positie_vereist=positie is None)
     if tabel is None:
+        kolommen = "Speler/Club/Waarde" + ("/Positie" if positie is None else "")
         raise RuntimeError(
-            "geen tabel met kolommen Speler/Club/Positie/Waarde gevonden -- "
+            f"geen tabel met kolommen {kolommen} gevonden -- "
             "opmaak van de bronpagina is waarschijnlijk gewijzigd; "
             "draai opnieuw met --dump ruw.html en bekijk de bron")
 
@@ -284,7 +314,10 @@ def parse_rijen(html):
 
         naam, status = splits_status(cellen[idx["speler"]].get_text(" ", strip=True))
         club_ruw = cellen[idx["club"]].get_text(" ", strip=True)
-        positie = parse_positie(cellen[idx["positie"]].get_text(" ", strip=True))
+        if "positie" in idx:
+            pos = parse_positie(cellen[idx["positie"]].get_text(" ", strip=True))
+        else:
+            pos = positie
         prijs = parse_prijs(cellen[idx["prijs"]].get_text(" ", strip=True))
 
         # slug bij voorkeur uit de href -- dat is de bron van waarheid voor
@@ -292,8 +325,8 @@ def parse_rijen(html):
         href = SPELER_HREF.search(str(tr))
         slug = norm_slug(href.group(1)) if href else norm_slug(naam)
 
-        if not naam or positie is None or prijs is None:
-            overgeslagen.append((naam or "?", club_ruw, positie, prijs))
+        if not naam or pos is None or prijs is None:
+            overgeslagen.append((naam or "?", club_ruw, pos, prijs))
             continue
 
         # Optionele puntenkolommen: ontbreken ze, dan blijft het veld leeg en
@@ -301,7 +334,7 @@ def parse_rijen(html):
         rij = {
             "team": CLUB_ALIAS.get(club_ruw, club_ruw),
             "speler": naam,
-            "positie": positie,
+            "positie": pos,
             "prijs": f"{prijs:.2f}",
             "speler_id": slug,
             "rol": status["rol"],
@@ -350,14 +383,53 @@ def main():
     rijen, overgeslagen, ruw_punten = parse_rijen(html)
     gezien = {PRIJZEN_URL}
 
-    # alleen paginering volgen als de eerste pagina te weinig opleverde
+    # DE LINIEPAGINA'S, als de hoofdpagina te weinig opleverde. Elk met zijn
+    # positie uit het pad, want die kolom staat daar niet in de tabel.
+    #
+    # ALLE VIER, zonder tussentijds te stoppen. Hier stond `if len(rijen) >=
+    # args.min: break`, en dat is met deze pagina's een val: 100 van de
+    # hoofdpagina plus keepers (68), verdedigers (167) en middenvelders (144)
+    # is 479 en haalt de drempel van 400, waarna de aanvallers nooit worden
+    # opgehaald.
+    #
+    # Dat levert geen stil verkeerd bestand op -- de ontdubbeling komt na de
+    # lus en de hoofdpagina toont spelers die ook op de liniepagina's staan,
+    # dus van die 479 blijven er 379 over en dan blokkeert de drempel alsnog.
+    # Het levert wel de VERKEERDE MELDING op: "slechts 379 spelers", wat naar
+    # de bron of de hoofdpagina wijst terwijl er simpelweg een linie is
+    # overgeslagen. Vandaar alle vier, en de toets per linie hieronder.
+    liniefouten, per_linie = [], {}
+    if len(rijen) < args.min:
+        for segment, pos in LINIES.items():
+            url = PRIJZEN_URL.rstrip("/") + "/" + segment + "/"
+            gezien.add(url)
+            print(f"  liniepagina: {url}")
+            try:
+                extra, over_extra, _ = parse_rijen(get(url), positie=pos)
+            except RuntimeError as e:
+                # NIET stil doorlopen. Hier stond `except RuntimeError:
+                # continue`, en op 23-11-2026 liepen alle vier de pagina's
+                # daarop vast zonder dat het logboek er een woord over zei.
+                # De melding was "slechts 100 spelers gevonden", en die wees
+                # niemand naar de liniepagina's -- de oorzaak lag daar en het
+                # onderzoek begon bij de hoofdpagina.
+                print(f"    MISLUKT: {e}")
+                liniefouten.append(f"{segment}: {e}")
+                continue
+            print(f"    {len(extra)} {pos}")
+            per_linie[segment] = len(extra)
+            rijen.extend(extra)
+            overgeslagen.extend(over_extra)
+
+    # en daarna eventuele andere paginalinks, zoals voorheen
     if len(rijen) < args.min:
         for url in volg_paginering(html, gezien):
             gezien.add(url)
             print(f"  vervolgpagina: {url}")
             try:
                 extra, over_extra, _ = parse_rijen(get(url))
-            except RuntimeError:
+            except RuntimeError as e:
+                print(f"    MISLUKT: {e}")
                 continue
             rijen.extend(extra)
             overgeslagen.extend(over_extra)
@@ -373,9 +445,58 @@ def main():
         for naam, club, pos, prijs in overgeslagen[:10]:
             print(f"    - {naam} ({club}) positie={pos} prijs={prijs}")
 
+    # DE BEWAKINGEN, van specifiek naar algemeen. Een melding die de oorzaak
+    # noemt is het halve werk; "slechts N spelers" is dat niet.
+
+    # 1. Een mislukte liniepagina is altijd fataal, ook als het totaal de
+    #    drempel haalt: dan mist er een hele linie.
+    if liniefouten:
+        sys.exit("FOUT: " + str(len(liniefouten)) + " liniepagina('s) niet te "
+                 "lezen: " + "; ".join(liniefouten) + ". prijzen.csv NIET "
+                 "geschreven -- een ontbrekende linie is in het bestand niet "
+                 "te zien.")
+
+    # 2. Een liniepagina die nul rijen oplevert bestaat niet: er zijn altijd
+    #    keepers. Nul is hier dus altijd een fout, en deze toets kan niet
+    #    vacuum slagen.
+    #
+    #    Bewust per LINIE en niet per positie. Een toets per positie ziet dit
+    #    niet: de hoofdpagina levert zelf spelers van alle vier de posities,
+    #    dus ook zonder de aanvallerspagina staan er aanvallers in -- een
+    #    kwart van 100 in plaats van 129, en dat ziet uit als een gevulde
+    #    kolom. En deze toets staat VOOR de drempel hieronder, want "de
+    #    aanvallerspagina leverde nul op" is de diagnose en "slechts 379
+    #    spelers" alleen het gevolg.
+    per_positie = {}
+    for r in rijen:
+        per_positie[r["positie"]] = per_positie.get(r["positie"], 0) + 1
+    if per_linie:
+        print("  per linie: " + ", ".join(f"{k} {v}"
+                                          for k, v in per_linie.items()))
+    print("  per positie: " + ", ".join(f"{p} {per_positie.get(p, 0)}"
+                                        for p in sorted(set(LINIES.values()))))
+    leeg = [k for k, v in per_linie.items() if not v]
+    if leeg:
+        sys.exit(f"FOUT: de liniepagina van {', '.join(leeg)} leverde nul "
+                 f"spelers op terwijl de pagina wel te lezen was. prijzen.csv "
+                 f"NIET geschreven -- draai scrape_prijzen.py --dump en kijk "
+                 f"of de tabel op die pagina van vorm is veranderd.")
+
+    # 3. En dan het totaal.
     if len(rijen) < args.min:
         sys.exit(f"FOUT: slechts {len(rijen)} spelers gevonden, verwacht >= {args.min}. "
-                 f"prijzen.csv NIET geschreven -- het model zou op halve data rekenen.")
+                 f"prijzen.csv NIET geschreven -- het model zou op halve data rekenen. "
+                 f"De vier liniepagina's samen horen compleet te zijn; staat "
+                 f"hierboven per linie een aantal, dan is de bron veranderd, "
+                 f"en staat er MISLUKT, dan is de parser het probleem.")
+
+    # 4. Zonder liniepagina's moeten de vier posities uit de hoofdpagina komen.
+    if not per_linie:
+        mist = [p for p in sorted(set(LINIES.values())) if not per_positie.get(p)]
+        if mist:
+            sys.exit(f"FOUT: geen enkele speler voor {', '.join(mist)}. "
+                     f"prijzen.csv NIET geschreven -- het model kan die "
+                     f"positie dan niet kopen.")
 
     uit = Path(args.uit)
     uit.mkdir(parents=True, exist_ok=True)
