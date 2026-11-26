@@ -1826,6 +1826,139 @@ def test_liniepaginas_leveren_de_hele_lijst():
     return ok
 
 
+def test_afgekapte_prijslijst_valt_op():
+    """100 van de 508 spelers kwam langs elke toets die er stond.
+
+    Toen /spelers/ op 23-11-2026 nog maar 100 van de 508 spelers ging tonen,
+    weigerde scrape_prijzen.py te schrijven -- luid en duidelijk. Maar er
+    zijn TWEE lezers van die pagina, en de andere faalde stil:
+
+    1. taak_prijzen() in scrape_eredivisie.py vergeleek het aantal met het
+       aangekondigde aantal op de pagina, printte bij afwijking een regel met
+       een uitroepteken, en schreef de lijst daarna gewoon weg. Die taak zit
+       in de maandagrun --alles, een run van een kwartier; dat ene regeltje
+       was het enige spoor.
+
+    2. controle.py had geen ondergrens op prijzen.csv. Alle toetsen die er
+       stonden zijn VERHOUDINGEN: achttien clubs, vier posities, een
+       prijsbereik, geen dubbele slugs, een koppelgraad in procenten. Honderd
+       willekeurige spelers raken alle achttien clubs en alle vier de
+       posities, en koppelen voor dezelfde 94%. Een afgekapte lijst kwam daar
+       dus langs alle vijf.
+
+    Samen hadden die twee een prijzen.csv van 100 regels kunnen opleveren
+    waar niets over klaagde, en dan kiest het model maandenlang uit honderd
+    spelers. Het eerste deel van deze test legt vast dat de afgekapte lijst
+    niet meer geschreven wordt, het tweede dat de controle hem ziet, en het
+    derde WAAROM het een telling moest zijn en geen verhouding.
+    """
+    import controle as c
+    import scrape_eredivisie as se
+
+    CLUBS = [f"Club {i}" for i in range(18)]
+    POS = ["Goalkeeper", "Defender", "Midfielder", "Forward"]
+
+    def prijslijst(n):
+        return [{"team": CLUBS[i % 18], "speler": f"Speler {i}",
+                 # binnen het plausibele bereik blijven, anders zakt de
+                 # prijstoets op de fixture in plaats van op de afkapping
+                 "positie": POS[i % 4], "prijs": f"{1.0 + (i % 10) * 0.5:.2f}",
+                 "speler_id": f"sp{i}"} for i in range(n)]
+
+    def seizoen(n):
+        return [{"opgehaald": "2026-11-23", "speler_id": f"sp{i}",
+                 "club": CLUBS[i % 18], "speler": f"Speler {i}",
+                 "duels": "5", "minuten": "400"} for i in range(n)]
+
+    def meet(aantal_prijzen, aantal_seizoen=508):
+        bestanden = {"prijzen.csv": prijslijst(aantal_prijzen),
+                     "spelers_seizoen.csv": seizoen(aantal_seizoen)}
+        echte = c._lees
+        c._lees = lambda naam, *a, **k: bestanden.get(naam, [])
+        r = c.Rapport()
+        try:
+            import io as _io, contextlib
+            with contextlib.redirect_stdout(_io.StringIO()):
+                c.controleer_prijzen(r)
+        finally:
+            c._lees = echte
+        return r
+
+    ok = True
+
+    # --- 1. de controle ziet de afgekapte lijst
+    r = meet(100)
+    aantal = [x for x in r.fouten if "spelers in de lijst" in x[2]]
+    g = len(aantal) == 1 and "afgekapt" in aantal[0][3]
+    print(f"  {'OK  ' if g else 'FOUT'} 100 van de 508: FOUT, en de melding "
+          f"zegt afgekapt ({len(aantal)} fout)")
+    ok = ok and g
+
+    # --- 2. en laat de volle lijst met rust
+    r = meet(508)
+    g = len([x for x in r.fouten if "spelers in de lijst" in x[2]]) == 0
+    print(f"  {'OK  ' if g else 'FOUT'} 508 spelers: geen fout "
+          f"({len(r.fouten)} fout in totaal)")
+    ok = ok and g
+
+    # --- 3. WAAROM het een telling moest zijn. Dezelfde 100 regels komen
+    #        langs alle verhoudingstoetsen die er al stonden.
+    r = meet(100)
+    verhoudingen = [x for x in r.regels
+                    if any(w in x[2] for w in ("clubs", "vier posities",
+                                               "plausibel bereik",
+                                               "dubbele speler_id",
+                                               "koppelt aan een"))]
+    gezakt = [x for x in verhoudingen if x[0] == "FOUT"]
+    g = len(verhoudingen) == 5 and not gezakt
+    print(f"  {'OK  ' if g else 'FOUT'} de vijf oude toetsen slagen op "
+          f"diezelfde 100 regels ({len(verhoudingen)} toetsen, "
+          f"{len(gezakt)} gezakt) -- daarom een telling en geen verhouding")
+    ok = ok and g
+
+    # --- 4 en 5: taak_prijzen() schrijft een afgekapte lijst niet weg
+    def draai_taak(gelezen, aangekondigd):
+        geschreven = []
+        html = (f"<html><body><p>Alle {aangekondigd} spelers die je in Coach "
+                f"van het Jaar kunt kopen</p></body></html>")
+        echt = (se.get, se.parse_poule_prijzen, se.schrijf)
+        try:
+            se.get = lambda *a, **k: html
+            se.parse_poule_prijzen = lambda *a, **k: [
+                (f"sp{i}", f"Speler {i}", CLUBS[i % 18], POS[i % 4], 2.0)
+                for i in range(gelezen)]
+            se.schrijf = lambda pad, cols, rijen, sleutel: geschreven.append(len(rijen))
+            import io as _io, contextlib
+            uit = _io.StringIO()
+            with contextlib.redirect_stdout(uit):
+                se.taak_prijzen()
+        finally:
+            se.get, se.parse_poule_prijzen, se.schrijf = echt
+        return geschreven, uit.getvalue()
+
+    geschreven, log = draai_taak(100, 508)
+    g = geschreven == [] and "blijft ongemoeid" in log and "100 van de 508" in log
+    print(f"  {'OK  ' if g else 'FOUT'} taak_prijzen schrijft 100 van de 508 "
+          f"NIET weg (geschreven: {geschreven or 'niets'})")
+    ok = ok and g
+
+    geschreven, _ = draai_taak(508, 508)
+    g = geschreven == [508]
+    print(f"  {'OK  ' if g else 'FOUT'} en de volle lijst wel "
+          f"(geschreven: {geschreven})")
+    ok = ok and g
+
+    # 95% is de grens die er al stond; die mag niet stil verschuiven.
+    geschreven, _ = draai_taak(484, 508)   # 95.3%
+    g1 = geschreven == [484]
+    geschreven, _ = draai_taak(482, 508)   # 94.9%
+    g2 = geschreven == []
+    print(f"  {'OK  ' if g1 and g2 else 'FOUT'} de grens van 95% staat waar "
+          f"hij stond: 484 wel, 482 niet")
+    ok = ok and g1 and g2
+    return ok
+
+
 def test_kans_komt_uit_tekst_niet_uit_opmaak():
     """Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
 
@@ -2159,10 +2292,13 @@ def main():
     print("\nde liniepaginas van de prijzenlijst\n")
     ok24 = test_liniepaginas_leveren_de_hele_lijst()
 
+    print("\neen afgekapte prijslijst\n")
+    ok25 = test_afgekapte_prijslijst_valt_op()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
             ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
-            ok22, ok23, ok24]):
+            ok22, ok23, ok24, ok25]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")

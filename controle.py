@@ -1267,6 +1267,28 @@ def controleer_prijzen(r):
         return
     r.meet("prijzen_spelers", len(rijen))
     r.meet("prijzen_clubs", len({x["team"] for x in rijen}))
+
+    # HOEVEEL SPELERS, en dat ontbrak hier. Elke toets hieronder is een
+    # VERHOUDING: achttien clubs, vier posities, een prijsbereik, een
+    # koppelgraad in procenten. Die komen bij 100 van de 508 spelers allemaal
+    # net zo goed uit -- honderd willekeurige spelers raken alle achttien
+    # clubs en alle vier de posities, en koppelen voor diezelfde 94%.
+    #
+    # Op 23-11-2026 ging de bron om en gaf /spelers/ nog maar 100 van de 508.
+    # scrape_prijzen.py weigerde te schrijven, maar taak_prijzen() in
+    # scrape_eredivisie.py schreef wel en zei er alleen iets over in het
+    # logboek. Had die run doorgelopen, dan stond er een prijzen.csv van 100
+    # regels die hier langs alle vijf de toetsen was gekomen, en had het model
+    # maanden uit honderd spelers kunnen kiezen zonder dat iets dat meldde.
+    #
+    # Een afgekapte lijst is erger dan een oude: oud valt op bij versheid,
+    # afgekapt viel nergens op.
+    r.eis(len(rijen) >= MIN_SPELERS, "prijzen.csv",
+          f"{len(rijen)} spelers in de lijst",
+          f"minder dan {MIN_SPELERS}: de lijst is afgekapt. Het model kan dan "
+          f"alleen uit deze {len(rijen)} kiezen, terwijl de toetsen hieronder "
+          f"(clubs, posities, koppelgraad) verhoudingen zijn en ook bij een "
+          f"afgekapte lijst kloppen")
     r.eis(len({x["team"] for x in rijen}) == CLUBS, "prijzen.csv",
           f"{len({x['team'] for x in rijen})} clubs",
           f"verwacht {CLUBS}")
