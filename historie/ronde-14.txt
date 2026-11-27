@@ -1,0 +1,92 @@
+--transfers auto -> 1
+--horizon auto -> 4
+Periode 4; volgende periodestart over 4 ronden.
+  verwachte goals: 54 duels uit de bron zelf, 81 teruggerekend uit de marktkansen
+Clubratings uit 135 wedstrijden (thuisvoordeel x1.22)
+spelerstats geladen: 363 spelers uit spelerstats.csv
+afwezigen geladen: 124 spelers uit afwezigen.csv (opgehaald 2026-11-27)
+opstellingen geladen: vermoedelijke elf van 18 clubs voor ronde 14 (opgehaald 2026-11-27)
+  26 speler(s) met voldoende speeltijd uitgesloten op afwezigen.csv (waren anders koopbaar):
+    Anthony Descotte          Fortuna Sittard  blessure
+    Artem Stepanov            FC Utrecht       blessure, terug 2026-11-01
+    Calvin Twigt              Willem II        blessure
+    Cameron Peupion           ADO Den Haag     blessure
+    David van der Werff       FC Groningen     blessure
+    Dennis Geiger             NEC              blessure
+    Devid Bouah               SC Cambuur       schorsing, terug 2026-10-25
+    Dusan Tadic               NEC              blessure
+    Etienne Vaessen           FC Groningen     schorsing, terug 2026-11-22
+    Gerald Alders             Telstar          blessure
+    Ivan Perisic              PSV              blessure
+    Jasper Dahlhaus           Fortuna Sittard  blessure
+    Julian Baas               Sparta Rotterdam blessure
+    Julian Brandt             Ajax             blessure
+    Julius Dirksen            Go Ahead Eagles  blessure
+    Kasper Boogaard           Willem II        blessure
+    Kiliann Sildillia         PSV              blessure
+    Levi Smans                sc Heerenveen    blessure
+    Nesto Groen               Excelsior        schorsing, terug 2026-11-29
+    Ricardo Pepi              PSV              blessure
+    Rodrigo Guth              Fortuna Sittard  blessure
+    Sherel Floranus           PEC Zwolle       blessure
+    Shunsuke Mito             Sparta Rotterdam blessure
+    Vasilis Barkas            FC Utrecht       blessure
+    Wouter Goes               AZ               blessure
+    Yannick Eduardo           ADO Den Haag     blessure
+Horizon: ronde [14, 15, 16, 17] (decay 0.84)
+
+UIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE (de verwachting hieronder rekent hier NIET mee):
+    Kjetil Haug               Go Ahead Eagles  begon 3/3 recent, staat nu niet in de vermoedelijke elf
+    Mexx Meerdink             AZ               begon 6/6 recent, staat nu niet in de vermoedelijke elf
+    Thijs Oosting             PEC Zwolle       begon 3/6 recent, staat nu niet in de vermoedelijke elf
+
+OPSTELLING NU (zonder transfers)  3-5-2   verwacht 48.0 punten   kosten EUR 31.05
+  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.79
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.77
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.52
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.79
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  7.35
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.96
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.40
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.09
+  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.14
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  7.21
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.88
+  ---- bank (50%) ----
+  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.70
+  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.25
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.33
+  M            Julian Brandt             Ajax             EUR 2.75  E  0.00
+
+AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
+    Julian Brandt (blessure)
+
+WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
+  0 transfer(s):  147.84
+  1 transfer(s):  166.00   +18.16 t.o.v. 0
+
+MULTI-RONDE ADVIES (horizon 4, decay 0.84, 1 transfer(s))
+  ronde 14: verwacht 54.0 punten  (3-5-2)  winst +6.0
+  gedecayde som over de horizon: 166.00  (huidig team: 147.84)
+    UIT  Guus Til                  PSV              EUR 4.00  E  7.35
+    IN   Sven Mijnans              PSV              EUR 3.80  E 13.33  E(horizon) 40.25
+
+OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-5-2   verwacht 54.0 punten   kosten EUR 30.85
+  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.79
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.77
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.52
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.79
+  Middenveld   Sven Mijnans              PSV              EUR 3.80  E 13.33
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.96
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.40
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.09
+  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.14
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  7.21
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.88
+  ---- bank (50%) ----
+  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.70
+  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.25
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.33
+  M            Julian Brandt             Ajax             EUR 2.75  E  0.00
+
+besluit -> besluit.json
