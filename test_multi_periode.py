@@ -19,6 +19,7 @@ Vereist clubs.csv, spelers.csv, prijzen.csv, programma.csv, selectie.csv in de
 huidige map (dezelfde bestanden als voor cvhj_model.py).
 """
 import sys
+from pathlib import Path
 
 from multi_periode import (bereken_multi_E, bouw_horizon_pools, kies_uit_ladder,
                            koppel_selectie, laad_model, lees_programma_per_ronde, los_op,
@@ -579,14 +580,88 @@ def test_dekking_van_ronde():
     return ok and g
 
 
+def test_ijking_verlaagt_maar_verandert_de_volgorde_niet():
+    """De ijking mag de hoogte veranderen, niet de keuze.
+
+    Het model spreidt te ver uit: over 2540 speler-ronden is de bias +0.13,
+    maar hij loopt op van -0.49 bij E 0-2 tot +3.58 bij E 8+. Een
+    optimalisator kiest per definitie de hoogste schattingen, dus hij kiest de
+    spelers waar de fout het meest naar boven uitviel. De ijking
+    (IJKING_A + IJKING_B x E) trekt dat recht.
+
+    Omdat het een AFFIENE transformatie is, blijft de volgorde intact: hetzelfde
+    elftal, maar met een eerlijke verwachting. Wat wel verandert is het
+    VERSCHIL tussen twee ploegen -- dat krimpt met IJKING_B -- en precies dat
+    verschil is waar "is deze transfer het waard" op rust.
+
+    Deze test bewaakt beide kanten: dat de ijking echt verlaagt, en dat hij
+    niemand van plaats laat wisselen.
+    """
+    import cvhj_model as m
+    ok = True
+
+    g = 0 < m.IJKING_B < 1
+    print(f"  {'OK  ' if g else 'FOUT'} IJKING_B = {m.IJKING_B} ligt tussen 0 en 1 "
+          f"(krimp naar het gemiddelde)")
+    ok = ok and g
+
+    ruw = [0.0, 1.0, 2.5, 4.0, 7.0, 11.0]
+    geijkt = [m.IJKING_A + m.IJKING_B * x for x in ruw]
+    g = all(a < b for a, b in zip(geijkt, geijkt[1:]))
+    print(f"  {'OK  ' if g else 'FOUT'} bij gelijke speelzekerheid blijft de "
+          f"volgorde gelijk: {[round(x, 2) for x in geijkt]}")
+    ok = ok and g
+
+    # MAAR het constante deel schaalt met p_speelt, en dat is geen detail: bij
+    # dezelfde E wint een zekere basisspeler van een rotatiespeler. Dat is
+    # bedoeld -- een basis die je alleen krijgt als je speelt -- maar het
+    # betekent dat de ijking krappe keuzes WEL verschuift. Zo veranderde het
+    # advies voor ronde 14 van Til -> Mijnans naar Brandt -> Arokodare.
+    zeker = m.IJKING_A * 1.0 + m.IJKING_B * 4.0
+    rotatie = m.IJKING_A * 0.6 + m.IJKING_B * 4.0
+    g = zeker - rotatie > 0.3
+    print(f"  {'OK  ' if g else 'FOUT'} bij gelijke E wint speelzekerheid: "
+          f"{zeker:.2f} tegen {rotatie:.2f}")
+    ok = ok and g
+
+    # Bij hoge waarden MOET hij verlagen, anders doet hij niets voor het
+    # probleem waarvoor hij bestaat.
+    g = geijkt[-1] < ruw[-1] and geijkt[-2] < ruw[-2]
+    print(f"  {'OK  ' if g else 'FOUT'} hoge verwachtingen gaan omlaag: "
+          f"{ruw[-1]} -> {geijkt[-1]:.2f}")
+    ok = ok and g
+
+    # Het verschil tussen twee ploegen krimpt met IJKING_B. Dat is geen
+    # bijvangst maar het doel: een transferwinst van +4.15 was in werkelijkheid
+    # +2.8 waard.
+    verschil_ruw = 11 * (4.5 - 4.0)
+    verschil_geijkt = 11 * ((m.IJKING_A + m.IJKING_B * 4.5)
+                            - (m.IJKING_A + m.IJKING_B * 4.0))
+    g = abs(verschil_geijkt - m.IJKING_B * verschil_ruw) < 1e-9
+    print(f"  {'OK  ' if g else 'FOUT'} een verschil van {verschil_ruw:.2f} wordt "
+          f"{verschil_geijkt:.2f}")
+    ok = ok and g
+
+    # En de doelpuntschaal hoort op BEIDE plekken te staan, anders blaast hij
+    # de aanvallers op (gemeten: bias +0.75 toen alleen lam() meeschaalde).
+    bron = (Path(__file__).resolve().parent / "cvhj_model.py").read_text(encoding="utf-8")
+    g = bron.count("DOELPUNTSCHAAL") >= 4 and "DOELPUNTSCHAAL * sum(" in bron
+    print(f"  {'OK  ' if g else 'FOUT'} de doelpuntschaal zit ook in gem_lambda "
+          f"({bron.count('DOELPUNTSCHAAL')} keer genoemd)")
+    return ok and g
+
+
 def main():
     m = laad_model()
     clubrijen = m.lees("clubs.csv")
     per_ronde = lees_programma_per_ronde("programma.csv", m)
     rondes = sorted(per_ronde) or [max(int(r["ronde"]) for r in clubrijen) + 1]
 
-    print("Dekking van de ronde (weigeren bij een half gedraaide ronde)\n")
-    alles_ok = test_dekking_van_ronde()
+    print("IJking: hoogte omlaag, volgorde gelijk\n")
+    alles_ok = test_ijking_verlaagt_maar_verandert_de_volgorde_niet()
+
+    print("\nDekking van de ronde (weigeren bij een half gedraaide ronde)\n")
+    alles_ok = test_dekking_van_ronde() and alles_ok
 
     print("\nRegressietest multi_periode.py vs cvhj_model.py (horizon=1)\n")
     for ronde in rondes:
