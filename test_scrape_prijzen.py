@@ -232,6 +232,9 @@ def test_kaartdelta_onmeetbaar():
     Hoogstens een gele en een rode per wedstrijd, dus de grens schaalt mee met
     het venster. Een tweede gele IN dezelfde wedstrijd is de rode, dus met een
     rode erbij mag er een extra gele zijn.
+
+    Onderaan staat dezelfde familie van de andere kant: een NEGATIEF verschil.
+    Dat hoort ook leeg te zijn en niet 0.
     """
     import scrape_eredivisie as s
 
@@ -260,6 +263,35 @@ def test_kaartdelta_onmeetbaar():
          sp("g", duels=11, minuten=980, geel=3), [11, 12], "geel", 2),
         ("venster van twee: 3 geel niet", sp("h", duels=9, minuten=800),
          sp("h", duels=11, minuten=980, geel=3), [11, 12], "geel", ""),
+
+        # EN EEN NEGATIEF VERSCHIL, dezelfde familie: niet meetbaar.
+        #
+        # Op 27-11-2026 stond in ronde 13 bij jan-burger assists=-1 en bij
+        # evan-rottier assists=-1. De bron had hun seizoenstotaal herzien van
+        # 1 naar 0 en van 5 naar 4, en noemt die lagere getallen zelf. Het
+        # verschil over het venster is dan de som van wat er in ronde 13
+        # gebeurde en wat er van een eerdere ronde af ging, en die twee zijn
+        # niet te scheiden. Een ronde met -1 assist bestaat niet, en 0 is een
+        # bewering die we niet kunnen doen: misschien gaf hij er wel een en
+        # werd er een oudere ingetrokken.
+        ("jan-burger: assists omlaag terwijl hij speelde",
+         sp("burger", duels=6, minuten=82, assists=1),
+         sp("burger", duels=7, minuten=163, assists=0), [13], "assists", ""),
+        ("evan-rottier: idem, met meer minuten",
+         sp("rottier", duels=12, basisplaatsen=11, minuten=974, goals=2, assists=5),
+         sp("rottier", duels=13, basisplaatsen=11, minuten=1064, goals=2, assists=4),
+         [13], "assists", ""),
+        # maar de minuten van die ronde blijven wel staan -- leeg maken wat
+        # je niet weet, niet wat je wel weet
+        ("en zijn minuten blijven gewoon staan",
+         sp("rottier2", duels=12, minuten=974, assists=5),
+         sp("rottier2", duels=13, minuten=1064, assists=4), [13], "minuten", 90),
+        ("een echte nul blijft een nul",
+         sp("gewoon", duels=12, minuten=1000, assists=2),
+         sp("gewoon", duels=13, minuten=1090, assists=2), [13], "assists", 0),
+        ("een goal minder: ook leeg",
+         sp("goalweg", duels=12, minuten=1000, goals=3),
+         sp("goalweg", duels=13, minuten=1090, goals=2), [13], "goals", ""),
     ]
     ok = True
     for naam, vorig, nu, rondes, kolom, verwacht in gevallen:
@@ -1418,6 +1450,30 @@ def test_broncorrectie_versus_wegvallende_data():
          {}, {"speler-3": {"assists": "1", "goals": "3"}}, 0, 1),
         ("precies MAX_FEITCORRECTIES spelers: nog net een handvol",
          {}, drie, 0, 3),
+
+        # HET ANKER MAG STIJGEN, en dat ontbrak hier. Het anker eiste eerst
+        # dat duels, basisplaatsen en minuten GELIJK bleven. Die eis kwam van
+        # younes-namli, en die was geblesseerd: tussen de twee standen was
+        # geen wedstrijd gespeeld. Over een venster waarin WEL een ronde valt
+        # stijgen die tellers bij iedereen die speelde, en dan kan het anker
+        # nooit kloppen.
+        #
+        # Op 27-11-2026 blokkeerde dat de run: jan-burger.assists 1 -> 0 met
+        # duels 6 -> 7 en minuten 82 -> 163, en evan-rottier.assists 5 -> 4
+        # met duels 12 -> 13 en minuten 974 -> 1064. Beide spelerspagina's
+        # noemen de lagere assists zelf, op vier plekken. Correcte scrapes,
+        # afgekeurd omdat er intussen gevoetbald was.
+        ("jan-burger: assists omlaag terwijl duels en minuten stijgen",
+         {"speler-3": {"duels": "6", "basisplaatsen": "6", "minuten": "82"}},
+         {"speler-3": {"duels": "7", "basisplaatsen": "6", "minuten": "163",
+                       "assists": "1"}}, 0, 1),
+        ("evan-rottier: idem bij een speler met veel minuten",
+         {"speler-7": {"duels": "12", "basisplaatsen": "11", "minuten": "974"}},
+         {"speler-7": {"duels": "13", "basisplaatsen": "11", "minuten": "1064",
+                       "assists": "1"}}, 0, 1),
+        ("alles stijgt en niets zakt: geen melding",
+         {"speler-3": {"duels": "12", "minuten": "900"}},
+         {"speler-3": {"duels": "13", "minuten": "990"}}, 0, 0),
         ("niets gedaald", {}, {}, 0, 0),
 
         # --- en dit niet: hier valt data weg

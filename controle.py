@@ -104,9 +104,27 @@ MINUTEN_REVISIE = 15       # zie controleer_seizoen(): de bron herrekent
 HARDE_FEITEN = ("duels", "basisplaatsen")
 HERZIENBARE_FEITEN = ("goals", "assists", "geel", "rood", "reddingen")
 
-# Het anker: deze drie moeten BEKEND en GELIJK zijn voordat een daling een
-# correctie mag heten. Leeg is niet nul -- van een onbekende teller kun je
-# niet zeggen dat hij gelijk bleef.
+# Het anker: deze drie moeten BEKEND zijn en NIET GEDAALD voordat een daling
+# een correctie mag heten. Leeg is niet nul -- van een onbekende teller kun je
+# niets zeggen.
+#
+# Hier stond "bekend en GELIJK", en dat was te streng. Die eis kwam van
+# younes-namli op 13-11-2026, en die was geblesseerd: er was tussen de twee
+# standen geen wedstrijd gespeeld, dus duels bleef 2 en minuten 145. Over een
+# venster waarin WEL een ronde valt, stijgen die tellers bij iedereen die
+# speelde, en dan kan het anker nooit kloppen.
+#
+# Op 27-11-2026 blokkeerde dat de run. jan-burger.assists zakte van 1 naar 0
+# en evan-rottier.assists van 5 naar 4, terwijl hun duels van 6 naar 7 en van
+# 12 naar 13 gingen en hun minuten van 82 naar 163 en van 974 naar 1064. De
+# spelerspagina's noemen zelf 0 en 4, elk op vier plekken. Correcte scrapes,
+# afgekeurd omdat er intussen gevoetbald was.
+#
+# NIET GEDAALD houdt alles wat het anker moest tegenhouden. Een omgevallen
+# parser laat die tellers zakken of wegvallen; een clubwissel laat het
+# seizoenstotaal opnieuw beginnen; de duizendtallenfout van 09-11 liet
+# minuten met 989 zakken. Alle drie zakken ze door deze eis. Wat een gespeelde
+# ronde doet -- omhoog -- is geen aanwijzing voor een kapotte parser.
 ANKERS = ("duels", "basisplaatsen", "minuten")
 
 # En de bodem onder de versoepeling: een bron corrigeert een handvol feiten,
@@ -901,9 +919,11 @@ def controleer_seizoen(r):
                 c, b, a = d
                 return f"{x['speler_id']}.{c}: {b:.0f} -> {a:.0f}"
 
-            # HET ANKER. Bekend EN gelijk, want leeg is niet nul.
-            anker_gelijk = all(
-                _f(x.get(c)) is not None and _f(x.get(c)) == _f(v.get(c))
+            # HET ANKER. Bekend en niet gedaald, want leeg is niet nul en
+            # een gespeelde ronde laat deze tellers stijgen.
+            anker_heel = all(
+                _f(x.get(c)) is not None and _f(v.get(c)) is not None
+                and _f(x.get(c)) >= _f(v.get(c))
                 for c in ANKERS)
 
             harde = [d for d in map(_daling, HARDE_FEITEN) if d]
@@ -912,17 +932,15 @@ def controleer_seizoen(r):
             # EEN BRONCORRECTIE heeft vier kenmerken tegelijk, en alle vier
             # moeten kloppen. Precies EEN herzienbare teller zakt, met precies
             # EEN stap, geen harde teller zakt, en duels, basisplaatsen en
-            # minuten staan bekend en ongewijzigd op hun oude waarde. Zo zag
-            # younes-namli eruit: assists 2 -> 1, de rest tot op de minuut
-            # gelijk.
+            # minuten zijn bekend en niet gedaald.
             #
             # Elke andere vorm van daling blijft een fout, en dat is de kern.
-            # Twee tellers tegelijk, twee stappen in een, een teller die
+            # Twee tellers tegelijk, twee stappen in een, een harde teller die
             # meezakt, of een onbekende ankerwaarde: dat is geen beoordeling
             # die wordt teruggedraaid maar data die wegvalt.
             correctie = (not harde and len(zacht) == 1
                          and zacht[0][1] - zacht[0][2] == 1
-                         and anker_gelijk)
+                         and anker_heel)
             eigen = [_regel(d) for d in harde]
             if correctie:
                 correcties.append(_regel(zacht[0]))
@@ -960,7 +978,7 @@ def controleer_seizoen(r):
                       "die een beoordeling terugdraait. Zo'n correctie is "
                       "precies een herzienbare teller (goals, assists, geel, "
                       "rood, reddingen), precies een stap omlaag, met duels, "
-                      "basisplaatsen en minuten bekend en ongewijzigd; die "
+                      "basisplaatsen en minuten bekend en niet gedaald; die "
                       "blokkeert niet en staat als waarschuwing in het "
                       "rapport. Wat hier staat is dat niet: er zakt een hard "
                       "feit (duels of basisplaatsen), of er zakken twee "
@@ -977,8 +995,8 @@ def controleer_seizoen(r):
                         if len(correcties) == 1 else
                         f"{len(correcties)} herziene feiten sinds {vorige}",
                         "; ".join(correcties[:6]) + " — een enkele "
-                        "herzienbare teller een stap omlaag, met duels, "
-                        "basisplaatsen en minuten onveranderd. Dat is de bron "
+                        "herzienbare teller een stap omlaag, zonder dat duels, "
+                        "basisplaatsen of minuten zakken. Dat is de bron "
                         "die een beoordeling terugdraait: een assist wordt na "
                         "de wedstrijd toegekend en soms anders toegekend. "
                         "Blokkeert niet, want onze cijfers volgen de bron en "

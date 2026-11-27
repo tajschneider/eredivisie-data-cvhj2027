@@ -1294,7 +1294,7 @@ def ronde_uit_verschil(vorig, nu, rondes, datum):
     oud = {r["speler_id"]: r for r in vorig}
     ronde = rondes[-1] if rondes else ""
     venster = ",".join(str(r) for r in rondes)
-    uit = []
+    uit, negatief = [], []
     for r in nu:
         v = oud.get(r["speler_id"], {})
         delta = {}
@@ -1330,6 +1330,28 @@ def ronde_uit_verschil(vorig, nu, rondes, datum):
             if isinstance(v_k, int) and v_k > grens:
                 delta[kaart] = ""
 
+        # EEN NEGATIEVE DELTA IS NIET MEETBAAR, en 0 raden ook niet.
+        #
+        # Op 27-11-2026 stond in ronde 13 bij jan-burger en evan-rottier
+        # assists=-1. Dat kwam niet uit een fout maar uit een broncorrectie:
+        # hun seizoenstotaal zakte van 1 naar 0 en van 5 naar 4, en de
+        # spelerspagina's noemen die lagere getallen zelf. Het verschil over
+        # het venster is dan een som van twee dingen -- wat er in ronde 13
+        # gebeurde, en wat er van een eerdere ronde is afgehaald -- en die
+        # twee zijn niet te scheiden.
+        #
+        # Dus leeg, niet -1 en niet 0. Een ronde met -1 assist bestaat niet,
+        # en 0 zou een bewering zijn die we niet kunnen doen: misschien gaf
+        # hij in ronde 13 wel een assist en werd er een oudere ingetrokken.
+        # backtest.py rekent een rij zonder volledige productie niet mee, dus
+        # leeg kost hier een rij en geen verzinsel.
+        onmeetbaar = [k for k in tellers
+                      if isinstance(delta[k], int) and delta[k] < 0]
+        for k in onmeetbaar:
+            delta[k] = ""
+        if onmeetbaar:
+            negatief.append(f"{r['speler_id']}: {', '.join(onmeetbaar)}")
+
         if not any(isinstance(delta[k], int) and delta[k] > 0
                    for k in ("duels", "minuten")):
             continue                      # niet gespeeld in dit venster
@@ -1342,6 +1364,14 @@ def ronde_uit_verschil(vorig, nu, rondes, datum):
             "rood": delta["rood"], "reddingen": delta["reddingen"],
             "clean_sheet": delta["nul_achter"], "ploegpunten": "",
             "venster": venster, "opgehaald": VANDAAG})
+    # ZEGGEN DAT JE IETS LEEG HEBT GELATEN. De kaartengrens hierboven doet dat
+    # niet en dat is een gebrek: een stille blanking is niet te onderscheiden
+    # van een bron die niets meldde.
+    if negatief:
+        print(f"    {len(negatief)} teller(s) leeg gelaten, want het verschil "
+              f"was negatief -- de bron heeft daar een eerder feit herzien: "
+              f"{'; '.join(negatief[:8])}"
+              f"{' ...' if len(negatief) > 8 else ''}")
     return uit
 
 
