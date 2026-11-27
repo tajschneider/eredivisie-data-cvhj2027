@@ -87,7 +87,86 @@ import numpy as np
 # ----------------------------------------------------------------- instellingen
 BUDGET = 32.0
 GEM_DOELPUNTEN = 1.38          # competitiegemiddelde per ploeg per duel
+
+# De verwachte doelpunten van de bron liggen structureel te laag. Gemeten op
+# 27-11-2026 over alle 234 gespeelde clubwedstrijden van ronde 1 t/m 13:
+#
+#   verwacht voor  1.28   werkelijk 1.95   verhouding 1.53
+#   verwacht tegen 1.28   werkelijk 1.95   verhouding 1.53
+#
+# Dezelfde verhouding bij BEIDE herkomsten -- de 72 duels met xg van de bron
+# zelf (1.24 -> 2.01) en de 162 die uit de marktkansen zijn teruggerekend
+# (1.30 -> 1.92) -- en in elke afzonderlijke ronde dezelfde richting. Dit
+# seizoen scoort simpelweg hoger dan waar die cijfers op geijkt zijn.
+#
+# WAT DIT RAAKT: alleen de uitkomstkansen en de keepersreddingen. De
+# doelpunten- en assisttermen gebruiken lv/gem_lambda, en die verhouding
+# blijft gelijk zolang gem_lambda meeschaalt -- vandaar dat de schaal op
+# BEIDE plekken moet staan. Een eerdere proef waarin alleen lam() meeschaalde
+# blies de aanvallers op (+0.75 bias) en wees precies de verkeerde kant op.
+#
+# GEMETEN EFFECT op de backtest (ronde 2-13, 2540 speler-ronden):
+#   schaal 1.00:  bias +0.13  RMSE 3.47  |  K +1.16  V +0.41  M -0.18  A -0.14
+#   schaal 1.25:  bias +0.08  RMSE 3.46  |  K +1.05  V +0.26  M -0.17  A -0.12
+#   schaal 1.53:  bias +0.04  RMSE 3.46  |  K +1.04  V +0.15  M -0.16  A -0.12
+#
+# De verdedigersfout verdwijnt grotendeels; de keepersfout niet, want een
+# hogere lt geeft minder clean sheets maar meer reddingspunten, en die twee
+# heffen elkaar bijna op.
+DOELPUNTSCHAAL = 1.53
+
+# ------------------------------------------------------------------ ijking
+# Het model is als voorspeller van een WILLEKEURIGE speler zuiver: over 2540
+# speler-ronden (ronde 2 t/m 13) is de bias +0.13, en per ronde ligt hij
+# tussen -0.20 en +0.26. Maar de fout loopt systematisch op met de
+# verwachting zelf, gemeten op 27-11-2026:
+#
+#   E 0-2  (n=992) bias -0.49      E 4-5  (n=248) +0.66
+#   E 2-3  (n=678)      +0.18      E 6-8  (n= 44) +1.41
+#   E 3-4  (n=485)      +0.23      E 8+   (n= 15) +3.58
+#
+# Het model spreidt te ver uit: de spreiding van E is 1.44 waar de
+# werkelijkheid 3.57 is, en juist de uitschieters naar boven zijn te hoog.
+# Dat is geen fout in een term maar de winnaarsvloek: een optimalisator kiest
+# per definitie de elf hoogste schattingen, en dat zijn de elf waar de
+# schattingsfout het meest naar boven uitviel. De elf hoogste rijen van het
+# seizoen: verwacht 10.6, geworden 6.6.
+#
+# NIET EEN ARTEFACT VAN DE RECONSTRUCTIE. Op de 113 rijen met ECHTE
+# app-punten is het patroon sterker, niet zwakker: E 5-6 geeft +2.64 en E 6+
+# geeft +3.38. De reconstructie mist assists, kaarten en reddingen, dus die
+# controle was nodig voor deze ijking te rechtvaardigen.
+#
+# Kleinste kwadraten over alle 2540 rijen: werkelijk = 0.8154 + 0.6718 x E.
+# (Op alleen de echte rijen: 2.05 + 0.36 x E -- sterker, maar n=113 en een
+# smaller bereik, dus die dient als controle op het teken, niet als fit.)
+#
+# WAT DIT WEL EN NIET VERANDERT: een affiene transformatie laat de VOLGORDE
+# intact, dus het elftal dat eruit rolt blijft hetzelfde. Wat verandert is de
+# hoogte van de verwachting -- en daarmee het verschil tussen nul en een
+# transfer, dat met een derde krimpt. Precies dat verschil is waar een besluit
+# op rust.
+#
+# Het constante deel schaalt mee met p_speelt: een speler zonder wedstrijd
+# hoort op nul te blijven en niet uit het niets 0.8 punt te krijgen.
+IJKING_A = 0.8154
+IJKING_B = 0.6718
 KRIMP_CLUB = 1.0               # ridge-krimp clubratings naar de prior
+# 8 en niet meer. Op 27-11-2026 is geprobeerd de krimp op te voeren om de
+# overschatting van de hoogst gewaardeerde spelers weg te nemen. Gemeten op de
+# maat die telt -- de elf hoogste PER RONDE, want dat is wat de optimalisator
+# kiest, n=132 -- pakt dat verkeerd uit:
+#
+#   KRIMP  8 (nu): bias +0.07 per speler  =  +0.8 per ploeg
+#   KRIMP 16     :      -0.38             =  -4.2
+#   KRIMP 24     :      -0.58             =  -6.4
+#   KRIMP 40     :      -0.74             =  -8.1
+#
+# Na de ijking hierboven is de selectiefout al weg; meer krimp schiet door en
+# maakt het model te pessimistisch over precies de spelers die je opstelt.
+# De verleiding om hier toch aan te draaien is groot, want op de elf hoogste
+# van het HELE seizoen (n=11, de staart) ziet 8 er met +1.41 slecht uit. Die
+# maat rust op elf rijen en zegt niets over een wekelijkse keuze.
 KRIMP_SPELER = 8.0             # wedstrijden prior bij de individuele productie
 BANK_FACTOR = 0.5              # een niet-ingevallen reserve scoort 50%
 INHAAL_FACTOR = 0.85           # inhaalduel telt mee, maar met onzekerheid
@@ -635,16 +714,21 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
         # invoer voor rol_kenmerken()'s recency-weging (stap 1+2).
         v["rijen"].append((laatste_ronde - int(r["ronde"]), minuten, goals, status))
 
-    gem_lambda = sum(GEM_DOELPUNTEN * math.exp(a) for a in aanval.values()) / len(aanval)
+    gem_lambda = DOELPUNTSCHAAL * sum(GEM_DOELPUNTEN * math.exp(a)
+                                      for a in aanval.values()) / len(aanval)
 
     def lam(club, fixtures):
         for thuis, uit in fixtures:
             if club == thuis:
-                return (GEM_DOELPUNTEN * math.exp(aanval[thuis] - verdediging[uit] + thuisvoordeel),
-                        GEM_DOELPUNTEN * math.exp(aanval[uit] - verdediging[thuis]))
+                return (DOELPUNTSCHAAL * GEM_DOELPUNTEN
+                        * math.exp(aanval[thuis] - verdediging[uit] + thuisvoordeel),
+                        DOELPUNTSCHAAL * GEM_DOELPUNTEN
+                        * math.exp(aanval[uit] - verdediging[thuis]))
             if club == uit:
-                return (GEM_DOELPUNTEN * math.exp(aanval[uit] - verdediging[thuis]),
-                        GEM_DOELPUNTEN * math.exp(aanval[thuis] - verdediging[uit] + thuisvoordeel))
+                return (DOELPUNTSCHAAL * GEM_DOELPUNTEN
+                        * math.exp(aanval[uit] - verdediging[thuis]),
+                        DOELPUNTSCHAAL * GEM_DOELPUNTEN
+                        * math.exp(aanval[thuis] - verdediging[uit] + thuisvoordeel))
         return None
 
     pool = []
@@ -791,7 +875,11 @@ def bouw_pool(prijsrijen, spelerrijen, aanval, verdediging, thuisvoordeel,
                 # verwachte tegendoelpunten (gemeten, zie de constante)
                 e += (speelfractie * REDDINGEN_PER_TEGENGOAL * lt
                       / REDDINGEN_PER_PUNT)
-            return weging * e
+            # IJking als laatste stap, op het totaal (zie de constanten): het
+            # model spreidt te ver uit en juist de hoogste schattingen zijn te
+            # hoog. Het constante deel schaalt mee met p_speelt, zodat wie
+            # niet speelt op nul blijft.
+            return weging * (IJKING_A * p_speelt + IJKING_B * e)
 
         E = punten(programma)
         if club in inhaal:
