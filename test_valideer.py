@@ -251,6 +251,62 @@ def test_meetlat_volgt_de_gespeelde_ploeg():
     return ok and g
 
 
+def test_bankrijen_tellen_niet_als_spelerspunten():
+    """Een bankgetal is een BIJDRAGE, geen spelersscore.
+
+    Vastgesteld op 27-11-2026 aan ronde 12: de elf die speelde telde 21 en de
+    bank 0 + 1 + 5 + 6, samen precies de 33 die de app toont. De app rekent
+    dus met bijdragen -- en voor een bankspeler die er niet in komt is die
+    bijdrage de HELFT van wat hij scoorde.
+
+    Welke van de twee het is, valt niet van het scherm af te lezen: dat hangt
+    af van hoeveel basisspelers niet speelden en welke formatie geldig blijft.
+    Een gehalveerd getal als spelerspunten invoeren is een foute waarneming,
+    en de meting waar eigen_elf.csv voor bestaat heeft er maar een paar nodig
+    om te kantelen.
+
+    Effect op de echte meetlat: 127 -> 113 rijen, RMSE 3,98 -> 4,14. De
+    bankrijen vleiden het model dus licht.
+    """
+    import tempfile, os
+    import backtest
+
+    map_ = tempfile.mkdtemp()
+    pad = os.path.join(map_, "eigen_elf.csv")
+    with open(pad, "w", encoding="utf-8") as f:
+        f.write("ronde,speler,punten,plek\n"
+                "12,Deveron Fonville,7,basis\n"
+                "12,Kjetil Haug,,basis\n"
+                "12,Mexx Meerdink,6,bank\n"
+                "12,Mohamed Ihattaren,5,bank\n")
+    echt = backtest.lees_echte_punten(pad)
+    ok = True
+
+    g = (12, "fonville") in echt and echt[(12, "fonville")] == 7
+    print(f"  {'OK  ' if g else 'FOUT'} een basisspeler telt mee")
+    ok = ok and g
+
+    g = (12, "meerdink") not in echt and (12, "ihattaren") not in echt
+    print(f"  {'OK  ' if g else 'FOUT'} bankrijen tellen niet mee "
+          f"({len(echt)} waarnemingen van de 4 rijen)")
+    ok = ok and g
+
+    g = (12, "haug") not in echt
+    print(f"  {'OK  ' if g else 'FOUT'} een lege waarde blijft geen waarneming")
+    ok = ok and g
+
+    # Een bestand ZONDER plek-kolom moet werken zoals voorheen, anders breekt
+    # een oudere eigen_elf.csv stilletjes.
+    oud = os.path.join(map_, "zonder_plek.csv")
+    with open(oud, "w", encoding="utf-8") as f:
+        f.write("ronde,speler,punten\n11,Guus Til,11\n")
+    zonder = backtest.lees_echte_punten(oud)
+    g = zonder.get((11, "til")) == 11
+    print(f"  {'OK  ' if g else 'FOUT'} een bestand zonder plek-kolom werkt "
+          f"zoals voorheen")
+    return ok and g
+
+
 def main():
     print("poortwachter: draait de validatie deze week?\n")
     ok1 = test_poortwachter()
@@ -269,8 +325,11 @@ def main():
     print("\nde meetlat volgt de ploeg die werkelijk speelde\n")
     ok7 = test_meetlat_volgt_de_gespeelde_ploeg()
 
+    print("\nbankrijen zijn bijdragen, geen spelerspunten\n")
+    ok8 = test_bankrijen_tellen_niet_als_spelerspunten()
+
     print()
-    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7]):
+    if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8]):
         print("OK: de poortwachter kiest de juiste weken en het rapport oordeelt niet op ruis.")
     else:
         sys.exit("MISLUKT: zie hierboven.")
