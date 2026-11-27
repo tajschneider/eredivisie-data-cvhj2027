@@ -1959,6 +1959,149 @@ def test_afgekapte_prijslijst_valt_op():
     return ok
 
 
+def test_broncontrole_leest_dezelfde_lijst_als_de_scrape():
+    """Een controle met een andere parser dan de scraper controleert niets.
+
+    Op 27-11-2026 liep de run opnieuw vast, nu op de broncontrole: "100 van
+    de 508 aangekondigde spelers gelezen" en "12 clubs". De scrape kon de
+    lijst op dat moment wel compleet lezen -- scrape_prijzen.py haalt sinds
+    de vorige stap de vier liniepagina's op -- maar de broncontrole las de
+    pagina met s.parse_poule_prijzen() en bleef op de hoofdpagina zitten.
+
+    Dat is de derde lezer van dezelfde bron. main() in scrape_prijzen.py zag
+    100 en weigerde te schrijven, taak_prijzen() in scrape_eredivisie.py zag
+    100 en schreef ze weg, en deze controle zag 100 en keurde de hele run af.
+    Drie implementaties, drie antwoorden, een week data.
+
+    Nu loopt de broncontrole via sp.haal_linies(), dezelfde functie als de
+    scrape. Deze test legt vast dat hij de volle lijst ziet waar de scrape
+    die ziet, en dat hij nog steeds afgaat als de bron werkelijk stuk is.
+    """
+    import controle as c
+    import scrape_prijzen as sp
+
+    CLUBNAMEN = ["PSV", "Feyenoord", "Ajax", "AZ", "FC Twente", "FC Utrecht",
+                 "NEC", "sc Heerenveen", "FC Groningen", "Sparta Rotterdam",
+                 "Fortuna Sittard", "Go Ahead Eagles", "PEC Zwolle",
+                 "Excelsior", "Telstar", "Willem II", "ADO Den Haag",
+                 "SC Cambuur"]
+    NL = {"Goalkeeper": "Keeper", "Defender": "Verdediger",
+          "Midfielder": "Middenvelder", "Forward": "Aanvaller"}
+    AANTAL = {"keepers": 68, "verdedigers": 167,
+              "middenvelders": 144, "aanvallers": 129}
+
+    def rij(i, slug, club, positiecel=None, nummer=False):
+        cellen = [f"<td>{i}</td>"] if nummer else []
+        cellen.append(f'<td><a href="/eredivisie/speler/{slug}/">'
+                      f'Speler {i}</a></td>')
+        cellen.append(f"<td>{club}</td>")
+        if positiecel:
+            cellen.append(f"<td>{positiecel}</td>")
+        cellen += ["<td>2,5 mln</td>", "<td>12,0</td>"]
+        return "<tr>" + "".join(cellen) + "</tr>"
+
+    def hoofdpagina(n, slugs, clubs):
+        """100 van de 508, en -- zoals de echte bron op 27-11 -- maar 12
+        clubs, want de lijst is op punten gesorteerd en niet op club."""
+        kop = ("<tr><th>Speler</th><th>Club</th><th>Positie</th>"
+               "<th>Waarde</th><th>Behaald</th></tr>")
+        pos = list(NL)
+        rijen = [rij(i, slugs[i], clubs[i % len(clubs)],
+                     positiecel=NL[pos[i % 4]]) for i in range(n)]
+        return ("<p>Alle 508 spelers die je in Coach van het Jaar kunt "
+                "kopen</p><table>" + kop + "".join(rijen) + "</table>")
+
+    def liniepagina(n, start):
+        kop = ("<tr><th>#</th><th>Speler</th><th>Club</th><th>Waarde</th>"
+               "<th>Behaald</th></tr>")
+        rijen = [rij(start + i, f"linie-{start + i}",
+                     CLUBNAMEN[(start + i) % 18], nummer=True)
+                 for i in range(n)]
+        return "<table>" + kop + "".join(rijen) + "</table>"
+
+    def bron(**afwijkend):
+        p, start, alle = {}, 1000, []
+        for seg, n in AANTAL.items():
+            p[sp.PRIJZEN_URL.rstrip("/") + "/" + seg + "/"] = \
+                afwijkend.get(seg, liniepagina(n, start))
+            alle += [f"linie-{start + i}" for i in range(n)]
+            start += n
+        p[sp.PRIJZEN_URL] = afwijkend.get(
+            "hoofd", hoofdpagina(100, alle[:100], CLUBNAMEN[:12]))
+        return p
+
+    def meet(paginas):
+        echt = sp.get
+        opgehaald = []
+        def nep(url, *a, **k):
+            opgehaald.append(url)
+            if url not in paginas:
+                raise RuntimeError(f"niet op te halen: {url}")
+            return paginas[url]
+        r = c.Rapport()
+        try:
+            sp.get = nep
+            import io as _io, contextlib
+            with contextlib.redirect_stdout(_io.StringIO()):
+                c.controleer_prijslijst_bron(r)
+        finally:
+            sp.get = echt
+        return r, opgehaald
+
+    ok = True
+
+    # --- 1. het geval van 27-11: hoofdpagina 100 en 12 clubs, linies compleet
+    r, opgehaald = meet(bron())
+    liniehits = [u for u in opgehaald if u.rstrip("/").split("/")[-1] in AANTAL]
+    g = (len(r.fouten) == 0 and r.meting.get("bron_prijzen") == 508
+         and len(liniehits) == 4)
+    print(f"  {'OK  ' if g else 'FOUT'} 100 van de 508 op de hoofdpagina: de "
+          f"linies worden erbij gehaald ({r.meting.get('bron_prijzen')} "
+          f"spelers, {len(liniehits)} linies, {len(r.fouten)} fout)")
+    ok = ok and g
+
+    # --- 2. en dan kloppen de clubs ook weer. Dit was de tweede fout van
+    #        27-11: 12 clubs in plaats van 18.
+    clubregel = [x for x in r.regels if x[2].endswith("clubs")]
+    g = len(clubregel) == 1 and clubregel[0][0] == "OK" and "18" in clubregel[0][2]
+    print(f"  {'OK  ' if g else 'FOUT'} 18 clubs in plaats van 12: "
+          f"{clubregel[0][2] if clubregel else 'geen clubregel'}")
+    ok = ok and g
+
+    # --- 3. een onleesbare liniepagina gaat wel af, en noemt de linie
+    r, _ = meet(bron(keepers="<table><tr><th>Nr</th><th>Naam</th></tr></table>"))
+    stuk = [x for x in r.fouten if "liniepagina" in x[2]]
+    g = len(stuk) == 1 and "keepers" in stuk[0][3]
+    print(f"  {'OK  ' if g else 'FOUT'} onleesbare liniepagina: FOUT die de "
+          f"linie noemt ({len(stuk)} fout)")
+    ok = ok and g
+
+    # --- 4. en als de bron ECHT stuk is -- geen tabel op de hoofdpagina en
+    #        geen linies -- blijft het een fout. De versoepeling mag geen
+    #        achterdeur zijn.
+    kaal = {sp.PRIJZEN_URL: "<p>Alle 508 spelers</p><table><tr><th>Nr</th>"
+                            "<th>Naam</th></tr></table>"}
+    r, _ = meet(kaal)
+    g = len(r.fouten) >= 1
+    print(f"  {'OK  ' if g else 'FOUT'} bron werkelijk stuk: nog steeds FOUT "
+          f"({len(r.fouten)} fout)")
+    ok = ok and g
+
+    # --- 5. en als de hoofdpagina alles weer geeft, worden de linies NIET
+    #        opgehaald. Vier verzoeken minder, en het bewijst dat de
+    #        terugval een terugval is.
+    vol = dict(bron())
+    alle = [f"linie-{1000 + i}" for i in range(508)]
+    vol[sp.PRIJZEN_URL] = hoofdpagina(508, alle, CLUBNAMEN)
+    r, opgehaald = meet(vol)
+    liniehits = [u for u in opgehaald if u.rstrip("/").split("/")[-1] in AANTAL]
+    g = len(r.fouten) == 0 and liniehits == []
+    print(f"  {'OK  ' if g else 'FOUT'} volle hoofdpagina: geen liniepagina's "
+          f"opgehaald ({len(liniehits)}), {len(r.fouten)} fout")
+    ok = ok and g
+    return ok
+
+
 def test_kans_komt_uit_tekst_niet_uit_opmaak():
     """Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
 
@@ -2295,10 +2438,13 @@ def main():
     print("\neen afgekapte prijslijst\n")
     ok25 = test_afgekapte_prijslijst_valt_op()
 
+    print("\nde broncontrole leest dezelfde lijst als de scrape\n")
+    ok26 = test_broncontrole_leest_dezelfde_lijst_als_de_scrape()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
             ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
-            ok22, ok23, ok24, ok25]):
+            ok22, ok23, ok24, ok25, ok26]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
