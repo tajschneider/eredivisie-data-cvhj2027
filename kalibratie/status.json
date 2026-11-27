@@ -152,6 +152,25 @@
       "n_evalueerbaar": 33,
       "besluit": "overgeslagen",
       "reden": "nog maar 0 nieuwe ronde(s) sinds de vorige controle (ronde 34); wacht tot 4"
+    },
+    {
+      "tijdstip": "2026-11-27T18:38:11.827660+00:00",
+      "tot_ronde": 34,
+      "n_evalueerbaar": 33,
+      "huidig": {
+        "KRIMP_SPELER": 8.0,
+        "KRIMP_CLUB": 1.0,
+        "rmse": 3.4470410467599484
+      },
+      "kandidaat": {
+        "KRIMP_SPELER": 6,
+        "KRIMP_CLUB": 2.0,
+        "rmse": 3.445137928571374
+      },
+      "relatieve_verbetering": 0.0005521019804400965,
+      "max_haalbare_verbetering": 0.0005521019804400965,
+      "besluit": "geen aanpassing",
+      "reden": "verbetering 0.1% onder de drempel van 3% -- binnen de ruis van dit aantal rondes. LET OP: de best haalbare winst in het HELE raster is 0.06%, nog steeds onder de drempel van 3%. Deze kalibratie kan dus niets aanpassen, wat je ook meet -- de drempel past niet bij de schaal van deze maatstaf. Overweeg te ijken op de werkelijk behaalde punten van de gekozen vijftien in plaats van op RMSE over de hele pool: daar zijn de verschillen een orde van grootte groter."
     }
   ]
 }
