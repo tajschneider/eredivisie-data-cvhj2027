@@ -34,6 +34,7 @@ import unicodedata
 from pathlib import Path
 
 import scrape_eredivisie as s
+import scrape_prijzen as sp
 
 HIER = Path(__file__).parent
 VANDAAG = time.strftime("%Y-%m-%d")
@@ -207,6 +208,79 @@ class Rapport:
 
 
 # =========================================================== bron (de kanarie)
+def controleer_prijslijst_bron(r):
+    """De CVHJ-spelerslijst bij de bron.
+
+    Een eigen functie en niet een blok middenin controleer_bron(),
+    zodat er een test op kan. Die hele functie haalt tientallen
+    pagina's op en is daarmee onbenaderbaar voor een test; precies
+    dit stuk is op 23-11-2026 de run komen blokkeren.
+    """
+    #
+    # DEZELFDE PARSER ALS DE SCRAPER, en dat was hier niet zo. Deze controle
+    # las de pagina met s.parse_poule_prijzen() terwijl scrape_prijzen.py zijn
+    # eigen parse_rijen() gebruikt. Op 23-11-2026 ging de bron om en gaf
+    # /spelers/ nog maar 100 van de 508; de vier liniepagina's werden de
+    # volledige lijsten. Toen scrape_prijzen.py die kon lezen, bleef deze
+    # controle op de hoofdpagina zitten, zag 100 spelers en 12 clubs, en
+    # keurde de hele run af -- terwijl de lijst compleet beschikbaar was.
+    #
+    # Een controle die een andere parser gebruikt dan de scraper, controleert
+    # de scraper niet; hij controleert een tweede implementatie die niemand
+    # onderhoudt. Daarom loopt dit nu via sp.haal_linies(), net als de scrape.
+    pr, liniefouten, verwacht = [], [], None
+    try:
+        html_p = sp.get(sp.PRIJZEN_URL)
+        pr = sp.parse_rijen(html_p)[0]
+        gm = re.search(r"Alle\s+(\d{2,4})\s+spelers",
+                       re.sub(r"\s+", " ", html_p))
+        verwacht = int(gm.group(1)) if gm else None
+        # De hoofdpagina is sinds 23-11 een voorproefje. Is hij te kort, dan
+        # zijn de liniepagina's de lijst.
+        if len(pr) < (verwacht or MIN_SPELERS) * 0.95:
+            extra, _, per_linie, liniefouten = sp.haal_linies(meld=lambda *a: None)
+            pr += extra
+            r.meet("bron_prijzen_per_linie",
+                   ", ".join(f"{k} {v}" for k, v in per_linie.items()) or "geen")
+        pr = list({x["speler_id"]: x for x in pr}.values())
+    except Exception as e:
+        r.fout("prijslijst", "pagina niet te lezen", f"{type(e).__name__}: {e}")
+
+    r.meet("bron_prijzen", len(pr))
+    r.eis(not liniefouten, "prijslijst", "alle vier de liniepagina's leesbaar",
+          "; ".join(liniefouten) + " -- de opmaak van die pagina('s) is "
+          "veranderd; draai scrape_prijzen.py --dump")
+    if verwacht:
+        r.meet("bron_prijzen_gemeld", verwacht)
+        r.eis(len(pr) >= verwacht * 0.95, "prijslijst",
+              f"{len(pr)} van de {verwacht} aangekondigde spelers gelezen",
+              "de rijen van de CVHJ-spelerslijst worden niet meer herkend. "
+              "Staat hierboven bij de liniepagina's een aantal, dan is de "
+              "bron veranderd; staat er MISLUKT, dan is de parser het "
+              "probleem")
+    else:
+        r.eis(len(pr) >= MIN_SPELERS, "prijslijst", f"{len(pr)} spelers gelezen",
+              f"minder dan {MIN_SPELERS} en de pagina zegt niet hoeveel er "
+              f"horen te staan")
+    if pr:
+        r.eis(len({x["team"] for x in pr}) == CLUBS, "prijslijst",
+              f"{len({x['team'] for x in pr})} clubs", f"verwacht {CLUBS}")
+        r.eis(len({x["positie"] for x in pr}) == 4, "prijslijst",
+              "vier posities herkend",
+              f"gevonden: {sorted({x['positie'] for x in pr})}")
+        r.eis(all(x["speler_id"] for x in pr), "prijslijst",
+              "elke rij heeft een speler_id",
+              "zonder id moet de koppeling op naam en dat is foutgevoelig")
+        # Of dat id uit een link komt of uit de naam is geraden, staat in het
+        # logboek van de scraper. Wat het werkelijk waard is, meet de
+        # datacontrole: die zet prijzen.csv naast de gescrapete spelers en
+        # rapporteert de koppelgraad. Daar hoort dit thuis, niet hier.
+        r.eis(all(x["positie"] in ("Goalkeeper", "Defender", "Midfielder",
+                                   "Forward") for x in pr), "prijslijst",
+              "posities omgezet naar het Engels",
+              "de Nederlandse positienamen worden niet meer herkend")
+
+
 def controleer_bron(r):
     """Elke parser op een echte pagina zetten en de uitkomst beoordelen.
 
@@ -506,42 +580,7 @@ def controleer_bron(r):
               f"{positie} — hij zou stil op nul worden gezet")
 
     # --- CVHJ-spelerslijst met prijzen
-    try:
-        soup_p = s.get(s.PRIJZEN_URL)
-        pr = s.parse_poule_prijzen(soup_p)
-    except Exception as e:
-        r.fout("prijslijst", "pagina niet te lezen", f"{type(e).__name__}: {e}")
-        pr = []
-    gm = re.search(r"Alle\s+(\d{2,4})\s+spelers",
-                   re.sub(r"\s+", " ", s.vlak(soup_p)) if pr else "")
-    r.meet("bron_prijzen", len(pr))
-    if gm:
-        verwacht = int(gm.group(1))
-        r.meet("bron_prijzen_gemeld", verwacht)
-        r.eis(len(pr) >= verwacht * 0.95, "prijslijst",
-              f"{len(pr)} van de {verwacht} aangekondigde spelers gelezen",
-              "de rijen van de CVHJ-spelerslijst worden niet meer herkend")
-    else:
-        r.eis(len(pr) >= 400, "prijslijst", f"{len(pr)} spelers gelezen",
-              "minder dan 400 en de pagina zegt niet hoeveel er horen te staan")
-    if pr:
-        r.eis(len({c for _, _, c, _, _ in pr}) == CLUBS, "prijslijst",
-              f"{len({c for _, _, c, _, _ in pr})} clubs",
-              f"verwacht {CLUBS}")
-        r.eis(len({p for _, _, _, p, _ in pr}) == 4, "prijslijst",
-              "vier posities herkend",
-              f"gevonden: {sorted({p for _, _, _, p, _ in pr})}")
-        r.eis(all(sid for sid, _, _, _, _ in pr), "prijslijst",
-              "elke rij heeft een speler_id",
-              "zonder id moet de koppeling op naam en dat is foutgevoelig")
-        # Of dat id uit een link komt of uit de naam is geraden, staat in het
-        # logboek van de scraper. Wat het werkelijk waard is, meet de
-        # datacontrole: die zet prijzen.csv naast de gescrapete spelers en
-        # rapporteert de koppelgraad. Daar hoort dit thuis, niet hier.
-        r.eis(all(p in ("Goalkeeper", "Defender", "Midfielder", "Forward")
-                  for _, _, _, p, _ in pr), "prijslijst",
-              "posities omgezet naar het Engels",
-              "de Nederlandse positienamen worden niet meer herkend")
+    controleer_prijslijst_bron(r)
 
     # --- kaartenranglijsten
     for naam, url, kolom in (("geel", s.GEEL_URL, "gele kaarten"),

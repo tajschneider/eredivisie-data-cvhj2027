@@ -365,6 +365,40 @@ def volg_paginering(html, gezien):
     return sorted(urls)
 
 
+def haal_linies(meld=print):
+    """De vier liniepagina's, met hun positie uit het pad.
+
+    EEN PLEK, en dat is de hele reden dat deze functie bestaat. Deze bron is
+    op 23-11-2026 door drie verschillende lezers gelezen met drie
+    verschillende uitkomsten: main() hieronder zag 100 spelers en weigerde te
+    schrijven, taak_prijzen() in scrape_eredivisie.py zag er 100 en schreef
+    ze weg, en de broncontrole in controle.py zag er 100 en keurde de hele
+    run af. Drie keer dezelfde pagina, drie antwoorden. Wie hier iets
+    verandert, verandert het voor alle drie.
+
+    Levert (rijen, overgeslagen, per_linie, fouten). Een lege `fouten` en
+    vier getallen in `per_linie` is het gezonde geval.
+    """
+    rijen, overgeslagen, per_linie, fouten = [], [], {}, []
+    for segment, pos in LINIES.items():
+        url = PRIJZEN_URL.rstrip("/") + "/" + segment + "/"
+        meld(f"  liniepagina: {url}")
+        try:
+            extra, over_extra, _ = parse_rijen(get(url), positie=pos)
+        except RuntimeError as e:
+            # NIET stil doorlopen. Hier stond `except RuntimeError:
+            # continue`, en op 23-11-2026 liepen alle vier de pagina's
+            # daarop vast zonder dat het logboek er een woord over zei.
+            meld(f"    MISLUKT: {e}")
+            fouten.append(f"{segment}: {e}")
+            continue
+        meld(f"    {len(extra)} {pos}")
+        per_linie[segment] = len(extra)
+        rijen.extend(extra)
+        overgeslagen.extend(over_extra)
+    return rijen, overgeslagen, per_linie, fouten
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -400,26 +434,10 @@ def main():
     # overgeslagen. Vandaar alle vier, en de toets per linie hieronder.
     liniefouten, per_linie = [], {}
     if len(rijen) < args.min:
-        for segment, pos in LINIES.items():
-            url = PRIJZEN_URL.rstrip("/") + "/" + segment + "/"
-            gezien.add(url)
-            print(f"  liniepagina: {url}")
-            try:
-                extra, over_extra, _ = parse_rijen(get(url), positie=pos)
-            except RuntimeError as e:
-                # NIET stil doorlopen. Hier stond `except RuntimeError:
-                # continue`, en op 23-11-2026 liepen alle vier de pagina's
-                # daarop vast zonder dat het logboek er een woord over zei.
-                # De melding was "slechts 100 spelers gevonden", en die wees
-                # niemand naar de liniepagina's -- de oorzaak lag daar en het
-                # onderzoek begon bij de hoofdpagina.
-                print(f"    MISLUKT: {e}")
-                liniefouten.append(f"{segment}: {e}")
-                continue
-            print(f"    {len(extra)} {pos}")
-            per_linie[segment] = len(extra)
-            rijen.extend(extra)
-            overgeslagen.extend(over_extra)
+        extra, over_extra, per_linie, liniefouten = haal_linies()
+        rijen.extend(extra)
+        overgeslagen.extend(over_extra)
+        gezien |= {PRIJZEN_URL.rstrip("/") + "/" + seg + "/" for seg in LINIES}
 
     # en daarna eventuele andere paginalinks, zoals voorheen
     if len(rijen) < args.min:
