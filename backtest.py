@@ -514,8 +514,17 @@ def main():
 
     if a.per_speler:
         with open(a.per_speler, "w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=["ronde", "speler", "club", "pos",
-                                              "voorspeld", "werkelijk", "fout"])
+            # De kolommen komen UIT de rijen, niet uit een vaste lijst hier.
+            # Toen evalueer_ronde() er het veld `bron` bij kreeg -- dat zegt of
+            # de werkelijke punten uit de app komen of uit de reconstructie --
+            # liep deze optie vast op "dict contains fields not in fieldnames".
+            # Dat bleef onopgemerkt omdat niets in de tests of de workflows
+            # --per-speler draait: een vaste lijst op een plek die niemand
+            # aanraakt, veroudert stil.
+            velden = (list(alle_rijen[0]) if alle_rijen else
+                      ["ronde", "speler", "club", "pos", "voorspeld",
+                       "werkelijk", "fout", "bron"])
+            w = csv.DictWriter(f, fieldnames=velden)
             w.writeheader(); w.writerows(alle_rijen)
         print(f"\nper-speler resultaten -> {a.per_speler}")
 
