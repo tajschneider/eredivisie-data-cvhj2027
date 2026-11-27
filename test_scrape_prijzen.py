@@ -1605,6 +1605,227 @@ def test_variatietoets_meldt_dat_hij_niets_meet():
     return ok and g1 and g2 and g3
 
 
+def test_liniepaginas_leveren_de_hele_lijst():
+    """De hoofdpagina geeft 100 van de 508; de vier linies samen zijn compleet.
+
+    Op 23-11-2026 ging de bron om. /spelers/ toont sindsdien 100 rijen,
+    terwijl de tabelkop nog "508 spelers" zegt en het filter "Keepers (68),
+    Verdedigers (167), Middenvelders (144), Aanvallers (129)" -- samen 508.
+    De vier liniepagina's zijn de volledige lijsten geworden.
+
+    De scrape haalde die vier ook op, en kreeg er niets uit. Twee oorzaken:
+
+    1. Een liniepagina heeft GEEN kolom Positie (die staat in de titel) en
+       wel een kolom #. kies_tabel() eiste Positie, vond dus geen tabel, en
+       parse_rijen() gooide een RuntimeError.
+    2. Die RuntimeError werd opgevangen met `except RuntimeError: continue`.
+       Vier pagina's liepen vast en het logboek zei er geen woord over. De
+       melding was "slechts 100 spelers gevonden", en die wijst naar de
+       hoofdpagina terwijl de oorzaak in de liniepagina's zat.
+
+    De oude lus stopte bovendien met `if len(rijen) >= args.min: break`, en
+    met deze pagina's is dat een val: 100 + 68 + 167 + 144 is 479 en haalt de
+    drempel van 400, waarna de aanvallers nooit worden opgehaald.
+
+    Dat levert geen stil verkeerd bestand op, en dat is hieronder ook
+    nagerekend: de ontdubbeling komt na de lus en de hoofdpagina toont
+    spelers die ook op de liniepagina's staan, dus van die 479 blijven er 379
+    over en blokkeert de drempel alsnog. Het levert wel de VERKEERDE MELDING
+    op -- "slechts 379 spelers" wijst naar de bron terwijl er een linie is
+    overgeslagen. Daarom alle vier ophalen, en daarom staat de toets per
+    linie VOOR de drempel.
+    """
+    import scrape_prijzen as sp
+
+    def rij(i, slug, club, prijs, positiecel=None, nummer=False):
+        cellen = []
+        if nummer:
+            cellen.append(f"<td>{i}</td>")
+        cellen.append(f'<td><a href="/eredivisie/speler/{slug}/">'
+                      f'Speler {i}</a></td>')
+        cellen.append(f"<td>{club}</td>")
+        if positiecel:
+            cellen.append(f"<td>{positiecel}</td>")
+        cellen += [f"<td>{prijs} mln</td>", "<td>12,0</td>", "<td>3,17</td>"]
+        return "<tr>" + "".join(cellen) + "</tr>"
+
+    NL = {"Goalkeeper": "Keeper", "Defender": "Verdediger",
+          "Midfielder": "Middenvelder", "Forward": "Aanvaller"}
+
+    def hoofdpagina(n, slugs=None):
+        """Zoals /spelers/: MET kolom Positie, zonder #."""
+        koppen = ("<tr><th>Speler</th><th>Club</th><th>Positie</th>"
+                  "<th>Waarde</th><th>Behaald</th>"
+                  "<th>Verwachte punten</th></tr>")
+        posities = list(NL)
+        rijen = [rij(i, (slugs[i] if slugs else f"hoofd-{i}"), "Ajax", "2,5",
+                     positiecel=NL[posities[i % 4]])
+                 for i in range(n)]
+        return "<table>" + koppen + "".join(rijen) + "</table>"
+
+    def liniepagina(n, start=0):
+        """Zoals /spelers/keepers/: MET kolom #, ZONDER kolom Positie."""
+        koppen = ("<tr><th>#</th><th>Speler</th><th>Club</th><th>Waarde</th>"
+                  "<th>Behaald</th><th>Verwachte punten</th></tr>")
+        rijen = [rij(start + i, f"linie-{start + i}", "PSV", "1,5",
+                     nummer=True) for i in range(n)]
+        return "<table>" + koppen + "".join(rijen) + "</table>"
+
+    ok = True
+
+    def met_positie(html, pos):
+        """parse_rijen met een positie, en een TypeError als FOUT in plaats
+        van als crash -- anders stopt de test op de signatuur en draaien de
+        gevallen die het gedrag meten helemaal niet."""
+        try:
+            return sp.parse_rijen(html, positie=pos)
+        except TypeError as e:
+            return None, None, str(e)
+
+    # --- 1. een liniepagina met de positie uit het pad
+    rijen, over, _ = met_positie(liniepagina(3), "Goalkeeper")
+    g = (rijen is not None and len(rijen) == 3 and over == []
+         and {r["positie"] for r in rijen} == {"Goalkeeper"})
+    print(f"  {'OK  ' if g else 'FOUT'} liniepagina zonder kolom Positie, met "
+          f"de positie uit het pad: "
+          + (f"{len(rijen)} rij(en), {sorted({r['positie'] for r in rijen})}"
+             if rijen is not None else "parse_rijen kent geen positie"))
+    ok = ok and g
+
+    # --- 2. zonder die positie blijft de strenge route streng
+    try:
+        sp.parse_rijen(liniepagina(3))
+        g = False
+        melding = "geen fout"
+    except RuntimeError as e:
+        g = "Positie" in str(e)
+        melding = str(e)[:48]
+    print(f"  {'OK  ' if g else 'FOUT'} dezelfde pagina zonder positie: "
+          f"RuntimeError die Positie noemt ({melding})")
+    ok = ok and g
+
+    # --- 3. de hoofdpagina blijft werken zoals hij werkte
+    rijen, _, _ = sp.parse_rijen(hoofdpagina(8))
+    g = len(rijen) == 8 and len({r["positie"] for r in rijen}) == 4
+    print(f"  {'OK  ' if g else 'FOUT'} hoofdpagina met kolom Positie: "
+          f"{len(rijen)} rijen, {len({r['positie'] for r in rijen})} posities")
+    ok = ok and g
+
+    # --- 4. en als de kolom er IS, wint die van het argument
+    rijen, _, _ = met_positie(hoofdpagina(8), "Goalkeeper")
+    g = rijen is not None and len({r["positie"] for r in rijen}) == 4
+    print(f"  {'OK  ' if g else 'FOUT'} de kolom wint van het argument: "
+          + (f"{len({r['positie'] for r in rijen})} posities, niet 1"
+             if rijen is not None else "parse_rijen kent geen positie"))
+    ok = ok and g
+
+    # --- 5 t/m 7: main() van begin tot eind, met een nagebootste bron
+    import tempfile, csv as _csv, io as _io, contextlib
+    from pathlib import Path as _Path
+
+    AANTAL = {"keepers": 68, "verdedigers": 167,
+              "middenvelders": 144, "aanvallers": 129}
+
+    def draai(paginas):
+        """main() met een eigen get(); geeft (uitkomst, csv-rijen, opgehaald)."""
+        opgehaald = []
+        def nep_get(url, *a, **k):
+            opgehaald.append(url)
+            if url not in paginas:
+                raise RuntimeError(f"niet op te halen: {url}")
+            return paginas[url]
+        echte_get, echt_argv = sp.get, sys.argv
+        with tempfile.TemporaryDirectory() as d:
+            sp.get = nep_get
+            sys.argv = ["scrape_prijzen.py", "--uit", d]
+            uitkomst = None
+            try:
+                with contextlib.redirect_stdout(_io.StringIO()):
+                    sp.main()
+            except SystemExit as e:
+                uitkomst = str(e.code)
+            finally:
+                sp.get, sys.argv = echte_get, echt_argv
+            pad = _Path(d) / "prijzen.csv"
+            rijen = (list(_csv.DictReader(pad.open(encoding="utf-8")))
+                     if pad.exists() else None)
+        return uitkomst, rijen, opgehaald
+
+    def bron(**afwijkend):
+        """De hoofdpagina toont 100 van dezelfde spelers die ook op de
+        liniepagina's staan -- zoals de bron het doet. Zo meet geval 5 ook
+        de ontdubbeling: 100 + 508 rijen moeten 508 spelers worden."""
+        p, start, alle = {}, 1000, []
+        for seg, n in AANTAL.items():
+            url = sp.PRIJZEN_URL.rstrip("/") + "/" + seg + "/"
+            p[url] = afwijkend.get(seg, liniepagina(n, start))
+            alle += [f"linie-{start + i}" for i in range(n)]
+            start += n
+        p[sp.PRIJZEN_URL] = hoofdpagina(100, slugs=alle[:100])
+        return p
+
+    # 5. alle vier de linies worden opgehaald, ook nadat de drempel al is
+    #    gehaald, en alle vier de posities staan in het bestand
+    uitkomst, rijen, opgehaald = draai(bron())
+    liniehits = [u for u in opgehaald if u.rstrip("/").split("/")[-1] in AANTAL]
+    telling = {}
+    for r in (rijen or []):
+        telling[r["positie"]] = telling.get(r["positie"], 0) + 1
+    # De liniepagina is gezaghebbend over de positie, dus na het ontdubbelen
+    # staan er precies 68/167/144/129 en niet de posities van de hoofdpagina.
+    verwacht = {"Goalkeeper": 68, "Defender": 167,
+                "Midfielder": 144, "Forward": 129}
+    g = (uitkomst is None and rijen is not None and len(rijen) == 508
+         and len(liniehits) == 4 and telling == verwacht)
+    print(f"  {'OK  ' if g else 'FOUT'} alle vier de linies opgehaald: "
+          f"{len(liniehits)} van 4, {len(rijen) if rijen else 0} spelers, "
+          f"{telling or '-'}, uitkomst {uitkomst}")
+    ok = ok and g
+
+    # 6. een linie die niet te parsen is, is fataal -- ook al haalt het
+    #    totaal zonder hem de drempel ruim
+    uitkomst, rijen, _ = draai(bron(
+        aanvallers="<table><tr><th>Nummer</th><th>Naam</th></tr></table>"))
+    g = (uitkomst is not None and rijen is None
+         and "aanvallers" in uitkomst and "NIET geschreven" in uitkomst)
+    print(f"  {'OK  ' if g else 'FOUT'} onleesbare liniepagina is fataal en "
+          f"noemt de linie: {str(uitkomst)[:60]}")
+    ok = ok and g
+
+    # 7. Een linie die wel leest maar nul rijen geeft: dat moet blokkeren MET
+    #    de linie in de melding, en niet met "slechts 379 spelers" -- dat
+    #    laatste wijst naar de bron terwijl de linie de oorzaak is.
+    uitkomst, rijen, _ = draai(bron(aanvallers=liniepagina(0)))
+    g = (uitkomst is not None and rijen is None
+         and "aanvallers" in uitkomst and "nul spelers" in uitkomst
+         and "slechts" not in uitkomst)
+    print(f"  {'OK  ' if g else 'FOUT'} een lege linie blokkeert met de linie "
+          f"in de melding: {str(uitkomst)[:58]}")
+    ok = ok and g
+
+    # 8. En waarom het per LINIE moet en niet per positie: zonder de
+    #    aanvallerspagina staan er nog steeds aanvallers in het bestand,
+    #    namelijk die van de hoofdpagina. Een toets per positie zou hier
+    #    zwijgen.
+    paginas = bron(aanvallers=liniepagina(0))
+    opgehaald = []
+    def nep(url, *a, **k):
+        opgehaald.append(url)
+        return paginas[url]
+    echte_get = sp.get
+    try:
+        sp.get = nep
+        los, _, _ = sp.parse_rijen(paginas[sp.PRIJZEN_URL])
+    finally:
+        sp.get = echte_get
+    vw = sum(1 for r in los if r["positie"] == "Forward")
+    g = vw > 0
+    print(f"  {'OK  ' if g else 'FOUT'} de hoofdpagina levert zelf {vw} "
+          f"aanvaller(s), dus een toets per positie zou dit missen")
+    ok = ok and g
+    return ok
+
+
 def test_kans_komt_uit_tekst_niet_uit_opmaak():
     """Een percentage dat je LEEST staat in tekst, nooit in een attribuut.
 
@@ -1935,10 +2156,13 @@ def main():
     print("\neen variatietoets die zegt dat hij niets meet\n")
     ok23 = test_variatietoets_meldt_dat_hij_niets_meet()
 
+    print("\nde liniepaginas van de prijzenlijst\n")
+    ok24 = test_liniepaginas_leveren_de_hele_lijst()
+
     print()
     if all([ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11, ok12,
             ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
-            ok22, ok23]):
+            ok22, ok23, ok24]):
         print("OK: splits_status(), vind_bijna_match(), de opstellingsparser, het\n"
               "    kolomformaat van spelers.csv en de betaalmuurgrens gedragen zich\n"
               "    zoals verwacht.")
