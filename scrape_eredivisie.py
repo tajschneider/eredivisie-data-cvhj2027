@@ -1083,10 +1083,28 @@ def taak_prijzen():
     print(f"  {len(rijen)} spelers gelezen"
           + (f" van de {verwacht} aangekondigde" if verwacht else "")
           + f", {len({c for _, _, c, _, _ in rijen})} clubs")
-    if verwacht and len(rijen) < verwacht * 0.95:
-        print("  ! minder dan aangekondigd — draai --debug op de lijstpagina")
+    # EEN AFGEKAPTE LIJST WORDT NIET WEGGESCHREVEN.
+    #
+    # Hier stond alleen een uitroepteken in het logboek, en daarna werd de
+    # lijst gewoon geschreven. Op 23-11-2026 ging de bron om: /spelers/ toont
+    # sindsdien 100 van de 508 en kondigt er nog wel 508 aan. Deze taak zou
+    # dus 508 goede regels hebben vervangen door 100, met als enig spoor een
+    # regel in het logboek van een run van een kwartier.
+    #
+    # En de datacontrole zou dat niet pakken: die toetst 18 clubs, vier
+    # posities, een prijsbereik en een koppelgraad in PROCENTEN -- allemaal
+    # verhoudingen, die bij 100 van de 508 net zo goed uitkomen. Een oude
+    # lijst is beter dan een afgekapte: oud valt op (versheid), afgekapt niet.
     if not rijen:
         print("  ! leeg, prijzen.csv blijft ongemoeid")
+        return
+    if verwacht and len(rijen) < verwacht * 0.95:
+        print(f"  ! {len(rijen)} van de {verwacht} aangekondigde spelers, "
+              f"prijzen.csv blijft ongemoeid. Het model zou dan alleen uit "
+              f"die {len(rijen)} kunnen kiezen en dat is in het bestand niet "
+              f"te zien. Sinds 23-11-2026 staan alle spelers op de vier "
+              f"liniepagina's en leest scrape_prijzen.py die; draai anders "
+              f"--debug op de lijstpagina.")
         return
     uit = [{"team": club, "speler": naam, "positie": pos, "prijs": prijs,
             "speler_id": sid, "opgehaald": VANDAAG}
