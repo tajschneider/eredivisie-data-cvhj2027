@@ -40,53 +40,53 @@ UIT DE VERMOEDELIJKE ELF, IN JOUW SELECTIE (de verwachting hieronder rekent hier
     Mexx Meerdink             AZ               begon 6/6 recent, staat nu niet in de vermoedelijke elf
     Thijs Oosting             PEC Zwolle       begon 3/6 recent, staat nu niet in de vermoedelijke elf
 
-OPSTELLING NU (zonder transfers)  3-5-2   verwacht 48.0 punten   kosten EUR 31.05
-  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.79
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.77
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.52
-  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.79
-  Middenveld   Guus Til                  PSV              EUR 4.00  E  7.35
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.96
-  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.40
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.09
-  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.14
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  7.21
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.88
+OPSTELLING NU (zonder transfers)  3-5-2   verwacht 42.1 punten   kosten EUR 31.05
+  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.20
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.53
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.30
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.83
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  5.84
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.21
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.03
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  2.86
+  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.51
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.78
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  4.87
   ---- bank (50%) ----
-  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.70
-  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.25
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.33
+  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.02
+  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.60
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.71
   M            Julian Brandt             Ajax             EUR 2.75  E  0.00
 
 AFWEZIG IN JE SELECTIE (E=0, de zoeker wil ze er dus uit):
     Julian Brandt (blessure)
 
 WAT LEVERT ELKE TRANSFER OP (gedecayde som over de horizon)
-  0 transfer(s):  147.84
-  1 transfer(s):  166.00   +18.16 t.o.v. 0
+  0 transfer(s):  130.13
+  1 transfer(s):  143.46   +13.33 t.o.v. 0
 
 MULTI-RONDE ADVIES (horizon 4, decay 0.84, 1 transfer(s))
-  ronde 14: verwacht 54.0 punten  (3-5-2)  winst +6.0
-  gedecayde som over de horizon: 166.00  (huidig team: 147.84)
-    UIT  Guus Til                  PSV              EUR 4.00  E  7.35
-    IN   Sven Mijnans              PSV              EUR 3.80  E 13.33  E(horizon) 40.25
+  ronde 14: verwacht 45.0 punten  (3-4-3)  winst +2.9
+  gedecayde som over de horizon: 143.46  (huidig team: 130.13)
+    UIT  Julian Brandt             Ajax             EUR 2.75  E  0.00
+    IN   Tolu Arokodare            Ajax             EUR 2.50  E  3.33  E(horizon) 15.49
 
-OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-5-2   verwacht 54.0 punten   kosten EUR 30.85
-  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.79
-  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.77
-  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.52
-  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.79
-  Middenveld   Sven Mijnans              PSV              EUR 3.80  E 13.33
-  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.96
-  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.40
-  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  3.09
-  Middenveld   Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.14
-  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  7.21
-  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  5.88
+OPSTELLING NA DE GEADVISEERDE TRANSFERS (dit opstellen)  3-4-3   verwacht 45.0 punten   kosten EUR 30.80
+  Keeper       Stijn van Gassel          Excelsior        EUR 1.80  E  3.20
+  Verdediging  Ruud Nijstad              FC Twente        EUR 2.00  E  2.53
+  Verdediging  Marvin Young              Sparta Rotterdam EUR 1.80  E  2.30
+  Verdediging  Deveron Fonville          NEC              EUR 2.00  E  1.83
+  Middenveld   Guus Til                  PSV              EUR 4.00  E  5.84
+  Middenveld   Gjivai Zechiël            Feyenoord        EUR 2.00  E  4.21
+  Middenveld   Mohamed Ihattaren         Fortuna Sittard  EUR 2.00  E  3.03
+  Middenveld   Tyrone Owusu              Telstar          EUR 1.20  E  2.86
+  Aanval       Brynjólfur Willumsson     FC Groningen     EUR 1.80  E  5.78
+  Aanval       Mexx Meerdink             AZ               EUR 2.50  E  4.87
+  Aanval       Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.02
   ---- bank (50%) ----
-  A            Jacob Trenskow            sc Heerenveen    EUR 2.20  E  4.70
-  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.25
-  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.33
-  M            Julian Brandt             Ajax             EUR 2.75  E  0.00
+  A            Tolu Arokodare            Ajax             EUR 2.50  E  3.33
+  K            Kjetil Haug               Go Ahead Eagles  EUR 1.50  E  2.60
+  V            Sekou Sylla               ADO Den Haag     EUR 1.50  E  1.71
+  M            Thijs Oosting             PEC Zwolle       EUR 2.00  E  1.51
 
 besluit -> besluit.json
