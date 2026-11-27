@@ -171,11 +171,26 @@ def lees_echte_punten(pad="eigen_elf.csv"):
     spelers.csv komt is een reconstructie zonder assists, kaarten en
     reddingen.
 
-    Alleen zijn eigen elf, dus hooguit elf spelers per ronde. Dat is een
-    VERTEKENDE steekproef (spelers die het model hoog had staan), en daarom
-    rapporteert evalueer_ronde() apart hoeveel rijen echt zijn en wat de
-    maten los over die rijen doen. Een gemengde meetlat die je niet uit elkaar
-    kunt halen, is geen verbetering.
+    Alleen zijn BASISELF: rijen met plek "bank" worden overgeslagen. Dat is
+    geen netheid maar noodzaak. Een bankspeler die invalt voor een
+    basisspeler die niet speelde, telt vol mee; een bankspeler die er niet in
+    komt, telt voor de helft. De app toont in beide gevallen de BIJDRAGE, niet
+    de punten van de speler zelf -- dus bij een ongebruikte bankspeler is het
+    getoonde getal de helft van wat hij werkelijk scoorde.
+    [vastgesteld 27-11-2026 op ronde 12: elf die speelde 21, bank 0+1+5+6,
+    samen precies de 33 die de app toont]
+
+    Welke van de twee het is, valt niet uit het scherm af te lezen: dat hangt
+    af van hoeveel basisspelers niet speelden en welke formatie geldig blijft.
+    Een gehalveerd getal als spelerspunten invoeren is een FOUTE waarneming,
+    en de meting waar dit bestand voor bestaat heeft er maar een paar nodig om
+    te kantelen. Liever veertien waarnemingen minder dan veertien die mogelijk
+    de helft te laag zijn.
+
+    Dat maakt het een VERTEKENDE steekproef (spelers die het model hoog had
+    staan), en daarom rapporteert evalueer_ronde() apart hoeveel rijen echt
+    zijn en wat de maten los over die rijen doen. Een gemengde meetlat die je
+    niet uit elkaar kunt halen, is geen verbetering.
 
     Ontbreekt het bestand, dan levert dit {} en draait backtest.py exact als
     voorheen.
@@ -193,6 +208,8 @@ def lees_echte_punten(pad="eigen_elf.csv"):
         for r in csv.DictReader(f):
             if not (r.get("punten") or "").strip():
                 continue          # niet gespeeld of geen wedstrijd: geen waarneming
+            if (r.get("plek") or "").strip().lower() == "bank":
+                continue          # bijdrage, mogelijk gehalveerd -- zie hierboven
             try:
                 sleutel = (int(r["ronde"]), achternaam(r["speler"]))
                 waarde = float(r["punten"])
